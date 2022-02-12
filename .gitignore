@@ -1,0 +1,19 @@
+
+node_modules
+.env
+.privatekey-bridgeadmin
+.privatekey
+coverage
+coverage.json
+typechain
+*.DS_STORE
+*.env
+
+cache/
+
+out/
+
+
+#Hardhat files
+cache
+artifacts
