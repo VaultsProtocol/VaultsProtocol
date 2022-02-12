@@ -1,6 +1,9 @@
 cache/
+<<<<<<< HEAD:.gitignore
 out/
 
 .DS_Store
 
 *.DS_Store
+=======
+>>>>>>> e114337bc220d8278f3b74ea12f93b5977ec8cfa:contracts/.gitignore
