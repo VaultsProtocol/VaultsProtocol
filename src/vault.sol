@@ -96,7 +96,7 @@ contract Vault {
 
         //ensure token reverts on failed
         vaultToken.transferFrom(msg.sender, address(this), amount);
-        
+
     }
 
     // Burns NFT and withdraws all claimable token + yeild
@@ -111,7 +111,17 @@ contract Vault {
 
     function withdrawFromId(uint256 amount, uint256 id) public {
 
+        require(msg.sender == NFT.ownerOf(id));
+        require(amount <= withdrawableById(id));
 
+        uint256 balanceCheck = vaultToken.balanceOf(address(this));
+
+        if (amount > balanceCheck) {
+            uint256 needed = amount - balanceCheck;
+            withdrawFromStrat(needed, id);
+        }
+
+        vaultToken.transfer(msg.sender, amount);
 
     }
 
@@ -140,10 +150,13 @@ contract Vault {
     }
 
     //internal, only called when balanceOf(address(this)) < withdraw requested
-    // depositedToStrat; = total withdrawn - yeild of msg.sender
-    function withdrawFromStrat(uint256 amountNeeded) internal {
+    // depositedToStrat = total withdrawn - yeild of msg.sender
+    function withdrawFromStrat(uint256 amountNeeded, uint256 forID) internal {
 
+        uint256 userYield = yeildPerId(forID);
+        depositedToStrat -= amountNeeded - userYield;
 
+        strat.withdrawl(amountNeeded);
 
     }
 
@@ -168,6 +181,7 @@ contract Vault {
     function returnManagedFunds(uint256 amount) external {
 
         tokensManaged -= amount;
+
         //vault tokens revert on failed transfer
         vaultToken.transferFrom(msg.sender, address(this), amount);
 
@@ -180,6 +194,7 @@ contract Vault {
     // #########################
 
     // gets yeild from strategy contract
+    //possbily call this before new mints?
     function adjustYeild() public {
 
         uint256 totalInStrat = strat.withdrawlableVaultToken();
