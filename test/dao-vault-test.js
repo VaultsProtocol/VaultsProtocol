@@ -5,13 +5,93 @@ const ethUtil = require("ethereumjs-util");
 const { revert } = require("./utils");
 require("chai").use(require("chai-as-promised")).should();
 
-const WarriorAllianceFreedomFighters = artifacts.require("WarriorAllianceFreedomFighters");
-// const EthCrypto = require("eth-crypto");
+const DaoVault = artifacts.require("DaoVault");
 
-contract("WarriorAllianceFreedomFighters", ([alice, bob, tom, deployer]) => {
-  var signer;
+// User flow:
+/**
+ * If user does not hold NFT, User Mints NFT from DAO by paying into DAO Vault
+ * If user holds NFT and inputs NFT Id to add to, DAO vault adds weighting to it.
+ * Payment is split and sent from DAO vault into Degen Vault
+ * Degen vault needs to keep track of jackpot and user share.
+ * Future payments into the vault means previous users get paid
+ */
 
-  it("Tests pricing calculations", async () => {
+contract("DaoVault", ([alice, bob, tom, deployer]) => {
+  describe("NFT functions testing", function (accounts) {
+    before(async () => {
+      nft = await nft.new();
+      vaultToken = await vaultToken.new();
+
+      initialLiquidity = 10e18; // 10 Ethere as initial liquidity
+      jackpotBps = 2500;
+      dividendBps = 3500;
+      treasuryBps = 4000;
+
+      degenVault = await DegenVault.new();
+
+      daoVault = await DaoVault.new(
+        tom,
+        nft,
+        vaultToken,
+        initialLiquidity,
+        degenVault,
+        jackpotBps,
+        dividendBps,
+        treasuryBps,
+        { from: deployer },
+      );
+    });
+    it("Mints NFT if paid ", async () => {
+      price = await DaoVault.getPrice();
+
+      await expect(
+        daoVault.mintNewNFT(price - 10, {
+          value: 10e18,
+          from: alice,
+        }),
+      ).to.eventually.rejectedWith(revert`Mismatched price`);
+
+      await expect(
+        daoVault.mintNewNFT(price, {
+          value: 9e18,
+          from: alice,
+        }),
+      ).to.eventually.rejectedWith(revert`Mismatched price`);
+
+      await expect(
+        daoVault.mintNewNFT(9e18, {
+          value: 9e18,
+          from: alice,
+        }),
+      ).to.eventually.rejectedWith(revert`Underpaid`);
+
+      await daoVault.mintNewNFT(10e18, {
+        value: 10e18,
+        from: alice,
+      });
+
+      // Ensure mint happened
+      assert.equal(Number(await nft.balanceOf(alice)), 1);
+
+      // Ensure split between vaults is good
+      assert.equal(
+        Number(await web3.eth.getBalance(daoVault)),
+        (price * treasuryBps) / 1e4,
+      );
+      assert.equal(
+        Number(await web3.eth.getBalance(degenVault)),
+        (price * (jackpotBps + dividendBps)) / 1e4,
+      );
+
+      // Ensure Previous holders have claimable.
+      assert.equal(
+        Number(await degenVault.claimableBalance(signer)),
+        (price * dividendBps) / 1e4,
+      );
+    });
+  });
+
+  it("Pays out multiple depositors", async () => {
     // off chain generation of allowed address
     signer = deployer;
     warriorAllianceFreedomFighters = await WarriorAllianceFreedomFighters.new(
@@ -36,10 +116,13 @@ contract("WarriorAllianceFreedomFighters", ([alice, bob, tom, deployer]) => {
     assert.equal(Number(await warriorAllianceFreedomFighters.price(4)), 5.2e17); // default pricing
     assert.equal(Number(await warriorAllianceFreedomFighters.price(5)), 5.5e17);
     assert.equal(Number(await warriorAllianceFreedomFighters.price(6)), 6.6e17);
-    assert.equal(Number(await warriorAllianceFreedomFighters.price(10)), 1.1e18);
+    assert.equal(
+      Number(await warriorAllianceFreedomFighters.price(10)),
+      1.1e18,
+    );
   });
 
-  it("Tests whitelist Mint", async () => {
+  it("Allows someone to win", async () => {
     signer = deployer;
     warriorAllianceFreedomFighters = await WarriorAllianceFreedomFighters.new(
       "testnamenft",
@@ -179,8 +262,14 @@ contract("WarriorAllianceFreedomFighters", ([alice, bob, tom, deployer]) => {
       value: 5.5e17,
       from: alice,
     });
-    assert.equal(Number(await warriorAllianceFreedomFighters.balanceOf(alice)), 5);
-    assert.equal(Number(await warriorAllianceFreedomFighters.balanceOf(tom)), 57);
+    assert.equal(
+      Number(await warriorAllianceFreedomFighters.balanceOf(alice)),
+      5,
+    );
+    assert.equal(
+      Number(await warriorAllianceFreedomFighters.balanceOf(tom)),
+      57,
+    );
 
     // test double claim
     await expect(
@@ -189,195 +278,5 @@ contract("WarriorAllianceFreedomFighters", ([alice, bob, tom, deployer]) => {
         from: alice,
       }),
     ).to.eventually.rejectedWith(revert`Already claimed!`);
-  });
-
-  it("Tests public Mint", async () => {
-    signer = deployer;
-    warriorAllianceFreedomFighters = await WarriorAllianceFreedomFighters.new(
-      "testnamenft",
-      "TESTNFT",
-      57,
-      tom,
-      { from: signer },
-    );
-    await warriorAllianceFreedomFighters.setMintPrices(
-      (1.3e17).toString(),
-      [1, 3, 5],
-      [(1.3e17).toString(), (1.2e17).toString(), (1.1e17).toString()],
-      {
-        from: signer,
-      },
-    );
-
-    // test time block
-    const timeNow = Number(await time.latest());
-    const delta = 50000000000;
-
-    await warriorAllianceFreedomFighters.setStartTimes(
-      `${timeNow + delta * 5}`,
-      `${timeNow + delta}`,
-      {
-        from: signer,
-      },
-    );
-
-    await expect(
-      warriorAllianceFreedomFighters.mint(5, {
-        value: 5.5e17,
-        from: alice,
-      }),
-    ).to.eventually.rejectedWith(revert`Public mint not open yet`);
-
-    // test isLive block.
-    await time.increase(delta);
-    await expect(
-      warriorAllianceFreedomFighters.mint(5, {
-        value: 5.5e17,
-        from: alice,
-      }),
-    ).to.eventually.rejectedWith(revert`Public mint not open yet`);
-    await warriorAllianceFreedomFighters.setIsLive(true, false, {
-      from: signer,
-    });
-
-    // test sold out
-    await expect(
-      warriorAllianceFreedomFighters.mint(8888, {
-        value: 977.68e17,
-        from: alice,
-      }),
-    ).to.eventually.rejectedWith(revert`Sold Out!`);
-
-    // test pricing
-    await expect(
-      warriorAllianceFreedomFighters.mint(5, {
-        value: 3e17,
-        from: alice,
-      }),
-    ).to.eventually.rejectedWith(revert`Value below price`);
-
-    // test successful mint
-    await warriorAllianceFreedomFighters.mint(5, {
-      value: 5.5e17,
-      from: alice,
-    });
-    assert.equal(Number(await warriorAllianceFreedomFighters.balanceOf(alice)), 5);
-    assert.equal(Number(await warriorAllianceFreedomFighters.balanceOf(tom)), 57);
-
-    const price = Number(await warriorAllianceFreedomFighters.price(50));
-    // test successful mint
-    await warriorAllianceFreedomFighters.mint(50, {
-      value: 55e17,
-      from: alice,
-    });
-    assert.equal(Number(await warriorAllianceFreedomFighters.balanceOf(alice)), 55);
-  });
-
-  it("Tests reserve Mint", async () => {
-    signer = deployer;
-    warriorAllianceFreedomFighters = await WarriorAllianceFreedomFighters.new(
-      "testnamenft",
-      "TESTNFT",
-      57,
-      tom,
-      { from: signer },
-    );
-    await warriorAllianceFreedomFighters.setMintPrices(
-      (1.3e17).toString(),
-      [1, 3, 5],
-      [(1.3e17).toString(), (1.2e17).toString(), (1.1e17).toString()],
-      {
-        from: signer,
-      },
-    );
-
-    await warriorAllianceFreedomFighters.setMaxElements("70", { from: signer });
-    assert.equal(Number(await warriorAllianceFreedomFighters.MAX_ELEMENTS()), 70);
-
-    let allowedAddress = alice;
-    const message = web3.utils.soliditySha3(allowedAddress, 50, 3);
-    const signature = await web3.eth.sign(message, signer);
-    const { v, r, s } = ethUtil.fromRpcSig(signature);
-
-    // test sold out
-    await expect(
-      warriorAllianceFreedomFighters.reserveMint(50, 3, message, v, r, s, {
-        from: alice,
-      }),
-    ).to.eventually.rejectedWith(revert`Sold Out!`);
-    await warriorAllianceFreedomFighters.setMaxElements("158", {
-      from: signer,
-    });
-
-    // Whitelist Nonce test
-    await expect(
-      warriorAllianceFreedomFighters.reserveMint(50, 3, message, v, r, s, {
-        from: alice,
-      }),
-    ).to.eventually.rejectedWith(revert`Whitelist Nonce Invalid`);
-    await warriorAllianceFreedomFighters.setWhitelistNonce(3, {
-      from: signer,
-    });
-
-    // Alloc Security test
-    await expect(
-      warriorAllianceFreedomFighters.reserveMint(55, 3, message, v, r, s, {
-        from: alice,
-      }),
-    ).to.eventually.rejectedWith(revert`Invalid hash`);
-
-    // Bob Uses Alices' Security test
-    await expect(
-      warriorAllianceFreedomFighters.reserveMint(50, 3, message, v, r, s, {
-        from: bob,
-      }),
-    ).to.eventually.rejectedWith(revert`Invalid hash`);
-
-    // Successful reserve mint
-    await warriorAllianceFreedomFighters.reserveMint(50, 3, message, v, r, s, {
-      from: alice,
-    });
-
-    assert.equal(Number(await warriorAllianceFreedomFighters.balanceOf(alice)), 50);
-
-    // Double Claim Test
-    await expect(
-      warriorAllianceFreedomFighters.reserveMint(50, 3, message, v, r, s, {
-        from: alice,
-      }),
-    ).to.eventually.rejectedWith(revert`Already claimed!`);
-
-    // Claim rest as bob.
-    allowedAddress = bob;
-    let msg = web3.utils.soliditySha3(allowedAddress, 50, 3);
-    let sig = await web3.eth.sign(msg, signer);
-    let sigHash = ethUtil.fromRpcSig(sig);
-
-    // Successful reserve mint
-    await warriorAllianceFreedomFighters.reserveMint(
-      50,
-      3,
-      msg,
-      sigHash.v,
-      sigHash.r,
-      sigHash.s,
-      {
-        from: bob,
-      },
-    );
-    assert.equal(Number(await warriorAllianceFreedomFighters.balanceOf(bob)), 50);
-
-    // test tom comes in and tries to reserve mint after bob causes error
-    allowedAddress = tom;
-    msg = web3.utils.soliditySha3(allowedAddress, 1, 3);
-    sig = await web3.eth.sign(msg, signer);
-    sigHash = ethUtil.fromRpcSig(sig);
-    await expect(
-      warriorAllianceFreedomFighters.reserveMint(1, 3, msg, sigHash.v, sigHash.r, sigHash.s, {
-        from: tom,
-      }),
-    ).to.eventually.rejectedWith(revert`Sold Out!`);
-
-    assert.equal(Number(await warriorAllianceFreedomFighters.totalSupply()), 158);
   });
 });
