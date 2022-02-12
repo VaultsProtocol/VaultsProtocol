@@ -4,7 +4,7 @@ pragma solidity >=0.8.0;
 import "./tokens/erc721.sol";
 import "./tokens/ERC20.sol";
 
-contract Vault {
+contract GGVault {
 
     // #########################
     // ##                     ##

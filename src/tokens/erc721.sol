@@ -223,11 +223,11 @@ contract ERC721 {
     }
 
     // called by DAOCreator in same transaction as deployment
-    function initVault(address _vault) external {
+    function initVault() external {
 
         require(vault == address(0));
 
-        vault = _vault;
+        vault = msg.sender;
 
     }
 
@@ -236,6 +236,7 @@ contract ERC721 {
         require(msg.sender == vault);
 
         _burn(id);
+        
     }
 
 }

@@ -31,4 +31,7 @@ contract YearnDai {
 
     }
     
+    function withdrawlableVaultToken() external returns (uint256) {
+        
+    }
 }

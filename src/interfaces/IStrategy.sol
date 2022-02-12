@@ -2,9 +2,9 @@
 pragma solidity >=0.8.0;
 
 interface IStrategy {
-    //deposit
+    function deposit(uint256 amount) external;
 
-    //withdrawl
+    function withdrawl(uint256 amount) external;
 
-    //getYeildInNativeToken
+    function withdrawlableVaultToken() external returns (uint256);
 }
