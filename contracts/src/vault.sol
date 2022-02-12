@@ -90,7 +90,7 @@ contract Vault {
         
         // trusted contract
         require(msg.sender == NFT.ownerOf(id));
-        deposits[id].amount = amount;
+        deposits[id].amount += amount;
         deposits[id].tracker += amount * yeildPerDeposit;
         totalDeposits += amount;
 
@@ -114,12 +114,17 @@ contract Vault {
         require(msg.sender == NFT.ownerOf(id));
         require(amount <= withdrawableById(id));
 
+        //trusted contract
         uint256 balanceCheck = vaultToken.balanceOf(address(this));
 
+        // trusted contract
         if (amount > balanceCheck) {
             uint256 needed = amount - balanceCheck;
             withdrawFromStrat(needed, id);
         }
+
+        deposits[id].amount -= amount;
+        deposits[id].tracker -= amount * yeildPerDeposit;
 
         vaultToken.transfer(msg.sender, amount);
 
