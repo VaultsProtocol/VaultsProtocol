@@ -102,11 +102,11 @@ contract Vault {
 
     // Burns NFT and withdraws all claimable token + yeild
     function burn(uint256 id) external {
-
-        NFT.burn(id);
         
         uint256 claimable = withdrawableById(id);
         withdrawFromId(claimable, id);
+
+        NFT.burn(id);
         
     }
 
