@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 node_modules
 .env
 .privatekey-bridgeadmin
@@ -7,11 +8,17 @@ coverage.json
 typechain
 *.DS_STORE
 *.env
+=======
+cache/
+<<<<<<< HEAD:.gitignore
+out/
+>>>>>>> main
 
 #Hardhat files
 cache
 artifacts
 
+<<<<<<< HEAD
 
 # Logs
 logs
@@ -117,3 +124,8 @@ dist
 
 # TernJS port file
 .tern-port
+=======
+*.DS_Store
+=======
+>>>>>>> e114337bc220d8278f3b74ea12f93b5977ec8cfa:contracts/.gitignore
+>>>>>>> main
