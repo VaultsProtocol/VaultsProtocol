@@ -4,7 +4,10 @@ pragma solidity >=0.8.0;
 import "./tokens/erc721.sol";
 import "./tokens/ERC20.sol";
 
-contract GGVault {
+// Jackpot & Dividend Vault
+// This is the vault that the Jackpot and Degen dividends go.
+// Balances for jackpot vs dividends are tracked with internal vars
+contract DegenVault {
 
     // #########################
     // ##                     ##

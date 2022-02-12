@@ -7,6 +7,7 @@ import "./interfaces/IStrategy.sol";
 
 //ENSURE vault tokens revert on failed transfer
 
+// Dao Vault - This contains the DAO treasury.
 contract Vault {
 
     // #########################
