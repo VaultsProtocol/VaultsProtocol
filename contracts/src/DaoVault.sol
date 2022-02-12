@@ -40,8 +40,10 @@ contract Vault {
     uint256 tokensManaged;
     
     ERC721 immutable NFT;
-    ERC20 immutable vaultToken; //ensure vault tokens revert on failed transfer
-    address immutable controller; //strategy and fund manager
+    //ensure vault tokens revert on failed transfer
+    ERC20 immutable vaultToken; 
+    //strategy and fund manager
+    address immutable controller;
 
     // strategy to earn yeild on vault reserves
     // strats are hardcoded at 50% of totalDeposits
@@ -77,6 +79,7 @@ contract Vault {
         // contract execution never passed to 
         // untrusted contract so this pattern is safe
         uint id = NFT.mint(msg.sender);
+        
         deposits[id].amount = amount;
         deposits[id].tracker += amount * yeildPerDeposit;
         totalDeposits += amount;
@@ -220,7 +223,7 @@ contract Vault {
     function withdrawableById(uint256 id) public view returns (uint) {
 
         uint256 yield = yeildPerId(id);
-        uint256 claimable = totalDeposits - tokensManaged;
+        uint256 claimable = vaultToken.balanceOf(address(this)) + depositedToStrat - tokensManaged;
         uint256 claimId = claimable * deposits[id].amount / totalDeposits;
 
         return claimId + yield;
