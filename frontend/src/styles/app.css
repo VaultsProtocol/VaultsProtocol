@@ -209,6 +209,8 @@ hr {
 	border: none;
 	border-bottom: currentColor 1px solid;
 	opacity: 0.25;
+	justify-self: stretch;
+	grid-column: 1 / -1;
 }
 
 
@@ -241,6 +243,8 @@ hr {
 	--button-transform-origin: center;
 
 	font-weight: 600;
+
+	z-index: 1;
 }
 
 
@@ -325,7 +329,7 @@ hr {
 
 
 details {
-	display: flex;
+	display: inline-grid;
 }
 details summary {
 	display: flex;

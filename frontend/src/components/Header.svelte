@@ -77,10 +77,17 @@
 <style>
 	header {
 		--header-padding: 1.5rem;
+
 		font-size: 1.125em;
 		padding: 0 var(--header-padding);
 
-		backdrop-filter: blur(3px);
+		background: linear-gradient(var(--background-color-0), transparent);
+		overflow: hidden;
+
+		-webkit-mask-image: linear-gradient(to top, transparent, white 1em);
+		mask-image: linear-gradient(to top, transparent, white 1em);
+
+		transition: 0.2s;
 	}
 	@supports not (backdrop-filter: blur(0)) {
 		header {
@@ -154,16 +161,6 @@
 	}
 
 	@media (max-width: 40rem) {
-		header {
-			background: linear-gradient(var(--background-color-0), transparent);
-			height: var(--header-height);
-			overflow: hidden;
-			-webkit-backdrop-filter: blur(0px);
-			backdrop-filter: blur(0px);
-			transition: 0.2s;
-			-webkit-mask-image: linear-gradient(to top, transparent, white 1em);
-			mask-image: linear-gradient(to top, transparent, white 1em);
-		}
 		header:focus-within:not(:focus) {
 			-webkit-backdrop-filter: blur(8px);
 			backdrop-filter: blur(8px);

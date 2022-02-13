@@ -3,7 +3,7 @@
 
 
 	// External state
-	export let placement: Placement = 'bottom-end'
+	export let placement: Placement = 'bottom-start'
 	export let allowedPlacements: Placement[] | undefined
 	export let offset = 8
 
@@ -82,6 +82,10 @@
 		position: absolute;
 		left: 0;
 		top: 0;
+	}
+
+	summary {
+		cursor: pointer;
 	}
 
 	summary :global(button) {

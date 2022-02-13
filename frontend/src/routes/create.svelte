@@ -12,17 +12,106 @@
 		TransactionSuccess
 	}
 
+	enum FundingStrategy {
+		ApeChicken = 'ApeChicken',
+		OrangutanChicken = 'OrangutanChicken',
+		ManateeChicken = 'ManateeChicken',
+		Degen = 'Degen',
+	}
+	const fundingStrategyInfo = {
+		[FundingStrategy.ApeChicken]: {
+			label: '🦍 Ape Chicken', // 🦍🦧
+			description: 'The crowdfund ends if a contribution is not made after a set interval of time. The last person to contribute wins the Jackpot allocation.'
+		},
+		[FundingStrategy.OrangutanChicken]: {
+			label: '🦧 Orangutan Chicken',
+			description: 'The crowdfund ends if a contribution is not made after a set interval of time. The last person to contribute wins the Jackpot allocation.'
+		},
+		[FundingStrategy.ManateeChicken]: {
+			label: '🦈 Manatee Chicken',
+			description: 'Stream Superfluid Super tokens into the vault at a specified rate. Dividends are streamed to all past contributors'
+		},
+		[FundingStrategy.Degen]: {
+			label: '🐸 Degen',
+			description: ''
+		}
+	}
+
 	enum YieldStrategy {
-		GG = '🎰 GG', // 🦍🦧
-		Degen = '🐸 Degen',
-		Aave = '👻 Aave',
-		Yearn = '🏦 Yearn',
+		Aave = 'Aave',
+		Yearn = 'Yearn',
+	}
+	const yieldStrategyInfo = {
+		[YieldStrategy.Aave]: {
+			label: '👻 Aave',
+			description: 'The DAO treasury will be lent to borrowers on Aave. Interest will be paid out to holders.'
+		},
+		[YieldStrategy.Yearn]: {
+			label: '🏦 Yearn',
+			description: 'The DAO treasury will be deposited into a Yearn vault. Yield will be paid out to holders.'
+		},
+	}
+
+	enum GovernanceStrategy {
+		None = 'None',
+		Vote = 'Vote',
+	}
+	const governanceStrategyInfo = {
+		[GovernanceStrategy.None]: {
+			label: 'None',
+			description: 'Stakeholders can withdraw their share from the vault at any time.'
+		},
+		[GovernanceStrategy.Vote]: {
+			label: '🗳 Vote',
+			description: 'Stakeholders must vote to approve changes to yield strategies or send funds out of the vault.'
+		},
 	}
 
 	type ERC20TokenAndAmount = {
 		contractAddress: string
 		amount: BigNumber
 	}
+
+	type VaultConfig = {
+		about: {
+			name: string
+			description: string
+			website: string
+			twitter: string
+			discord: string
+		},
+		fundingStrategy: FundingStrategy
+		fundingAllocation: {
+			jackpot: number
+			dividend: number
+			treasury: number
+		}
+		yieldStrategy: YieldStrategy
+		governanceStrategy: GovernanceStrategy
+		initialLiquidity: ERC20TokenAndAmount
+	}
+
+	const getDefaultVaultConfig = () => ({
+		about: {
+			name: '',
+			description: '',
+			website: '',
+			twitter: '',
+			discord: '',
+		},
+		fundingStrategy: FundingStrategy.ApeChicken,
+		fundingAllocation: {
+			jackpot: 20,
+			dividend: 30,
+			treasury: 50
+		},
+		yieldStrategy: YieldStrategy.Aave,
+		governanceStrategy: GovernanceStrategy.None,
+		initialLiquidity: {
+			contractAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+			amount: BigNumber.from(0)
+		}
+	} as VaultConfig)
 
 
 	// Stores
@@ -33,40 +122,11 @@
 
 	let currentStep = Steps.Idle
 
-	let daoConfig: {
-		name: string
-		description: string
-		website: string
-		twitter: string
-		discord: string
-		strategy: YieldStrategy
-		allocation: {
-			jackpot: number
-			dividend: number
-			treasury: number
-		}
-		initialLiquidity: ERC20TokenAndAmount
-	} = {
-		name: '',
-		description: '',
-		website: '',
-		twitter: '',
-		discord: '',
-		strategy: YieldStrategy.GG,
-		allocation: {
-			jackpot: 20,
-			dividend: 30,
-			treasury: 50
-		},
-		initialLiquidity: {
-			contractAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
-			amount: BigNumber.from(0)
-		}
-	}
+	let vaultConfig: VaultConfig = getDefaultVaultConfig()
 
 	$: isValid =
-		!!daoConfig.name &&
-		!!daoConfig.name && daoConfig.name && daoConfig.name
+		!!vaultConfig.about.name &&
+		!!vaultConfig.about.name && vaultConfig.about.name && vaultConfig.about.name
 
 
 	// import DAOFactory from '../lib/contracts/DAOFactory.sol/DAOFactory.json'
@@ -90,95 +150,36 @@
 
 <main>
 	<section>
-		<h1>{$_('Create a DAO')}</h1>
+		<h1>{$_('Create a Vault')}</h1>
 	</section>
 
-	<div class="column row-desktop">
-		<section>
-			<!-- svelte-ignore a11y-label-has-associated-control -->
-			<form
-				class="column"
-				on:submit|preventDefault={() => currentStep = Steps.TransactionSigning}
-				disabled={currentStep !== Steps.Idle}
-			>
-				<section class="card column">
-					<h2>{$_('About')}</h2>
+	<section>
+		<!-- svelte-ignore a11y-label-has-associated-control -->
+		<form
+			class="column row-desktop"
+			on:submit|preventDefault={() => currentStep = Steps.TransactionSigning}
+			disabled={currentStep !== Steps.Idle}
+		>
+			<section class="card column">
+				<h2>{$_('Funding')}</h2>
 
-					<hr>
+				<hr>
 
-					<label class="column">
-						<h3>{$_('DAO Name')}</h3>
-						<p>{$_('The project or cause you\'re fundraising for.')}</p>
-						<input
-							type="text"
-							bind:value={daoConfig.name}
-							placeholder={$_('DAO Name')}
-							required
+				<label class="column">
+					<h3>{$_('Fundraising Type')}</h3>
+					<div>
+						<Select
+							bind:value={vaultConfig.fundingStrategy}
+							values={Object.keys(FundingStrategy)}
+							labels={Object.fromEntries(Object.entries(fundingStrategyInfo).map(([key, {label}]) => [key, label]))}
 						/>
-					</label>
+					</div>
+					<p>{$_(fundingStrategyInfo[vaultConfig.fundingStrategy].description)}</p>
+				</label>
 
-					<label class="column">
-						<h3>{$_('Description')}</h3>
-						<p>{$_('Tell your community what your goals are.')}</p>
-						<textarea
-							bind:value={daoConfig.description}
-							placeholder={$_('Describe {name}...', { values: { name: daoConfig.name || 'your DAO' }})}
-						/>
-					</label>
+				<h3>{$_('Allocation')}</h3>
 
-					<label class="column">
-						<h3>{$_('Website')}</h3>
-						<input
-							type="text"
-							bind:value={daoConfig.website}
-							placeholder={$_('mydao.example.com')}
-						/>
-					</label>
-
-					<label class="column">
-						<h3>{$_('Twitter')}</h3>
-						<input
-							type="text"
-							bind:value={daoConfig.twitter}
-							placeholder={$_('twitter.com/ETHDenver')}
-						/>
-					</label>
-
-					<label class="column">
-						<h3>{$_('Discord')}</h3>
-						<input
-							type="text"
-							bind:value={daoConfig.discord}
-							placeholder={$_('discord.gg/xyz')}
-						/>
-					</label>
-				</section>
-
-				<section class="card column">
-					<h2>{$_('Treasury')}</h2>
-
-					<hr>
-
-					<label class="column">
-						<h3>{$_('Yield Strategy')}</h3>
-						<div>
-							<Select
-								bind:value={daoConfig.strategy}
-								values={Object.keys(YieldStrategy)}
-								labels={YieldStrategy}
-							/>
-						</div>
-						<p>
-							{$_({
-								[YieldStrategy.GG]: 'The crowdfund ends if a contribution is not made after a set interval of time. The last person to contibute wins the Jackpot allocation.',
-								[YieldStrategy.Degen]: '',
-								[YieldStrategy.Aave]: '',
-								[YieldStrategy.Yearn]: '',
-							}[daoConfig.strategy])}
-						</p>
-					</label>
-
-					<h3>{$_('Allocation')}</h3>
+				{#if vaultConfig.fundingStrategy === FundingStrategy.ApeChicken}
 					<div class="card column">
 						<label class="column">
 							<h4>{$_('Jackpot')}</h4>
@@ -189,11 +190,12 @@
 										type="number"
 										min="0"
 										max="100"
-										bind:value={daoConfig.allocation.jackpot}
+										bind:value={vaultConfig.fundingAllocation.jackpot}
 									/>
 									%
 								</span>
 								<button
+									type="button"
 									class="small"
 								>
 									{$_('Remaining')}
@@ -209,7 +211,7 @@
 									type="number"
 									min="0"
 									max="100"
-									bind:value={daoConfig.allocation.dividend}
+									bind:value={vaultConfig.fundingAllocation.dividend}
 								/>
 								%
 							</span>
@@ -223,24 +225,114 @@
 									type="number"
 									min="0"
 									max="100"
-									bind:value={daoConfig.allocation.treasury}
+									bind:value={vaultConfig.fundingAllocation.treasury}
 								/>
 								%
 							</span>
 						</label>
 					</div>
-				</section>
+				{/if}
+			</section>
 
-				<button type="submit" class="large" disabled={!isValid}>{$_('Create DAO')}</button>
-			</form>
-		</section>
-	</div>
+			<section class="card column">
+				<h2>{$_('Treasury')}</h2>
+
+				<hr>
+
+				<label class="column">
+					<h3>{$_('Yield Strategy')}</h3>
+					<div>
+						<Select
+							bind:value={vaultConfig.yieldStrategy}
+							values={Object.keys(YieldStrategy)}
+							labels={Object.fromEntries(Object.entries(yieldStrategyInfo).map(([key, {label}]) => [key, label]))}
+						/>
+					</div>
+					<p>{$_(yieldStrategyInfo[vaultConfig.yieldStrategy].description)}</p>
+				</label>
+			</section>
+
+			<section class="card column">
+				<h2>{$_('Governance')}</h2>
+
+				<hr>
+
+				<label class="column">
+					<h3>{$_('Governance Strategy')}</h3>
+					<div>
+						<Select
+							bind:value={vaultConfig.governanceStrategy}
+							values={Object.keys(GovernanceStrategy)}
+							labels={Object.fromEntries(Object.entries(governanceStrategyInfo).map(([key, {label}]) => [key, label]))}
+						/>
+					</div>
+					<p>{$_(governanceStrategyInfo[vaultConfig.governanceStrategy].description)}</p>
+				</label>
+			</section>
+
+			<section class="card column">
+				<h2>{$_('About')}</h2>
+
+				<hr>
+
+				<label class="column">
+					<h3>{$_('DAO Name')}</h3>
+					<p>{$_('The project or cause you\'re fundraising for.')}</p>
+					<input
+						type="text"
+						bind:value={vaultConfig.about.name}
+						placeholder={$_('DAO Name')}
+						required
+					/>
+				</label>
+
+				<label class="column">
+					<h3>{$_('Description')}</h3>
+					<p>{$_('Tell your community what your goals are.')}</p>
+					<textarea
+						bind:value={vaultConfig.about.description}
+						placeholder={$_('Describe {name}...', { values: { name: vaultConfig.about.name || 'your DAO' }})}
+					/>
+				</label>
+
+				<label class="column">
+					<h3>{$_('Website')}</h3>
+					<input
+						type="text"
+						bind:value={vaultConfig.about.website}
+						placeholder={$_('mydao.example.com')}
+					/>
+				</label>
+
+				<label class="column">
+					<h3>{$_('Twitter')}</h3>
+					<input
+						type="text"
+						bind:value={vaultConfig.about.twitter}
+						placeholder={$_('twitter.com/ETHDenver')}
+					/>
+				</label>
+
+				<label class="column">
+					<h3>{$_('Discord')}</h3>
+					<input
+						type="text"
+						bind:value={vaultConfig.about.discord}
+						placeholder={$_('discord.gg/xyz')}
+					/>
+				</label>
+			</section>
+
+			<button type="submit" class="large" disabled={!isValid}>{$_('Create DAO')}</button>
+		</form>
+	</section>
 </main>
 
 
 <style>
 	form, .card {
-		justify-items: start;
+		place-content: start;
+    	place-items: start;
 	}
 
 	input {
@@ -249,7 +341,7 @@
 
 	label p {
 		font-size: 0.9em;
-		opacity: 0.8;
+		/* opacity: 0.8; */
 	}
 
 	input[type="number"][max="100"] {
