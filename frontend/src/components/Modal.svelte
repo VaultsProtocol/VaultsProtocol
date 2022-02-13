@@ -17,7 +17,7 @@
 	const onKeydown = (event: KeyboardEvent | undefined) => {
 		if(!isOpen) return
 
-		event ||= (window.event as KeyboardEvent)
+		event = event || (window.event as KeyboardEvent)
 
 		if(event.key === 'Escape' || event.key === 'Esc' || (event as KeyboardEvent).keyCode === 27){
 			close()
