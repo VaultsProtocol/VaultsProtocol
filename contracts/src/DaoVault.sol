@@ -9,7 +9,6 @@ import "./interfaces/IStrategy.sol";
 
 // Dao Vault - This contains the DAO treasury.
 contract DaoVault {
-
     // #########################
     // ##                     ##
     // ##      Structs        ##
@@ -26,9 +25,9 @@ contract DaoVault {
     // ##       State         ##
     // ##                     ##
     // #########################
-    
+
     // tokenID => Deposits
-    mapping (uint256 => Deposits) public deposits;
+    mapping(uint256 => Deposits) public deposits;
 
     //sum of yeild/totalDeposits
     uint256 yeildPerDeposit;
@@ -39,17 +38,16 @@ contract DaoVault {
 
     // number of tokens currently not claimable because of DAO vote
     uint256 tokensManaged;
-    
-    ERC721 immutable NFT;
-    ERC20 immutable vaultToken; 
+
+    ERC721 public NFT;
+    ERC20 immutable vaultToken;
 
     //strategy and fund manager
     address immutable controller;
-    
+
     // strategy to earn yeild on vault reserves
     // strats are hardcoded at 50% of totalDeposits
     IStrategy strat;
-  
 
     // #########################
     // ##                     ##
@@ -75,10 +73,9 @@ contract DaoVault {
     // ##                     ##
     // #########################
 
-    function mintNewNFT(uint256 amount) external returns (uint256) {
+    function mintNewNFT(uint256 amount) external virtual returns (uint256) {
+        uint256 id = NFT.currentId();
 
-        uint id = NFT.currentId();
-        
         deposits[id].amount = amount;
         deposits[id].tracker += amount * yeildPerDeposit;
         totalDeposits += amount;
@@ -88,11 +85,9 @@ contract DaoVault {
 
         require(id == NFT.mint(msg.sender));
         return id;
-
     }
 
-    function depositToId(uint256 amount, uint256 id) external {
-        
+    function depositToId(uint256 amount, uint256 id) external virtual {
         // trusted contract
         require(msg.sender == NFT.ownerOf(id));
 
@@ -102,21 +97,18 @@ contract DaoVault {
 
         //ensure token reverts on failed
         vaultToken.transferFrom(msg.sender, address(this), amount);
-
     }
 
     // Burns NFT and withdraws all claimable token + yeild
-    function burn(uint256 id) external {
-        
+    function burn(uint256 id) external virtual  {
         uint256 claimable = withdrawableById(id);
         withdrawFromId(claimable, id);
 
         NFT.burn(id);
-        
     }
 
-    function withdrawFromId(uint256 amount, uint256 id) public {
-
+    // TODO: potentially remove this?
+    function withdrawFromId(uint256 amount, uint256 id) public virtual  {
         require(msg.sender == NFT.ownerOf(id));
         require(amount <= withdrawableById(id));
 
@@ -125,29 +117,25 @@ contract DaoVault {
 
         // trusted contract
         if (amount > balanceCheck) {
-            withdrawFromStrat(
-                amount - balanceCheck, 
-                id
-            );
+            withdrawFromStrat(amount - balanceCheck, id);
         }
 
         deposits[id].amount -= amount;
         deposits[id].tracker -= amount * yeildPerDeposit;
 
         vaultToken.transfer(msg.sender, amount);
-
     }
 
-    function withdrawableById(uint256 id) public view returns (uint) {
-
+    function withdrawableById(uint256 id) public view virtual returns (uint256) {
         uint256 yield = yeildPerId(id);
 
         // claimable may be larger than total deposits but never smaller
-        uint256 claimable = vaultToken.balanceOf(address(this)) + depositedToStrat - tokensManaged;
-        uint256 claimId = claimable * deposits[id].amount / totalDeposits;
+        uint256 claimable = vaultToken.balanceOf(address(this)) +
+            depositedToStrat -
+            tokensManaged;
+        uint256 claimId = (claimable * deposits[id].amount) / totalDeposits;
 
         return claimId + yield;
-
     }
 
     // #########################
@@ -157,27 +145,22 @@ contract DaoVault {
     // #########################
 
     function setStrategy(address addr) external {
-
         require(msg.sender == controller);
 
         strat = IStrategy(addr);
-
     }
 
     //total possible deposited to strat is currently set at 50%
     function initStrat() public {
-
         // 50% of total deposits
-        uint256 half = totalDeposits * 5000 / 10000;
+        uint256 half = (totalDeposits * 5000) / 10000;
         uint256 depositable = half - depositedToStrat;
         strat.deposit(depositable);
-
     }
 
     //internal, only called when balanceOf(address(this)) < withdraw requested
     // depositedToStrat = total withdrawn - yeild of msg.sender
     function withdrawFromStrat(uint256 amountNeeded, uint256 forID) internal {
-
         uint256 userYield = yeildPerId(forID);
 
         // needed for OoP
@@ -185,7 +168,6 @@ contract DaoVault {
         depositedToStrat -= toSubtract;
 
         strat.withdrawl(amountNeeded);
-
     }
 
     // #########################
@@ -194,9 +176,7 @@ contract DaoVault {
     // ##                     ##
     // #########################
 
-
-    function manage(uint256 amount, address who) external {
-
+    function manage(uint256 amount, address who) external virtual {
         require(msg.sender == controller);
 
         //cannot manage funds earning yeild
@@ -204,16 +184,13 @@ contract DaoVault {
 
         tokensManaged += amount;
         vaultToken.transfer(who, amount);
-
     }
 
-    function returnManagedFunds(uint256 amount) external {
-
+    function returnManagedFunds(uint256 amount) external virtual {
         tokensManaged -= amount;
 
         //vault tokens revert on failed transfer
         vaultToken.transferFrom(msg.sender, address(this), amount);
-
     }
 
     // #########################
@@ -225,19 +202,14 @@ contract DaoVault {
     // gets yeild from strategy contract
     //possbily call this before new mints?
     function adjustYeild() public {
-
         uint256 totalInStrat = strat.withdrawlableVaultToken();
         uint256 totalYield = totalInStrat - depositedToStrat;
 
-        yeildPerDeposit += totalYield * SCALAR / totalDeposits;
-
+        yeildPerDeposit += (totalYield * SCALAR) / totalDeposits;
     }
 
-    function yeildPerId(uint256 id) internal view returns (uint) {
-
-        uint256 pre = deposits[id].amount * yeildPerDeposit / SCALAR;
+    function yeildPerId(uint256 id) internal view returns (uint256) {
+        uint256 pre = (deposits[id].amount * yeildPerDeposit) / SCALAR;
         return pre - deposits[id].tracker;
-
     }
-    
 }
