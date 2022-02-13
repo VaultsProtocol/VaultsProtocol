@@ -7,6 +7,6 @@ interface IStrategy {
 
     function withdrawl(uint256 amount) external;
 
-    function withdrawlableVaultToken() external returns (uint256);
+    function withdrawlableVaultToken() external view returns (uint256);
     
 }

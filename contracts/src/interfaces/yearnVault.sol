@@ -11,6 +11,6 @@ interface yVault {
 
     function withdraw(uint _shares) external;
 
-    function balanceOf(address who) external returns (uint);
+    function balanceOf(address who) external view returns (uint);
 
 }
