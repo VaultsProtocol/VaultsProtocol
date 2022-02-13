@@ -19,6 +19,7 @@ const DegenVault = artifacts.require("DegenVault");
 contract("degenVault", ([alice, bob, tom, deployer]) => {
   describe("NFT functions testing", function (accounts) {
     before(async () => {
+      
       nft = await nft.new();
       vaultToken = await vaultToken.new(); // Must be erc20 
 
@@ -26,15 +27,19 @@ contract("degenVault", ([alice, bob, tom, deployer]) => {
       jackpotBps = 2500;
       dividendBps = 3500;
       treasuryBps = 4000;
+      initialDeadlineSeconds = 30;
+      minimumPrice = 1e17; //0.1 TOK
 
       degenVault = await DegenVault.new(
-        tom,
-        nft,
-        vaultToken,
-        initialLiquidity,
-        jackpotBps,
+        tom, // Controller
+        nft, // NFT collection
+        vaultToken, // ERC20 Vault Token
+        jackpotBps, 
         dividendBps,
-        treasuryBps,
+        devFee,
+        minimumPrice,
+        initialLiquidity,
+        initialDeadlineSeconds,
         { from: deployer },
       );
     });

@@ -3,7 +3,7 @@ pragma solidity >=0.8.0;
 
 import "./tokens/erc721.sol";
 import "./tokens/ERC20.sol";
-import "./DAOVault.sol";
+import "./DaoVault.sol";
 
 // Jackpot & Dividend Vault
 // This is the vault that the Jackpot and Degen dividends go.
@@ -30,7 +30,7 @@ contract DegenVault is DaoVault {
 
     Context public ctx;
 
-    uint256 minimumPrice; //wei
+    uint256 public minimumPrice; //wei
     uint256 deadline; //seconds
     uint256 jackpot; //wei
     uint256 adminFeesAccumulated; //wei
@@ -51,7 +51,7 @@ contract DegenVault is DaoVault {
         uint16 _dividendsBP,
         uint16 devFee,
         uint256 _minimumPrice,
-        uint256 jackpotSeed,
+        uint256 initialLiquidity,
         uint256 initialDeadlineSeconds
     ) DaoVault(_controller, _NFT, _vaultToken) {
 
@@ -62,7 +62,6 @@ contract DegenVault is DaoVault {
 
         // 24 hrs
         deadline = block.timestamp + initialDeadlineSeconds;
-
 
     }
 
@@ -75,7 +74,7 @@ contract DegenVault is DaoVault {
     function mintNewNFT(uint256 amount) external override returns (uint256) {
 
         require(
-            amount >= minimumPrice &&
+            amount >= getPrice() &&
             block.timestamp <= deadline
         );
 
@@ -116,7 +115,7 @@ contract DegenVault is DaoVault {
         // trusted contract
         require(
             msg.sender == NFT.ownerOf(id) &&
-            amount >= minimumPrice &&
+            amount >= getPrice() &&
             block.timestamp <= deadline
         );
 
@@ -145,6 +144,10 @@ contract DegenVault is DaoVault {
         //ensure token reverts on failed
         vaultToken.transferFrom(msg.sender, address(this), amount);
 
+    }
+
+    function getPrice() public view returns (uint256) {
+        return minimumPrice;
     }
 
     function withdrawFromId(uint256 amount, uint256 id) public override {
