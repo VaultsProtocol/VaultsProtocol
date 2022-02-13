@@ -164,7 +164,7 @@ contract DaoVault {
 
     }
 
-    //total possibble deposited to strat is currently set at 50%
+    //total possible deposited to strat is currently set at 50%
     function initStrat() public {
 
         // 50% of total deposits
