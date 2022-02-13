@@ -31,7 +31,7 @@ contract ERC721 {
 
     address vault;
 
-    uint256 currentId = 1;
+    uint256 public currentId = 1;
 
     mapping(address => uint256) public balanceOf;
 
