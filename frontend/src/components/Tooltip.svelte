@@ -1,0 +1,86 @@
+<script lang="ts">
+	import type { Placement } from '@floating-ui/core'
+
+
+	// External state
+	export let placement: Placement = 'bottom-end'
+	export let allowedPlacements: Placement[] | undefined
+	export let offset = 8
+
+
+	// Internal state
+
+	let referenceElement
+	let tooltipElement
+
+	let isOpen
+
+
+	// Methods/hooks/lifecycle
+
+	const pixelRatio = globalThis.devicePixelRatio
+
+
+	import { computePosition, flip, autoPlacement, offset as offset_, shift, getScrollParents } from '@floating-ui/dom'
+
+	$: if(referenceElement && tooltipElement){
+		for(const eventTarget of [globalThis.window, ...getScrollParents(referenceElement), ...getScrollParents(referenceElement)] as EventTarget[]){
+			eventTarget.addEventListener('scroll', update)
+			eventTarget.addEventListener('resize', update)
+		}
+	}
+
+	$: if(isOpen && referenceElement && tooltipElement)
+		update()
+	
+	const update = () => {
+		if(isOpen && referenceElement && tooltipElement)
+			globalThis.requestAnimationFrame(() =>
+				computePosition(referenceElement, tooltipElement, {
+					placement,
+					middleware: [
+						allowedPlacements
+							? autoPlacement({
+								allowedPlacements
+							})
+							: flip(),
+						offset_(offset),
+						shift({
+							padding: 16
+						})
+					],
+				}).then(({x, y}) => {
+					Object.assign(tooltipElement.style, {
+						left: `${x}px`,
+						top: `${y}px`,
+					})
+				})
+			)
+	}
+</script>
+
+
+<details bind:open={isOpen}>
+	<summary bind:this={referenceElement}>
+		<slot {isOpen} />
+	</summary>
+
+	<div class="tooltip" bind:this={tooltipElement}>
+		{#if isOpen}
+			<slot name="tooltip" />
+		{/if}
+	</div>
+</details>
+
+
+<style>
+	.tooltip {
+		position: absolute;
+		left: 0;
+		top: 0;
+	}
+
+	summary :global(button:active) {
+		pointer-events: none;
+	}
+</style>

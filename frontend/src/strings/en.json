@@ -1,0 +1,11 @@
+{
+	"PROJECT_NAME": "DAOCreator",
+	"PROJECT_DESCRIPTION": "Create a treasury, choose a strategy",
+
+	"Wallets": {
+		"Coinbase Wallet": "Coinbase Wallet",
+		"MetaMask": "MetaMask",
+		"Tally": "Tally",
+		"WalletConnect": "WalletConnect"
+	}
+}
