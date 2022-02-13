@@ -168,6 +168,14 @@ contract DegenVault is DaoVault {
 
     }
 
+    function claimJackpot() external {
+
+        require (block.timestamp > deadline);
+
+        vaultToken.transfer(lastDepositer, jackpot);
+        
+    }
+
     // #########################
     // ##                     ##
     // ##        Yeild        ##
