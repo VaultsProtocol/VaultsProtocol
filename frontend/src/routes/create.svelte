@@ -4,13 +4,7 @@
 
 	import { BigNumber, Contract } from 'ethers'
 
-	enum Steps {
-		Idle,
-		TransactionSigning,
-		TransactionPending,
-		TransactionFailed,
-		TransactionSuccess
-	}
+	import { networks, type ChainID } from '$lib/networks'
 
 	enum FundingStrategy {
 		ApeChicken = 'ApeChicken',
@@ -58,7 +52,7 @@
 	}
 	const governanceStrategyInfo = {
 		[GovernanceStrategy.None]: {
-			label: 'None',
+			label: '🚫 None',
 			description: 'Stakeholders can withdraw their share from the vault at any time.'
 		},
 		[GovernanceStrategy.Vote]: {
@@ -80,6 +74,7 @@
 			twitter: string
 			discord: string
 		},
+		chainId: ChainID,
 		fundingStrategy: FundingStrategy
 		fundingAllocation: {
 			jackpot: number
@@ -99,6 +94,7 @@
 			twitter: '',
 			discord: '',
 		},
+		chainId: 1,
 		fundingStrategy: FundingStrategy.ApeChicken,
 		fundingAllocation: {
 			jackpot: 20,
@@ -112,6 +108,14 @@
 			amount: BigNumber.from(0)
 		}
 	} as VaultConfig)
+
+	enum Steps {
+		Idle,
+		TransactionSigning,
+		TransactionPending,
+		TransactionFailed,
+		TransactionSuccess
+	}
 
 
 	// Stores
@@ -160,6 +164,22 @@
 			on:submit|preventDefault={() => currentStep = Steps.TransactionSigning}
 			disabled={currentStep !== Steps.Idle}
 		>
+			<section class="card column">
+				<h2>{$_('Network')}</h2>
+
+				<hr>
+
+				<label class="column">
+					<h3>{$_('Chain')}</h3>
+					<div>
+						<Select
+							bind:value={vaultConfig.chainId}
+							values={networks.map(({ chainId }) => String(chainId))}
+							labels={Object.fromEntries(networks.map(({ chainId, name }) => [chainId, name]))}
+						/>
+					</div>
+			</section>
+
 			<section class="card column">
 				<h2>{$_('Funding')}</h2>
 
