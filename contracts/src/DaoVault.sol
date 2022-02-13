@@ -32,23 +32,24 @@ contract DaoVault {
 
     //sum of yeild/totalDeposits
     uint256 yeildPerDeposit;
-
     uint256 totalDeposits;
     uint256 SCALAR = 1e10;
 
-    // number of tokens currently not claimable (only take from deposits not yeild)
+    uint256 public depositedToStrat;
+
+    // number of tokens currently not claimable because of DAO vote
     uint256 tokensManaged;
     
     ERC721 immutable NFT;
-    //ensure vault tokens revert on failed transfer
     ERC20 immutable vaultToken; 
+
     //strategy and fund manager
     address immutable controller;
-
+    
     // strategy to earn yeild on vault reserves
     // strats are hardcoded at 50% of totalDeposits
     IStrategy strat;
-    uint256 public depositedToStrat;
+  
 
     // #########################
     // ##                     ##
@@ -76,9 +77,7 @@ contract DaoVault {
 
     function mintNewNFT(uint256 amount) external returns (uint256) {
 
-        // contract execution never passed to 
-        // untrusted contract so this pattern is safe
-        uint id = NFT.mint(msg.sender);
+        uint id = NFT.currentId();
         
         deposits[id].amount = amount;
         deposits[id].tracker += amount * yeildPerDeposit;
@@ -86,6 +85,8 @@ contract DaoVault {
 
         //ensure token reverts on failed
         vaultToken.transferFrom(msg.sender, address(this), amount);
+
+        require(id == NFT.mint(msg.sender));
         return id;
 
     }
@@ -94,6 +95,7 @@ contract DaoVault {
         
         // trusted contract
         require(msg.sender == NFT.ownerOf(id));
+
         deposits[id].amount += amount;
         deposits[id].tracker += amount * yeildPerDeposit;
         totalDeposits += amount;
@@ -123,8 +125,10 @@ contract DaoVault {
 
         // trusted contract
         if (amount > balanceCheck) {
-            uint256 needed = amount - balanceCheck;
-            withdrawFromStrat(needed, id);
+            withdrawFromStrat(
+                amount - balanceCheck, 
+                id
+            );
         }
 
         deposits[id].amount -= amount;
@@ -134,9 +138,21 @@ contract DaoVault {
 
     }
 
+    function withdrawableById(uint256 id) public view returns (uint) {
+
+        uint256 yield = yeildPerId(id);
+
+        // claimable may be larger than total deposits but never smaller
+        uint256 claimable = vaultToken.balanceOf(address(this)) + depositedToStrat - tokensManaged;
+        uint256 claimId = claimable * deposits[id].amount / totalDeposits;
+
+        return claimId + yield;
+
+    }
+
     // #########################
     // ##                     ##
-    // ##   Strats/Manager    ##
+    // ##      Strategy       ##
     // ##                     ##
     // #########################
 
@@ -163,7 +179,10 @@ contract DaoVault {
     function withdrawFromStrat(uint256 amountNeeded, uint256 forID) internal {
 
         uint256 userYield = yeildPerId(forID);
-        depositedToStrat -= amountNeeded - userYield;
+
+        // needed for OoP
+        uint256 toSubtract = amountNeeded - userYield;
+        depositedToStrat -= toSubtract;
 
         strat.withdrawl(amountNeeded);
 
@@ -179,6 +198,7 @@ contract DaoVault {
     function manage(uint256 amount, address who) external {
 
         require(msg.sender == controller);
+
         //cannot manage funds earning yeild
         require(amount < vaultToken.balanceOf(address(this)));
 
@@ -213,21 +233,11 @@ contract DaoVault {
 
     }
 
-    function yeildPerId(uint256 id) public view returns (uint) {
+    function yeildPerId(uint256 id) internal view returns (uint) {
 
         uint256 pre = deposits[id].amount * yeildPerDeposit / SCALAR;
         return pre - deposits[id].tracker;
 
-    }
-
-    function withdrawableById(uint256 id) public view returns (uint) {
-
-        uint256 yield = yeildPerId(id);
-        // claimable may be larger than total deposits but never smaller
-        uint256 claimable = vaultToken.balanceOf(address(this)) + depositedToStrat - tokensManaged;
-        uint256 claimId = claimable * deposits[id].amount / totalDeposits;
-
-        return claimId + yield;
     }
     
 }

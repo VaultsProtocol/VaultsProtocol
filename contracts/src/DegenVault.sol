@@ -3,7 +3,7 @@ pragma solidity >=0.8.0;
 
 import "./tokens/erc721.sol";
 import "./tokens/ERC20.sol";
-import "./DaoVault.sol";
+import "./DAOVault.sol";
 
 // Jackpot & Dividend Vault
 // This is the vault that the Jackpot and Degen dividends go.
@@ -19,7 +19,7 @@ contract DegenVault is DaoVault {
     struct Context {
         uint16 jackpotBP;
         uint16 dividendsBP;
-        uint16 devFee; //bp
+        uint16 devFee;
     }
     
     // #########################
@@ -36,8 +36,6 @@ contract DegenVault is DaoVault {
     uint256 adminFeesAccumulated; //wei
 
     address lastDepositer;
-    address admin;
-
 
     // #########################
     // ##                     ##
@@ -52,7 +50,8 @@ contract DegenVault is DaoVault {
         uint16 _jackpotBP,
         uint16 _dividendsBP,
         uint16 devFee,
-        uint256 _minimumPrice
+        uint256 _minimumPrice,
+        uint256 jackpotSeed
     ) DaoVault(_controller, _NFT, _vaultToken) {
 
         require(_jackpotBP + _dividendsBP + devFee <= 10000);
@@ -150,7 +149,7 @@ contract DegenVault is DaoVault {
     function withdrawFromId(uint256 amount, uint256 id) public override {
 
         require(msg.sender == NFT.ownerOf(id));
-        require(amount == withdrawableById(id), "Wtihdrawl ALL or NONE!!!");
+        require(amount == withdrawableById(id), "USE BURN");
 
         //trusted contract
         uint256 balanceCheck = vaultToken.balanceOf(address(this));
