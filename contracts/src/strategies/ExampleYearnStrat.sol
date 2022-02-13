@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0;
 
-import "./interfaces/yearnVault.sol";
+import "../interfaces/yearnVault.sol";
 
 contract YearnDai {
 
@@ -24,7 +24,7 @@ contract YearnDai {
     }
 
     function deposit(uint amount) external {
-
+        
     }
 
     function withdrawl(uint amount) external {

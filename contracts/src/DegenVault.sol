@@ -51,7 +51,8 @@ contract DegenVault is DaoVault {
         uint16 _dividendsBP,
         uint16 devFee,
         uint256 _minimumPrice,
-        uint256 jackpotSeed
+        uint256 jackpotSeed,
+        uint256 initialDeadlineSeconds
     ) DaoVault(_controller, _NFT, _vaultToken) {
 
         require(_jackpotBP + _dividendsBP + devFee <= 10000);
@@ -60,7 +61,7 @@ contract DegenVault is DaoVault {
         minimumPrice = _minimumPrice;
 
         // 24 hrs
-        deadline = block.timestamp + 86400;
+        deadline = block.timestamp + initialDeadlineSeconds;
 
 
     }
@@ -102,7 +103,7 @@ contract DegenVault is DaoVault {
         lastDepositer = msg.sender;
 
         // deadline += 
-        //minimum
+        // minimum
 
         //ensure token reverts on failed
         vaultToken.transferFrom(msg.sender, address(this), amount);
@@ -201,6 +202,8 @@ contract DegenVault is DaoVault {
     // ##        Admin        ##
     // ##                     ##
     // #########################
+
+    
 
 
 
