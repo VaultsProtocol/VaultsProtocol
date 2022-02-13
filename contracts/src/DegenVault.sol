@@ -63,6 +63,10 @@ contract DegenVault is DaoVault {
         // 24 hrs
         deadline = block.timestamp + initialDeadlineSeconds;
 
+<<<<<<< Updated upstream
+=======
+        
+>>>>>>> Stashed changes
     }
 
     // #########################
@@ -206,7 +210,7 @@ contract DegenVault is DaoVault {
     // ##                     ##
     // #########################
 
-    
+
 
 
 

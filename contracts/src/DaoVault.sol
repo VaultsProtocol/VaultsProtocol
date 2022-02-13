@@ -155,6 +155,8 @@ contract DaoVault {
         // 50% of total deposits
         uint256 half = (totalDeposits * 5000) / 10000;
         uint256 depositable = half - depositedToStrat;
+        
+        vaultToken.approve(address(strat), depositable);
         strat.deposit(depositable);
     }
 
