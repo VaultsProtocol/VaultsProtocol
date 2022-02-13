@@ -82,10 +82,6 @@
 		padding: 0 var(--header-padding);
 
 		background: linear-gradient(var(--background-color-0), transparent);
-		overflow: hidden;
-
-		-webkit-mask-image: linear-gradient(to top, transparent, white 1em);
-		mask-image: linear-gradient(to top, transparent, white 1em);
 
 		transition: 0.2s;
 	}
@@ -161,6 +157,13 @@
 	}
 
 	@media (max-width: 40rem) {
+		header {
+			overflow: hidden;
+
+			-webkit-mask-image: linear-gradient(to top, transparent, white 1em);
+			mask-image: linear-gradient(to top, transparent, white 1em);
+		}
+
 		header:focus-within:not(:focus) {
 			-webkit-backdrop-filter: blur(8px);
 			backdrop-filter: blur(8px);

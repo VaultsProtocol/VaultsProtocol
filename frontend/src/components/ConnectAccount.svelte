@@ -115,7 +115,7 @@
 		{#if !$account}
 			<button class="primary" on:click={() => modalIsOpen = !modalIsOpen} transition:scale={{opacity: 0}}>{$_('Connect')}</button>
 		{:else}
-			<Tooltip let:isOpen>
+			<Tooltip let:isOpen placement="bottom-end">
 				<button class="connnected-account dropdown" class:active={isOpen} tabindex="-1" transition:scale={{opacity: 0}}>
 					<picture class="avatar">
 						{#if $account.ensAvatarUri}
