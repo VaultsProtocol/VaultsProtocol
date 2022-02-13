@@ -6,6 +6,8 @@ const { revert } = require("./utils");
 require("chai").use(require("chai-as-promised")).should();
 
 const DegenVault = artifacts.require("DegenVault");
+const ERC721 = artifacts.require("ERC721");
+const MockERC20 = artifacts.require("MockERC20");
 
 // User flow:
 /**
@@ -17,69 +19,70 @@ const DegenVault = artifacts.require("DegenVault");
  */
 
 contract("degenVault", ([alice, bob, tom, deployer]) => {
+  const bc = {};
   describe("NFT functions testing", function (accounts) {
     before(async () => {
       
-      nft = await nft.new();
-      vaultToken = await vaultToken.new(); // Must be erc20 
+      bc.nft = await ERC721.new('NFT', "NFT");
+      bc.vaultToken = await MockERC20.new("ERC20", "ERC20", '10000000000000000000000000');
 
-      initialLiquidity = 10e18; // 10 ERC20 as initial liquidity
-      jackpotBps = 2500;
-      dividendBps = 3500;
-      treasuryBps = 4000;
-      initialDeadlineSeconds = 30;
-      minimumPrice = 1e17; //0.1 TOK
-
-      degenVault = await DegenVault.new(
+      bc.initialLiquidity = '10000000000000000000000'; // 10 ERC20 as initial liquidity
+      bc.jackpotBps = 2500;
+      bc.dividendBps = 3500;
+      bc.initialDeadlineSeconds = 30;
+      bc.minimumPrice = 1e17.toString(); //0.1 TOK
+      bc.devFee = 500 ;
+      bc.degenVault = await DegenVault.new(
         tom, // Controller
-        nft, // NFT collection
-        vaultToken, // ERC20 Vault Token
-        jackpotBps, 
-        dividendBps,
-        devFee,
-        minimumPrice,
-        initialLiquidity,
-        initialDeadlineSeconds,
+        bc.nft.address, // NFT collection
+        bc.vaultToken.address, // ERC20 Vault Token
+        bc.jackpotBps, 
+        bc.dividendBps,
+        bc.devFee,
+        bc.minimumPrice,
+        bc.initialLiquidity,
+        bc.initialDeadlineSeconds,
         { from: deployer },
       );
     });
     it("Mints NFT if paid ", async () => {
-      price = await degenVault.getPrice();
+      bc.price = await bc.degenVault.getMinPrice();
 
       // ensure price is correctly calculated
-      await expect(price, nft.totalSupply() / initialLiquidity);
+      // await expect(bc.price, bc.nft.totalSupply() / bc.initialLiquidity);
+      await expect(bc.minimumPrice, bc.price);
 
       await expect(
-        degenVault.mintNewNFT(9e18, {
+        bc.degenVault.mintNewNFT(9e18.toString(), {
           from: alice,
         }),
       ).to.eventually.rejectedWith(revert`Underpaid`);
 
-      await degenVault.mintNewNFT(10e18, {
+      await bc.degenVault.mintNewNFT(10e18, {
         from: alice,
       });
 
       // Ensure mint happened
-      assert.equal(Number(await nft.balanceOf(alice)), 1);
+      assert.equal(Number(await bc.nft.balanceOf(alice)), 1);
 
       // Ensure internal calculation for balances is good.
       assert.equal(
-        Number(degenVault.getTreasuryBalance()),
-        (price * treasuryBps) / 1e4,
+        Number(bc.degenVault.getTreasuryBalance()),
+        (bc.price * bc.treasuryBps) / 1e4,
       );
       assert.equal(
-        Number(degenVault.getJackpotBalance()),
-        (price * jackpotBps) / 1e4,
+        Number(bc.degenVault.getJackpotBalance()),
+        (bc.price * bc.jackpotBps) / 1e4,
       );
       assert.equal(
-        Number(degenVault.getDividendBalance()),
-        (price * dividendBps) / 1e4,
+        Number(bc.degenVault.getDividendBalance()),
+        (bc.price * bc.dividendBps) / 1e4,
       );
 
       // Ensure Previous holders have claimable.
       assert.equal(
-        Number(await degenVault.claimableBalance(deployer)),
-        (price * dividendBps) / 1e4,
+        Number(await bc.degenVault.claimableBalance(deployer)),
+        (bc.price * bc.dividendBps) / 1e4,
       );
     });
   });

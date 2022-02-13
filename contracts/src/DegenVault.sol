@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0;
 
-import "./tokens/erc721.sol";
+import "./tokens/ERC721.sol";
 import "./tokens/ERC20.sol";
 import "./DaoVault.sol";
 
@@ -74,7 +74,7 @@ contract DegenVault is DaoVault {
     function mintNewNFT(uint256 amount) external override returns (uint256) {
 
         require(
-            amount >= getPrice() &&
+            amount >= getMinPrice() &&
             block.timestamp <= deadline
         );
 
@@ -115,7 +115,7 @@ contract DegenVault is DaoVault {
         // trusted contract
         require(
             msg.sender == NFT.ownerOf(id) &&
-            amount >= getPrice() &&
+            amount >= getMinPrice() &&
             block.timestamp <= deadline
         );
 
@@ -146,7 +146,7 @@ contract DegenVault is DaoVault {
 
     }
 
-    function getPrice() public view returns (uint256) {
+    function getMinPrice() public view returns (uint256) {
         return minimumPrice;
     }
 
