@@ -3,11 +3,12 @@ pragma solidity >=0.8.0;
 
 import "./tokens/erc721.sol";
 import "./tokens/ERC20.sol";
+import "./DaoVault.sol";
 
 // Jackpot & Dividend Vault
 // This is the vault that the Jackpot and Degen dividends go.
 // Balances for jackpot vs dividends are tracked with internal vars
-contract DegenVault {
+contract DegenVault is DaoVault {
 
     // #########################
     // ##                     ##
@@ -15,37 +16,28 @@ contract DegenVault {
     // ##                     ##
     // #########################
 
-    struct Deposits {
-        uint256 amount;
-        uint256 tracker; //delta(deposit) * yeildPerDeposit
+    struct Context {
+        uint16 jackpotBP;
+        uint16 dividendsBP;
+        uint16 devFee; //bp
     }
-
+    
     // #########################
     // ##                     ##
     // ##       State         ##
     // ##                     ##
     // #########################
-    
-    // tokenID => Deposits
-    mapping (uint256 => Deposits) public deposits;
 
-    //sum of yeild/totalDeposits
-    uint256 yeildPerDeposit;
-    uint256 totalDeposits;
-    uint256 SCALAR = 1e10;
+    Context public ctx;
 
-    //basis points
-    uint256 dividend;
-    uint256 jackpot;
+    uint256 minimumPrice; //wei
+    uint256 deadline; //seconds
+    uint256 jackpot; //wei
+    uint256 adminFeesAccumulated; //wei
 
-    ERC721 NFT;
-    ERC20 VaultToken;
+    address lastDepositer;
+    address admin;
 
-    address public lastDepositer;
-    //block-timestamp
-    uint256 public deadline;
-    // minimum deposit required
-    uint256 public minimum; //wei
 
     // #########################
     // ##                     ##
@@ -54,35 +46,154 @@ contract DegenVault {
     // #########################
 
     constructor(
+        address _controller,
         ERC721 _NFT,
-        ERC20 _VaultToken,
-        uint256 _dividend, //basis points IE 50% = 5000
-        uint256 _jackpot, //basis points
-        uint256 _minimum //wei
-    ) {
-        NFT = _NFT;
-        VaultToken = _VaultToken;
-        dividend = _dividend;
-        jackpot = _jackpot;
-        minimum = _minimum;
+        ERC20 _vaultToken,
+        uint16 _jackpotBP,
+        uint16 _dividendsBP,
+        uint16 devFee,
+        uint256 _minimumPrice
+    ) DaoVault(_controller, _NFT, _vaultToken) {
 
-        //intialize NFT contract for metadata
+        require(_jackpotBP + _dividendsBP + devFee <= 10000);
+
+        ctx = Context(_jackpotBP, _dividendsBP, devFee);
+        minimumPrice = _minimumPrice;
+
+        // 24 hrs
+        deadline = block.timestamp + 86400;
+
+
     }
 
     // #########################
     // ##                     ##
-    // ##       Public        ##
+    // ##     User Facing     ##
     // ##                     ##
     // #########################
 
-    function depositToNFT(uint amount, uint id) public returns(uint) {
+    function mintNewNFT(uint256 amount) external override returns (uint256) {
+
+        require(amount >= minimumPrice);
+        require(block.timestamp <= deadline);
+
+        Context memory ctxm = ctx;
+
+        // contract execution never passed to 
+        // untrusted contract so this pattern is safe
+        uint id = NFT.mint(msg.sender);
+
+        uint256 dividends = amount * ctxm.dividendsBP / 10000;
+        adjustYeild(dividends);
+
+        uint256 JP = amount * ctxm.jackpotBP / 10000;
+        jackpot += JP;
+
+        uint256 devFee = amount * ctxm.devFee / 10000;
+        adminFeesAccumulated += devFee;
+
+        uint256 totalBP = 10000 - (ctxm.devFee + ctxm.jackpotBP + ctxm.dividendsBP);
+        uint256 newAmount = amount * totalBP / 10000;
         
+        deposits[id].amount = newAmount;
+        deposits[id].tracker += newAmount * yeildPerDeposit;
+        totalDeposits += newAmount;
+
+        lastDepositer = msg.sender;
+
+        // deadline += 
+        //minimum
+
+        //ensure token reverts on failed
+        vaultToken.transferFrom(msg.sender, address(this), amount);
+        return id;
+
     }
 
-    function mintNewNft(uint amount) public returns(uint) {
+     function depositToId(uint256 amount, uint256 id) external override {
+        
+        // trusted contract
+        require(
+            msg.sender == NFT.ownerOf(id) &&
+            amount >= minimumPrice &&
+            block.timestamp <= deadline
+        );
+
+        Context memory ctxm = ctx;
+        
+        uint256 dividends = amount * ctxm.dividendsBP / 10000;
+        adjustYeild(dividends);
+
+        uint256 JP = amount * ctxm.jackpotBP / 10000;
+        jackpot += JP;
+
+        uint256 devFee = amount * ctxm.devFee / 10000;
+        adminFeesAccumulated += devFee;
+
+        uint256 totalBP = 10000 - (ctxm.devFee + ctxm.jackpotBP + ctxm.dividendsBP);
+        uint256 newAmount = amount * totalBP / 10000;
+        
+        deposits[id].amount = newAmount;
+        deposits[id].tracker += newAmount * yeildPerDeposit;
+        totalDeposits += newAmount;
+
+        lastDepositer = msg.sender;
+
+        // deadline += 
+        // minimum
+
+        //ensure token reverts on failed
+        vaultToken.transferFrom(msg.sender, address(this), amount);
 
     }
 
+    // #########################
+    // ##                     ##
+    // ##        Yeild        ##
+    // ##                     ##
+    // #########################
 
+    // internal adjust yeild function that adjusts dividens from buy ins 
+    // adjustYeild() manages startegy yeild
+    function adjustYeild(uint256 amount) internal {
+
+        yeildPerDeposit += amount * SCALAR / totalDeposits;
+
+    }
+
+    function withdrawableById(uint256 id) public override view returns (uint) {
+
+        uint256 yield = yeildPerId(id);
+
+        return deposits[id].amount + yield;
+    }
+
+    // #########################
+    // ##                     ##
+    // ##        Admin        ##
+    // ##                     ##
+    // #########################
+
+
+
+
+
+    // #########################
+    // ##                     ##
+    // ##      Uneeded        ##
+    // ##                     ##
+    // #########################
+
+    function manage(uint256 amount, address who) override external {
+
+        require(1 == 2);
+
+    }
+
+    function returnManagedFunds(uint256 amount) override external {
+
+        require(1 == 2);
+
+    }
 
 }
