@@ -74,8 +74,10 @@ contract DegenVault is DaoVault {
 
     function mintNewNFT(uint256 amount) external override returns (uint256) {
 
-        require(amount >= minimumPrice);
-        require(block.timestamp <= deadline);
+        require(
+            amount >= minimumPrice &&
+            block.timestamp <= deadline
+        );
 
         Context memory ctxm = ctx;
 
@@ -83,14 +85,13 @@ contract DegenVault is DaoVault {
         // untrusted contract so this pattern is safe
         uint id = NFT.mint(msg.sender);
 
-        uint256 dividends = amount * ctxm.dividendsBP / 10000;
-        adjustYeild(dividends);
+        adjustYeild(
+            amount * ctxm.dividendsBP / 10000
+        );
 
-        uint256 JP = amount * ctxm.jackpotBP / 10000;
-        jackpot += JP;
+        jackpot += amount * ctxm.jackpotBP / 10000;
 
-        uint256 devFee = amount * ctxm.devFee / 10000;
-        adminFeesAccumulated += devFee;
+        adminFeesAccumulated += amount * ctxm.devFee / 10000;
 
         uint256 totalBP = 10000 - (ctxm.devFee + ctxm.jackpotBP + ctxm.dividendsBP);
         uint256 newAmount = amount * totalBP / 10000;
@@ -121,19 +122,18 @@ contract DegenVault is DaoVault {
 
         Context memory ctxm = ctx;
         
-        uint256 dividends = amount * ctxm.dividendsBP / 10000;
-        adjustYeild(dividends);
+        adjustYeild(
+            amount * ctxm.dividendsBP / 10000
+        );
 
-        uint256 JP = amount * ctxm.jackpotBP / 10000;
-        jackpot += JP;
+        jackpot += amount * ctxm.jackpotBP / 10000;
 
-        uint256 devFee = amount * ctxm.devFee / 10000;
-        adminFeesAccumulated += devFee;
+        adminFeesAccumulated += amount * ctxm.devFee / 10000;
 
         uint256 totalBP = 10000 - (ctxm.devFee + ctxm.jackpotBP + ctxm.dividendsBP);
         uint256 newAmount = amount * totalBP / 10000;
         
-        deposits[id].amount = newAmount;
+        deposits[id].amount += newAmount;
         deposits[id].tracker += newAmount * yeildPerDeposit;
         totalDeposits += newAmount;
 
@@ -144,6 +144,27 @@ contract DegenVault is DaoVault {
 
         //ensure token reverts on failed
         vaultToken.transferFrom(msg.sender, address(this), amount);
+
+    }
+
+    function withdrawFromId(uint256 amount, uint256 id) public override {
+
+        require(msg.sender == NFT.ownerOf(id));
+        require(amount == withdrawableById(id), "Wtihdrawl ALL or NONE!!!");
+
+        //trusted contract
+        uint256 balanceCheck = vaultToken.balanceOf(address(this));
+
+        // trusted contract
+        if (amount > balanceCheck) {
+            uint256 needed = amount - balanceCheck;
+            withdrawFromStrat(needed, id);
+        }
+
+        deposits[id].amount -= amount;
+        deposits[id].tracker -= amount * yeildPerDeposit;
+
+        vaultToken.transfer(msg.sender, amount);
 
     }
 
