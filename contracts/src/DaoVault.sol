@@ -8,7 +8,7 @@ import "./interfaces/IStrategy.sol";
 //ENSURE vault tokens revert on failed transfer
 
 // Dao Vault - This contains the DAO treasury.
-contract Vault {
+contract DaoVault {
 
     // #########################
     // ##                     ##
@@ -223,6 +223,7 @@ contract Vault {
     function withdrawableById(uint256 id) public view returns (uint) {
 
         uint256 yield = yeildPerId(id);
+        // claimable may be larger than total deposits but never smaller
         uint256 claimable = vaultToken.balanceOf(address(this)) + depositedToStrat - tokensManaged;
         uint256 claimId = claimable * deposits[id].amount / totalDeposits;
 
