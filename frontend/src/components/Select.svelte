@@ -15,6 +15,10 @@
 	export let id = `select-${Math.random() * 1e18}`
 
 
+	// Internal state
+	export let isOpen: boolean
+
+
 	// Components
 	import Tooltip from './Tooltip.svelte'
 	
@@ -24,7 +28,7 @@
 </script>
 
 
-<Tooltip let:isOpen {placement}>
+<Tooltip bind:isOpen {placement}>
 	<button
 		type="button"
 		class="localization-picker dropdown"
@@ -43,7 +47,11 @@
 				type="button"
 				class="transparent"
 				class:active={value === optionValue}
-				on:click={() => value = optionValue}
+				on:click={() => {
+					value = optionValue
+					console.log(isOpen)
+					isOpen = false
+				}}
 			>
 				{labels[optionValue]}
 			</button>

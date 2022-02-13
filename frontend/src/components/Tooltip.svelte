@@ -14,7 +14,7 @@
 	let referenceElement
 	let tooltipElement
 
-	let isOpen
+	export let isOpen
 
 
 	// Methods/hooks/lifecycle
