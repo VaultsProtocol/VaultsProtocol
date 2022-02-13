@@ -53,6 +53,7 @@
 				walletType: connectingWalletType
 			})
 
+			console.log('accounts', accounts)
 
 			const address = accounts[0]
 
@@ -65,10 +66,10 @@
 			// 	$account = { ...$account, ensAvatarUri }
 			// })
 
-			// $provider.onAccountChanged(accounts => {
-			// 	const address = accounts[0]
-			// 	$account = { ...$account, address }
-			// })
+			onAccountChanged(accounts => {
+				const address = accounts[0]
+				$account = { ...$account, address }
+			})
 
 			$connectedWalletType = type
 			modalIsOpen = false
@@ -112,7 +113,7 @@
 <div class="stack">
 	{#key $account}
 		{#if !$account}
-			<button class="primary" on:click={() => modalIsOpen = !modalIsOpen} transition:scale={{opacity: 0}}>{$_('Connect Account')}</button>
+			<button class="primary" on:click={() => modalIsOpen = !modalIsOpen} transition:scale={{opacity: 0}}>{$_('Connect')}</button>
 		{:else}
 			<Tooltip let:isOpen>
 				<button class="connnected-account dropdown" class:active={isOpen} tabindex="-1" transition:scale={{opacity: 0}}>
@@ -135,7 +136,9 @@
 						{#if $account.ensName}
 							<span class="ens">{$account.ensName}</span>
 						{/if}
-						<span>{formatAddress($account.address)}</span>
+						{#if $account.address}
+							<span>{formatAddress($account.address)}</span>
+						{/if}
 						{#if !$account.ensName}
 							<span>{walletsByType[$connectedWalletType].name($_)}</span>
 						{/if}
@@ -161,16 +164,17 @@
 		width="26rem"
 		title={$_('Sign in with Web3')}
 	>
-		<div class="card">
+		<!-- <div class="card"> -->
 			<div class="wallets">
 				{#each wallets as {type, name, icon}}
-					<button class="wallet column centered" on:click={() => onConnectWallet(type)}>
+					<button class="wallet large" on:click={() => onConnectWallet(type)}>
+					<!-- <button class="wallet column centered" on:click={() => onConnectWallet(type)}> -->
 						<img src={icon} alt={name($_)} />
 						{name($_)}
 					</button>
 				{/each}
 			</div>
-		</div>
+		<!-- </div> -->
 	</Modal>
 </Portal>
 
@@ -187,7 +191,7 @@
 		height: 2.5rem;
 		aspect-ratio: 1;
 
-		border-radius: calc(var(--button-radius) * 0.85);
+		border-radius: calc(var(--radius) * 0.85);
 		overflow: hidden;
 
 		background-color: var(--background-color-4);

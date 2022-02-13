@@ -112,7 +112,7 @@
 		position: fixed;
 		inset: 0;
 		content: '';
-		background-color: var(--background-color-1er);
+		background-color: var(--background-color-0);
 		opacity: 0.75;
 	}
 

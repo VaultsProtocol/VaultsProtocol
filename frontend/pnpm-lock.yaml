@@ -1,6 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
+  '@floating-ui/core': ^0.4.0
   '@floating-ui/dom': ^0.2.0
   '@sveltejs/adapter-auto': next
   '@sveltejs/kit': next
@@ -20,6 +21,7 @@ specifiers:
   typescript: ~4.5.4
 
 dependencies:
+  '@floating-ui/core': 0.4.0
   '@floating-ui/dom': 0.2.0
   ethers: 5.5.4
   svelte-i18n: 3.3.13_svelte@3.46.4

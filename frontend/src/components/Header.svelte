@@ -80,7 +80,7 @@
 		font-size: 1.125em;
 		padding: 0 var(--header-padding);
 
-		backdrop-filter: blur(12px);
+		backdrop-filter: blur(3px);
 	}
 	@supports not (backdrop-filter: blur(0)) {
 		header {
@@ -155,7 +155,7 @@
 
 	@media (max-width: 40rem) {
 		header {
-			background: linear-gradient(var(--background-color-1er), transparent);
+			background: linear-gradient(var(--background-color-0), transparent);
 			height: var(--header-height);
 			overflow: hidden;
 			-webkit-backdrop-filter: blur(0px);

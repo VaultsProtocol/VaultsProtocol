@@ -91,7 +91,7 @@
 		gap: 1em;
 	}
 
-	:global(section) {
+	:global(main > section) {
 		padding: var(--section-padding);
 		gap: 1em;
 		max-width: 100vw;

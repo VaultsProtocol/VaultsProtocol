@@ -10,6 +10,7 @@
 
 	// Internal state
 
+	let containerElement
 	let referenceElement
 	let tooltipElement
 
@@ -18,15 +19,12 @@
 
 	// Methods/hooks/lifecycle
 
-	const pixelRatio = globalThis.devicePixelRatio
-
-
 	import { computePosition, flip, autoPlacement, offset as offset_, shift, getScrollParents } from '@floating-ui/dom'
 
 	$: if(referenceElement && tooltipElement){
 		for(const eventTarget of [globalThis.window, ...getScrollParents(referenceElement), ...getScrollParents(referenceElement)] as EventTarget[]){
-			eventTarget.addEventListener('scroll', update)
-			eventTarget.addEventListener('resize', update)
+			eventTarget.addEventListener('scroll', () => requestAnimationFrame(update));
+			eventTarget.addEventListener('resize', () => requestAnimationFrame(update));
 		}
 	}
 
@@ -60,7 +58,13 @@
 </script>
 
 
-<details bind:open={isOpen}>
+<svelte:body on:click={e => {
+	if(!containerElement.contains(e.target))
+		isOpen = false
+}} />
+
+
+<details bind:open={isOpen} bind:this={containerElement} on:blur={() => isOpen = false}>
 	<summary bind:this={referenceElement}>
 		<slot {isOpen} />
 	</summary>
@@ -80,7 +84,7 @@
 		top: 0;
 	}
 
-	summary :global(button:active) {
+	summary :global(button) {
 		pointer-events: none;
 	}
 </style>
