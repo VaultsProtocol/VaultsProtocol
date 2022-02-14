@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0;
 
+import "hardhat/console.sol";
+
 /// @notice Modern, minimalist, and gas efficient ERC-721 implementation.
 /// @author Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/tokens/ERC721.sol)
 /// @dev Note that balanceOf does not revert if passed the zero address, in defiance of the ERC.
@@ -152,8 +154,8 @@ contract ERC721 {
 
         // Counter overflow is incredibly unrealistic.
         unchecked {
-            currentId++;
             balanceOf[to]++;
+            currentId++;
         }
 
         ownerOf[id] = to;
@@ -215,10 +217,10 @@ contract ERC721 {
     function mint(address to) external returns(uint256) {
 
         require(msg.sender == vault);
-
         uint id = currentId;
+        
         _mint(to, id);
-        return currentId;
+        return id;
         
     }
 

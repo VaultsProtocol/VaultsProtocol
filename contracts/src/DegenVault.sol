@@ -5,6 +5,8 @@ import "./tokens/ERC721.sol";
 import "./tokens/ERC20.sol";
 import "./DaoVault.sol";
 
+import "hardhat/console.sol";
+
 // Jackpot & Dividend Vault
 // This is the vault that the Jackpot and Degen dividends go.
 // Balances for jackpot vs dividends are tracked with internal vars
@@ -31,8 +33,8 @@ contract DegenVault is DaoVault {
     Context public ctx;
 
     uint256 public minimumPrice; //wei
-    uint256 deadline; //seconds
-    uint256 jackpot; //wei
+    uint256 public deadline; //seconds
+    uint256 public jackpot; //wei
     uint256 adminFeesAccumulated; //wei
 
     address lastDepositer;
@@ -63,10 +65,6 @@ contract DegenVault is DaoVault {
         // 24 hrs
         deadline = block.timestamp + initialDeadlineSeconds;
 
-<<<<<<< Updated upstream
-=======
-        
->>>>>>> Stashed changes
     }
 
     // #########################
@@ -75,11 +73,12 @@ contract DegenVault is DaoVault {
     // ##                     ##
     // #########################
 
-    function mintNewNFT(uint256 amount) external override returns (uint256) {
+    function mintNewNFT(uint256 amount) public override returns (uint256) {
 
         require(
             amount >= getMinPrice() &&
-            block.timestamp <= deadline
+            block.timestamp <= deadline,
+            "Underpaid, or past deadline"
         );
 
         Context memory ctxm = ctx;
@@ -87,10 +86,6 @@ contract DegenVault is DaoVault {
         // contract execution never passed to 
         // untrusted contract so this pattern is safe
         uint id = NFT.mint(msg.sender);
-
-        adjustYeild(
-            amount * ctxm.dividendsBP / 10000
-        );
 
         jackpot += amount * ctxm.jackpotBP / 10000;
 
@@ -100,8 +95,14 @@ contract DegenVault is DaoVault {
         uint256 newAmount = amount * totalBP / 10000;
         
         deposits[id].amount = newAmount;
-        deposits[id].tracker += newAmount * yeildPerDeposit;
         totalDeposits += newAmount;
+
+        // sorry :( , you dont get your own dividends?!
+        adjustYeild(
+            amount * ctxm.dividendsBP / 10000
+        );
+
+        deposits[id].tracker = newAmount * yeildPerDeposit;
 
         lastDepositer = msg.sender;
 
@@ -124,10 +125,6 @@ contract DegenVault is DaoVault {
         );
 
         Context memory ctxm = ctx;
-        
-        adjustYeild(
-            amount * ctxm.dividendsBP / 10000
-        );
 
         jackpot += amount * ctxm.jackpotBP / 10000;
 
@@ -137,8 +134,14 @@ contract DegenVault is DaoVault {
         uint256 newAmount = amount * totalBP / 10000;
         
         deposits[id].amount += newAmount;
-        deposits[id].tracker += newAmount * yeildPerDeposit;
         totalDeposits += newAmount;
+
+        // sorry :( , you dont get your own dividends?!
+        adjustYeild(
+            amount * ctxm.dividendsBP / 10000
+        );
+
+        deposits[id].tracker += newAmount * yeildPerDeposit;
 
         lastDepositer = msg.sender;
 
@@ -200,8 +203,8 @@ contract DegenVault is DaoVault {
     function withdrawableById(uint256 id) public override view returns (uint) {
 
         uint256 yield = yeildPerId(id);
-
         return deposits[id].amount + yield;
+
     }
 
     // #########################
@@ -222,13 +225,13 @@ contract DegenVault is DaoVault {
     // ##                     ##
     // #########################
 
-    function manage(uint256 amount, address who) override external {
+    function manage(uint256 amount, address who) pure override external {
 
         require(1 == 2);
 
     }
 
-    function returnManagedFunds(uint256 amount) override external {
+    function returnManagedFunds(uint256 amount) pure override external {
 
         require(1 == 2);
 

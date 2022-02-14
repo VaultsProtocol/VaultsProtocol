@@ -24,13 +24,23 @@ contract("degenVault", ([alice, bob, tom, deployer]) => {
     before(async () => {
       
       bc.nft = await ERC721.new('NFT', "NFT");
-      bc.vaultToken = await MockERC20.new("ERC20", "ERC20", '10000000000000000000000000');
+      bc.vaultToken = await MockERC20.new("ERC20", "ERC20", 100e18.toString(), {
+        from: deployer
+      });
+
+      await bc.vaultToken.transfer(alice, 10e18.toString(), {
+        from: deployer
+      })
+
+      await bc.vaultToken.transfer(bob, 10e18.toString(), {
+        from: deployer
+      })
 
       bc.initialLiquidity = '10000000000000000000000'; // 10 ERC20 as initial liquidity
       bc.jackpotBps = 2500;
       bc.dividendBps = 3500;
       bc.initialDeadlineSeconds = 30;
-      bc.minimumPrice = 1e17.toString(); //0.1 TOK
+      bc.minimumPrice = 10e18.toString();
       bc.devFee = 500 ;
       bc.degenVault = await DegenVault.new(
         tom, // Controller
@@ -52,38 +62,64 @@ contract("degenVault", ([alice, bob, tom, deployer]) => {
       // await expect(bc.price, bc.nft.totalSupply() / bc.initialLiquidity);
       await expect(bc.minimumPrice, bc.price);
 
+      //approve ERC20 spend
+      await bc.vaultToken.approve(bc.degenVault.address, 10e18.toString(), {
+        from: alice
+      })
+
+      //approve ERC20 spend
+      await bc.vaultToken.approve(bc.degenVault.address, 10e18.toString(), {
+        from: bob
+      })
+
+      // expected to fail underpaid
       await expect(
         bc.degenVault.mintNewNFT(9e18.toString(), {
           from: alice,
         }),
-      ).to.eventually.rejectedWith(revert`Underpaid`);
+      ).to.eventually.rejectedWith(revert`Underpaid, or past deadline`);
 
-      await bc.degenVault.mintNewNFT(10e18, {
+      // ID = 1
+      await bc.degenVault.mintNewNFT(10e18.toString(), {
         from: alice,
+      });
+
+      // check correct distrobution of jackpot
+      assert.equal(
+        Number(await bc.degenVault.jackpot()),
+        (bc.price * bc.jackpotBps) / 1e4,
+      );
+
+      // should pass ID = 2
+      await bc.degenVault.mintNewNFT(10e18.toString(), {
+        from: bob,
       });
 
       // Ensure mint happened
       assert.equal(Number(await bc.nft.balanceOf(alice)), 1);
 
       // Ensure internal calculation for balances is good.
-      assert.equal(
-        Number(bc.degenVault.getTreasuryBalance()),
-        (bc.price * bc.treasuryBps) / 1e4,
-      );
-      assert.equal(
-        Number(bc.degenVault.getJackpotBalance()),
-        (bc.price * bc.jackpotBps) / 1e4,
-      );
-      assert.equal(
-        Number(bc.degenVault.getDividendBalance()),
-        (bc.price * bc.dividendBps) / 1e4,
-      );
+      // assert.equal(
+      //   Number(bc.degenVault.getTreasuryBalance()),
+      //   (bc.price * bc.treasuryBps) / 1e4,
+      // );
+
+      let r = await bc.degenVault.deposits(1)
+
+      // user deposits = user yield distributed
+      // 35%
+      let yield = 10e18 * bc.dividendBps / 10000;
+      let firstDistro = yield * 1e10 / yield;
+        // yeild * 2 == totalDeposits
+      let secondDistro = yield * 1e10 / (yield * 2);
 
       // Ensure Previous holders have claimable.
+      // ID = 1, OWNER = ALICE
       assert.equal(
-        Number(await bc.degenVault.claimableBalance(deployer)),
-        (bc.price * bc.dividendBps) / 1e4,
+        Number(await bc.degenVault.withdrawableById(1)),
+        secondDistro * yield / 1e10 + Number(r.amount),
       );
+
     });
   });
 

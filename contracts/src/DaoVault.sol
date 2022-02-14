@@ -30,7 +30,7 @@ contract DaoVault {
     mapping(uint256 => Deposits) public deposits;
 
     //sum of yeild/totalDeposits
-    uint256 yeildPerDeposit;
+    uint256 public yeildPerDeposit;
     uint256 totalDeposits;
     uint256 SCALAR = 1e10;
 
@@ -211,7 +211,10 @@ contract DaoVault {
     }
 
     function yeildPerId(uint256 id) internal view returns (uint256) {
-        uint256 pre = (deposits[id].amount * yeildPerDeposit) / SCALAR;
-        return pre - deposits[id].tracker;
+
+        uint256 pre = deposits[id].amount * yeildPerDeposit / SCALAR;
+        return pre - deposits[id].tracker / SCALAR;
+
     }
+
 }
