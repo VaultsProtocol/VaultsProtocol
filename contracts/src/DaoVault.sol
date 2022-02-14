@@ -8,8 +8,39 @@ import "./BaseVault.sol";
 // Dao Vault - This contains the DAO treasury.
 contract DaoVault is BaseVault {
 
+    // struct Manage {
+    //     address to;
+    //     uint256 amount;
+    // }
+
+    // struct Proposal {
+    //     string SmallDescription;
+    //     uint256 index;
+    //     uint256 IdSnapShot; //prevent sybil attack
+    //     Manage one;
+    //     Manage two;
+    //     Manage three;
+    // }
+
+    // struct Vote {
+    //     address who;
+    //     uint256 index;
+        
+    // }
+
+    // // key is ID of delegater, result is ID of delgatee
+    // mapping (uint256 => uint256) delgeatedToWho;
+
+    // // key is NFT ID result is vote weight
+    // mapping (uint256 => uint256) delegatedAmont;
+
+    // // key 1 = NFT ID, key 2 = Propsal ID
+    // mapping (uint256 => mapping (uint256 => bool)) voted;
+
     // number of tokens currently not claimable because of DAO vote
     uint256 tokensManaged;
+
+    // Proposal[] propsals;
 
     constructor( 
         address _controller,
@@ -20,7 +51,7 @@ contract DaoVault is BaseVault {
         _NFT,
         _vaultToken
     ) {
-        
+        // Add NAme info
     }
 
     // #########################
@@ -28,6 +59,24 @@ contract DaoVault is BaseVault {
     // ##       Manage        ##
     // ##                     ##
     // #########################
+
+    // function createPropsal(string calldata descriptor, Manage calldata _one, Manage calldata _two, Manage calldata _three) external {
+
+    //     uint256 index = propsals.length;
+    //     uint256 snapshot = NFT.currentId();
+
+    //     Proposal memory _proposal = Proposal(descriptor, index, snapshot, _one, _two, _three);
+    //     propsals.push(_proposal);
+
+    // }
+
+    // function vote() external {
+
+    // }
+
+    // function delegateVotes(uint256 id, address who) external {
+
+    // }
 
     function manage(uint256 amount, address who) external virtual {
 
