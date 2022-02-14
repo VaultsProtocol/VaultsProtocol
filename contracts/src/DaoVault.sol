@@ -8,39 +8,46 @@ import "./BaseVault.sol";
 // Dao Vault - This contains the DAO treasury.
 contract DaoVault is BaseVault {
 
-    // struct Manage {
-    //     address to;
-    //     uint256 amount;
-    // }
+    struct Manage {
+        address to;
+        uint256 amount;
+    }
 
-    // struct Proposal {
-    //     string SmallDescription;
-    //     uint256 index;
-    //     uint256 IdSnapShot; //prevent sybil attack
-    //     Manage one;
-    //     Manage two;
-    //     Manage three;
-    // }
+    struct Proposal {
+        string descriptor;
+        uint256 idSnapshot; //prevent sybil attack
+        Manage[] reciepents;
+        uint256 none; //No to all
+    }
 
-    // struct Vote {
-    //     address who;
-    //     uint256 index;
-        
-    // }
+    struct Vote {
+        uint256 id;
+        uint256 recipientKey;
+        bytes32 mappingKey;
+    }
 
-    // // key is ID of delegater, result is ID of delgatee
-    // mapping (uint256 => uint256) delgeatedToWho;
+    struct Delegate {
+        uint256 delegatee;
+        uint256 weight;
+    }
 
-    // // key is NFT ID result is vote weight
-    // mapping (uint256 => uint256) delegatedAmont;
+    // key 1 = propsoal index, key 2 = reciepent key, returns number of votes
+    mapping (bytes32 => mapping(uint256 => uint256)) votes;
 
-    // // key 1 = NFT ID, key 2 = Propsal ID
-    // mapping (uint256 => mapping (uint256 => bool)) voted;
+    // key is ID of delegater, result is ID of delgatee
+    mapping (uint256 => Delegate) delegation;
+
+    // key is NFT ID result is vote weight
+    mapping (uint256 => uint256) delegatedAmount;
+
+    // key 1 = NFT ID, key 2 = Propsal ID
+    mapping (uint256 => mapping (bytes32 => bool)) voted;
 
     // number of tokens currently not claimable because of DAO vote
     uint256 tokensManaged;
 
-    // Proposal[] propsals;
+    // key = bytes32(keccakk256(abi.encodePacked(Proposal.descriptor)))
+    mapping (bytes32 => Proposal) proposals;
 
     constructor( 
         address _controller,
@@ -60,27 +67,75 @@ contract DaoVault is BaseVault {
     // ##                     ##
     // #########################
 
-    // function createPropsal(string calldata descriptor, Manage calldata _one, Manage calldata _two, Manage calldata _three) external {
+    function createProposal(string calldata descriptor, Manage[] calldata _recipients) external {
 
-    //     uint256 index = propsals.length;
-    //     uint256 snapshot = NFT.currentId();
+        uint256 snapshot = NFT.currentId();
 
-    //     Proposal memory _proposal = Proposal(descriptor, index, snapshot, _one, _two, _three);
-    //     propsals.push(_proposal);
+        Proposal memory _proposal = Proposal(descriptor, snapshot, _recipients, 0);
+        
+        bytes32 key = keccak256(abi.encodePacked(descriptor));
 
-    // }
+        proposals[key] = _proposal;
 
-    // function vote() external {
+    }
 
-    // }
+    function vote(uint256[] id, uint256[] key, bytes32 descriptor, uint256[] v, uint256[] r, uint256[] s) external {
 
-    // function delegateVotes(uint256 id, address who) external {
+        require(id < proposals[descriptor].idSnapshot);
 
-    // }
+        //eip712 here
 
-    function manage(uint256 amount, address who) external virtual {
+        voted[id][descriptor] = true;
 
-        require(msg.sender == controller);
+        if (key > proposals[descriptor].reciepents.length) {
+
+            proposals[descriptor].none += delegatedAmount[id] + (deposits[id].amount - delegation[id].weight);
+
+        } else {
+
+            votes[descriptor][key] += delegatedAmount[id] + (deposits[id].amount - delegation[id].weight);
+
+        }
+
+    }
+
+    function delegateVotes(uint256 fromId, uint256 toId) external {
+
+        require(
+            msg.sender == NFT.ownerOf(fromId) &&
+            fromId != toId
+        );
+
+        uint256 weight = deposits[fromId].amount;
+        uint256 currentDelegatee = delegation[fromId].delegatee;
+
+        if (currentDelegatee != 0) {
+
+            delegatedAmount[currentDelegatee] -= weight;
+
+        } 
+
+        delegatedAmount[toId] += weight;
+        delegation[fromId].weight = weight;
+        delegation[fromId].delegatee = fromId;
+
+    }
+
+    function removeAllDelegation(uint256 id) public {
+
+        require(msg.sender == NFT.ownerOf(id));
+        
+
+
+    }
+
+    function executeProposal(uint256 recipientKey, bytes32 descirptor) external returns (bool) {
+
+        // QUOROM 20%
+
+    }
+
+    function manage(uint256 amount, address who) internal {
 
         //cannot manage funds earning yeild
         require(amount < vaultToken.balanceOf(address(this)));
@@ -90,7 +145,7 @@ contract DaoVault is BaseVault {
 
     }
 
-    function returnManagedFunds(uint256 amount) external virtual {
+    function returnManagedFunds(uint256 amount) external {
 
         tokensManaged -= amount;
 
