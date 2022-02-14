@@ -64,6 +64,8 @@
 	.menu {
 		transform-origin: top center;
 		min-width: 5rem;
+		overflow: auto;
+		max-height: 100%;
 	}
 
 	.menu button {

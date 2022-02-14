@@ -19,7 +19,7 @@
 
 	// Methods/hooks/lifecycle
 
-	import { computePosition, flip, autoPlacement, offset as offset_, shift, getScrollParents } from '@floating-ui/dom'
+	import { computePosition, flip, autoPlacement, offset as offset_, shift, size, getScrollParents } from '@floating-ui/dom'
 
 	$: if(referenceElement && tooltipElement){
 		for(const eventTarget of [globalThis.window, ...getScrollParents(referenceElement), ...getScrollParents(referenceElement)] as EventTarget[]){
@@ -45,9 +45,20 @@
 						offset_(offset),
 						shift({
 							padding: 16
+						}),
+						size({
+							boundary: globalThis.document.body,
+							padding: 8,
+							apply(a){
+								const { width, height } = a
+								Object.assign(tooltipElement.style, {
+									maxWidth: `${width}px`,
+									height: `${height}px`,
+								})
+							}
 						})
 					],
-				}).then(({x, y}) => {
+				}).then(({ x, y }) => {
 					Object.assign(tooltipElement.style, {
 						left: `${x}px`,
 						top: `${y}px`,
