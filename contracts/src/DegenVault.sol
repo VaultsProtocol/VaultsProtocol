@@ -10,7 +10,7 @@ import "hardhat/console.sol";
 // Jackpot & Dividend Vault
 // This is the vault that the Jackpot and Degen dividends go.
 // Balances for jackpot vs dividends are tracked with internal vars
-contract DegenVault is DaoVault {
+contract DegenVault is BaseVault {
 
     // #########################
     // ##                     ##
@@ -35,9 +35,9 @@ contract DegenVault is DaoVault {
     uint256 public minimumPrice; //wei
     uint256 public deadline; //seconds
     uint256 public jackpot; //wei
-    uint256 adminFeesAccumulated; //wei
+    uint256 public adminFeesAccumulated; //wei
 
-    address lastDepositer;
+    address public lastDepositer;
 
     // #########################
     // ##                     ##
@@ -53,9 +53,8 @@ contract DegenVault is DaoVault {
         uint16 _dividendsBP,
         uint16 devFee,
         uint256 _minimumPrice,
-        uint256 initialLiquidity,
         uint256 initialDeadlineSeconds
-    ) DaoVault(_controller, _NFT, _vaultToken) {
+    ) BaseVault(_controller, _NFT, _vaultToken) {
 
         require(_jackpotBP + _dividendsBP + devFee <= 10000);
 
@@ -223,28 +222,6 @@ contract DegenVault is DaoVault {
     // ##                     ##
     // #########################
 
-
-
-
-
-
-
-    // #########################
-    // ##                     ##
-    // ##      Uneeded        ##
-    // ##                     ##
-    // #########################
-
-    function manage(uint256 amount, address who) pure override external {
-
-        require(1 == 2);
-
-    }
-
-    function returnManagedFunds(uint256 amount) pure override external {
-
-        require(1 == 2);
-
-    }
+    //TODO
 
 }

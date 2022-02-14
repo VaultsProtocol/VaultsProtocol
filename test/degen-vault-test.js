@@ -50,7 +50,6 @@ contract("degenVault", ([alice, bob, tom, deployer]) => {
         bc.dividendBps,
         bc.devFee,
         bc.minimumPrice,
-        bc.initialLiquidity,
         bc.initialDeadlineSeconds,
         { from: deployer },
       );
