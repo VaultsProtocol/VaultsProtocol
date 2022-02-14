@@ -31,7 +31,7 @@ contract DaoVault {
 
     //sum of yeild/totalDeposits
     uint256 public yeildPerDeposit;
-    uint256 totalDeposits;
+    uint256 public totalDeposits;
     uint256 SCALAR = 1e10;
 
     uint256 public depositedToStrat;
@@ -140,8 +140,8 @@ contract DaoVault {
 
         // claimable may be larger than total deposits but never smaller
         uint256 claimable = vaultToken.balanceOf(address(this)) +
-            depositedToStrat -
-            tokensManaged;
+            depositedToStrat - tokensManaged;
+            
         uint256 claimId = (claimable * deposits[id].amount) / totalDeposits;
 
         return claimId + yield;

@@ -76,7 +76,7 @@ contract DegenVault is DaoVault {
     function mintNewNFT(uint256 amount) public override returns (uint256) {
 
         require(
-            amount >= getMinPrice() &&
+            amount >= minimumPrice &&
             block.timestamp <= deadline,
             "Underpaid, or past deadline"
         );
@@ -120,7 +120,7 @@ contract DegenVault is DaoVault {
         // trusted contract
         require(
             msg.sender == NFT.ownerOf(id) &&
-            amount >= getMinPrice() &&
+            amount >= minimumPrice &&
             block.timestamp <= deadline
         );
 
@@ -151,12 +151,6 @@ contract DegenVault is DaoVault {
         //ensure token reverts on failed
         vaultToken.transferFrom(msg.sender, address(this), amount);
 
-    }
-
-    function getMinPrice() public view returns (uint256) {
-
-        return minimumPrice;
-        
     }
 
     function withdrawFromId(uint256 amount, uint256 id) public override {
