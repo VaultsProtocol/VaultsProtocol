@@ -154,7 +154,9 @@ contract DegenVault is DaoVault {
     }
 
     function getMinPrice() public view returns (uint256) {
+
         return minimumPrice;
+        
     }
 
     function withdrawFromId(uint256 amount, uint256 id) public override {

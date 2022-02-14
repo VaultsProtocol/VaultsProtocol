@@ -9,7 +9,7 @@ import "./DegenVault.sol";
 contract DAOFactory {
 
     function createDaoVault(uint8 daoType) public returns(address controller, address NFT, address vault) {
-
+        
     }
 
     function createDegenVault(uint8 daoType) public returns(address controller, address NFT, address vault) {

@@ -97,7 +97,8 @@ contract("degenVault", ([alice, bob, tom, deployer]) => {
 
       // Ensure mint happened
       assert.equal(Number(await bc.nft.balanceOf(alice)), 1);
-
+      
+      // Balance of Alice 
       let r = await bc.degenVault.deposits(1);
 
       //3500 = 10000 - sum(dividensBP, jackpotBp, devFee)
