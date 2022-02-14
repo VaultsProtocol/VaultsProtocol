@@ -106,11 +106,12 @@ contract("degenVault", ([alice, bob, tom, deployer]) => {
 
       let r = await bc.degenVault.deposits(1)
 
+      // dividends distributed after each deposit
       // user deposits = user yield distributed
       // 35%
       let yield = 10e18 * bc.dividendBps / 10000;
-      let firstDistro = yield * 1e10 / yield;
-        // yeild * 2 == totalDeposits
+
+      // yeild * 2 == totalDeposits
       let secondDistro = yield * 1e10 / (yield * 2);
 
       // Ensure Previous holders have claimable.
