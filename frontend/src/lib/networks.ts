@@ -371,6 +371,67 @@ export const networks: Network[] = [
 	},
 
 	{
+		"slug": "aurora",
+		"name": "Aurora",
+		"chainId": 1313161554,
+		"shortName": "aurora",
+		"chain": "NEAR",
+		"network": "mainnet",
+		"networkId": 1313161554,
+		"nativeCurrency": {
+			"name": "Ether",
+			"symbol": "aETH",
+			"decimals": 18
+		},
+		"rpc": [
+			"https://rpc.mainnet.aurora.dev:8545"
+		],
+		"faucets": [],
+		"explorers": [],
+		"infoURL": "https://aurora.dev"
+	},
+	{
+		"slug": "aurora-testnet",
+		"name": "Aurora TestNet",
+		"chainId": 1313161555,
+		"shortName": "aurora-testnet",
+		"chain": "NEAR",
+		"network": "testnet",
+		"networkId": 1313161555,
+		"nativeCurrency": {
+			"name": "Ether",
+			"symbol": "aETH",
+			"decimals": 18
+		},
+		"rpc": [
+			"https://rpc.testnet.aurora.dev:8545"
+		],
+		"faucets": [],
+		"explorers": [],
+		"infoURL": "https://aurora.dev"
+	},
+	{
+		"slug": "aurora-betanet",
+		"name": "Aurora BetaNet",
+		"chainId": 1313161556,
+		"shortName": "aurora-betanet",
+		"chain": "NEAR",
+		"network": "betanet",
+		"networkId": 1313161556,
+		"nativeCurrency": {
+			"name": "Ether",
+			"symbol": "aETH",
+			"decimals": 18
+		},
+		"rpc": [
+			"https://rpc.betanet.aurora.dev:8545"
+		],
+		"faucets": [],
+		"explorers": [],
+		"infoURL": "https://aurora.dev"
+	},
+
+	{
 		"slug": "harmony-shard0",
 		"name": "Harmony Shard 0",
 		"chainId": 1666600000,
