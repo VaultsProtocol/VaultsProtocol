@@ -89,10 +89,10 @@ contract("degenVault", ([alice, bob, tom, deployer]) => {
         from: bob,
       });
 
-      // check correct distrobution of jackpot
+      // first mint no dividends goes to jackpot
       assert.equal(
         Number(await bc.degenVault.jackpot()),
-        ((bc.price * bc.jackpotBps) / 1e4) * 2,
+        (bc.price * (bc.jackpotBps + bc.dividendBps) / 1e4) + bc.price * bc.jackpotBps / 1e4,
       );
 
       // Ensure mint happened

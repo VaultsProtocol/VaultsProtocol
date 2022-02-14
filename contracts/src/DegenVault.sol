@@ -87,22 +87,36 @@ contract DegenVault is DaoVault {
         // untrusted contract so this pattern is safe
         uint id = NFT.mint(msg.sender);
 
-        jackpot += amount * ctxm.jackpotBP / 10000;
+        if (id > 1) {
 
-        adminFeesAccumulated += amount * ctxm.devFee / 10000;
+            jackpot += amount * ctxm.jackpotBP / 10000;
 
-        uint256 totalBP = 10000 - (ctxm.devFee + ctxm.jackpotBP + ctxm.dividendsBP);
-        uint256 newAmount = amount * totalBP / 10000;
-        
-        deposits[id].amount = newAmount;
-        totalDeposits += newAmount;
+            adminFeesAccumulated += amount * ctxm.devFee / 10000;
 
-        // sorry :( , you dont get your own dividends?!
-        adjustYeild(
-            amount * ctxm.dividendsBP / 10000
-        );
+            uint16 totalBP = 10000 - (ctxm.devFee + ctxm.jackpotBP + ctxm.dividendsBP);
+            uint256 newAmount = amount * totalBP / 10000;
+            
+            deposits[id].amount = newAmount;
+            totalDeposits += newAmount;
 
-        deposits[id].tracker = newAmount * yeildPerDeposit;
+            // sorry :( , you dont get your own dividends?!
+            adjustYeild(
+                amount * ctxm.dividendsBP / 10000
+            );
+
+            deposits[id].tracker = newAmount * yeildPerDeposit;
+
+        } else {
+
+            jackpot = amount * (ctxm.jackpotBP + ctxm.dividendsBP) / 10000;
+
+            uint256 totalBP = 10000 - (ctxm.devFee + ctxm.jackpotBP + ctxm.dividendsBP);
+            uint256 newAmount = amount * totalBP / 10000;
+
+            deposits[id].amount = newAmount;
+            totalDeposits += newAmount;
+
+        }
 
         lastDepositer = msg.sender;
 
