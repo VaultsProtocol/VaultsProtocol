@@ -98,13 +98,14 @@ contract("degenVault", ([alice, bob, tom, deployer]) => {
       // Ensure mint happened
       assert.equal(Number(await bc.nft.balanceOf(alice)), 1);
 
-      // Ensure internal calculation for balances is good.
-      // assert.equal(
-      //   Number(bc.degenVault.getTreasuryBalance()),
-      //   (bc.price * bc.treasuryBps) / 1e4,
-      // );
+      let r = await bc.degenVault.deposits(1);
 
-      let r = await bc.degenVault.deposits(1)
+      //3500 = 10000 - sum(dividensBP, jackpotBp, devFee)
+      // Ensure internal calculation for balances is good.
+      assert.equal(
+        Number(r.amount),
+        (bc.price * 3500) / 1e4,
+      );
 
       // dividends distributed after each deposit
       // user deposits = user yield distributed
