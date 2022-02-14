@@ -18,12 +18,8 @@ contract DaoVault is BaseVault {
         uint256 idSnapshot; //prevent sybil attack
         Manage[] reciepents;
         uint256 none; //No to all
-    }
-
-    struct Vote {
-        uint256 id;
-        uint256 recipientKey;
-        bytes32 mappingKey;
+        uint256 endTime;
+        bool executed;
     }
 
     struct Delegate {
@@ -63,15 +59,24 @@ contract DaoVault is BaseVault {
 
     // #########################
     // ##                     ##
-    // ##       Manage        ##
+    // ##       Voting        ##
     // ##                     ##
     // #########################
 
-    function createProposal(string calldata descriptor, Manage[] calldata _recipients) external {
+    function createProposal(string calldata descriptor, Manage[] calldata _recipients, uint256 time) external {
+
+        require(time >= 86400, "Time to short");
 
         uint256 snapshot = NFT.currentId();
 
-        Proposal memory _proposal = Proposal(descriptor, snapshot, _recipients, 0);
+        Proposal memory _proposal = Proposal(
+            descriptor,
+            snapshot,
+            _recipients,
+            0,
+            block.timestamp + time,
+            false
+        );
         
         bytes32 key = keccak256(abi.encodePacked(descriptor));
 
@@ -79,11 +84,13 @@ contract DaoVault is BaseVault {
 
     }
 
-    function vote(uint256[] id, uint256[] key, bytes32 descriptor, uint256[] v, uint256[] r, uint256[] s) external {
+    // votes are urged to be delegated so very few people will ever call this function
+    function vote(uint256 id, uint256 key, bytes32 descriptor) external {
 
-        require(id < proposals[descriptor].idSnapshot);
-
-        //eip712 here
+        require(
+            id < proposals[descriptor].idSnapshot &&
+            msg.sender == NFT.ownerOf(id)
+        );
 
         voted[id][descriptor] = true;
 
@@ -99,19 +106,21 @@ contract DaoVault is BaseVault {
 
     }
 
-    function delegateVotes(uint256 fromId, uint256 toId) external {
+    function delegateVotes(uint256 fromId, uint256 toId) public {
 
         require(
             msg.sender == NFT.ownerOf(fromId) &&
             fromId != toId
         );
 
+        uint256 currentWeight = delegation[fromId].weight;
+
         uint256 weight = deposits[fromId].amount;
         uint256 currentDelegatee = delegation[fromId].delegatee;
 
         if (currentDelegatee != 0) {
 
-            delegatedAmount[currentDelegatee] -= weight;
+            delegatedAmount[currentDelegatee] -= currentWeight;
 
         } 
 
@@ -125,16 +134,61 @@ contract DaoVault is BaseVault {
 
         require(msg.sender == NFT.ownerOf(id));
         
-
-
-    }
-
-    function executeProposal(uint256 recipientKey, bytes32 descirptor) external returns (bool) {
-
-        // QUOROM 20%
+        delegation[id].delegatee = 0;
+        delegation[id].weight = 0;
 
     }
 
+    // 15% Quorum
+    function executeProposal(bytes32 descriptor) external returns (bool) {
+
+        Proposal memory _mPro = proposals[descriptor];
+
+        require(
+            _mPro.endTime <= block.timestamp &&
+            !_mPro.executed
+        );
+
+        proposals[descriptor].executed = true;
+
+        uint256 length = _mPro.reciepents.length;
+        uint256 mostVotedKey = 0;
+        uint256 totalVotes = 0;
+
+        // related to number of possbile management options
+        for (uint256 i = 0; i < length; i++) {
+
+            uint256 votesForKey = votes[descriptor][i];
+            totalVotes += votesForKey;
+
+            if (votesForKey > votes[descriptor][mostVotedKey]) {
+                mostVotedKey = i;
+            }
+
+        }
+
+        if (_mPro.none >= votes[descriptor][mostVotedKey]) {
+            return false;
+        }
+
+        require(totalVotes >= totalDeposits * 1500 / 1e4, "Not Enough Votes");
+
+        manage(
+            _mPro.reciepents[mostVotedKey].amount, 
+            _mPro.reciepents[mostVotedKey].to
+        );
+
+        return true;
+
+    }
+
+    // #########################
+    // ##                     ##
+    // ##       Manage        ##
+    // ##                     ##
+    // #########################
+
+    // called by executeProposal
     function manage(uint256 amount, address who) internal {
 
         //cannot manage funds earning yeild
@@ -171,6 +225,45 @@ contract DaoVault is BaseVault {
         uint256 claimId = (claimable * deposits[id].amount) / totalDeposits;
 
         return claimId + yield;
+
+    }
+
+    function depositToId(uint256 amount, uint256 id) external override {
+
+        // trusted contract
+        require(msg.sender == NFT.ownerOf(id));
+
+        deposits[id].amount += amount;
+        deposits[id].tracker += amount * yeildPerDeposit;
+        totalDeposits += amount;
+
+        // adjusts weight
+        delegateVotes(id, delegation[id].delegatee);
+
+        //ensure token reverts on failed
+        vaultToken.transferFrom(msg.sender, address(this), amount);
+        
+    }
+
+    function withdrawFromId(uint256 amount, uint256 id) public override  {
+
+        require(msg.sender == NFT.ownerOf(id));
+        require(amount <= withdrawableById(id));
+
+        //trusted contract
+        uint256 balanceCheck = vaultToken.balanceOf(address(this));
+
+        // trusted contract
+        if (amount > balanceCheck) {
+            withdrawFromStrat(amount - balanceCheck, id);
+        }
+
+        deposits[id].amount -= amount;
+        deposits[id].tracker -= amount * yeildPerDeposit;
+
+        delegateVotes(id, delegation[id].delegatee);
+
+        vaultToken.transfer(msg.sender, amount);
 
     }
 
