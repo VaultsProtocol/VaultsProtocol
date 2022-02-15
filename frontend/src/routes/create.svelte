@@ -160,7 +160,7 @@
 	<section>
 		<!-- svelte-ignore a11y-label-has-associated-control -->
 		<form
-			class="column row-desktop"
+			class="column"
 			on:submit|preventDefault={() => currentStep = Steps.TransactionSigning}
 			disabled={currentStep !== Steps.Idle}
 		>
