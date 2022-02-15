@@ -1,10 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0;
 
-import "./tokens/ERC721.sol";
 import "./tokens/ERC20.sol";
-import "./DaoVault.sol";
-
+import "./BaseVault.sol";
 import "hardhat/console.sol";
 
 // Jackpot & Dividend Vault
@@ -21,7 +19,6 @@ contract DegenVault is BaseVault {
     struct Context {
         uint16 jackpotBP;
         uint16 dividendsBP;
-        uint16 devFee;
     }
     
     // #########################
@@ -35,7 +32,6 @@ contract DegenVault is BaseVault {
     uint256 public minimumPrice; //wei
     uint256 public deadline; //seconds
     uint256 public jackpot; //wei
-    uint256 public adminFeesAccumulated; //wei
 
     address public lastDepositer;
 
@@ -47,18 +43,18 @@ contract DegenVault is BaseVault {
 
     constructor(
         address _controller,
-        ERC721 _NFT,
         ERC20 _vaultToken,
         uint16 _jackpotBP,
         uint16 _dividendsBP,
-        uint16 devFee,
         uint256 _minimumPrice,
-        uint256 initialDeadlineSeconds
-    ) BaseVault(_controller, _NFT, _vaultToken) {
+        uint256 initialDeadlineSeconds,
+        string memory name,
+        string memory symbol
+    ) BaseVault(_controller, _vaultToken, name, symbol) {
 
-        require(_jackpotBP + _dividendsBP + devFee <= 10000);
+        require(_jackpotBP + _dividendsBP <= 10000);
 
-        ctx = Context(_jackpotBP, _dividendsBP, devFee);
+        ctx = Context(_jackpotBP, _dividendsBP);
         minimumPrice = _minimumPrice;
 
         // 24 hrs
@@ -84,38 +80,30 @@ contract DegenVault is BaseVault {
 
         // contract execution never passed to 
         // untrusted contract so this pattern is safe
-        uint id = NFT.mint(msg.sender);
+        uint id = _mint(msg.sender, currentId);
+
+        uint256 totalBP = 10000 - (ctxm.jackpotBP + ctxm.dividendsBP);
+        uint256 amountClaimable = amount * totalBP / 10000;
 
         if (id > 1) {
 
             jackpot += amount * ctxm.jackpotBP / 10000;
-
-            adminFeesAccumulated += amount * ctxm.devFee / 10000;
-
-            uint16 totalBP = 10000 - (ctxm.devFee + ctxm.jackpotBP + ctxm.dividendsBP);
-            uint256 newAmount = amount * totalBP / 10000;
-            
-            deposits[id].amount = newAmount;
-            totalDeposits += newAmount;
 
             // sorry :( , you dont get your own dividends?!
             adjustYeild(
                 amount * ctxm.dividendsBP / 10000
             );
 
-            deposits[id].tracker = newAmount * yeildPerDeposit;
+            deposits[id].tracker = amountClaimable * yeildPerDeposit;
 
         } else {
 
             jackpot = amount * (ctxm.jackpotBP + ctxm.dividendsBP) / 10000;
 
-            uint256 totalBP = 10000 - (ctxm.devFee + ctxm.jackpotBP + ctxm.dividendsBP);
-            uint256 newAmount = amount * totalBP / 10000;
-
-            deposits[id].amount = newAmount;
-            totalDeposits += newAmount;
-
         }
+
+        deposits[id].amount = amountClaimable;
+        totalDeposits += amountClaimable;
 
         lastDepositer = msg.sender;
 
@@ -132,7 +120,7 @@ contract DegenVault is BaseVault {
         
         // trusted contract
         require(
-            msg.sender == NFT.ownerOf(id) &&
+            msg.sender == ownerOf[id] &&
             amount >= minimumPrice &&
             block.timestamp <= deadline
         );
@@ -141,9 +129,7 @@ contract DegenVault is BaseVault {
 
         jackpot += amount * ctxm.jackpotBP / 10000;
 
-        adminFeesAccumulated += amount * ctxm.devFee / 10000;
-
-        uint256 totalBP = 10000 - (ctxm.devFee + ctxm.jackpotBP + ctxm.dividendsBP);
+        uint256 totalBP = 10000 - (ctxm.jackpotBP + ctxm.dividendsBP);
         uint256 newAmount = amount * totalBP / 10000;
         
         deposits[id].amount += newAmount;
@@ -168,7 +154,7 @@ contract DegenVault is BaseVault {
 
     function withdrawFromId(uint256 amount, uint256 id) public override {
 
-        require(msg.sender == NFT.ownerOf(id));
+        require(msg.sender == ownerOf[id]);
         require(amount == withdrawableById(id), "USE BURN");
 
         //trusted contract

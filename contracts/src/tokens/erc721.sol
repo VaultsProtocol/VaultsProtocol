@@ -101,36 +101,36 @@ contract ERC721 {
         emit Transfer(from, to, id);
     }
 
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 id
-    ) public virtual {
-        transferFrom(from, to, id);
+    // function safeTransferFrom(
+    //     address from,
+    //     address to,
+    //     uint256 id
+    // ) public virtual {
+    //     transferFrom(from, to, id);
 
-        require(
-            to.code.length == 0 ||
-                ERC721TokenReceiver(to).onERC721Received(msg.sender, from, id, "") ==
-                ERC721TokenReceiver.onERC721Received.selector,
-            "UNSAFE_RECIPIENT"
-        );
-    }
+    //     require(
+    //         to.code.length == 0 ||
+    //             ERC721TokenReceiver(to).onERC721Received(msg.sender, from, id, "") ==
+    //             ERC721TokenReceiver.onERC721Received.selector,
+    //         "UNSAFE_RECIPIENT"
+    //     );
+    // }
 
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 id,
-        bytes memory data
-    ) public virtual {
-        transferFrom(from, to, id);
+    // function safeTransferFrom(
+    //     address from,
+    //     address to,
+    //     uint256 id,
+    //     bytes memory data
+    // ) public virtual {
+    //     transferFrom(from, to, id);
 
-        require(
-            to.code.length == 0 ||
-                ERC721TokenReceiver(to).onERC721Received(msg.sender, from, id, data) ==
-                ERC721TokenReceiver.onERC721Received.selector,
-            "UNSAFE_RECIPIENT"
-        );
-    }
+    //     require(
+    //         to.code.length == 0 ||
+    //             ERC721TokenReceiver(to).onERC721Received(msg.sender, from, id, data) ==
+    //             ERC721TokenReceiver.onERC721Received.selector,
+    //         "UNSAFE_RECIPIENT"
+    //     );
+    // }
 
     /*///////////////////////////////////////////////////////////////
                               ERC165 LOGIC
@@ -147,7 +147,7 @@ contract ERC721 {
                        INTERNAL MINT/BURN LOGIC
     //////////////////////////////////////////////////////////////*/
 
-    function _mint(address to, uint256 id) internal virtual {
+    function _mint(address to, uint256 id) internal virtual returns (uint) {
         require(to != address(0), "INVALID_RECIPIENT");
 
         require(ownerOf[id] == address(0), "ALREADY_MINTED");
@@ -161,6 +161,8 @@ contract ERC721 {
         ownerOf[id] = to;
 
         emit Transfer(address(0), to, id);
+
+        return id;
     }
 
     function _burn(uint256 id) internal virtual {
@@ -184,72 +186,39 @@ contract ERC721 {
                        INTERNAL SAFE MINT LOGIC
     //////////////////////////////////////////////////////////////*/
 
-    function _safeMint(address to, uint256 id) internal virtual {
-        _mint(to, id);
+    // function _safeMint(address to, uint256 id) internal virtual {
+    //     _mint(to, id);
 
-        require(
-            to.code.length == 0 ||
-                ERC721TokenReceiver(to).onERC721Received(msg.sender, address(0), id, "") ==
-                ERC721TokenReceiver.onERC721Received.selector,
-            "UNSAFE_RECIPIENT"
-        );
-    }
+    //     require(
+    //         to.code.length == 0 ||
+    //             ERC721TokenReceiver(to).onERC721Received(msg.sender, address(0), id, "") ==
+    //             ERC721TokenReceiver.onERC721Received.selector,
+    //         "UNSAFE_RECIPIENT"
+    //     );
+    // }
 
-    function _safeMint(
-        address to,
-        uint256 id,
-        bytes memory data
-    ) internal virtual {
-        _mint(to, id);
+    // function _safeMint(
+    //     address to,
+    //     uint256 id,
+    //     bytes memory data
+    // ) internal virtual {
+    //     _mint(to, id);
 
-        require(
-            to.code.length == 0 ||
-                ERC721TokenReceiver(to).onERC721Received(msg.sender, address(0), id, data) ==
-                ERC721TokenReceiver.onERC721Received.selector,
-            "UNSAFE_RECIPIENT"
-        );
-    }
+    //     require(
+    //         to.code.length == 0 ||
+    //             ERC721TokenReceiver(to).onERC721Received(msg.sender, address(0), id, data) ==
+    //             ERC721TokenReceiver.onERC721Received.selector,
+    //         "UNSAFE_RECIPIENT"
+    //     );
+    // }
 
-    /*///////////////////////////////////////////////////////////////
-                       Vault Logic
-    //////////////////////////////////////////////////////////////*/
-
-    function mint(address to) external returns(uint256) {
-
-        require(msg.sender == vault);
-        uint id = currentId;
-        
-        _mint(to, id);
-        return id;
-        
-    }
-
-    // called by DAOCreator in same transaction as deployment
-    function initVault() external {
-
-        require(vault == address(0));
-
-        vault = msg.sender;
-
-    }
-
-    function burn(uint256 id) external {
-
-        require(msg.sender == vault);
-
-        _burn(id);
-        
-    }
-
-}
-
-/// @notice A generic interface for a contract which properly accepts ERC721 tokens.
-/// @author Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/tokens/ERC721.sol)
-interface ERC721TokenReceiver {
-    function onERC721Received(
-        address operator,
-        address from,
-        uint256 id,
-        bytes calldata data
-    ) external returns (bytes4);
+// /// @notice A generic interface for a contract which properly accepts ERC721 tokens.
+// /// @author Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/tokens/ERC721.sol)
+// interface ERC721TokenReceiver {
+//     function onERC721Received(
+//         address operator,
+//         address from,
+//         uint256 id,
+//         bytes calldata data
+//     ) external returns (bytes4);
 }

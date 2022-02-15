@@ -41,16 +41,18 @@ contract("degenVault", ([alice, bob, tom, deployer]) => {
       bc.dividendBps = 3500;
       bc.initialDeadlineSeconds = 30;
       bc.minimumPrice = 10e18.toString();
-      bc.devFee = 500 ;
+      bc.devFee = 500;
+      bc.name = "name";
+      bc.symbol = "symbol";
       bc.degenVault = await DegenVault.new(
         tom, // Controller
-        bc.nft.address, // NFT collection
         bc.vaultToken.address, // ERC20 Vault Token
         bc.jackpotBps, 
         bc.dividendBps,
-        bc.devFee,
         bc.minimumPrice,
         bc.initialDeadlineSeconds,
+        bc.name,
+        bc.symbol,
         { from: deployer },
       );
     });
@@ -95,29 +97,27 @@ contract("degenVault", ([alice, bob, tom, deployer]) => {
       );
 
       // Ensure mint happened
-      assert.equal(Number(await bc.nft.balanceOf(alice)), 1);
+      assert.equal(Number(await bc.degenVault.balanceOf(alice)), 1);
       
       // Balance of Alice 
       let aliceBalance = await bc.degenVault.deposits(1);
 
-      //3500 = 10000 - sum(dividensBP, jackpotBp, devFee)
+      //4000 = 10000 - sum(dividensBP, jackpotBp)
       // Ensure internal calculation for balances is good.
       assert.equal(
         Number(aliceBalance.amount),
-        (bc.price * 3500) / 1e4,
+        (bc.price * 4000) / 1e4,
       );
 
       // Alice Tracker is 0
       // first minter all dividens go to jackpot
       let yieldDistributedSoFar = bc.price * bc.dividendBps / 10000;
-      // usally you need to include tracker
-      let expectedAliceRewardNow = (yieldDistributedSoFar / await bc.degenVault.totalDeposits()) * aliceBalance.amount;
 
       // Ensure Previous holders have claimable.
       // ID = 1, OWNER = ALICE
       assert.equal(
         Number(await bc.degenVault.withdrawableById(1)),
-        Number(expectedAliceRewardNow) + Number(aliceBalance.amount),
+        Number(yieldDistributedSoFar) + Number(aliceBalance.amount),
       );
 
     });

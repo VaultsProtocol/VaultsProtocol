@@ -5,7 +5,7 @@ import "./tokens/ERC721.sol";
 import "./tokens/ERC20.sol";
 import "./interfaces/IStrategy.sol";
 
-contract BaseVault {
+contract BaseVault is ERC721 {
 
     // #########################
     // ##                     ##
@@ -33,8 +33,7 @@ contract BaseVault {
     uint256 SCALAR = 1e10;
 
     uint256 public depositedToStrat;
-
-    ERC721 public NFT;
+    
     ERC20 immutable vaultToken;
 
     //strategy and fund manager
@@ -52,14 +51,12 @@ contract BaseVault {
 
     constructor(
         address _controller,
-        ERC721 _NFT,
-        ERC20 _vaultToken
-    ) {
+        ERC20 _vaultToken,
+        string memory name,
+        string memory symbol
+    ) ERC721(name, symbol) {
         controller = _controller;
-        NFT = _NFT;
         vaultToken = _vaultToken;
-
-        NFT.initVault();
     }
 
     // #########################
@@ -70,7 +67,7 @@ contract BaseVault {
 
     function mintNewNFT(uint256 amount) external virtual returns (uint256) {
 
-        uint256 id = NFT.currentId();
+        uint256 id = currentId;
 
         deposits[id].amount = amount;
         deposits[id].tracker += amount * yeildPerDeposit;
@@ -79,7 +76,7 @@ contract BaseVault {
         //ensure token reverts on failed
         vaultToken.transferFrom(msg.sender, address(this), amount);
 
-        require(id == NFT.mint(msg.sender));
+        require(id == _mint(msg.sender, id));
         return id;
 
     }
@@ -87,7 +84,7 @@ contract BaseVault {
     function depositToId(uint256 amount, uint256 id) external virtual {
 
         // trusted contract
-        require(msg.sender == NFT.ownerOf(id));
+        require(msg.sender == ownerOf[id]);
 
         deposits[id].amount += amount;
         deposits[id].tracker += amount * yeildPerDeposit;
@@ -104,14 +101,14 @@ contract BaseVault {
         uint256 claimable = withdrawableById(id);
         withdrawFromId(claimable, id);
 
-        NFT.burn(id);
+        _burn(id);
 
     }
 
     // TODO: potentially remove this?
     function withdrawFromId(uint256 amount, uint256 id) public virtual  {
 
-        require(msg.sender == NFT.ownerOf(id));
+        require(msg.sender == ownerOf[id]);
         require(amount <= withdrawableById(id));
 
         //trusted contract

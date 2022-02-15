@@ -3,18 +3,13 @@ pragma solidity >=0.8.0;
 
 import "./BaseVault.sol";
 
-
 // No Loss Charity Vaults are immutable and recipients cannot changed, 
 contract CharityVault is BaseVault {
-
-    // #########################
-    // ##                     ##
-    // ##        State        ##
-    // ##                     ##
-    // #########################
-
     
-
+    struct Context {
+        uint16 percentOfYield;
+        address recipient;
+    }
 
     // #########################
     // ##                     ##
@@ -22,9 +17,7 @@ contract CharityVault is BaseVault {
     // ##                     ##
     // #########################
 
-    address immutable public recipient;
-
-    uint16 immutable percentOfYield;
+    Context ctx;
 
     uint256 yieldForRecipient;
 
@@ -35,17 +28,25 @@ contract CharityVault is BaseVault {
     // #########################
 
     constructor( 
+
         address _controller,
-        ERC721 _NFT,
         ERC20 _vaultToken,
-        address _recipient
+        address _recipient,
+        uint16 _tokenPercent,
+
+        string memory name,
+        string memory symbol
+
     ) BaseVault( 
+
         _controller,
-        _NFT,
-        _vaultToken
+        _vaultToken,
+        name,
+        symbol
+
     ) {
 
-        recipient = _recipient;
+        ctx = Context(_tokenPercent, _recipient);
 
     }
 
@@ -57,7 +58,7 @@ contract CharityVault is BaseVault {
 
     function withdrawlByRecipient() external {
         
-        vaultToken.transfer(recipient, yieldForRecipient);
+        vaultToken.transfer(ctx.recipient, yieldForRecipient);
 
     }
 
@@ -72,7 +73,7 @@ contract CharityVault is BaseVault {
 
         uint256 totalInStrat = strat.withdrawlableVaultToken();
         uint256 totalYield = totalInStrat - depositedToStrat;
-        uint toDistribute = totalYield * percentOfYield / 10000;
+        uint toDistribute = totalYield * ctx.percentOfYield / 10000;
 
         yieldForRecipient += toDistribute;
 

@@ -16,7 +16,7 @@ contract DaoVault is BaseVault {
     struct Proposal {
         string descriptor;
         uint256 idSnapshot; //prevent sybil attack
-        Manage[] reciepents;
+        Manage[5] reciepents;
         uint256 none; //No to all
         uint256 endTime;
         bool executed;
@@ -47,7 +47,7 @@ contract DaoVault is BaseVault {
 
     // #########################
     // ##                     ##
-    // ##       Voting        ##
+    // ##     Constructor     ##
     // ##                     ##
     // #########################
 
@@ -57,8 +57,9 @@ contract DaoVault is BaseVault {
         ERC20 _vaultToken
     ) BaseVault( 
         _controller,
-        _NFT,
-        _vaultToken
+        _vaultToken,
+        name,
+        symbol
     ) {
         // Add NAme info
     }
@@ -69,33 +70,33 @@ contract DaoVault is BaseVault {
     // ##                     ##
     // #########################
 
-    function createProposal(string calldata descriptor, Manage[] calldata _recipients, uint256 time) external {
+    // function createProposal(string calldata descriptor, Manage[5] calldata _recipients, uint256 time) external {
 
-        require(time >= 86400, "Time to short");
+    //     require(time >= 86400, "Time to short");
 
-        uint256 snapshot = NFT.currentId();
+    //     uint256 snapshot = NFT.currentId();
 
-        Proposal memory _proposal = Proposal(
-            descriptor,
-            snapshot,
-            _recipients,
-            0,
-            block.timestamp + time,
-            false
-        );
+    //     Proposal memory _proposal = Proposal(
+    //         descriptor,
+    //         snapshot,
+    //         _recipients,
+    //         0,
+    //         block.timestamp + time,
+    //         false
+    //     );
         
-        bytes32 key = keccak256(abi.encodePacked(descriptor));
+    //     bytes32 key = keccak256(abi.encodePacked(descriptor));
 
-        proposals[key] = _proposal;
+    //     proposals[key] = _proposal;
 
-    }
+    // }
 
     // votes are urged to be delegated so very few people will ever call this function
     function vote(uint256 id, uint256 key, bytes32 descriptor) external {
 
         require(
             id < proposals[descriptor].idSnapshot &&
-            msg.sender == NFT.ownerOf(id)
+            msg.sender == ownerOf[id]
         );
 
         voted[id][descriptor] = true;
@@ -116,7 +117,7 @@ contract DaoVault is BaseVault {
     function delegateVotes(uint256 fromId, uint256 toId) public {
 
         require(
-            msg.sender == NFT.ownerOf(fromId) &&
+            msg.sender == ownerOf[fromId] &&
             fromId != toId
         );
 
@@ -138,7 +139,7 @@ contract DaoVault is BaseVault {
 
     function removeAllDelegation(uint256 id) public {
 
-        require(msg.sender == NFT.ownerOf(id));
+        require(msg.sender == ownerOf[id]);
         
         delegation[id].delegatee = 0;
         delegation[id].weight = 0;
@@ -237,7 +238,7 @@ contract DaoVault is BaseVault {
     function depositToId(uint256 amount, uint256 id) external override {
 
         // trusted contract
-        require(msg.sender == NFT.ownerOf(id));
+        require(msg.sender == ownerOf[id]);
 
         deposits[id].amount += amount;
         deposits[id].tracker += amount * yeildPerDeposit;
@@ -253,7 +254,7 @@ contract DaoVault is BaseVault {
 
     function withdrawFromId(uint256 amount, uint256 id) public override  {
 
-        require(msg.sender == NFT.ownerOf(id));
+        require(msg.sender == ownerOf[id]);
         require(amount <= withdrawableById(id));
 
         //trusted contract
