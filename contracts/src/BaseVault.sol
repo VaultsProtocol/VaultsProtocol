@@ -190,7 +190,7 @@ contract BaseVault {
 
     // gets yeild from strategy contract
     //possbily call this before new mints?
-    function adjustYeild() public {
+    function adjustYeild() public virtual {
 
         uint256 totalInStrat = strat.withdrawlableVaultToken();
         uint256 totalYield = totalInStrat - depositedToStrat;

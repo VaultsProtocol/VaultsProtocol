@@ -45,6 +45,12 @@ contract DaoVault is BaseVault {
     // key = bytes32(keccakk256(abi.encodePacked(Proposal.descriptor)))
     mapping (bytes32 => Proposal) public proposals;
 
+    // #########################
+    // ##                     ##
+    // ##       Voting        ##
+    // ##                     ##
+    // #########################
+
     constructor( 
         address _controller,
         ERC721 _NFT,
@@ -96,6 +102,7 @@ contract DaoVault is BaseVault {
 
         if (key > proposals[descriptor].reciepents.length) {
 
+            // no vote
             proposals[descriptor].none += delegatedAmount[id] + (deposits[id].amount - delegation[id].weight);
 
         } else {
