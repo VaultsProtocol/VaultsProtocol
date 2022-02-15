@@ -28,22 +28,22 @@ contract DaoVault is BaseVault {
     }
 
     // key 1 = propsoal index, key 2 = reciepent key, returns number of votes
-    mapping (bytes32 => mapping(uint256 => uint256)) votes;
+    mapping (bytes32 => mapping(uint256 => uint256)) public votes;
 
     // key is ID of delegater, result is ID of delgatee
-    mapping (uint256 => Delegate) delegation;
+    mapping (uint256 => Delegate) public delegation;
 
     // key is NFT ID result is vote weight
-    mapping (uint256 => uint256) delegatedAmount;
+    mapping (uint256 => uint256) public delegatedAmount;
 
     // key 1 = NFT ID, key 2 = Propsal ID
-    mapping (uint256 => mapping (bytes32 => bool)) voted;
+    mapping (uint256 => mapping (bytes32 => bool)) public voted;
 
     // number of tokens currently not claimable because of DAO vote
     uint256 tokensManaged;
 
     // key = bytes32(keccakk256(abi.encodePacked(Proposal.descriptor)))
-    mapping (bytes32 => Proposal) proposals;
+    mapping (bytes32 => Proposal) public proposals;
 
     constructor( 
         address _controller,
@@ -114,7 +114,6 @@ contract DaoVault is BaseVault {
         );
 
         uint256 currentWeight = delegation[fromId].weight;
-
         uint256 weight = deposits[fromId].amount;
         uint256 currentDelegatee = delegation[fromId].delegatee;
 
