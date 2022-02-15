@@ -29,8 +29,8 @@ contract CharityVault is BaseVault {
 
     constructor( 
 
-        address _controller,
         ERC20 _vaultToken,
+        address strategy,
         address _recipient,
         uint16 _tokenPercent,
 
@@ -39,8 +39,8 @@ contract CharityVault is BaseVault {
 
     ) BaseVault( 
 
-        _controller,
         _vaultToken,
+        strategy,
         name,
         symbol
 

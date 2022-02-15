@@ -42,15 +42,17 @@ contract DegenVault is BaseVault {
     // #########################
 
     constructor(
-        address _controller,
+
         ERC20 _vaultToken,
+        address strategy,
         uint16 _jackpotBP,
         uint16 _dividendsBP,
         uint256 _minimumPrice,
         uint256 initialDeadlineSeconds,
         string memory name,
         string memory symbol
-    ) BaseVault(_controller, _vaultToken, name, symbol) {
+
+    ) BaseVault(_vaultToken, strategy, name, symbol) {
 
         require(_jackpotBP + _dividendsBP <= 10000);
 
@@ -127,19 +129,18 @@ contract DegenVault is BaseVault {
 
         Context memory ctxm = ctx;
 
-        jackpot += amount * ctxm.jackpotBP / 10000;
-
-        uint256 totalBP = 10000 - (ctxm.jackpotBP + ctxm.dividendsBP);
-        uint256 newAmount = amount * totalBP / 10000;
-        
-        deposits[id].amount += newAmount;
-        totalDeposits += newAmount;
-
         // sorry :( , you dont get your own dividends?!
         adjustYeild(
             amount * ctxm.dividendsBP / 10000
         );
 
+        jackpot += amount * ctxm.jackpotBP / 10000;
+
+        uint256 totalBP = 10000 - (ctxm.jackpotBP + ctxm.dividendsBP);
+        uint256 newAmount = amount * totalBP / 10000;
+
+        deposits[id].amount += newAmount;
+        totalDeposits += newAmount;
         deposits[id].tracker += newAmount * yeildPerDeposit;
 
         lastDepositer = msg.sender;
@@ -201,13 +202,4 @@ contract DegenVault is BaseVault {
         return deposits[id].amount + yield;
 
     }
-
-    // #########################
-    // ##                     ##
-    // ##        Admin        ##
-    // ##                     ##
-    // #########################
-
-    //TODO
-
 }

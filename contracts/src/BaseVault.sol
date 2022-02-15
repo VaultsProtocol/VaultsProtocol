@@ -36,9 +36,6 @@ contract BaseVault is ERC721 {
     
     ERC20 immutable vaultToken;
 
-    //strategy and fund manager
-    address immutable controller;
-
     // strategy to earn yeild on vault reserves
     // strats are hardcoded at 50% of totalDeposits
     IStrategy strat;
@@ -50,13 +47,13 @@ contract BaseVault is ERC721 {
     // #########################
 
     constructor(
-        address _controller,
         ERC20 _vaultToken,
+        address strategy,
         string memory name,
         string memory symbol
     ) ERC721(name, symbol) {
-        controller = _controller;
         vaultToken = _vaultToken;
+        strat = IStrategy(strategy);
     }
 
     // #########################
@@ -150,9 +147,7 @@ contract BaseVault is ERC721 {
     // ##                     ##
     // #########################
 
-    function setStrategy(address addr) external {
-
-        require(msg.sender == controller);
+    function setStrategy(address addr) internal virtual {
 
         strat = IStrategy(addr);
 
