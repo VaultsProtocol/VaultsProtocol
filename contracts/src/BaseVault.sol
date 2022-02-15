@@ -119,7 +119,12 @@ contract BaseVault {
 
         // trusted contract
         if (amount > balanceCheck) {
-            withdrawFromStrat(amount - balanceCheck, id);
+
+            withdrawFromStrat(
+                amount - balanceCheck,
+                id
+            );
+            
         }
 
         deposits[id].amount -= amount;
