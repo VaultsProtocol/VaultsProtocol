@@ -99,9 +99,7 @@ contract DegenVault is BaseVault {
             deposits[id].tracker = amountClaimable * yeildPerDeposit;
 
         } else {
-
             jackpot = amount * (ctxm.jackpotBP + ctxm.dividendsBP) / 10000;
-
         }
 
         deposits[id].amount = amountClaimable;

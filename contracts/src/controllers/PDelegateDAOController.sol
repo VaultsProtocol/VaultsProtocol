@@ -169,18 +169,17 @@ contract PDelegate is DaoVault {
             fromId != toId
         );
 
-        uint256 currentWeight = delegation[fromId].weight;
-        uint256 weight = deposits[fromId].amount;
+        uint256 newWeight = deposits[fromId].amount;
         uint256 currentDelegatee = delegation[fromId].delegatee;
 
         if (currentDelegatee != 0) {
 
-            delegatedAmount[currentDelegatee] -= currentWeight;
+            delegatedAmount[currentDelegatee] -= delegation[fromId].weight;
 
         } 
 
-        delegatedAmount[toId] += weight;
-        delegation[fromId].weight = weight;
+        delegatedAmount[toId] += newWeight;
+        delegation[fromId].weight = newWeight;
         delegation[fromId].delegatee = fromId;
 
     }
@@ -188,6 +187,8 @@ contract PDelegate is DaoVault {
     function removeAllDelegation(uint256 id) public {
 
         require(msg.sender == ownerOf[id]);
+
+        delegatedAmount[ delegation[id].delegatee ] -= delegation[id].weight;
         
         delegation[id].delegatee = 0;
         delegation[id].weight = 0;
