@@ -50,7 +50,7 @@ contract YearnStrategy {
 
     function deposit(uint amount) external onlyVault() {
         
-        token.transferFrom(msg.sender, address(this), amount);
+        token.transferFrom(vault, address(this), amount);
 
         yvault.deposit(amount);
 
@@ -64,7 +64,7 @@ contract YearnStrategy {
         yvault.withdraw(needed);
         uint256 withdrawn = token.balanceOf(address(this));
 
-        token.transfer(msg.sender, withdrawn);
+        token.transfer(vault, withdrawn);
 
     }
     

@@ -89,13 +89,12 @@ contract DegenVault is BaseVault {
 
         if (id > 1) {
 
-            jackpot += amount * ctxm.jackpotBP / 10000;
-
             // sorry :( , you dont get your own dividends?!
             adjustYeild(
                 amount * ctxm.dividendsBP / 10000
             );
 
+            jackpot += amount * ctxm.jackpotBP / 10000;
             deposits[id].tracker = amountClaimable * yeildPerDeposit;
 
         } else {
@@ -132,13 +131,13 @@ contract DegenVault is BaseVault {
             amount * ctxm.dividendsBP / 10000
         );
 
-        jackpot += amount * ctxm.jackpotBP / 10000;
-
         uint256 totalBP = 10000 - (ctxm.jackpotBP + ctxm.dividendsBP);
         uint256 newAmount = amount * totalBP / 10000;
 
-        deposits[id].amount += newAmount;
+        jackpot += amount * ctxm.jackpotBP / 10000;
         totalDeposits += newAmount;
+
+        deposits[id].amount += newAmount;
         deposits[id].tracker += newAmount * yeildPerDeposit;
 
         lastDepositer = msg.sender;

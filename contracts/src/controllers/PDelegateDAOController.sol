@@ -13,9 +13,10 @@ contract PDelegate is DaoVault {
     }
 
     struct Proposal {
-        string descriptor;
+        bytes32 key;
         uint256 idSnapshot; //prevent sybil attack
-        Manage[] reciepents;
+        mapping (uint256 => Manage) recipients;
+        uint256 recipientsLength;
         uint256 none; //No to all
         uint256 endTime;
         bool executed;
@@ -67,26 +68,28 @@ contract PDelegate is DaoVault {
     // ##                     ##
     // #########################
 
-    // function createProposal(string calldata descriptor, Manage[] calldata _recipients, uint256 time) external {
+    function createProposal(
+        string calldata descriptor, 
+        Manage[] memory _recipients, 
+        uint256 time
+    ) external returns (bytes32) {
 
-    //     require(time >= 86400, "Time to short");
+        require(time >= 86400, "Time to short");
 
-    //     uint256 snapshot = currentId;
+        bytes32 key = keccak256(abi.encodePacked(descriptor));
+        uint256 length = _recipients.length;
 
-    //     Proposal memory _proposal = Proposal(
-    //         descriptor,
-    //         snapshot,
-    //         _recipients,
-    //         0,
-    //         block.timestamp + time,
-    //         false
-    //     );
+        Proposal storage proposal = proposals[key];
         
-    //     bytes32 key = keccak256(abi.encodePacked(descriptor));
+        for (uint256 i = 0; i < length; i++) {
+            
+            proposal.recipients[i].to = _recipients[i].to;
 
-    //     proposals[key] = _proposal;
+        }
 
-    // }
+        return key;
+
+    }
 
     // votes are urged to be delegated so very few people will ever call this function
     function vote(uint256 id, uint256 key, bytes32 descriptor) external {
@@ -98,7 +101,7 @@ contract PDelegate is DaoVault {
 
         voted[id][descriptor] = true;
 
-        if (key > proposals[descriptor].reciepents.length) {
+        if (key > proposals[descriptor].recipientsLength) {
 
             // no vote
             proposals[descriptor].none += delegatedAmount[id] + (deposits[id].amount - delegation[id].weight);
@@ -116,16 +119,16 @@ contract PDelegate is DaoVault {
     // 15% Quorum
     function executeProposal(bytes32 descriptor) external returns (bool) {
 
-        Proposal memory _mPro = proposals[descriptor];
+        Proposal storage proposal = proposals[descriptor];
 
         require(
-            _mPro.endTime <= block.timestamp &&
-            !_mPro.executed
+            proposal.endTime <= block.timestamp &&
+            !proposal.executed
         );
 
         proposals[descriptor].executed = true;
 
-        uint256 length = _mPro.reciepents.length;
+        uint256 length = proposal.recipientsLength;
         uint256 mostVotedKey = 0;
         uint256 totalVotes = 0;
 
@@ -141,15 +144,15 @@ contract PDelegate is DaoVault {
 
         }
 
-        if (_mPro.none >= votes[descriptor][mostVotedKey]) {
+        if (proposal.none >= votes[descriptor][mostVotedKey]) {
             return false;
         }
 
         require(totalVotes >= totalDeposits * 1500 / 1e4, "Not Enough Votes");
 
         manage(
-            _mPro.reciepents[mostVotedKey].amount, 
-            _mPro.reciepents[mostVotedKey].to
+            proposal.recipients[mostVotedKey].amount, 
+            proposal.recipients[mostVotedKey].to
         );
 
         return true;

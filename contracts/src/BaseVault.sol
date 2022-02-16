@@ -134,7 +134,6 @@ contract BaseVault is ERC721 {
 
         // claimable may be larger than total deposits but never smaller
         uint256 claimable = vaultToken.balanceOf(address(this)) + depositedToStrat;
-            
         uint256 claimId = (claimable * deposits[id].amount) / totalDeposits;
 
         return claimId + yield;
@@ -156,9 +155,13 @@ contract BaseVault is ERC721 {
     //total possible deposited to strat is currently set at 50%
     function initStrat() public {
 
+        require(address(strat) != address(0), "No Strategy");
+
         // 50% of total deposits
         uint256 half = (totalDeposits * 5000) / 10000;
         uint256 depositable = half - depositedToStrat;
+
+        depositedToStrat += depositable;
         
         vaultToken.approve(address(strat), depositable);
         strat.deposit(depositable);
@@ -188,6 +191,8 @@ contract BaseVault is ERC721 {
     // gets yeild from strategy contract
     //possbily call this before new mints?
     function adjustYeild() public virtual {
+
+        require(address(strat) != address(0), "No Strategy");
 
         uint256 totalInStrat = strat.withdrawlableVaultToken();
         uint256 totalYield = totalInStrat - depositedToStrat;
