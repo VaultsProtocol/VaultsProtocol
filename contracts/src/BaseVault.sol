@@ -208,4 +208,15 @@ contract BaseVault is ERC721 {
 
     }
 
+    // #########################
+    // ##                     ##
+    // ##  MetaData Override  ##
+    // ##                     ##
+    // #########################
+
+    function tokenURI(uint256 id) public view override returns (string memory) {
+            
+    }
+
+
 }

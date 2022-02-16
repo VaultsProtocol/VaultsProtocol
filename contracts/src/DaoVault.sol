@@ -50,6 +50,7 @@ contract DaoVault is BaseVault {
 
     function returnManagedFunds(uint256 amount) external {
 
+        // fails on underflow
         tokensManaged -= amount;
 
         //vault tokens revert on failed transfer

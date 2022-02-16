@@ -6,7 +6,7 @@ import "hardhat/console.sol";
 /// @notice Modern, minimalist, and gas efficient ERC-721 implementation.
 /// @author Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/tokens/ERC721.sol)
 /// @dev Note that balanceOf does not revert if passed the zero address, in defiance of the ERC.
-contract ERC721 {
+abstract contract ERC721 {
     /*///////////////////////////////////////////////////////////////
                                  EVENTS
     //////////////////////////////////////////////////////////////*/
@@ -25,7 +25,7 @@ contract ERC721 {
 
     string public symbol;
 
-    //function tokenURI(uint256 id) public view virtual returns (string memory);
+    function tokenURI(uint256 id) public view virtual returns (string memory);
 
     /*///////////////////////////////////////////////////////////////
                             ERC721 STORAGE                        

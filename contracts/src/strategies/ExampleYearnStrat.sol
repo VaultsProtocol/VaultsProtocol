@@ -15,7 +15,9 @@ contract YearnStrategy {
     yVault yvault;
     ERC20 token;
 
-    address immutable vault;
+    address vault;
+    
+    address immutable deployer;
 
     // #########################
     // ##                     ##
@@ -23,17 +25,17 @@ contract YearnStrategy {
     // ##                     ##
     // #########################
 
-    constructor(yVault _yvault, ERC20 _token, address _vault) {
+    constructor(yVault _yvault, ERC20 _token) {
 
         yvault = _yvault;
         token = _token;
-
-        vault = _vault;
+        deployer = msg.sender;
+        
     }
 
     // #########################
     // ##                     ##
-    // ##     Constructor     ##
+    // ##      Modifier       ##
     // ##                     ##
     // #########################
 
@@ -74,4 +76,15 @@ contract YearnStrategy {
         return yvault.balanceOf(address(this)) * price;
 
     }
+
+    function initVault(address _vault) external {
+
+        require (
+            msg.sender == deployer &&
+            vault == address(0)
+        );
+
+        vault = _vault;
+    }
+
 }

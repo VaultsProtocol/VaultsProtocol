@@ -37,30 +37,45 @@ contract PDelegate is DaoVault {
         ERC20 _vaultToken,
         address strategy,
         string memory name,
-        string memory symbol
+        string memory symbol,
+        uint16 _quorom
     ) DaoVault(
         _vaultToken,
         strategy,
         name,
         symbol
     ) {
-
+        quorom = _quorom;
     }
+
+    // #########################
+    // ##                     ##
+    // ##       State         ##
+    // ##                     ##
+    // #########################
+
+    uint16 immutable quorom;
+
+    // key is ID of delegater, result is thier delegation info
+    mapping (uint256 => Delegate) public delegation;
+
+    // key is NFT ID result is delegated vote weight
+    mapping (uint256 => uint256) public delegatedAmount;
+
+
+
+    // key = bytes32(keccakk256(abi.encodePacked(Proposal.descriptor)))
+    mapping (bytes32 => Proposal) public proposals;
 
     // key 1 = propsoal index, key 2 = reciepent key, returns number of votes
     mapping (bytes32 => mapping(uint256 => uint256)) public votes;
 
-    // key is ID of delegater, result is ID of delgatee
-    mapping (uint256 => Delegate) public delegation;
-
-    // key is NFT ID result is vote weight
-    mapping (uint256 => uint256) public delegatedAmount;
-
     // key 1 = NFT ID, key 2 = Propsal ID
     mapping (uint256 => mapping (bytes32 => bool)) public voted;
 
-    // key = bytes32(keccakk256(abi.encodePacked(Proposal.descriptor)))
-    mapping (bytes32 => Proposal) public proposals;
+    //
+
+    //
 
     // #########################
     // ##                     ##
