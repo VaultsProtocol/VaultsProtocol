@@ -46,6 +46,8 @@ contract PDelegate is DaoVault {
         symbol
     ) {
         quorom = _quorom;
+
+        IStrategy(strategy).initVault(address(this));
     }
 
     // #########################
@@ -62,8 +64,6 @@ contract PDelegate is DaoVault {
     // key is NFT ID result is delegated vote weight
     mapping (uint256 => uint256) public delegatedAmount;
 
-
-
     // key = bytes32(keccakk256(abi.encodePacked(Proposal.descriptor)))
     mapping (bytes32 => Proposal) public proposals;
 
@@ -72,10 +72,6 @@ contract PDelegate is DaoVault {
 
     // key 1 = NFT ID, key 2 = Propsal ID
     mapping (uint256 => mapping (bytes32 => bool)) public voted;
-
-    //
-
-    //
 
     // #########################
     // ##                     ##
