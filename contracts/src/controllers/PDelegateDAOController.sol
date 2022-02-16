@@ -88,8 +88,9 @@ contract PDelegate is DaoVault {
         Manage[] memory _recipients, 
         uint256 time
     ) external returns (bytes32) {
-
-        require(time >= 86400, "Time to short");
+        
+        // 1 day < time < 3 days
+        require(time >= 86400 && time <= 259200);
 
         bytes32 key = keccak256(abi.encodePacked(descriptor));
         uint256 length = _recipients.length;
