@@ -52,8 +52,10 @@ contract BaseVault is ERC721 {
         string memory name,
         string memory symbol
     ) ERC721(name, symbol) {
+
         vaultToken = _vaultToken;
         strat = IStrategy(strategy);
+
     }
 
     // #########################
@@ -146,12 +148,6 @@ contract BaseVault is ERC721 {
     // ##                     ##
     // #########################
 
-    function setStrategy(address addr) internal virtual {
-
-        strat = IStrategy(addr);
-
-    }
-
     //total possible deposited to strat is currently set at 50%
     function initStrat() public {
 
@@ -169,13 +165,15 @@ contract BaseVault is ERC721 {
     }
 
     //internal, only called when balanceOf(address(this)) < withdraw requested
-    // depositedToStrat = total withdrawn - yeild of msg.sender
+    // depositedToStrat and totalDeposits = total withdrawn - yeild of msg.sender
     function withdrawFromStrat(uint256 amountNeeded, uint256 forID) internal {
 
         uint256 userYield = yeildPerId(forID);
 
         // needed for OoP
         uint256 toSubtract = amountNeeded - userYield;
+
+        totalDeposits -= toSubtract;
         depositedToStrat -= toSubtract;
 
         strat.withdrawl(amountNeeded);
@@ -215,7 +213,7 @@ contract BaseVault is ERC721 {
     // #########################
 
     function tokenURI(uint256 id) public view override returns (string memory) {
-            
+        
     }
 
 
