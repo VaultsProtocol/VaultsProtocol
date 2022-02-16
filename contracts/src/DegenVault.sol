@@ -162,6 +162,8 @@ contract DegenVault is BaseVault {
         if (amount > balanceCheck) {
             uint256 needed = amount - balanceCheck;
             withdrawFromStrat(needed, id);
+        } else {
+            totalDeposits -= amount;
         }
 
         deposits[id].amount -= amount;

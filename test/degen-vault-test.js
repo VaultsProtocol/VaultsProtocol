@@ -22,8 +22,7 @@ contract("degenVault", ([alice, bob, tom, deployer]) => {
   const bc = {};
   describe("NFT functions testing", function (accounts) {
     before(async () => {
-      
-      bc.nft = await ERC721.new('NFT', "NFT");
+    
       bc.vaultToken = await MockERC20.new("ERC20", "ERC20", 100e18.toString(), {
         from: deployer
       });

@@ -66,7 +66,7 @@ contract BaseVault is ERC721 {
 
     function mintNewNFT(uint256 amount) external virtual returns (uint256) {
 
-        uint256 id = currentId;
+        uint256 id = _mint(msg.sender, currentId);
 
         deposits[id].amount = amount;
         deposits[id].tracker += amount * yeildPerDeposit;
@@ -75,7 +75,6 @@ contract BaseVault is ERC721 {
         //ensure token reverts on failed
         vaultToken.transferFrom(msg.sender, address(this), amount);
 
-        require(id == _mint(msg.sender, id));
         return id;
 
     }
@@ -121,6 +120,14 @@ contract BaseVault is ERC721 {
                 id
             );
             
+        } else {
+            
+            // only adjust deposits if yield of user is less than withdraw requested;
+            uint256 yield = yeildPerId(id);
+            if (yield <= amount) {
+                totalDeposits -= (amount - yield);
+            }
+
         }
 
         deposits[id].amount -= amount;
@@ -213,7 +220,7 @@ contract BaseVault is ERC721 {
     // #########################
 
     function tokenURI(uint256 id) public view override returns (string memory) {
-        
+        return name;
     }
 
 

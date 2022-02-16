@@ -73,11 +73,13 @@ contract CharityVault is BaseVault {
 
         uint256 totalInStrat = strat.withdrawlableVaultToken();
         uint256 totalYield = totalInStrat - depositedToStrat;
-        uint toDistribute = totalYield * ctx.percentOfYield / 10000;
 
-        yieldForRecipient += toDistribute;
+        uint256 toCharitable = totalYield * ctx.percentOfYield / 1e4;
+        uint16 percentToSend = 10000 - ctx.percentOfYield;
 
-        yeildPerDeposit += (toDistribute * SCALAR) / totalDeposits;
+        yieldForRecipient += toCharitable;
+
+        yeildPerDeposit += (totalYield * percentToSend / 1e4) * SCALAR / totalDeposits;
 
     }
     
