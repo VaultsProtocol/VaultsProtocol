@@ -45,9 +45,10 @@ contract PDelegate is DaoVault {
         name,
         symbol
     ) {
+
         require(_quorom >= 1500);
-        
         quorom = _quorom;
+
     }
 
     // #########################
@@ -228,7 +229,7 @@ contract PDelegate is DaoVault {
         totalDeposits += amount;
 
         // adjusts weight
-        delegateVotes(id, delegation[id].delegatee);
+        delegateVotes(id, delegation[id].delegatee); //remove this
 
         //ensure token reverts on failed
         vaultToken.transferFrom(msg.sender, address(this), amount);
@@ -246,12 +247,20 @@ contract PDelegate is DaoVault {
         // trusted contract
         if (amount > balanceCheck) {
             withdrawFromStrat(amount - balanceCheck, id);
+        } else {
+            
+            // only adjust deposits if yield of user is less than withdraw requested;
+            uint256 yield = yieldPerId(id);
+            if (amount > yield) {
+                totalDeposits -= (amount - yield);
+            }
+
         }
 
         deposits[id].amount -= amount;
         deposits[id].tracker -= amount * yeildPerDeposit;
 
-        delegateVotes(id, delegation[id].delegatee);
+        delegateVotes(id, delegation[id].delegatee); //remove this
 
         vaultToken.transfer(msg.sender, amount);
 

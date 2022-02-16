@@ -163,7 +163,12 @@ contract DegenVault is BaseVault {
             uint256 needed = amount - balanceCheck;
             withdrawFromStrat(needed, id);
         } else {
-            totalDeposits -= amount;
+
+            uint256 yield = yieldPerId(id);
+            if (amount > yield) {
+                totalDeposits -= (amount - yield);
+            }
+
         }
 
         deposits[id].amount -= amount;
@@ -197,7 +202,7 @@ contract DegenVault is BaseVault {
 
     function withdrawableById(uint256 id) public override view returns (uint) {
 
-        uint256 yield = yeildPerId(id);
+        uint256 yield = yieldPerId(id);
         return deposits[id].amount + yield;
 
     }

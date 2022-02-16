@@ -56,7 +56,7 @@ contract CharityVault is BaseVault {
     // ##                     ##
     // #########################
 
-    function withdrawlByRecipient() external {
+    function withdrawlToRecipient() external {
         
         vaultToken.transfer(ctx.recipient, yieldForRecipient);
 

@@ -111,6 +111,8 @@ contract BaseVault is ERC721 {
 
         //trusted contract
         uint256 balanceCheck = vaultToken.balanceOf(address(this));
+        
+        adjustYeild();
 
         // trusted contract
         if (amount > balanceCheck) {
@@ -123,8 +125,8 @@ contract BaseVault is ERC721 {
         } else {
             
             // only adjust deposits if yield of user is less than withdraw requested;
-            uint256 yield = yeildPerId(id);
-            if (yield <= amount) {
+            uint256 yield = yieldPerId(id);
+            if (amount > yield) {
                 totalDeposits -= (amount - yield);
             }
 
@@ -139,7 +141,7 @@ contract BaseVault is ERC721 {
 
     function withdrawableById(uint256 id) public view virtual returns (uint256) {
 
-        uint256 yield = yeildPerId(id);
+        uint256 yield = yieldPerId(id);
 
         // claimable may be larger than total deposits but never smaller
         uint256 claimable = vaultToken.balanceOf(address(this)) + depositedToStrat;
@@ -175,7 +177,7 @@ contract BaseVault is ERC721 {
     // depositedToStrat and totalDeposits = total withdrawn - yeild of msg.sender
     function withdrawFromStrat(uint256 amountNeeded, uint256 forID) internal {
 
-        uint256 userYield = yeildPerId(forID);
+        uint256 userYield = yieldPerId(forID);
 
         // needed for OoP
         uint256 toSubtract = amountNeeded - userYield;
@@ -206,7 +208,7 @@ contract BaseVault is ERC721 {
 
     }
 
-    function yeildPerId(uint256 id) internal view returns (uint256) {
+    function yieldPerId(uint256 id) internal view returns (uint256) {
 
         uint256 pre = deposits[id].amount * yeildPerDeposit / SCALAR;
         return pre - deposits[id].tracker / SCALAR;
@@ -220,8 +222,6 @@ contract BaseVault is ERC721 {
     // #########################
 
     function tokenURI(uint256 id) public view override returns (string memory) {
-        return name;
+        return "string";
     }
-
-
 }
