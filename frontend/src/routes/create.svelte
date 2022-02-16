@@ -1,113 +1,23 @@
 <script lang="ts">
+  import TimeSelect from '../components/TimeSelect.svelte';
+
 	// Constants/types
 	import { _ } from 'svelte-i18n'
 
-	import { BigNumber, Contract } from 'ethers'
+	import {
+		type VaultConfig,
+		getDefaultVaultConfig,
+		VaultType,
+		vaultTypeInfo,
+		YieldStrategy,
+		yieldStrategyInfo,
+		// GovernanceStrategy,
+		// governanceStrategyInfo,
+	} from '$lib/vaults'
 
-	import { networks, type ChainID } from '$lib/networks'
+	import { networks } from '$lib/networks'
 
-	enum FundingStrategy {
-		ApeChicken = 'ApeChicken',
-		OrangutanChicken = 'OrangutanChicken',
-		ManateeChicken = 'ManateeChicken',
-		Degen = 'Degen',
-	}
-	const fundingStrategyInfo = {
-		[FundingStrategy.ApeChicken]: {
-			label: '🦍 Ape Chicken', // 🦍🦧
-			description: 'The crowdfund ends if a contribution is not made after a set interval of time. The last person to contribute wins the Jackpot allocation.'
-		},
-		[FundingStrategy.OrangutanChicken]: {
-			label: '🦧 Orangutan Chicken',
-			description: 'The crowdfund ends if a contribution is not made after a set interval of time. The last person to contribute wins the Jackpot allocation.'
-		},
-		[FundingStrategy.ManateeChicken]: {
-			label: '🦈 Manatee Chicken',
-			description: 'Stream Superfluid Super tokens into the vault at a specified rate. Dividends are streamed to all past contributors'
-		},
-		[FundingStrategy.Degen]: {
-			label: '🐸 Degen',
-			description: ''
-		}
-	}
 
-	enum YieldStrategy {
-		Aave = 'Aave',
-		Yearn = 'Yearn',
-	}
-	const yieldStrategyInfo = {
-		[YieldStrategy.Aave]: {
-			label: '👻 Aave',
-			description: 'The DAO treasury will be lent to borrowers on Aave. Interest will be paid out to holders.'
-		},
-		[YieldStrategy.Yearn]: {
-			label: '🏦 Yearn',
-			description: 'The DAO treasury will be deposited into a Yearn vault. Yield will be paid out to holders.'
-		},
-	}
-
-	enum GovernanceStrategy {
-		None = 'None',
-		Vote = 'Vote',
-	}
-	const governanceStrategyInfo = {
-		[GovernanceStrategy.None]: {
-			label: '🚫 None',
-			description: 'Stakeholders can withdraw their share from the vault at any time.'
-		},
-		[GovernanceStrategy.Vote]: {
-			label: '🗳 Vote',
-			description: 'Stakeholders must vote to approve changes to yield strategies or send funds out of the vault.'
-		},
-	}
-
-	type ERC20TokenAndAmount = {
-		contractAddress: string
-		amount: BigNumber
-	}
-
-	type VaultConfig = {
-		about: {
-			name: string
-			description: string
-			website: string
-			twitter: string
-			discord: string
-		},
-		chainId: ChainID,
-		fundingStrategy: FundingStrategy
-		fundingAllocation: {
-			jackpot: number
-			dividend: number
-			treasury: number
-		}
-		yieldStrategy: YieldStrategy
-		governanceStrategy: GovernanceStrategy
-		initialLiquidity: ERC20TokenAndAmount
-	}
-
-	const getDefaultVaultConfig = () => ({
-		about: {
-			name: '',
-			description: '',
-			website: '',
-			twitter: '',
-			discord: '',
-		},
-		chainId: 1,
-		fundingStrategy: FundingStrategy.ApeChicken,
-		fundingAllocation: {
-			jackpot: 20,
-			dividend: 30,
-			treasury: 50
-		},
-		yieldStrategy: YieldStrategy.Aave,
-		governanceStrategy: GovernanceStrategy.None,
-		initialLiquidity: {
-			contractAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
-			amount: BigNumber.from(0)
-		}
-	} as VaultConfig)
 
 	enum Steps {
 		Idle,
@@ -148,7 +58,13 @@
 
 
 	// Components
+	import Vault from '../components/Vault.svelte'
 	import Select from '../components/Select.svelte'
+	import Tabs from '../components/Tabs.svelte'
+	import TokenAmountSelect from '../components/TokenAmountSelect.svelte';
+
+ 
+	import { fly } from 'svelte/transition'
 </script>
 
 
@@ -157,7 +73,11 @@
 		<h1>{$_('Create a Vault')}</h1>
 	</section>
 
-	<section>
+	<section class="row">
+		<article class="vault-preview sticky card column">
+			<Vault {vaultConfig} />
+		</article>
+
 		<!-- svelte-ignore a11y-label-has-associated-control -->
 		<form
 			class="column"
@@ -165,143 +85,17 @@
 			disabled={currentStep !== Steps.Idle}
 		>
 			<section class="card column">
-				<h2>{$_('Network')}</h2>
-
-				<hr>
-
-				<label class="column">
-					<h3>{$_('Chain')}</h3>
-					<div>
-						<Select
-							bind:value={vaultConfig.chainId}
-							values={networks.map(({ chainId }) => String(chainId))}
-							labels={Object.fromEntries(networks.map(({ chainId, name }) => [chainId, name]))}
-						/>
-					</div>
-			</section>
-
-			<section class="card column">
-				<h2>{$_('Funding')}</h2>
-
-				<hr>
-
-				<label class="column">
-					<h3>{$_('Fundraising Type')}</h3>
-					<div>
-						<Select
-							bind:value={vaultConfig.fundingStrategy}
-							values={Object.keys(FundingStrategy)}
-							labels={Object.fromEntries(Object.entries(fundingStrategyInfo).map(([key, {label}]) => [key, label]))}
-						/>
-					</div>
-					<p>{$_(fundingStrategyInfo[vaultConfig.fundingStrategy].description)}</p>
-				</label>
-
-				<h3>{$_('Allocation')}</h3>
-
-				{#if vaultConfig.fundingStrategy === FundingStrategy.ApeChicken}
-					<div class="card column">
-						<label class="column">
-							<h4>{$_('Jackpot')}</h4>
-							<p>{$_('This portion is paid out to the last contributor when the crowdfund ends.')}</p>
-							<div class="row">
-								<span>
-									<input
-										type="number"
-										min="0"
-										max="100"
-										bind:value={vaultConfig.fundingAllocation.jackpot}
-									/>
-									%
-								</span>
-								<button
-									type="button"
-									class="small"
-								>
-									{$_('Remaining')}
-								</button>
-							</div>
-						</label>
-
-						<label class="column">
-							<h4>{$_('Dividend')}</h4>
-							<p>{$_('This amount is distributed to all past contributors every time a new contribution is made.')}</p>
-							<span>
-								<input
-									type="number"
-									min="0"
-									max="100"
-									bind:value={vaultConfig.fundingAllocation.dividend}
-								/>
-								%
-							</span>
-						</label>
-
-						<label class="column">
-							<h4>{$_('Treasury')}</h4>
-							<p>{$_('After the jackpot winner and the dividends are paid out, the remaining funds go to the DAO treasury.')}</p>
-							<span>
-								<input
-									type="number"
-									min="0"
-									max="100"
-									bind:value={vaultConfig.fundingAllocation.treasury}
-								/>
-								%
-							</span>
-						</label>
-					</div>
-				{/if}
-			</section>
-
-			<section class="card column">
-				<h2>{$_('Treasury')}</h2>
-
-				<hr>
-
-				<label class="column">
-					<h3>{$_('Yield Strategy')}</h3>
-					<div>
-						<Select
-							bind:value={vaultConfig.yieldStrategy}
-							values={Object.keys(YieldStrategy)}
-							labels={Object.fromEntries(Object.entries(yieldStrategyInfo).map(([key, {label}]) => [key, label]))}
-						/>
-					</div>
-					<p>{$_(yieldStrategyInfo[vaultConfig.yieldStrategy].description)}</p>
-				</label>
-			</section>
-
-			<section class="card column">
-				<h2>{$_('Governance')}</h2>
-
-				<hr>
-
-				<label class="column">
-					<h3>{$_('Governance Strategy')}</h3>
-					<div>
-						<Select
-							bind:value={vaultConfig.governanceStrategy}
-							values={Object.keys(GovernanceStrategy)}
-							labels={Object.fromEntries(Object.entries(governanceStrategyInfo).map(([key, {label}]) => [key, label]))}
-						/>
-					</div>
-					<p>{$_(governanceStrategyInfo[vaultConfig.governanceStrategy].description)}</p>
-				</label>
-			</section>
-
-			<section class="card column">
 				<h2>{$_('About')}</h2>
 
 				<hr>
 
 				<label class="column">
-					<h3>{$_('DAO Name')}</h3>
-					<p>{$_('The project or cause you\'re fundraising for.')}</p>
+					<h3>{$_('Vault Name')}</h3>
+					<p>{$_('The project, cause, or investment you\'re fundraising for.')}</p>
 					<input
 						type="text"
 						bind:value={vaultConfig.about.name}
-						placeholder={$_('DAO Name')}
+						placeholder={$_('My Vault')}
 						required
 					/>
 				</label>
@@ -343,6 +137,163 @@
 				</label>
 			</section>
 
+			<section class="card column">
+				<h2>{$_('Network')}</h2>
+
+				<hr>
+
+				<label class="column">
+					<h3>{$_('Chain')}</h3>
+					<div>
+						<Select
+							bind:value={vaultConfig.chainId}
+							values={networks.map(({ chainId }) => String(chainId))}
+							labels={Object.fromEntries(networks.map(({ chainId, name }) => [chainId, name]))}
+						/>
+					</div>
+			</section>
+
+			<section class="card column">
+				<h2>{$_('Vault Type')}</h2>
+
+				<hr>
+
+				<label class="column">
+					<h3>{$_('Type')}</h3>
+					<div>
+						<Tabs
+							bind:value={vaultConfig.type}
+							values={Object.keys(VaultType)}
+							labels={Object.fromEntries(Object.entries(vaultTypeInfo).map(([key, {label}]) => [key, label]))}
+						/>
+					</div>
+					<p>{$_(vaultTypeInfo[vaultConfig.type].description)}</p>
+				</label>
+
+				Vault Token
+
+				<div class="stack">
+					{#if vaultConfig.type === VaultType.Degen}
+						<div class="row" in:fly={{ x: 100 }} out:fly={{ x: -100 }}>
+							<label class="card column">
+								<h4>{$_('Jackpot')}</h4>
+								<p>{$_('This portion is paid out to the last contributor when the crowdfund ends.')}</p>
+								<div class="row">
+									<span>
+										<input
+											type="number"
+											min="0"
+											max="100"
+											bind:value={vaultConfig.fundingAllocation.jackpot}
+										/>
+										%
+									</span>
+									<!-- <button
+										type="button"
+										class="small"
+									>
+										{$_('Remaining')}
+									</button> -->
+								</div>
+							</label>
+
+							<label class="card column">
+								<h4>{$_('Dividend')}</h4>
+								<p>{$_('This amount is distributed to all past contributors every time a new contribution is made.')}</p>
+								<span>
+									<input
+										type="number"
+										min="0"
+										max="100"
+										bind:value={vaultConfig.fundingAllocation.dividend}
+									/>
+									%
+								</span>
+							</label>
+
+							<label class="card column">
+								<h4>{$_('Treasury')}</h4>
+								<p>{$_('After the jackpot winner and the dividends are paid out, the remaining funds go to the DAO treasury.')}</p>
+								<span>
+									<input
+										type="number"
+										min="0"
+										max="100"
+										bind:value={vaultConfig.fundingAllocation.treasury}
+									/>
+									%
+								</span>
+							</label>
+
+							<label class="card column">
+								<h4>{$_('Initial Minimum Amount')}</h4>
+								<p>{$_('After the jackpot winner and the dividends are paid out, the remaining funds go to the DAO treasury.')}</p>
+								<span>
+									<TokenAmountSelect
+										bind:value={vaultConfig.fundingAllocation.initialAmount}
+									/>
+								</span>
+							</label>
+
+							<label class="card column">
+								<h4>{$_('Deadline')}</h4>
+								<p>{$_('The deadline.')}</p>
+								<span>
+									<TimeSelect bind:value={vaultConfig.fundingAllocation.deadline} />
+								</span>
+							</label>
+						</div>
+						
+						 gwei
+						Deadline seconds
+					{:else if vaultConfig.type === VaultType.DAO}
+						<div class="row" in:fly={{ x: 100 }} out:fly={{ x: -100 }}>
+							Quadratic
+							Proportional
+						</div>
+					{:else if vaultConfig.type === VaultType.Charity}
+						
+					{:else if vaultConfig.type === VaultType.Superfluid}
+					{/if}
+				</div>
+			</section>
+
+			<section class="card column">
+				<h2>{$_('Treasury')}</h2>
+
+				<hr>
+
+				<label class="column">
+					<h3>{$_('Yield Strategy')}</h3>
+					<div>
+						<Select
+							bind:value={vaultConfig.yieldStrategy}
+							values={Object.keys(YieldStrategy)}
+							labels={Object.fromEntries(Object.entries(yieldStrategyInfo).map(([key, {label}]) => [key, label]))}
+						/>
+					</div>
+					<p>{$_(yieldStrategyInfo[vaultConfig.yieldStrategy].description)}</p>
+				</label>
+			</section>
+
+			<!-- <section class="card column">
+				<h2>{$_('Governance')}</h2>
+
+				<hr>
+
+				<label class="column">
+					<h3>{$_('Governance Strategy')}</h3>
+					<div>
+						<Select
+							bind:value={vaultConfig.governanceStrategy}
+							values={Object.keys(GovernanceStrategy)}
+							labels={Object.fromEntries(Object.entries(governanceStrategyInfo).map(([key, {label}]) => [key, label]))}
+						/>
+					</div>
+					<p>{$_(governanceStrategyInfo[vaultConfig.governanceStrategy].description)}</p>
+				</label>
+			</section> -->
+
 			<button type="submit" class="large" disabled={!isValid}>{$_('Create DAO')}</button>
 		</form>
 	</section>
@@ -350,10 +301,43 @@
 
 
 <style>
-	form, .card {
-		place-content: start;
-    	place-items: start;
+	main {
+		--grid-gap: 2rem;
 	}
+
+	.vault-preview {
+		min-width: 25rem;
+		--grid-gap: 1rem;
+
+		transform: rotateY(10deg);
+	}
+
+	form {
+		/* grid-auto-rows: calc(100vh - var(--header-height) - 50vh); */
+
+		scroll-snap-align: center;
+	}
+	form > section {
+		margin: auto;
+		/* min-width: min(30rem, 90vw); */
+		width: 100%;
+		/* max-height: calc(100vh - var(--header-height) - 2rem); */
+
+		--grid-gap: 1rem;
+	}
+
+	.row {
+		align-items: start;
+	}
+
+	form > section > .card {
+		--grid-gap: 3rem;
+	}
+
+	/* .card {
+		place-content: start;
+		place-items: start;
+	} */
 
 	input {
 		font-size: 1.2em;

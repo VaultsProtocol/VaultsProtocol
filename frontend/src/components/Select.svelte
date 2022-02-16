@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Constants/types
-	type Value = $$Generic<string>
+	type Value = $$Generic<string | any>
 
 	import type { Placement } from '@floating-ui/core'
 
@@ -38,7 +38,9 @@
 		aria-expanded={isOpen}
 		tabindex="-1"
 	>
-		{labels[value] ?? value}
+		<slot {value}>
+			{labels[value] ?? value}
+		</slot>
 	</button>
 
 	<div class="menu card column" slot="tooltip" role="menu" aria-labelledby={id} transition:scale={{ start: 0.8, opacity: 0, duration: 150 }}>
@@ -53,7 +55,9 @@
 					isOpen = false
 				}}
 			>
-				{labels[optionValue]}
+				<slot value={optionValue}>
+					{labels[optionValue]}
+				</slot>
 			</button>
 		{/each}
 	</div>
