@@ -5,10 +5,6 @@ import "./tokens/ERC721.sol";
 import "./DegenVault.sol";
 import "./interfaces/IStrategy.sol";
 
-interface yController {
-    function vaults(address addr) external returns (address);
-}
-
 interface iVault {
     function setStrat(address addr) external;
 }
@@ -17,12 +13,10 @@ interface iVault {
 // creates vaults and returns address of controller / vault nft and the vault
 contract DAOFactory {
 
-    constructor(yController _controller, address _creator) {
-        controller = _controller;
+    constructor( address _creator) {
         creator = _creator;
     }
-
-    yController controller;
+    
     address immutable creator;
 
     // creation code of vaults and strats
@@ -36,17 +30,16 @@ contract DAOFactory {
     // construcors are appended to the end of creation code
     function createVault(
 
-        uint256 _vaultType, 
+        uint256 _vaultKey, 
         uint256 _stratType,
         address vaultToken, 
+        address yield,
         bytes calldata _constructor
 
     ) public returns(address vault) {
 
-        address yvault = controller.vaults(vaultToken);
-
-        bytes memory newVault = abi.encodePacked(vaultType[_vaultType], _constructor);
-        bytes memory newStrat = abi.encodePacked(stratType[_stratType], abi.encode(yvault, vaultToken));
+        bytes memory newVault = abi.encodePacked(vaultType[_vaultKey], _constructor);
+        bytes memory newStrat = abi.encodePacked(stratType[_stratType], abi.encode(yield, vaultToken));
         address strat;
 
         assembly {

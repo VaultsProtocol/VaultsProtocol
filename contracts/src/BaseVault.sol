@@ -5,7 +5,7 @@ import "./tokens/ERC721.sol";
 import "./tokens/ERC20.sol";
 import "./interfaces/IStrategy.sol";
 
-contract BaseVault is ERC721 {
+abstract contract BaseVault is ERC721 {
 
     // #########################
     // ##                     ##
@@ -35,11 +35,7 @@ contract BaseVault is ERC721 {
     uint256 public depositedToStrat;
     
     ERC20 immutable vaultToken;
-
-    address immutable deployer;
-
-    // strategy to earn yeild on vault reserves
-    // strats are hardcoded at 50% of totalDeposits
+    address immutable deployer; // can only set the strat ONCE
     IStrategy strat;
 
     // #########################
@@ -65,7 +61,49 @@ contract BaseVault is ERC721 {
     // ##                     ##
     // #########################
 
-    function mintNewNFT(uint256 amount) external virtual returns (uint256) {
+    function mintNewNft(uint256 amount) public virtual returns (uint256) {
+        return _mintNewNFT(amount);
+    }
+
+    function depositToId(uint256 amount, uint256 id) public virtual{
+        _depositToId(amount, id);
+    }
+
+    function withdrawFromId(uint256 id, uint256 amount) public virtual {
+        _withdrawFromId(id, amount);
+    }
+
+    // Burns NFT and withdraws all claimable token + yeild
+    function burnNFTAndWithdrawl(uint256 id) public virtual  {
+
+        uint256 claimable = withdrawableById(id);
+        _withdrawFromId(claimable, id);
+        
+         // erc721
+        _burn(id);
+
+    }
+
+    function withdrawableById(uint256 id) public view virtual returns (uint256) {
+
+        uint256 yield = yieldPerId(id);
+
+        // claimable may be larger than total deposits but never smaller
+        uint256 claimable = vaultToken.balanceOf(address(this)) + depositedToStrat;
+        uint256 claimId = (claimable * deposits[id].amount) / totalDeposits;
+
+        return claimId + yield;
+
+    }
+
+    // #########################
+    // ##                     ##
+    // ##  Internal Deposits  ##
+    // ##       Logic         ##
+    // ##                     ##
+    // #########################
+
+    function _mintNewNFT(uint256 amount) internal returns (uint256) {
 
         uint256 id = _mint(msg.sender, currentId);
 
@@ -80,7 +118,7 @@ contract BaseVault is ERC721 {
 
     }
 
-    function depositToId(uint256 amount, uint256 id) external virtual {
+    function _depositToId(uint256 amount, uint256 id) internal {
 
         // trusted contract
         require(msg.sender == ownerOf[id]);
@@ -94,18 +132,7 @@ contract BaseVault is ERC721 {
         
     }
 
-    // Burns NFT and withdraws all claimable token + yeild
-    function burn(uint256 id) external virtual  {
-
-        uint256 claimable = withdrawableById(id);
-        withdrawFromId(claimable, id);
-
-        _burn(id);
-
-    }
-
-    // TODO: potentially remove this?
-    function withdrawFromId(uint256 amount, uint256 id) public virtual  {
+    function _withdrawFromId(uint256 amount, uint256 id) internal  {
 
         require(msg.sender == ownerOf[id]);
         require(amount <= withdrawableById(id));
@@ -115,40 +142,25 @@ contract BaseVault is ERC721 {
         
         adjustYeild();
 
-        // trusted contract
-        if (amount > balanceCheck) {
-
-            withdrawFromStrat(
-                amount - balanceCheck,
-                id
-            );
-            
-        } else {
-            
-            // only adjust deposits if yield of user is less than withdraw requested;
-            uint256 yield = yieldPerId(id);
-            if (amount > yield) {
-                totalDeposits -= (amount - yield);
-            }
-
+        uint256 userYield = yieldPerId(id);
+        uint256 adjusted = amount - userYield;
+        if (amount > userYield) {
+            totalDeposits -= adjusted;
         }
 
-        deposits[id].amount -= amount;
+        // trusted contract
+        if (amount > balanceCheck) {
+            withdrawFromStrat(
+                amount - balanceCheck
+            );
+
+            depositedToStrat -= adjusted;
+        }
+        
+        deposits[id].amount -= adjusted;
         deposits[id].tracker -= amount * yeildPerDeposit;
 
         vaultToken.transfer(msg.sender, amount);
-
-    }
-
-    function withdrawableById(uint256 id) public view virtual returns (uint256) {
-
-        uint256 yield = yieldPerId(id);
-
-        // claimable may be larger than total deposits but never smaller
-        uint256 claimable = vaultToken.balanceOf(address(this)) + depositedToStrat;
-        uint256 claimId = (claimable * deposits[id].amount) / totalDeposits;
-
-        return claimId + yield;
 
     }
 
@@ -176,15 +188,7 @@ contract BaseVault is ERC721 {
 
     //internal, only called when balanceOf(address(this)) < withdraw requested
     // depositedToStrat and totalDeposits = total withdrawn - yeild of msg.sender
-    function withdrawFromStrat(uint256 amountNeeded, uint256 forID) internal {
-
-        uint256 userYield = yieldPerId(forID);
-
-        // needed for OoP
-        uint256 toSubtract = amountNeeded - userYield;
-
-        totalDeposits -= toSubtract;
-        depositedToStrat -= toSubtract;
+    function withdrawFromStrat(uint256 amountNeeded) internal {
 
         strat.withdrawl(amountNeeded);
 
@@ -209,7 +213,7 @@ contract BaseVault is ERC721 {
 
     }
 
-    function yieldPerId(uint256 id) internal view returns (uint256) {
+    function yieldPerId(uint256 id) public view returns (uint256) {
 
         uint256 pre = deposits[id].amount * yeildPerDeposit / SCALAR;
         return pre - deposits[id].tracker / SCALAR;
@@ -226,15 +230,13 @@ contract BaseVault is ERC721 {
         return "string";
     }
 
-    
-
     // #########################
     // ##                     ##
     // ##       INIT          ##
     // ##                     ##
     // #########################
 
-    function setStrat(address addr) public {
+    function setStrat(address addr) external {
 
         require (msg.sender == deployer && address(strat) == address(0) );
 

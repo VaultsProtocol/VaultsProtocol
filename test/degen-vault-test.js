@@ -31,7 +31,7 @@ contract("degenVault", ([alice, bob, tom, deployer]) => {
         from: deployer
       })
 
-      await bc.vaultToken.transfer(bob, 10e18.toString(), {
+      await bc.vaultToken.transfer(bob, 20e18.toString(), {
         from: deployer
       })
 
@@ -43,12 +43,16 @@ contract("degenVault", ([alice, bob, tom, deployer]) => {
       bc.devFee = 500;
       bc.name = "name";
       bc.symbol = "symbol";
+      bc.time = 5000;
+      bc.growth = 5000;
       bc.degenVault = await DegenVault.new(
         bc.vaultToken.address, // ERC20 Vault Token
         bc.jackpotBps, 
         bc.dividendBps,
         bc.minimumPrice,
         bc.initialDeadlineSeconds,
+        bc.time,
+        bc.growth,
         bc.name,
         bc.symbol,
         { from: deployer },
@@ -66,32 +70,32 @@ contract("degenVault", ([alice, bob, tom, deployer]) => {
         from: alice
       })
 
-      //approve ERC20 spend
-      await bc.vaultToken.approve(bc.degenVault.address, bc.price, {
+      // approve ERC20 spend
+      await bc.vaultToken.approve(bc.degenVault.address, 16e18.toString(), {
         from: bob
       })
 
       // expected to fail underpaid
       await expect(
-        bc.degenVault.mintNewNFT(9e18.toString(), {
+        bc.degenVault.mintNewNft(9e18.toString(), {
           from: alice,
         }),
       ).to.eventually.rejectedWith(revert`Underpaid, or past deadline`);
 
       // ID = 1
-      await bc.degenVault.mintNewNFT(bc.price, {
+      await bc.degenVault.mintNewNft(bc.price, {
         from: alice,
       });
 
       // should pass ID = 2
-      await bc.degenVault.mintNewNFT(bc.price, {
+      await bc.degenVault.mintNewNft(await bc.degenVault.minimumPrice(), {
         from: bob,
       });
 
       // first mint no dividends goes to jackpot
       assert.equal(
         Number(await bc.degenVault.jackpot()),
-        (bc.price * (bc.jackpotBps + bc.dividendBps) / 1e4) + bc.price * bc.jackpotBps / 1e4,
+        (bc.price * (bc.jackpotBps + bc.dividendBps) / 1e4) + bc.price * bc.jackpotBps / 1e4, // change to account for growth factor
       );
 
       // Ensure mint happened

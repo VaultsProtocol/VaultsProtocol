@@ -72,7 +72,7 @@ contract PDelegate is DaoVault {
     // key 1 = NFT ID, key 2 = Propsal ID
     mapping (uint256 => mapping (bytes32 => bool)) public voted;
 
-    // key is ID , result is tiemstamp till locked
+    // key is ID of address that delegation cannot be removed from , result is tiemstamp till unlocked
     mapping (uint256 => uint256) public lockRedelgation;
 
     // #########################
@@ -126,6 +126,8 @@ contract PDelegate is DaoVault {
 
         }
 
+        lockRedelgation[id] = block.timestamp + 259200;
+
     }
 
     
@@ -162,7 +164,7 @@ contract PDelegate is DaoVault {
             return false;
         }
 
-        require(totalVotes >= totalDeposits * 1500 / 1e4, "Not Enough Votes");
+        require(totalVotes >= totalDeposits * quorom / 1e4, "Not Enough Votes");
 
         manage(
             proposal.recipients[mostVotedKey].amount, 
@@ -181,17 +183,15 @@ contract PDelegate is DaoVault {
 
     function delegateVotes(uint256 fromId, uint256 toId) public {
 
+        uint256 currentDelegatee = delegation[fromId].delegatee;
+
         require(
             msg.sender == ownerOf[fromId] &&
             fromId != toId &&
-            block.timestamp >= lockRedelgation[fromId]
+            block.timestamp >= lockRedelgation[currentDelegatee]
         );
 
-        // locks all redelgation for 3 days
-        lockRedelgation[fromId] = block.timestamp + 259200;
-
         uint256 newWeight = deposits[fromId].amount;
-        uint256 currentDelegatee = delegation[fromId].delegatee;
 
         if (currentDelegatee != 0) {
 
@@ -207,12 +207,14 @@ contract PDelegate is DaoVault {
 
     function removeAllDelegation(uint256 id) public {
 
+        uint256 currentDelegation = delegation[id].delegatee;
+
         require(
             msg.sender == ownerOf[id] &&
-            block.timestamp >= lockRedelgation[id]
+            block.timestamp >= lockRedelgation[currentDelegation]
         );
 
-        delegatedAmount[ delegation[id].delegatee ] -= delegation[id].weight;
+        delegatedAmount[ currentDelegation ] -= delegation[id].weight;
         
         delegation[id].delegatee = 0;
         delegation[id].weight = 0;
