@@ -76,9 +76,6 @@ contract DegenVault is BaseVault {
     // ##                     ##
     // #########################
 
-    // this could all be done better by making all BaseVault methods internal instead of overriding the logic
-    // and extracting the logic to public functions
-
     function mintNewNft(uint256 amount) public override returns (uint256) {
 
         require(
@@ -168,7 +165,7 @@ contract DegenVault is BaseVault {
 
     }
 
-    // override beacuse
+    // override needed for this game
     function withdrawableById(uint256 id) public override view returns (uint) {
 
         uint256 yield = yieldPerId(id);
