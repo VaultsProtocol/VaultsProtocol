@@ -187,9 +187,12 @@ contract PDelegate is DaoVault {
 
         require(
             msg.sender == ownerOf[fromId] &&
-            fromId != toId &&
-            block.timestamp >= lockRedelgation[currentDelegatee]
+            fromId != toId
         );
+
+        if (toId != currentDelegatee) {
+            require (block.timestamp >= lockRedelgation[currentDelegatee]);
+        }
 
         uint256 newWeight = deposits[fromId].amount;
 

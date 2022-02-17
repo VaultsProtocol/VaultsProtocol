@@ -88,12 +88,10 @@ contract DegenVault is BaseVault {
         );
 
         Context memory ctxm = ctx;
-
-        uint256 id = _mint(msg.sender, currentId);
         uint256 totalBP = 10000 - (ctxm.jackpotBP + ctxm.dividendsBP);
         uint256 amountClaimable = amount * totalBP / 10000;
 
-        if (id > 1) {
+        if (currentId > 1) {
 
             // sorry :( , you dont get your own dividends?!
             adjustYeild(
@@ -109,7 +107,6 @@ contract DegenVault is BaseVault {
         }
 
         lastDepositer = msg.sender;
-
         adjustFactors();
         return _mintNewNFT(amountClaimable);
         
