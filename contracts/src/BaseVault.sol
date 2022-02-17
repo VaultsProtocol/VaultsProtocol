@@ -36,6 +36,8 @@ contract BaseVault is ERC721 {
     
     ERC20 immutable vaultToken;
 
+    address immutable deployer;
+
     // strategy to earn yeild on vault reserves
     // strats are hardcoded at 50% of totalDeposits
     IStrategy strat;
@@ -48,13 +50,12 @@ contract BaseVault is ERC721 {
 
     constructor(
         ERC20 _vaultToken,
-        address strategy,
         string memory name,
         string memory symbol
     ) ERC721(name, symbol) {
 
         vaultToken = _vaultToken;
-        strat = IStrategy(strategy);
+        deployer = msg.sender;
 
     }
 
@@ -223,5 +224,21 @@ contract BaseVault is ERC721 {
 
     function tokenURI(uint256 id) public view override returns (string memory) {
         return "string";
+    }
+
+    
+
+    // #########################
+    // ##                     ##
+    // ##       INIT          ##
+    // ##                     ##
+    // #########################
+
+    function setStrat(address addr) public {
+
+        require (msg.sender == deployer && address(strat) == address(0) );
+
+        strat = IStrategy(addr);
+
     }
 }

@@ -45,7 +45,6 @@ contract("degenVault", ([alice, bob, tom, deployer]) => {
       bc.symbol = "symbol";
       bc.degenVault = await DegenVault.new(
         bc.vaultToken.address, // ERC20 Vault Token
-        tom, //strategy
         bc.jackpotBps, 
         bc.dividendBps,
         bc.minimumPrice,

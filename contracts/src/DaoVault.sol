@@ -19,12 +19,10 @@ contract DaoVault is BaseVault {
 
     constructor( 
         ERC20 _vaultToken,
-        address strategy,
         string memory name,
         string memory symbol
     ) BaseVault( 
         _vaultToken,
-        strategy,
         name,
         symbol
     ) {

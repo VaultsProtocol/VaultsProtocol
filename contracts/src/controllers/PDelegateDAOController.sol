@@ -35,13 +35,11 @@ contract PDelegate is DaoVault {
 
     constructor(
         ERC20 _vaultToken,
-        address strategy,
         string memory name,
         string memory symbol,
         uint16 _quorom
     ) DaoVault(
         _vaultToken,
-        strategy,
         name,
         symbol
     ) {
@@ -185,8 +183,12 @@ contract PDelegate is DaoVault {
 
         require(
             msg.sender == ownerOf[fromId] &&
-            fromId != toId
+            fromId != toId &&
+            block.timestamp >= lockRedelgation[fromId]
         );
+
+        // locks all redelgation for 3 days
+        lockRedelgation[fromId] = block.timestamp + 259200;
 
         uint256 newWeight = deposits[fromId].amount;
         uint256 currentDelegatee = delegation[fromId].delegatee;
@@ -205,7 +207,10 @@ contract PDelegate is DaoVault {
 
     function removeAllDelegation(uint256 id) public {
 
-        require(msg.sender == ownerOf[id]);
+        require(
+            msg.sender == ownerOf[id] &&
+            block.timestamp >= lockRedelgation[id]
+        );
 
         delegatedAmount[ delegation[id].delegatee ] -= delegation[id].weight;
         
@@ -213,58 +218,4 @@ contract PDelegate is DaoVault {
         delegation[id].weight = 0;
 
     }
-
-    // #########################
-    // ##                     ##
-    // ##      Overrides      ##
-    // ##                     ##
-    // #########################
-
-    function depositToId(uint256 amount, uint256 id) external virtual override {
-
-        // trusted contract
-        require(msg.sender == ownerOf[id]);
-
-        deposits[id].amount += amount;
-        deposits[id].tracker += amount * yeildPerDeposit;
-        totalDeposits += amount;
-
-        // adjusts weight
-        delegateVotes(id, delegation[id].delegatee); //remove this
-
-        //ensure token reverts on failed
-        vaultToken.transferFrom(msg.sender, address(this), amount);
-        
-    }
-
-    function withdrawFromId(uint256 amount, uint256 id) public virtual override  {
-
-        require(msg.sender == ownerOf[id]);
-        require(amount <= withdrawableById(id));
-
-        //trusted contract
-        uint256 balanceCheck = vaultToken.balanceOf(address(this));
-
-        // trusted contract
-        if (amount > balanceCheck) {
-            withdrawFromStrat(amount - balanceCheck, id);
-        } else {
-            
-            // only adjust deposits if yield of user is less than withdraw requested;
-            uint256 yield = yieldPerId(id);
-            if (amount > yield) {
-                totalDeposits -= (amount - yield);
-            }
-
-        }
-
-        deposits[id].amount -= amount;
-        deposits[id].tracker -= amount * yeildPerDeposit;
-
-        delegateVotes(id, delegation[id].delegatee); //remove this
-
-        vaultToken.transfer(msg.sender, amount);
-
-    }
-
 }

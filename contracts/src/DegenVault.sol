@@ -33,6 +33,10 @@ contract DegenVault is BaseVault {
     uint256 public deadline; //seconds
     uint256 public jackpot; //wei
 
+    uint256 timeTracker;
+    uint256 timeDecay;
+    uint256 growthFactor;
+
     address public lastDepositer;
 
     // #########################
@@ -44,23 +48,23 @@ contract DegenVault is BaseVault {
     constructor(
 
         ERC20 _vaultToken,
-        address strategy,
         uint16 _jackpotBP,
         uint16 _dividendsBP,
         uint256 _minimumPrice,
-        uint256 initialDeadlineSeconds,
+        uint256 _intialTimeInSeconds,
         string memory name,
         string memory symbol
 
-    ) BaseVault(_vaultToken, strategy, name, symbol) {
+    ) BaseVault(_vaultToken, name, symbol) {
 
         require(_jackpotBP + _dividendsBP <= 10000);
 
         ctx = Context(_jackpotBP, _dividendsBP);
         minimumPrice = _minimumPrice;
+        timeTracker = _intialTimeInSeconds;
 
         // 24 hrs
-        deadline = block.timestamp + initialDeadlineSeconds;
+        deadline = block.timestamp + _intialTimeInSeconds;
 
     }
 
@@ -69,6 +73,9 @@ contract DegenVault is BaseVault {
     // ##     User Facing     ##
     // ##                     ##
     // #########################
+
+    // this could all be done better by making all BaseVault methods internal instead of overriding the logic
+    // and extracting the logic to public functions
 
     function mintNewNFT(uint256 amount) public override returns (uint256) {
 
@@ -106,8 +113,7 @@ contract DegenVault is BaseVault {
 
         lastDepositer = msg.sender;
 
-        // deadline += 
-        // minimum
+        adjustFactors();
 
         //ensure token reverts on failed
         vaultToken.transferFrom(msg.sender, address(this), amount);
@@ -142,8 +148,7 @@ contract DegenVault is BaseVault {
 
         lastDepositer = msg.sender;
 
-        // deadline += 
-        // minimum
+        adjustFactors();
 
         //ensure token reverts on failed
         vaultToken.transferFrom(msg.sender, address(this), amount);
@@ -206,4 +211,22 @@ contract DegenVault is BaseVault {
         return deposits[id].amount + yield;
 
     }
+
+    // #########################
+    // ##                     ##
+    // ##     Internal        ##
+    // ##                     ##
+    // #########################
+
+    // every deposits shortens the time 33%
+    // every deposit increases the minimum 33%
+    function adjustFactors() internal {
+
+        timeTracker -= (timeTracker * timeDecay / 10000);
+
+        deadline += timeTracker;
+        minimumPrice += (minimumPrice * growthFactor / 10000);
+
+    }
+
 }

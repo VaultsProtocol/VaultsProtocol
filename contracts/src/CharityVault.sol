@@ -30,17 +30,14 @@ contract CharityVault is BaseVault {
     constructor( 
 
         ERC20 _vaultToken,
-        address strategy,
         address _recipient,
         uint16 _tokenPercent,
-
         string memory name,
         string memory symbol
 
     ) BaseVault( 
 
         _vaultToken,
-        strategy,
         name,
         symbol
 
