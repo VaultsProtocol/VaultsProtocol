@@ -1,5 +1,6 @@
 import type { ChainID } from '$lib/networks'
 import { BigNumber } from 'ethers'
+import type { ERC20Token } from './tokens'
 
 
 export enum VaultType {
@@ -68,7 +69,7 @@ type ERC20TokenAndAmount = {
 	amount: BigNumber
 }
 
-export type VaultConfig = {
+export type VaultConfig<T extends VaultType> = {
 	about: {
 		name: string
 		description: string
@@ -76,17 +77,33 @@ export type VaultConfig = {
 		twitter: string
 		discord: string
 	},
-	chainId: ChainID,
-	type: VaultType
-	fundingAllocation: {
-		jackpot: number
-		dividend: number
-		treasury: number
-		deadline: number
-	}
+	chainId: ChainID
+	tokens: ERC20Token[]
+	type: T
+	config:
+		T extends VaultType.Degen ?
+			{
+				jackpot: number
+				dividend: number
+				treasury: number
+				deadline: number
+				initialLiquidity: ERC20TokenAndAmount
+			}
+		: T extends VaultType.DAO ?
+			{
+
+			}
+		: T extends VaultType.Charity ?
+			{
+
+			}
+		: T extends VaultType.Superfluid ?
+			{
+
+			}
+		: {}
 	yieldStrategy: YieldStrategy
 	// governanceStrategy: GovernanceStrategy
-	initialLiquidity: ERC20TokenAndAmount
 }
 
 export const getDefaultVaultConfig = () => ({
@@ -98,17 +115,24 @@ export const getDefaultVaultConfig = () => ({
 		discord: '',
 	},
 	chainId: 1,
+	tokens: [],
 	type: VaultType.Degen,
-	fundingAllocation: {
+	config: {
+		// VaultType.Degen
 		jackpot: 20,
 		dividend: 30,
 		treasury: 50,
-		deadline: 3600
+		deadline: 3600,
+		initialLiquidity: {
+			contractAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+			amount: BigNumber.from(0)
+		}
+
+		// VaultType.DAO
+		// VaultType.Charity
+		// VaultType.Superfluid
+		
 	},
 	yieldStrategy: YieldStrategy.Aave,
 	// governanceStrategy: GovernanceStrategy.None,
-	initialLiquidity: {
-		contractAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
-		amount: BigNumber.from(0)
-	}
 } as VaultConfig)

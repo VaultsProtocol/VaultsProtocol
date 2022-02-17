@@ -165,13 +165,33 @@ button.active, .button.active {
 }
 
 input[type='number'], input[type='text'] {
-	padding: 0.5em 0.75em;
+	font-size: 1.2em;
+	padding: 0.4em 0.75em;
 }
 
 ::-webkit-input-placeholder {
 	color: inherit;
 	font: inherit;
 	opacity: 0.5;
+}
+
+
+.align-start {
+	text-align: left;
+	place-items: center start;
+	transform-origin: left;
+	--button-transform-origin: left;
+}
+.align-end {
+	text-align: right;
+	place-items: center end;
+	transform-origin: right;
+	--button-transform-origin: right;
+}
+.align-top {
+	place-items: start start;
+	transform-origin: top;
+	--button-transform-origin: top;
 }
 
 

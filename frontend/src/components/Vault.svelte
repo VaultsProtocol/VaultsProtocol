@@ -1,38 +1,52 @@
 <script lang="ts">
+	// Constants/types
 	import { _ } from 'svelte-i18n'
+
+	import { VaultType, vaultTypeInfo, type VaultConfig } from '../lib/vaults'
+
+	type T = $$Generic<VaultType>	
 	
 	
-	import { vaultTypeInfo, type VaultConfig } from '../lib/vaults'
-	
-	
-	export let vaultConfig: VaultConfig
+	// Internal state
+	export let vaultConfig: VaultConfig<T>
 
 
+	// Components
+	import PieChart from './PieChart.svelte'
+
+
+	// Styles/animations
 	import { scale } from 'svelte/transition'
+	import { flip } from 'svelte/animate'
 </script>
 
 
 <h2>{vaultConfig.about.name || $_('My Vault')}</h2>
 
 {#if vaultConfig.about.description}
-	<p transition:scale>{vaultConfig.about.description}</p>
+	<p transition:scale class="align-start">{vaultConfig.about.description}</p>
 {/if}
 
 <div class="">
 	<p>{$_(vaultTypeInfo[vaultConfig.type].label)}</p>
 </div>
 
-{#if vaultConfig.type === ''}
-	<svg viewBox="0 0 64 64" class="pie">
-		<circle r="25%" cx="50%" cy="50%" style="stroke-dasharray: 75.3 100">
-		</circle>
-		<circle r="25%" cx="50%" cy="50%" style="stroke-dasharray: 19.9 100; stroke: green; stroke-dashoffset: -75.3; animation-delay: 0.25s">
-		</circle>
-		<circle r="25%" cx="50%" cy="50%" style="stroke-dasharray: 2.3 100; stroke: blue; stroke-dashoffset: -95.2; animation-delay: 0.5s">
-		</circle>
-		<circle r="25%" cx="50%" cy="50%" style="stroke-dasharray: 1.4 100; stroke: orange; stroke-dashoffset: -97.5; animation-delay: 0.75s">
-		</circle>
-		<circle r="25%" cx="50%" cy="50%" style="stroke-dasharray: 1.1 100; stroke: red; stroke-dashoffset: -98.9; animation-delay: 1s">
-		</circle>
-	</svg>
+{#if vaultConfig.type === VaultType.Degen}
+	<PieChart />
+{/if}
+
+{#if vaultConfig.about.website || vaultConfig.about.twitter || vaultConfig.about.discord}
+	<div class="row centered" transition:scale>
+		{#each
+			[
+				{ link: vaultConfig.about.website, label: 'Website' },
+				{ link: vaultConfig.about.twitter, label: 'Twitter' },
+				{ link: vaultConfig.about.discord, label: 'Discord' }
+			].filter(({ link }) => link)
+			as
+			{ link, label } (label)
+		}
+			<a href={vaultConfig.about.website} transition:scale animate:flip>{$_(label)}</a>
+		{/each}
+	</div>
 {/if}

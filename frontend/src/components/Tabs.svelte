@@ -32,8 +32,7 @@
 	span {
 		display: inline-flex;
 		justify-content: center;
-		background-color: transparent;
-		opacity: 0.66;
+		background-color: var(--background-color-2);
 		transition: 0.3s;
 		cursor: pointer;
 	}
@@ -41,9 +40,8 @@
 		opacity: 0.9;
 	}
 	input[type="radio"]:checked ~ span {
-		background-color: var(--background-color-1);
+		background-color: var(--background-color-4);
 		font-weight: bold;
 		opacity: 1;
-		box-shadow: rgba(231, 145, 245, 0.267) 0px 2px 4px;
 	}
 </style>

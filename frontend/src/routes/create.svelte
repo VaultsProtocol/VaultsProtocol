@@ -59,11 +59,12 @@
 
 	// Components
 	import Vault from '../components/Vault.svelte'
+	import HeightContainer from '../components/HeightContainer.svelte'
 	import Select from '../components/Select.svelte'
 	import Tabs from '../components/Tabs.svelte'
 	import TokenAmountSelect from '../components/TokenAmountSelect.svelte';
 
- 
+
 	import { fly } from 'svelte/transition'
 </script>
 
@@ -75,7 +76,9 @@
 
 	<section class="row">
 		<article class="vault-preview sticky card column">
-			<Vault {vaultConfig} />
+			<HeightContainer class="column">
+				<Vault {vaultConfig} />
+			</HeightContainer>
 		</article>
 
 		<!-- svelte-ignore a11y-label-has-associated-control -->
@@ -174,7 +177,7 @@
 
 				<div class="stack">
 					{#if vaultConfig.type === VaultType.Degen}
-						<div class="row" in:fly={{ x: 100 }} out:fly={{ x: -100 }}>
+						<div class="grid" in:fly={{ x: 100 }} out:fly={{ x: -100 }}>
 							<label class="card column">
 								<h4>{$_('Jackpot')}</h4>
 								<p>{$_('This portion is paid out to the last contributor when the crowdfund ends.')}</p>
@@ -184,7 +187,7 @@
 											type="number"
 											min="0"
 											max="100"
-											bind:value={vaultConfig.fundingAllocation.jackpot}
+											bind:value={vaultConfig.config.jackpot}
 										/>
 										%
 									</span>
@@ -205,7 +208,7 @@
 										type="number"
 										min="0"
 										max="100"
-										bind:value={vaultConfig.fundingAllocation.dividend}
+										bind:value={vaultConfig.config.dividend}
 									/>
 									%
 								</span>
@@ -219,7 +222,7 @@
 										type="number"
 										min="0"
 										max="100"
-										bind:value={vaultConfig.fundingAllocation.treasury}
+										bind:value={vaultConfig.config.treasury}
 									/>
 									%
 								</span>
@@ -230,7 +233,8 @@
 								<p>{$_('After the jackpot winner and the dividends are paid out, the remaining funds go to the DAO treasury.')}</p>
 								<span>
 									<TokenAmountSelect
-										bind:value={vaultConfig.fundingAllocation.initialAmount}
+										bind:token={vaultConfig.config.initialLiquidity.token}
+										bind:amount={vaultConfig.config.initialLiquidity.amount}
 									/>
 								</span>
 							</label>
@@ -239,13 +243,10 @@
 								<h4>{$_('Deadline')}</h4>
 								<p>{$_('The deadline.')}</p>
 								<span>
-									<TimeSelect bind:value={vaultConfig.fundingAllocation.deadline} />
+									<TimeSelect bind:value={vaultConfig.config.deadline} />
 								</span>
 							</label>
 						</div>
-						
-						 gwei
-						Deadline seconds
 					{:else if vaultConfig.type === VaultType.DAO}
 						<div class="row" in:fly={{ x: 100 }} out:fly={{ x: -100 }}>
 							Quadratic
@@ -330,6 +331,12 @@
 		align-items: start;
 	}
 
+	.grid {
+		display: grid;
+		gap: var(--grid-gap);
+		grid-template-columns: repeat(auto-fit, minmax(min(12rem, 50vw), 1fr));
+	}
+
 	form > section > .card {
 		--grid-gap: 3rem;
 	}
@@ -338,10 +345,6 @@
 		place-content: start;
 		place-items: start;
 	} */
-
-	input {
-		font-size: 1.2em;
-	}
 
 	label p {
 		font-size: 0.9em;

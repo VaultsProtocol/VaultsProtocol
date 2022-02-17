@@ -138,6 +138,8 @@
 						{/if}
 						{#if $account.address}
 							<span>{formatAddress($account.address)}</span>
+						{:else}
+							<span class="locked">{$_('[Locked]')}</span>
 						{/if}
 						{#if !$account.ensName}
 							<span>{walletsByType[$connectedWalletType].name($_)}</span>
@@ -148,7 +150,7 @@
 				<!-- <div class="menu card column" slot="tooltip"> -->
 				<div class="menu card column" slot="tooltip" transition:scale={{ start: 0.8, opacity: 0, duration: 150 }}>
 					<button class="transparent" on:click={() => modalIsOpen = !modalIsOpen}>{$_('Switch wallet')}</button>
-					<button class="transparent" on:click={() => navigator.clipboard.writeText($account.address)}>{$_('Copy address')}</button>
+					<button class="transparent" on:click={() => $account.address && navigator.clipboard.writeText($account.address)}>{$_('Copy address')}</button>
 					<button class="transparent destructive" on:click={() => onDisconnectWallet()}>{$_('Disconnect')}</button>
 				</div>
 			</Tooltip>
