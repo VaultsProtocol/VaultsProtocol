@@ -14,12 +14,10 @@ interface iVault {
 // creates vaults and returns address of controller / vault nft and the vault
 contract DAOFactory {
 
-    constructor(yController _controller, address _creator) {
-        controller = _controller;
+    constructor(address _creator) {
         creator = _creator;
     }
 
-    yController controller;
     address immutable creator;
 
     // creation code of vaults and strats
@@ -42,7 +40,7 @@ contract DAOFactory {
     ) public returns(address vault) {
 
         bytes memory newVault = abi.encodePacked(vaultType[_vaultType], _constructor);
-        bytes memory newStrat = abi.encodePacked(stratType[_stratType], abi.encode(vault, vaultToken));
+        bytes memory newStrat = abi.encodePacked(stratType[_stratType], abi.encode(stratVault, vaultToken));
         address strat;
 
         assembly {
