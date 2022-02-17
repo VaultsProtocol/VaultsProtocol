@@ -18,7 +18,7 @@
 
 	// Stores
 	import { account } from '../stores/account'
-	
+
 	import type { WalletType } from '../lib/wallets'
 	import { localStorageWritable } from '../stores/localStorage'
 

@@ -1,0 +1,27 @@
+{
+  "0 debug pnpm:scope": {
+    "selected": 1
+  },
+  "1 warn pnpm": {
+    "message": "Unsupported engine: wanted: {\"node\":\"14.x\"} (current: {\"node\":\"v16.9.0\",\"pnpm\":\"6.24.4\"})",
+    "prefix": "/Users/dy2/Developer/ETHDenver 2022/DAOCreator"
+  },
+  "2 info pnpm": {
+    "err": {
+      "name": "Error",
+      "message": "not found: dev",
+      "code": "ENOENT",
+      "stack": "Error: not found: dev\n    at getNotFoundError (/Users/dy2/.nvm/versions/node/v16.9.0/lib/node_modules/pnpm/dist/pnpm.cjs:41455:51)\n    at Function.whichSync [as sync] (/Users/dy2/.nvm/versions/node/v16.9.0/lib/node_modules/pnpm/dist/pnpm.cjs:41532:13)\n    at getCommandAbsolutePathSync (/Users/dy2/.nvm/versions/node/v16.9.0/lib/node_modules/pnpm/dist/pnpm.cjs:43097:44)\n    at default_1 (/Users/dy2/.nvm/versions/node/v16.9.0/lib/node_modules/pnpm/dist/pnpm.cjs:43106:32)\n    at /Users/dy2/.nvm/versions/node/v16.9.0/lib/node_modules/pnpm/dist/pnpm.cjs:179764:39"
+    }
+  },
+  "3 error pnpm": {
+    "code": "ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL",
+    "prefix": "/Users/dy2/Developer/ETHDenver 2022/DAOCreator",
+    "err": {
+      "name": "pnpm",
+      "message": "not found: dev",
+      "code": "ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL",
+      "stack": "Error: not found: dev\n    at getNotFoundError (/Users/dy2/.nvm/versions/node/v16.9.0/lib/node_modules/pnpm/dist/pnpm.cjs:41455:51)\n    at Function.whichSync [as sync] (/Users/dy2/.nvm/versions/node/v16.9.0/lib/node_modules/pnpm/dist/pnpm.cjs:41532:13)\n    at getCommandAbsolutePathSync (/Users/dy2/.nvm/versions/node/v16.9.0/lib/node_modules/pnpm/dist/pnpm.cjs:43097:44)\n    at default_1 (/Users/dy2/.nvm/versions/node/v16.9.0/lib/node_modules/pnpm/dist/pnpm.cjs:43106:32)\n    at /Users/dy2/.nvm/versions/node/v16.9.0/lib/node_modules/pnpm/dist/pnpm.cjs:179764:39"
+    }
+  }
+}

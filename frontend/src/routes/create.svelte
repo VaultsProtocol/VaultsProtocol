@@ -15,6 +15,7 @@
 		// governanceStrategyInfo,
 	} from '$lib/vaults'
 
+	import { erc20Tokens } from '$lib/tokens'
 	import { networks } from '$lib/networks'
 
 
@@ -62,7 +63,8 @@
 	import HeightContainer from '../components/HeightContainer.svelte'
 	import Select from '../components/Select.svelte'
 	import Tabs from '../components/Tabs.svelte'
-	import TokenAmountSelect from '../components/TokenAmountSelect.svelte';
+	import TokenSelect from '../components/TokenSelect.svelte'
+	import TokenAmountSelect from '../components/TokenAmountSelect.svelte'
 
 
 	import { fly } from 'svelte/transition'
@@ -145,15 +147,31 @@
 
 				<hr>
 
-				<label class="column">
-					<h3>{$_('Chain')}</h3>
-					<div>
-						<Select
-							bind:value={vaultConfig.chainId}
-							values={networks.map(({ chainId }) => String(chainId))}
-							labels={Object.fromEntries(networks.map(({ chainId, name }) => [chainId, name]))}
-						/>
-					</div>
+				<div class="grid">
+					<label class="column">
+						<h3>{$_('Chain')}</h3>
+						<div>
+							<Select
+								bind:value={vaultConfig.chainId}
+								values={networks.map(({ chainId }) => String(chainId))}
+								labels={Object.fromEntries(networks.map(({ chainId, name }) => [chainId, name]))}
+							/>
+						</div>
+					</label>
+					
+
+					<label class="column">
+						<h3>{$_('Available Tokens')}</h3>
+
+						<TokenSelect bind:token={vaultConfig.tokens[0]} />
+						<!-- {#each vaultConfig.config.tokens as token, i}}
+							<TokenAmountSelect
+								bind:token={vaultConfig.config.initialLiquidity.tokens[i]}
+								bind:amount={vaultConfig.config.initialLiquidity.amount}
+							/>
+						{/each} -->
+					</label>
+				</div>
 			</section>
 
 			<section class="card column">
@@ -163,7 +181,7 @@
 
 				<label class="column">
 					<h3>{$_('Type')}</h3>
-					<div>
+					<div class="">
 						<Tabs
 							bind:value={vaultConfig.type}
 							values={Object.keys(VaultType)}
@@ -173,7 +191,7 @@
 					<p>{$_(vaultTypeInfo[vaultConfig.type].description)}</p>
 				</label>
 
-				Vault Token
+				{'Quorum'}
 
 				<div class="stack">
 					{#if vaultConfig.type === VaultType.Degen}
@@ -307,7 +325,7 @@
 	}
 
 	.vault-preview {
-		min-width: 25rem;
+		width: 25rem;
 		--grid-gap: 1rem;
 
 		transform: rotateY(10deg);

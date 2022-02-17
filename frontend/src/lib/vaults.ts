@@ -40,11 +40,11 @@ export const yieldStrategyInfo = {
 		description: 'The DAO treasury.'
 	},
 	[YieldStrategy.Aave]: {
-		label: '👻 Aave',
+		label: '👻 Aave Yield-Bearing Vault',
 		description: 'The DAO treasury will be lent to borrowers on Aave. Interest will be paid out to holders.'
 	},
 	[YieldStrategy.Yearn]: {
-		label: '🏦 Yearn',
+		label: '🏦 Yearn Yield-Bearing Vault',
 		description: 'The DAO treasury will be deposited into a Yearn vault. Yield will be paid out to holders.'
 	},
 }

@@ -27,13 +27,17 @@
 	<p transition:scale class="align-start">{vaultConfig.about.description}</p>
 {/if}
 
-<div class="">
+<div class="row">
 	<p>{$_(vaultTypeInfo[vaultConfig.type].label)}</p>
-</div>
 
-{#if vaultConfig.type === VaultType.Degen}
-	<PieChart />
-{/if}
+	<!-- {#if vaultConfig.type === VaultType.Degen}
+		<PieChart data={[
+			{ amount: vaultConfig.config.jackpot, label: 'Jackpot' },
+			{ amount: vaultConfig.config.dividend, label: 'Dividend' },
+			{ amount: vaultConfig.config.treasury, label: 'Treasury' },
+		]} />
+	{/if} -->
+</div>
 
 {#if vaultConfig.about.website || vaultConfig.about.twitter || vaultConfig.about.discord}
 	<div class="row centered" transition:scale>
