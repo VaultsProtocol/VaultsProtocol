@@ -5,9 +5,6 @@ import "./tokens/ERC721.sol";
 import "./DegenVault.sol";
 import "./interfaces/IStrategy.sol";
 
-interface yController {
-    function vaults(address addr) external returns (address);
-}
 
 interface iVault {
     function setStrat(address addr) external;
@@ -38,15 +35,14 @@ contract DAOFactory {
 
         uint256 _vaultType, 
         uint256 _stratType,
+        address stratVault,
         address vaultToken, 
         bytes calldata _constructor
 
     ) public returns(address vault) {
 
-        address yvault = controller.vaults(vaultToken);
-
         bytes memory newVault = abi.encodePacked(vaultType[_vaultType], _constructor);
-        bytes memory newStrat = abi.encodePacked(stratType[_stratType], abi.encode(yvault, vaultToken));
+        bytes memory newStrat = abi.encodePacked(stratType[_stratType], abi.encode(vault, vaultToken));
         address strat;
 
         assembly {
