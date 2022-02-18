@@ -35,19 +35,18 @@ contract PDelegate is DaoVault {
 
     constructor(
         ERC20 _vaultToken,
-        address strategy,
         string memory name,
         string memory symbol,
         uint16 _quorom
     ) DaoVault(
         _vaultToken,
-        strategy,
         name,
         symbol
     ) {
+
+        require(_quorom >= 1500);
         quorom = _quorom;
 
-        IStrategy(strategy).initVault(address(this));
     }
 
     // #########################
@@ -73,6 +72,9 @@ contract PDelegate is DaoVault {
     // key 1 = NFT ID, key 2 = Propsal ID
     mapping (uint256 => mapping (bytes32 => bool)) public voted;
 
+    // key is ID , result is tiemstamp till locked
+    mapping (uint256 => uint256) public lockRedelgation;
+
     // #########################
     // ##                     ##
     // ##       Voting        ##
@@ -84,8 +86,9 @@ contract PDelegate is DaoVault {
         Manage[] memory _recipients, 
         uint256 time
     ) external returns (bytes32) {
-
-        require(time >= 86400, "Time to short");
+        
+        // 1 day < time < 3 days
+        require(time >= 86400 && time <= 259200);
 
         bytes32 key = keccak256(abi.encodePacked(descriptor));
         uint256 length = _recipients.length;
@@ -180,8 +183,12 @@ contract PDelegate is DaoVault {
 
         require(
             msg.sender == ownerOf[fromId] &&
-            fromId != toId
+            fromId != toId &&
+            block.timestamp >= lockRedelgation[fromId]
         );
+
+        // locks all redelgation for 3 days
+        lockRedelgation[fromId] = block.timestamp + 259200;
 
         uint256 newWeight = deposits[fromId].amount;
         uint256 currentDelegatee = delegation[fromId].delegatee;
@@ -200,7 +207,10 @@ contract PDelegate is DaoVault {
 
     function removeAllDelegation(uint256 id) public {
 
-        require(msg.sender == ownerOf[id]);
+        require(
+            msg.sender == ownerOf[id] &&
+            block.timestamp >= lockRedelgation[id]
+        );
 
         delegatedAmount[ delegation[id].delegatee ] -= delegation[id].weight;
         
@@ -208,50 +218,4 @@ contract PDelegate is DaoVault {
         delegation[id].weight = 0;
 
     }
-
-    // #########################
-    // ##                     ##
-    // ##      Overrides      ##
-    // ##                     ##
-    // #########################
-
-    function depositToId(uint256 amount, uint256 id) external virtual override {
-
-        // trusted contract
-        require(msg.sender == ownerOf[id]);
-
-        deposits[id].amount += amount;
-        deposits[id].tracker += amount * yeildPerDeposit;
-        totalDeposits += amount;
-
-        // adjusts weight
-        delegateVotes(id, delegation[id].delegatee);
-
-        //ensure token reverts on failed
-        vaultToken.transferFrom(msg.sender, address(this), amount);
-        
-    }
-
-    function withdrawFromId(uint256 amount, uint256 id) public virtual override  {
-
-        require(msg.sender == ownerOf[id]);
-        require(amount <= withdrawableById(id));
-
-        //trusted contract
-        uint256 balanceCheck = vaultToken.balanceOf(address(this));
-
-        // trusted contract
-        if (amount > balanceCheck) {
-            withdrawFromStrat(amount - balanceCheck, id);
-        }
-
-        deposits[id].amount -= amount;
-        deposits[id].tracker -= amount * yeildPerDeposit;
-
-        delegateVotes(id, delegation[id].delegatee);
-
-        vaultToken.transfer(msg.sender, amount);
-
-    }
-
 }

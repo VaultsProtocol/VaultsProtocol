@@ -36,6 +36,8 @@ contract BaseVault is ERC721 {
     
     ERC20 immutable vaultToken;
 
+    address immutable deployer;
+
     // strategy to earn yeild on vault reserves
     // strats are hardcoded at 50% of totalDeposits
     IStrategy strat;
@@ -48,12 +50,13 @@ contract BaseVault is ERC721 {
 
     constructor(
         ERC20 _vaultToken,
-        address strategy,
         string memory name,
         string memory symbol
     ) ERC721(name, symbol) {
+
         vaultToken = _vaultToken;
-        strat = IStrategy(strategy);
+        deployer = msg.sender;
+
     }
 
     // #########################
@@ -64,7 +67,7 @@ contract BaseVault is ERC721 {
 
     function mintNewNFT(uint256 amount) external virtual returns (uint256) {
 
-        uint256 id = currentId;
+        uint256 id = _mint(msg.sender, currentId);
 
         deposits[id].amount = amount;
         deposits[id].tracker += amount * yeildPerDeposit;
@@ -73,7 +76,6 @@ contract BaseVault is ERC721 {
         //ensure token reverts on failed
         vaultToken.transferFrom(msg.sender, address(this), amount);
 
-        require(id == _mint(msg.sender, id));
         return id;
 
     }
@@ -110,6 +112,8 @@ contract BaseVault is ERC721 {
 
         //trusted contract
         uint256 balanceCheck = vaultToken.balanceOf(address(this));
+        
+        adjustYeild();
 
         // trusted contract
         if (amount > balanceCheck) {
@@ -119,6 +123,14 @@ contract BaseVault is ERC721 {
                 id
             );
             
+        } else {
+            
+            // only adjust deposits if yield of user is less than withdraw requested;
+            uint256 yield = yieldPerId(id);
+            if (amount > yield) {
+                totalDeposits -= (amount - yield);
+            }
+
         }
 
         deposits[id].amount -= amount;
@@ -130,7 +142,7 @@ contract BaseVault is ERC721 {
 
     function withdrawableById(uint256 id) public view virtual returns (uint256) {
 
-        uint256 yield = yeildPerId(id);
+        uint256 yield = yieldPerId(id);
 
         // claimable may be larger than total deposits but never smaller
         uint256 claimable = vaultToken.balanceOf(address(this)) + depositedToStrat;
@@ -145,12 +157,6 @@ contract BaseVault is ERC721 {
     // ##      Strategy       ##
     // ##                     ##
     // #########################
-
-    function setStrategy(address addr) internal virtual {
-
-        strat = IStrategy(addr);
-
-    }
 
     //total possible deposited to strat is currently set at 50%
     function initStrat() public {
@@ -169,13 +175,15 @@ contract BaseVault is ERC721 {
     }
 
     //internal, only called when balanceOf(address(this)) < withdraw requested
-    // depositedToStrat = total withdrawn - yeild of msg.sender
+    // depositedToStrat and totalDeposits = total withdrawn - yeild of msg.sender
     function withdrawFromStrat(uint256 amountNeeded, uint256 forID) internal {
 
-        uint256 userYield = yeildPerId(forID);
+        uint256 userYield = yieldPerId(forID);
 
         // needed for OoP
         uint256 toSubtract = amountNeeded - userYield;
+
+        totalDeposits -= toSubtract;
         depositedToStrat -= toSubtract;
 
         strat.withdrawl(amountNeeded);
@@ -201,7 +209,7 @@ contract BaseVault is ERC721 {
 
     }
 
-    function yeildPerId(uint256 id) internal view returns (uint256) {
+    function yieldPerId(uint256 id) internal view returns (uint256) {
 
         uint256 pre = deposits[id].amount * yeildPerDeposit / SCALAR;
         return pre - deposits[id].tracker / SCALAR;
@@ -215,8 +223,22 @@ contract BaseVault is ERC721 {
     // #########################
 
     function tokenURI(uint256 id) public view override returns (string memory) {
-            
+        return "string";
     }
 
+    
 
+    // #########################
+    // ##                     ##
+    // ##       INIT          ##
+    // ##                     ##
+    // #########################
+
+    function setStrat(address addr) public {
+
+        require (msg.sender == deployer && address(strat) == address(0) );
+
+        strat = IStrategy(addr);
+
+    }
 }

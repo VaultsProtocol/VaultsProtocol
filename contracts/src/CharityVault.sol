@@ -30,17 +30,14 @@ contract CharityVault is BaseVault {
     constructor( 
 
         ERC20 _vaultToken,
-        address strategy,
         address _recipient,
         uint16 _tokenPercent,
-
         string memory name,
         string memory symbol
 
     ) BaseVault( 
 
         _vaultToken,
-        strategy,
         name,
         symbol
 
@@ -56,7 +53,7 @@ contract CharityVault is BaseVault {
     // ##                     ##
     // #########################
 
-    function withdrawlByRecipient() external {
+    function withdrawlToRecipient() external {
         
         vaultToken.transfer(ctx.recipient, yieldForRecipient);
 
@@ -73,11 +70,13 @@ contract CharityVault is BaseVault {
 
         uint256 totalInStrat = strat.withdrawlableVaultToken();
         uint256 totalYield = totalInStrat - depositedToStrat;
-        uint toDistribute = totalYield * ctx.percentOfYield / 10000;
 
-        yieldForRecipient += toDistribute;
+        uint256 toCharitable = totalYield * ctx.percentOfYield / 1e4;
+        uint16 percentToSend = 10000 - ctx.percentOfYield;
 
-        yeildPerDeposit += (toDistribute * SCALAR) / totalDeposits;
+        yieldForRecipient += toCharitable;
+
+        yeildPerDeposit += (totalYield * percentToSend / 1e4) * SCALAR / totalDeposits;
 
     }
     

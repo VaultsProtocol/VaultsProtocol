@@ -5,7 +5,7 @@ import "hardhat/console.sol";
 
 /// @notice Modern, minimalist, and gas efficient ERC-721 implementation.
 /// @author Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/tokens/ERC721.sol)
-/// @dev Note that balanceOf does not revert if passed the zero address, in defiance of the ERC.
+/// @dev Note that balanceOf does not revert if passed the zero address, in defiance of the ERC
 abstract contract ERC721 {
     /*///////////////////////////////////////////////////////////////
                                  EVENTS
@@ -101,37 +101,6 @@ abstract contract ERC721 {
         emit Transfer(from, to, id);
     }
 
-    // function safeTransferFrom(
-    //     address from,
-    //     address to,
-    //     uint256 id
-    // ) public virtual {
-    //     transferFrom(from, to, id);
-
-    //     require(
-    //         to.code.length == 0 ||
-    //             ERC721TokenReceiver(to).onERC721Received(msg.sender, from, id, "") ==
-    //             ERC721TokenReceiver.onERC721Received.selector,
-    //         "UNSAFE_RECIPIENT"
-    //     );
-    // }
-
-    // function safeTransferFrom(
-    //     address from,
-    //     address to,
-    //     uint256 id,
-    //     bytes memory data
-    // ) public virtual {
-    //     transferFrom(from, to, id);
-
-    //     require(
-    //         to.code.length == 0 ||
-    //             ERC721TokenReceiver(to).onERC721Received(msg.sender, from, id, data) ==
-    //             ERC721TokenReceiver.onERC721Received.selector,
-    //         "UNSAFE_RECIPIENT"
-    //     );
-    // }
-
     /*///////////////////////////////////////////////////////////////
                               ERC165 LOGIC
     //////////////////////////////////////////////////////////////*/
@@ -181,44 +150,4 @@ abstract contract ERC721 {
 
         emit Transfer(owner, address(0), id);
     }
-
-    /*///////////////////////////////////////////////////////////////
-                       INTERNAL SAFE MINT LOGIC
-    //////////////////////////////////////////////////////////////*/
-
-    // function _safeMint(address to, uint256 id) internal virtual {
-    //     _mint(to, id);
-
-    //     require(
-    //         to.code.length == 0 ||
-    //             ERC721TokenReceiver(to).onERC721Received(msg.sender, address(0), id, "") ==
-    //             ERC721TokenReceiver.onERC721Received.selector,
-    //         "UNSAFE_RECIPIENT"
-    //     );
-    // }
-
-    // function _safeMint(
-    //     address to,
-    //     uint256 id,
-    //     bytes memory data
-    // ) internal virtual {
-    //     _mint(to, id);
-
-    //     require(
-    //         to.code.length == 0 ||
-    //             ERC721TokenReceiver(to).onERC721Received(msg.sender, address(0), id, data) ==
-    //             ERC721TokenReceiver.onERC721Received.selector,
-    //         "UNSAFE_RECIPIENT"
-    //     );
-    // }
-
-// /// @notice A generic interface for a contract which properly accepts ERC721 tokens.
-// /// @author Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/tokens/ERC721.sol)
-// interface ERC721TokenReceiver {
-//     function onERC721Received(
-//         address operator,
-//         address from,
-//         uint256 id,
-//         bytes calldata data
-//     ) external returns (bytes4);
 }

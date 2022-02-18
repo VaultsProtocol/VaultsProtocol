@@ -19,12 +19,10 @@ contract DaoVault is BaseVault {
 
     constructor( 
         ERC20 _vaultToken,
-        address strategy,
         string memory name,
         string memory symbol
     ) BaseVault( 
         _vaultToken,
-        strategy,
         name,
         symbol
     ) {
@@ -66,7 +64,7 @@ contract DaoVault is BaseVault {
 
     function withdrawableById(uint256 id) public view override returns (uint256) {
 
-        uint256 yield = yeildPerId(id);
+        uint256 yield = yieldPerId(id);
 
         // claimable may be larger than total deposits but never smaller
         uint256 claimable = vaultToken.balanceOf(address(this)) +
