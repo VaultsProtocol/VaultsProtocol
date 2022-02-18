@@ -116,7 +116,7 @@ export const getDefaultVaultConfig = () => ({
 	},
 	chainId: 1,
 	tokens: [],
-	type: VaultType.Degen,
+	type: undefined,
 	config: {
 		// VaultType.Degen
 		jackpot: 20,

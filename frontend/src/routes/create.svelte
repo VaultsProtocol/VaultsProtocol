@@ -77,11 +77,9 @@
 	</section>
 
 	<section class="row">
-		<article class="vault-preview sticky card column">
-			<HeightContainer class="column">
-				<Vault {vaultConfig} />
-			</HeightContainer>
-		</article>
+		<div class="vault-preview sticky">
+			<Vault {vaultConfig} />
+		</div>
 
 		<!-- svelte-ignore a11y-label-has-associated-control -->
 		<form
@@ -123,23 +121,25 @@
 					/>
 				</label>
 
-				<label class="column">
-					<h3>{$_('Twitter')}</h3>
-					<input
-						type="text"
-						bind:value={vaultConfig.about.twitter}
-						placeholder={$_('twitter.com/ETHDenver')}
-					/>
-				</label>
+				<div class="grid">
+					<label class="column">
+						<h3>{$_('Twitter')}</h3>
+						<input
+							type="text"
+							bind:value={vaultConfig.about.twitter}
+							placeholder={$_('twitter.com/ETHDenver')}
+						/>
+					</label>
 
-				<label class="column">
-					<h3>{$_('Discord')}</h3>
-					<input
-						type="text"
-						bind:value={vaultConfig.about.discord}
-						placeholder={$_('discord.gg/xyz')}
-					/>
-				</label>
+					<label class="column">
+						<h3>{$_('Discord')}</h3>
+						<input
+							type="text"
+							bind:value={vaultConfig.about.discord}
+							placeholder={$_('discord.gg/xyz')}
+						/>
+					</label>
+				</div>
 			</section>
 
 			<section class="card column">
@@ -188,7 +188,9 @@
 							labels={Object.fromEntries(Object.entries(vaultTypeInfo).map(([key, {label}]) => [key, label]))}
 						/>
 					</div>
-					<p>{$_(vaultTypeInfo[vaultConfig.type].description)}</p>
+					{#if vaultTypeInfo[vaultConfig.type]}
+						<p>{$_(vaultTypeInfo[vaultConfig.type].description)}</p>
+					{/if}
 				</label>
 
 				{'Quorum'}

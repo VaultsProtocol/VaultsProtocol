@@ -699,6 +699,10 @@ export const networks: Network[] = [
 ]
 
 
+export const networksByChainID: Record<string, Network> = {}
+for(const network of networks)
+	networksByChainID[network.chainId] = network
+
 export const networksBySlug: Record<string, Network> = {}
 for(const network of networks)
 	networksBySlug[network.slug] = network

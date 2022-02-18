@@ -10,6 +10,8 @@
 	export let values: Value[]
 	export let labels: Record<Value, string>
 
+	export let placeholderLabel: string = 'Choose...'
+
 	export let placement: Placement
 
 	export let id = `select-${Math.random() * 1e18}`
@@ -39,7 +41,9 @@
 		tabindex="-1"
 	>
 		<slot {value}>
-			{labels[value] ?? value}
+			{value
+				? labels[value] ?? value
+				: placeholderLabel}
 		</slot>
 	</button>
 
