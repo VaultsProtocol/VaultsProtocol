@@ -4,6 +4,7 @@ import type { ERC20Token } from './tokens'
 
 
 export enum VaultType {
+	Standard = 'Standard',
 	Degen = 'Degen',
 	DAO = 'DAO',
 	Charity = 'Charity',
@@ -11,6 +12,10 @@ export enum VaultType {
 }
 
 export const vaultTypeInfo = {
+	[VaultType.Standard]: {
+		label: '🏦 Standard',
+		description: 'Contribute to the vault and receive a yield-bearing position NFT. Withdraw anytime.'
+	},
 	[VaultType.Degen]: {
 		label: '🐸 Degen Game',
 		description: 'The crowdfund ends if a contribution is not made after a set interval of time. The last person to contribute wins the Jackpot allocation.'
@@ -136,3 +141,15 @@ export const getDefaultVaultConfig = () => ({
 	yieldStrategy: YieldStrategy.Aave,
 	// governanceStrategy: GovernanceStrategy.None,
 } as VaultConfig)
+
+
+export type VaultPosition = {
+	withdrawableBalance: BigNumber
+	yieldEarned: BigNumber
+}
+
+
+export enum MetadataType {
+	TokenBalance = 'TokenBalance',
+	Date = 'Date'
+}

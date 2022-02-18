@@ -196,7 +196,10 @@
 				{'Quorum'}
 
 				<div class="stack">
-					{#if vaultConfig.type === VaultType.Degen}
+					{#if vaultConfig.type === VaultType.Standard}
+						<div class="grid" in:fly={{ x: 100 }} out:fly={{ x: -100 }}>
+						</div>
+					{:else if vaultConfig.type === VaultType.Degen}
 						<div class="grid" in:fly={{ x: 100 }} out:fly={{ x: -100 }}>
 							<label class="card column">
 								<h4>{$_('Jackpot')}</h4>

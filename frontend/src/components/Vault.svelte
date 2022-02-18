@@ -1,31 +1,44 @@
 <script lang="ts">
 	// Constants/types
 	import { _ } from 'svelte-i18n'
-
-	import { VaultType, vaultTypeInfo, type VaultConfig } from '../lib/vaults'
-
-	type T = $$Generic<VaultType>	
-
+	import { MetadataType, VaultType, vaultTypeInfo, type VaultConfig, type VaultPosition } from '../lib/vaults'
 	import { networksByChainID } from '$lib/networks'
-
-
-	// Internal state
+	import { BigNumber } from 'ethers'
+	
+	
+	// External state
+	type T = $$Generic<VaultType>
+	
 	export let vaultConfig: VaultConfig<T>
+	export let vaultPosition: VaultPosition = {
+		withdrawableBalance: BigNumber.from(0),
+		yieldEarned: BigNumber.from(0)
+	}
+
+	export let isPosition = false // Vault vs individual position
 
 
 	// Components
+	import Countdown from './Countdown.svelte'
 	import HeightContainer from './HeightContainer.svelte'
 	import PieChart from './PieChart.svelte'
+	import TokenBalance from './TokenBalance.svelte'
 	import TokenIcon from './TokenIcon.svelte'
 
 
+	// Images
+	import websiteIcon from '../assets/icons/website.svg'
+	import twitterIcon from '../assets/icons/twitter.svg'
+	import discordIcon from '../assets/icons/discord.svg'
+
+
 	// Styles/animations
-	import { scale } from 'svelte/transition'
+	import { fade, scale } from 'svelte/transition'
 	import { flip } from 'svelte/animate'
 </script>
 
 
-<article class="card">
+<article class="vault card">
 	<HeightContainer class="column">
 		<header>
 			<div class="row">
@@ -35,13 +48,37 @@
 			</div>
 		</header>
 
-		{#if vaultConfig.about.description}
-			<p transition:scale class="align-start">{vaultConfig.about.description}</p>
-		{/if}
+		<div class="stack">
+			{#key vaultConfig.type}
+				<figure class="card" transition:fade>
+					<svg>
+						{#if vaultConfig.type === VaultType.Standard}
+							<path class:silhouette={isPosition} />
+						{:else if vaultConfig.type === VaultType.Degen}
+							<path class:silhouette={isPosition} />
+						{:else if vaultConfig.type === VaultType.DAO}
+							<path class:silhouette={isPosition} />
+						{:else if vaultConfig.type === VaultType.Charity}
+							<path class:silhouette={isPosition} />	
+						{:else if vaultConfig.type === VaultType.Superfluid}
+							<path class:silhouette={isPosition} />
+						{/if}
+					</svg>
+				</figure>
+			{/key}
+		</div>
 
 		{#if vaultTypeInfo[vaultConfig.type]}
 			<div class="row">
-				<p>{$_(vaultTypeInfo[vaultConfig.type].label)}</p>
+				<img />
+
+				<div class="stack">
+					{#key vaultConfig.type}
+						<p class="card" transition:scale>{$_(vaultTypeInfo[vaultConfig.type].label)}</p>
+					{/key}
+				</div>
+
+				<img />
 
 				<!-- {#if vaultConfig.type === VaultType.Degen}
 					<PieChart data={[
@@ -53,18 +90,52 @@
 			</div>
 		{/if}
 
+		{#if vaultConfig.about.description}
+			<p class="align-start" transition:scale>{vaultConfig.about.description}</p>
+		{/if}
+
+		{#each
+			isPosition ? [
+				{ icon: '', label: 'Balance', displayType: MetadataType.TokenBalance, value: vaultPosition.withdrawableBalance },
+				{ icon: '', label: 'Earned', displayType: MetadataType.TokenBalance, value: vaultPosition.yieldEarned },
+			] : [
+				{ icon: '', label: 'Jackpot', displayType: MetadataType.TokenBalance, value: vaultConfig.config.jackpot },
+				{ icon: '', label: 'Dividend', displayType: MetadataType.TokenBalance, value: vaultConfig.config.dividend },
+				{ icon: '', label: 'Treasury', displayType: MetadataType.TokenBalance, value: vaultConfig.config.treasury },
+				{ icon: '', label: 'Deadline', displayType: MetadataType.Date, value: vaultConfig.config.deadline },
+				{ icon: '', label: 'Initial Liquidity', displayType: MetadataType.TokenBalance, value: vaultConfig.config.initialLiquidity },
+			]
+			as
+			{ icon, label, displayType, value } (label)
+		}
+			<div class="row" transition:scale animate:flip>
+				<img src={icon} alt={$_(label)} />
+				<span>
+					{#if displayType === MetadataType.TokenBalance}
+						<TokenBalance {value} />
+					{:else if displayType === MetadataType.Date}
+						{value} seconds
+						<!-- <Countdown toTimestamp={value} /> -->
+					{/if}
+				</span>
+			</div>
+		{/each}
+
 		{#if vaultConfig.about.website || vaultConfig.about.twitter || vaultConfig.about.discord}
 			<div class="row centered" transition:scale>
 				{#each
 					[
-						{ link: vaultConfig.about.website, label: 'Website' },
-						{ link: vaultConfig.about.twitter, label: 'Twitter' },
-						{ link: vaultConfig.about.discord, label: 'Discord' }
+						{ label: 'Website', link: vaultConfig.about.website, icon: websiteIcon },
+						{ label: 'Twitter', link: vaultConfig.about.twitter, icon: twitterIcon },
+						{ label: 'Discord', link: vaultConfig.about.discord, icon: discordIcon }
 					].filter(({ link }) => link)
 					as
-					{ link, label } (label)
+					{ label, link, icon } (label)
 				}
-					<a href={vaultConfig.about.website} transition:scale animate:flip>{$_(label)}</a>
+					<a href={link} transition:scale animate:flip>
+						<!-- {$_(label)} -->
+						<img src={icon} alt={label} />
+					</a>
 				{/each}
 			</div>
 		{/if}
@@ -73,7 +144,16 @@
 
 
 <style>
-	article {
-		
+	.vault {
+		border: var(--background-color-2) 0.5em solid;
+		width: 24rem;
+	}
+
+	svg {
+		aspect-ratio: 1.5;
+	}
+
+	.silhouette {
+		fill: black;
 	}
 </style>
