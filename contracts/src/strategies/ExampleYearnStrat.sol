@@ -40,7 +40,7 @@ contract YearnStrategy {
     // #########################
 
     modifier onlyVault() {
-        require (msg.sender == vault);
+        require (msg.sender == vault, "Unauthorized");
         _;
     }
 
