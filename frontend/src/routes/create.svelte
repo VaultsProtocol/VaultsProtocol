@@ -208,14 +208,12 @@ payoutTypeInfo,
 					{/if}
 				</label>
 
-				{'Quorum'}
-
 				<div class="stack">
 					{#if vaultConfig.type === VaultType.Standard}
-						<div class="grid" in:fly={{ x: 100 }} out:fly={{ x: -100 }}>
+						<div class="grid" in:fly={{ x: 50 }} out:fly={{ x: -50 }}>
 						</div>
 					{:else if vaultConfig.type === VaultType.Degen}
-						<div class="grid" in:fly={{ x: 100 }} out:fly={{ x: -100 }}>
+						<div class="grid" in:fly={{ x: 50 }} out:fly={{ x: -50 }}>
 							<label class="card column">
 								<h4>{$_('Jackpot')}</h4>
 								<p>{$_('This portion is paid out to the last contributor when the crowdfund ends.')}</p>
@@ -287,7 +285,7 @@ payoutTypeInfo,
 						</div>
 
 					{:else if vaultConfig.type === VaultType.DAO}
-						<div class="grid" in:fly={{ x: 100 }} out:fly={{ x: -100 }}>
+						<div class="grid" in:fly={{ x: 50 }} out:fly={{ x: -50 }}>
 							<label class="card column">
 								<h3>{$_('Governance Type')}</h3>
 								<div>
@@ -307,7 +305,7 @@ payoutTypeInfo,
 						</div>
 
 					{:else if vaultConfig.type === VaultType.Charity}
-						<div class="grid" in:fly={{ x: 100 }} out:fly={{ x: -100 }}>
+						<div class="grid" in:fly={{ x: 50 }} out:fly={{ x: -50 }}>
 							<label class="card column">
 								<h3>{$_('Payout Type')}</h3>
 								<div>
@@ -373,6 +371,10 @@ payoutTypeInfo,
 <style>
 	main {
 		--grid-gap: 2rem;
+	}
+
+	section.row {
+		grid-template-columns: auto 1fr;
 	}
 
 	.vault-preview {
