@@ -62,7 +62,7 @@ contract DAOMultsig is DaoVault {
         name,
         symbol
     ) {
-        signersNeeded = _signersNeeded; // ratio is always kept the same
+        signersNeeded = _signersNeeded;
 
         uint16 length = _signer.length;
         for (uint16 i = 0; i < length; i++) {

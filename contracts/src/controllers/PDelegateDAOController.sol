@@ -59,6 +59,8 @@ contract PDelegate is DaoVault {
 
     uint16 immutable quorom;
 
+    bytes32[] keys;
+
     // key is ID of delegater, result is thier delegation info
     mapping (uint256 => Delegate) public delegation;
 
@@ -93,6 +95,7 @@ contract PDelegate is DaoVault {
         require(time >= 86400 && time <= 259200);
 
         bytes32 key = keccak256(abi.encodePacked(descriptor));
+        keys.push(key);
         uint256 length = _recipients.length;
 
         Proposal storage proposal = proposals[key];
