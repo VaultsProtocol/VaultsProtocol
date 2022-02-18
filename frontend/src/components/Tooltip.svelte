@@ -53,7 +53,7 @@
 								const { width, height } = a
 								Object.assign(tooltipElement.style, {
 									maxWidth: `${width}px`,
-									height: `${height}px`,
+									maxHeight: `${height}px`,
 								})
 							}
 						})
@@ -93,6 +93,7 @@
 		position: absolute;
 		left: 0;
 		top: 0;
+		z-index: 1;
 	}
 
 	summary {
