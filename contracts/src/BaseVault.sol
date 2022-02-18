@@ -5,7 +5,7 @@ import "./tokens/ERC721.sol";
 import "./tokens/ERC20.sol";
 import "./interfaces/IStrategy.sol";
 
-abstract contract BaseVault is ERC721 {
+contract BaseVault is ERC721 {
 
     // #########################
     // ##                     ##
@@ -70,7 +70,7 @@ abstract contract BaseVault is ERC721 {
     }
 
     function withdrawFromId(uint256 id, uint256 amount) public virtual {
-        _withdrawFromId(id, amount);
+        _withdrawFromId(amount, id);
     }
 
     // Burns NFT and withdraws all claimable token + yeild
@@ -136,11 +136,10 @@ abstract contract BaseVault is ERC721 {
 
         require(msg.sender == ownerOf[id]);
         require(amount <= withdrawableById(id));
-
-        //trusted contract
-        uint256 balanceCheck = vaultToken.balanceOf(address(this));
         
-        adjustYeild();
+        if (address(strat) != address(0)) {
+            adjustYeild();
+        }
 
         uint256 userYield = yieldPerId(id);
         uint256 adjusted = amount - userYield;
@@ -148,17 +147,24 @@ abstract contract BaseVault is ERC721 {
             totalDeposits -= adjusted;
         }
 
-        // trusted contract
+        //trusted contract
+        uint256 balanceCheck = vaultToken.balanceOf(address(this));
         if (amount > balanceCheck) {
+
             withdrawFromStrat(
                 amount - balanceCheck
             );
 
             depositedToStrat -= adjusted;
+
         }
-        
+
+        // edge case for first depositer
+        if (deposits[id].tracker != 0) {
+            deposits[id].tracker -= adjusted * yeildPerDeposit;
+        }
+
         deposits[id].amount -= adjusted;
-        deposits[id].tracker -= amount * yeildPerDeposit;
 
         vaultToken.transfer(msg.sender, amount);
 

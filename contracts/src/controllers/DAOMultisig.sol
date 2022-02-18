@@ -38,13 +38,17 @@ contract DAOMultsig is DaoVault {
     // ##                     ##
     // #########################
 
-    mapping (address => bool) isSigner;
+
+    mapping (address => bool) public isSigner;
+    address[] public signers;
+
     Context public ctx;
-    Manage[] toManage;
+
+    Manage[] public toManage;
     mapping (uint256 => uint16) toManageSigs;
     mapping (uint256 => mapping (address => bool)) signedManage;
 
-    AdjustSigner[] toAdjust;
+    AdjustSigner[] public toAdjust;
     mapping (uint256 => uint16) toAdjustSigs;
     mapping (uint256 => mapping (address => bool)) signedAdjust;
 
@@ -72,6 +76,8 @@ contract DAOMultsig is DaoVault {
         for (uint16 i = 0; i < length; i++) {
             isSigner[_signer[i]] = true;
         }
+
+        signers = _signer;
 
     }
 
@@ -145,6 +151,7 @@ contract DAOMultsig is DaoVault {
         Manage memory mem = Manage(to, amount, block.timestamp + 259200, false); // -> 3 days 
         toManage.push(mem);
         return toManage.length - 1;
+
     }
 
     function proposeSignerAdjustment(
@@ -152,7 +159,10 @@ contract DAOMultsig is DaoVault {
         uint16 sigsNeeded,
         bool add // true = add , false = remove
     ) external returns (uint256) {
-        require(isSigner[msg.sender]); 
+        require(
+            isSigner[msg.sender] &&
+            sigsNeeded <= signers.length + 1
+        ); 
 
         AdjustSigner memory mem = AdjustSigner(signer, block.timestamp + 259200, sigsNeeded, add, false);
         toAdjust.push(mem);
