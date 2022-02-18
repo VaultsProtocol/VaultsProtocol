@@ -29,6 +29,11 @@ contract PDelegate is DaoVault {
         uint256 weight;
     }
 
+    struct Context {
+        uint16 quorom;
+        uint16 vaultType;
+    }
+
     // #########################
     // ##                     ##
     // ##     Construcor      ##
@@ -47,7 +52,7 @@ contract PDelegate is DaoVault {
     ) {
 
         require(_quorom >= 1500);
-        quorom = _quorom;
+        ctx = Context(_quorom, 1);
 
     }
 
@@ -57,7 +62,7 @@ contract PDelegate is DaoVault {
     // ##                     ##
     // #########################
 
-    uint16 immutable quorom;
+    Context public ctx;
 
     bytes32[] keys;
 
@@ -90,13 +95,17 @@ contract PDelegate is DaoVault {
         Manage[] memory _recipients, 
         uint256 time
     ) external returns (bytes32) {
+
+        uint256 length = _recipients.length;
         
         // 1 day < time < 3 days
-        require(time >= 86400 && time <= 259200);
+        require(
+            time >= 86400 && time <= 259200 &&
+            length <= 3
+        );
 
         bytes32 key = keccak256(abi.encodePacked(descriptor));
         keys.push(key);
-        uint256 length = _recipients.length;
 
         Proposal storage proposal = proposals[key];
         
@@ -137,10 +146,10 @@ contract PDelegate is DaoVault {
 
     
 
-    // 15% Quorum // memory
+    // 15% Quorum // storage because of nested mapping :)
     function executeProposal(bytes32 descriptor) external returns (bool) {
 
-        Proposal memory proposal = proposals[descriptor];
+        Proposal storage proposal = proposals[descriptor];
 
         require(
             proposal.endTime <= block.timestamp &&
@@ -170,7 +179,7 @@ contract PDelegate is DaoVault {
             return false;
         }
 
-        require(totalVotes >= totalDeposits * quorom / 1e4, "Not Enough Votes");
+        require(totalVotes >= totalDeposits * ctx.quorom / 1e4, "Not Enough Votes");
 
         _manage(
             proposal.recipients[mostVotedKey].amount, 

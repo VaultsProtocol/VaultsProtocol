@@ -21,6 +21,7 @@ contract DegenVault is BaseVault {
         uint16 dividendsBP;
         uint16 timeDecay;
         uint16 growthFactor;
+        uint16 vaultType;
     }
     
     // #########################
@@ -61,7 +62,7 @@ contract DegenVault is BaseVault {
 
         require(_jackpotBP + _dividendsBP <= 10000);
 
-        ctx = Context(_jackpotBP, _dividendsBP, _timeDecay, _growthFactor);
+        ctx = Context(_jackpotBP, _dividendsBP, _timeDecay, _growthFactor, 4);
         minimumPrice = _minimumPrice;
         timeTracker = _intialTimeSeconds;
 

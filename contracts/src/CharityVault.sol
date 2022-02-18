@@ -9,6 +9,7 @@ contract CharityVault is BaseVault {
     struct Context {
         uint16 percentOfYield;
         address recipient;
+        uint16 vaultType;
     }
 
     // #########################
@@ -17,7 +18,7 @@ contract CharityVault is BaseVault {
     // ##                     ##
     // #########################
 
-    Context immutable ctx;
+    Context ctx;
 
     uint256 yieldForRecipient;
 
@@ -43,7 +44,7 @@ contract CharityVault is BaseVault {
 
     ) {
 
-        ctx = Context(_tokenPercent, _recipient);
+        ctx = Context(_tokenPercent, _recipient, 3);
 
     }
 
