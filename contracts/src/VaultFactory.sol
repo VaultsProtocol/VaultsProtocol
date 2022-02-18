@@ -12,10 +12,10 @@ interface iVault {
 // creates vaults and returns address of controller / vault nft and the vault
 contract VaultFactory {
 
-    constructor( address _creator) {
+    constructor(address _creator) {
         creator = _creator;
     }
-    
+
     address immutable creator;
 
     // creation code of vaults and strats
@@ -33,6 +33,7 @@ contract VaultFactory {
 
         uint256 _vaultKey, 
         uint256 _stratType,
+        address stratVault,
         address vaultToken, 
         address yield,
         bytes calldata _constructor,

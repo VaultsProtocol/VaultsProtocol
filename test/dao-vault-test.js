@@ -51,12 +51,14 @@ contract("DaoVault", ([alice, bob, tom, strategy, deployer]) => {
         from: deployer,
       });
 
+
       bc.daoVault = await DaoVault.new(
         bc.vaultToken.address, // ERC20 Vault Token
         "DAOVault",
         "DAOV",
         { from: deployer },
       );
+
     });
 
     it("Test weighting works", async () => {
@@ -94,9 +96,15 @@ contract("DaoVault", ([alice, bob, tom, strategy, deployer]) => {
       });
 
       // should pass ID = 2
-      await bc.daoVault.mintNewNft(BigInt(2e18), {
+      await bc.daoVault.mintNewNFT(BigInt(2e18), {
         from: bob,
       });
+
+      // ensure token transfer happened
+      assert.equal(
+        Number(await bc.vaultToken.balanceOf(bc.daoVault.address)),
+        BigInt(3e18),
+      );
 
       // Ensure mint happened
       assert.equal(Number(await bc.daoVault.balanceOf(alice)), 1);
