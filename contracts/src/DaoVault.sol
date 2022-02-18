@@ -36,7 +36,7 @@ contract DaoVault is BaseVault {
     // #########################
 
     // called by executeProposal
-    function manage(uint256 amount, address who) internal {
+    function _manage(uint256 amount, address who) internal {
 
         //cannot manage funds earning yeild
         require(amount < vaultToken.balanceOf(address(this)));

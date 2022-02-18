@@ -8,8 +8,8 @@ require("chai").use(require("chai-as-promised")).should();
 const DaoVault = artifacts.require("DaoVault");
 const ERC721 = artifacts.require("ERC721");
 const MockERC20 = artifacts.require("MockERC20");
-const YearnStrategy = artifacts.require("YearnStrategy");
-const MockYearnVault = artifacts.require("MockYearnVault");
+// const YearnStrategy = artifacts.require("YearnStrategy");
+// const MockYearnVault = artifacts.require("MockYearnVault");
 
 // User flow:
 /**
@@ -35,13 +35,13 @@ contract("DaoVault", ([alice, bob, tom, strategy, deployer]) => {
         },
       );
 
-      bc.yVault = await MockYearnVault.new(strategy, { from: deployer });
+    //   bc.yVault = await MockYearnVault.new(strategy, { from: deployer });
 
-      bc.strategy = await YearnStrategy.new(
-        bc.yVault.address,
-        bc.vaultToken.address,
-        { from: deployer },
-      );
+    //   bc.strategy = await YearnStrategy.new(
+    //     bc.yVault.address,
+    //     bc.vaultToken.address,
+    //     { from: deployer },
+    //   );
 
       await bc.vaultToken.transfer(alice, (10e18).toString(), {
         from: deployer,
@@ -51,20 +51,14 @@ contract("DaoVault", ([alice, bob, tom, strategy, deployer]) => {
         from: deployer,
       });
 
-      bc.initialLiquidity = "10000000000000000000000"; // 10 ERC20 as initial liquidity
-      bc.jackpotBps = 2500;
-      bc.dividendBps = 3500;
-      bc.initialDeadlineSeconds = 30;
-      bc.minimumPrice = (10e18).toString();
-      bc.devFee = 500;
+
       bc.daoVault = await DaoVault.new(
         bc.vaultToken.address, // ERC20 Vault Token
-        bc.strategy.address,
         "DAOVault",
         "DAOV",
         { from: deployer },
       );
-      bc.strategy.initVault(bc.daoVault.address, { from: deployer });
+
     });
 
     it("Test weighting works", async () => {
@@ -97,7 +91,7 @@ contract("DaoVault", ([alice, bob, tom, strategy, deployer]) => {
       });
 
       // ID = 1
-      await bc.daoVault.mintNewNFT(BigInt(1e18), {
+      await bc.daoVault.mintNewNft(BigInt(1e18), {
         from: alice,
       });
 
@@ -127,17 +121,14 @@ contract("DaoVault", ([alice, bob, tom, strategy, deployer]) => {
         BigInt(2e18),
       );
 
-      // Test Strategy deposit
-      await bc.daoVault.initStrat();
+      console.log(Number(await bc.vaultToken.balanceOf(alice)));
 
-      assert.equal(
-        Number(await bc.vaultToken.balanceOf(bc.strategy.address)),
-        BigInt(1.5e18),
-      );
-      assert.equal(
-        Number(await bc.vaultToken.balanceOf(bc.daoVault.address)),
-        BigInt(1.5e18),
-      );
+        await bc.daoVault.withdrawFromId(1, BigInt(5e17),
+            {from: alice}
+        );
+
+        console.log(Number(await bc.vaultToken.balanceOf(alice)));
+
     });
   });
 

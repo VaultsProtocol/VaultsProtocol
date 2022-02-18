@@ -5,6 +5,8 @@ import "../DaoVault.sol";
 
 // //ENSURE vault tokens revert on failed transfer
 
+// new ids dont delegate for old proposals
+
 contract PDelegate is DaoVault {
 
     struct Manage {
@@ -27,6 +29,11 @@ contract PDelegate is DaoVault {
         uint256 weight;
     }
 
+    struct Context {
+        uint16 quorom;
+        uint16 vaultType;
+    }
+
     // #########################
     // ##                     ##
     // ##     Construcor      ##
@@ -45,7 +52,7 @@ contract PDelegate is DaoVault {
     ) {
 
         require(_quorom >= 1500);
-        quorom = _quorom;
+        ctx = Context(_quorom, 1);
 
     }
 
@@ -55,7 +62,9 @@ contract PDelegate is DaoVault {
     // ##                     ##
     // #########################
 
-    uint16 immutable quorom;
+    Context public ctx;
+
+    bytes32[] keys;
 
     // key is ID of delegater, result is thier delegation info
     mapping (uint256 => Delegate) public delegation;
@@ -72,7 +81,7 @@ contract PDelegate is DaoVault {
     // key 1 = NFT ID, key 2 = Propsal ID
     mapping (uint256 => mapping (bytes32 => bool)) public voted;
 
-    // key is ID , result is tiemstamp till locked
+    // key is ID of address that delegation cannot be removed from , result is tiemstamp till unlocked
     mapping (uint256 => uint256) public lockRedelgation;
 
     // #########################
@@ -86,12 +95,17 @@ contract PDelegate is DaoVault {
         Manage[] memory _recipients, 
         uint256 time
     ) external returns (bytes32) {
+
+        uint256 length = _recipients.length;
         
         // 1 day < time < 3 days
-        require(time >= 86400 && time <= 259200);
+        require(
+            time >= 86400 && time <= 259200 &&
+            length <= 3
+        );
 
         bytes32 key = keccak256(abi.encodePacked(descriptor));
-        uint256 length = _recipients.length;
+        keys.push(key);
 
         Proposal storage proposal = proposals[key];
         
@@ -126,11 +140,13 @@ contract PDelegate is DaoVault {
 
         }
 
+        lockRedelgation[id] = block.timestamp + 259200;
+
     }
 
     
 
-    // 15% Quorum
+    // 15% Quorum // storage because of nested mapping :)
     function executeProposal(bytes32 descriptor) external returns (bool) {
 
         Proposal storage proposal = proposals[descriptor];
@@ -140,6 +156,7 @@ contract PDelegate is DaoVault {
             !proposal.executed
         );
 
+        // update storage
         proposals[descriptor].executed = true;
 
         uint256 length = proposal.recipientsLength;
@@ -162,9 +179,9 @@ contract PDelegate is DaoVault {
             return false;
         }
 
-        require(totalVotes >= totalDeposits * 1500 / 1e4, "Not Enough Votes");
+        require(totalVotes >= totalDeposits * ctx.quorom / 1e4, "Not Enough Votes");
 
-        manage(
+        _manage(
             proposal.recipients[mostVotedKey].amount, 
             proposal.recipients[mostVotedKey].to
         );
@@ -181,23 +198,24 @@ contract PDelegate is DaoVault {
 
     function delegateVotes(uint256 fromId, uint256 toId) public {
 
+        uint256 currentDelegatee = delegation[fromId].delegatee;
+
         require(
             msg.sender == ownerOf[fromId] &&
-            fromId != toId &&
-            block.timestamp >= lockRedelgation[fromId]
+            fromId != toId
         );
 
-        // locks all redelgation for 3 days
-        lockRedelgation[fromId] = block.timestamp + 259200;
+        if (toId != currentDelegatee) {
+            require (block.timestamp >= lockRedelgation[currentDelegatee]);
+        }
 
         uint256 newWeight = deposits[fromId].amount;
-        uint256 currentDelegatee = delegation[fromId].delegatee;
 
         if (currentDelegatee != 0) {
 
             delegatedAmount[currentDelegatee] -= delegation[fromId].weight;
 
-        } 
+        }
 
         delegatedAmount[toId] += newWeight;
         delegation[fromId].weight = newWeight;
@@ -207,12 +225,14 @@ contract PDelegate is DaoVault {
 
     function removeAllDelegation(uint256 id) public {
 
+        uint256 currentDelegation = delegation[id].delegatee;
+
         require(
             msg.sender == ownerOf[id] &&
-            block.timestamp >= lockRedelgation[id]
+            block.timestamp >= lockRedelgation[currentDelegation]
         );
 
-        delegatedAmount[ delegation[id].delegatee ] -= delegation[id].weight;
+        delegatedAmount[ currentDelegation ] -= delegation[id].weight;
         
         delegation[id].delegatee = 0;
         delegation[id].weight = 0;
