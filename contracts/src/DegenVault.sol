@@ -1,10 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0;
 
-import "./tokens/ERC721.sol";
 import "./tokens/ERC20.sol";
-import "./DaoVault.sol";
-
+import "./BaseVault.sol";
 import "hardhat/console.sol";
 
 // Jackpot & Dividend Vault
@@ -21,7 +19,9 @@ contract DegenVault is BaseVault {
     struct Context {
         uint16 jackpotBP;
         uint16 dividendsBP;
-        uint16 devFee;
+        uint16 timeDecay;
+        uint16 growthFactor;
+        uint16 vaultType;
     }
     
     // #########################
@@ -35,7 +35,8 @@ contract DegenVault is BaseVault {
     uint256 public minimumPrice; //wei
     uint256 public deadline; //seconds
     uint256 public jackpot; //wei
-    uint256 public adminFeesAccumulated; //wei
+
+    uint256 timeTracker;
 
     address public lastDepositer;
 
@@ -46,23 +47,27 @@ contract DegenVault is BaseVault {
     // #########################
 
     constructor(
-        address _controller,
-        ERC721 _NFT,
+
         ERC20 _vaultToken,
         uint16 _jackpotBP,
         uint16 _dividendsBP,
-        uint16 devFee,
         uint256 _minimumPrice,
-        uint256 initialDeadlineSeconds
-    ) BaseVault(_controller, _NFT, _vaultToken) {
+        uint256 _intialTimeSeconds,
+        uint16 _timeDecay,
+        uint16 _growthFactor,
+        string memory name,
+        string memory symbol
 
-        require(_jackpotBP + _dividendsBP + devFee <= 10000);
+    ) BaseVault(_vaultToken, name, symbol) {
 
-        ctx = Context(_jackpotBP, _dividendsBP, devFee);
+        require(_jackpotBP + _dividendsBP <= 10000);
+
+        ctx = Context(_jackpotBP, _dividendsBP, _timeDecay, _growthFactor, 4);
         minimumPrice = _minimumPrice;
+        timeTracker = _intialTimeSeconds;
 
         // 24 hrs
-        deadline = block.timestamp + initialDeadlineSeconds;
+        deadline = block.timestamp + _intialTimeSeconds;
 
     }
 
@@ -72,7 +77,7 @@ contract DegenVault is BaseVault {
     // ##                     ##
     // #########################
 
-    function mintNewNFT(uint256 amount) public override returns (uint256) {
+    function mintNewNft(uint256 amount) public override returns (uint256) {
 
         require(
             amount >= minimumPrice &&
@@ -81,109 +86,61 @@ contract DegenVault is BaseVault {
         );
 
         Context memory ctxm = ctx;
+        uint256 totalBP = 10000 - (ctxm.jackpotBP + ctxm.dividendsBP);
+        uint256 amountClaimable = amount * totalBP / 10000;
 
-        // contract execution never passed to 
-        // untrusted contract so this pattern is safe
-        uint id = NFT.mint(msg.sender);
-
-        if (id > 1) {
-
-            jackpot += amount * ctxm.jackpotBP / 10000;
-
-            adminFeesAccumulated += amount * ctxm.devFee / 10000;
-
-            uint16 totalBP = 10000 - (ctxm.devFee + ctxm.jackpotBP + ctxm.dividendsBP);
-            uint256 newAmount = amount * totalBP / 10000;
-            
-            deposits[id].amount = newAmount;
-            totalDeposits += newAmount;
+        if (currentId > 1) {
 
             // sorry :( , you dont get your own dividends?!
             adjustYeild(
                 amount * ctxm.dividendsBP / 10000
             );
 
-            deposits[id].tracker = newAmount * yeildPerDeposit;
+            jackpot += amount * ctxm.jackpotBP / 10000;
 
         } else {
 
             jackpot = amount * (ctxm.jackpotBP + ctxm.dividendsBP) / 10000;
 
-            uint256 totalBP = 10000 - (ctxm.devFee + ctxm.jackpotBP + ctxm.dividendsBP);
-            uint256 newAmount = amount * totalBP / 10000;
-
-            deposits[id].amount = newAmount;
-            totalDeposits += newAmount;
-
         }
 
         lastDepositer = msg.sender;
-
-        // deadline += 
-        // minimum
-
-        //ensure token reverts on failed
-        vaultToken.transferFrom(msg.sender, address(this), amount);
-        return id;
-
+        adjustFactors();
+        return _mintNewNFT(amountClaimable);
+        
     }
 
-     function depositToId(uint256 amount, uint256 id) external override {
+     function depositToId(uint256 amount, uint256 id) public override {
+
         
         // trusted contract
         require(
-            msg.sender == NFT.ownerOf(id) &&
+            msg.sender == ownerOf[id] &&
             amount >= minimumPrice &&
             block.timestamp <= deadline
         );
 
         Context memory ctxm = ctx;
 
-        jackpot += amount * ctxm.jackpotBP / 10000;
-
-        adminFeesAccumulated += amount * ctxm.devFee / 10000;
-
-        uint256 totalBP = 10000 - (ctxm.devFee + ctxm.jackpotBP + ctxm.dividendsBP);
-        uint256 newAmount = amount * totalBP / 10000;
-        
-        deposits[id].amount += newAmount;
-        totalDeposits += newAmount;
-
         // sorry :( , you dont get your own dividends?!
         adjustYeild(
             amount * ctxm.dividendsBP / 10000
         );
 
-        deposits[id].tracker += newAmount * yeildPerDeposit;
+        uint256 totalBP = 10000 - (ctxm.jackpotBP + ctxm.dividendsBP);
+        uint256 newAmount = amount * totalBP / 10000;
 
-        lastDepositer = msg.sender;
-
-        // deadline += 
-        // minimum
-
-        //ensure token reverts on failed
-        vaultToken.transferFrom(msg.sender, address(this), amount);
+        jackpot += amount * ctxm.jackpotBP / 10000;
+        
+        adjustFactors();
+        _depositToId(newAmount, id);
 
     }
 
     function withdrawFromId(uint256 amount, uint256 id) public override {
 
-        require(msg.sender == NFT.ownerOf(id));
-        require(amount == withdrawableById(id), "USE BURN");
-
-        //trusted contract
-        uint256 balanceCheck = vaultToken.balanceOf(address(this));
-
-        // trusted contract
-        if (amount > balanceCheck) {
-            uint256 needed = amount - balanceCheck;
-            withdrawFromStrat(needed, id);
-        }
-
-        deposits[id].amount -= amount;
-        deposits[id].tracker -= amount * yeildPerDeposit;
-
-        vaultToken.transfer(msg.sender, amount);
+        require(amount == withdrawableById(id), "Use burn");
+        burnNFTAndWithdrawl(id);
 
     }
 
@@ -209,19 +166,29 @@ contract DegenVault is BaseVault {
 
     }
 
+    // override needed for this game
     function withdrawableById(uint256 id) public override view returns (uint) {
 
-        uint256 yield = yeildPerId(id);
+        uint256 yield = yieldPerId(id);
         return deposits[id].amount + yield;
 
     }
 
     // #########################
     // ##                     ##
-    // ##        Admin        ##
+    // ##     Internal        ##
     // ##                     ##
     // #########################
 
-    //TODO
+    // every deposits shortens the time 33%
+    // every deposit increases the minimum 33%
+    function adjustFactors() internal {
+
+        timeTracker -= (timeTracker * ctx.timeDecay / 10000);
+
+        deadline += timeTracker;
+        minimumPrice += (minimumPrice * ctx.growthFactor / 10000);
+
+    }
 
 }

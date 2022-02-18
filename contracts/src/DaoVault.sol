@@ -8,48 +8,23 @@ import "./BaseVault.sol";
 // Dao Vault - This contains the DAO treasury.
 contract DaoVault is BaseVault {
 
-    // struct Manage {
-    //     address to;
-    //     uint256 amount;
-    // }
-
-    // struct Proposal {
-    //     string SmallDescription;
-    //     uint256 index;
-    //     uint256 IdSnapShot; //prevent sybil attack
-    //     Manage one;
-    //     Manage two;
-    //     Manage three;
-    // }
-
-    // struct Vote {
-    //     address who;
-    //     uint256 index;
-        
-    // }
-
-    // // key is ID of delegater, result is ID of delgatee
-    // mapping (uint256 => uint256) delgeatedToWho;
-
-    // // key is NFT ID result is vote weight
-    // mapping (uint256 => uint256) delegatedAmont;
-
-    // // key 1 = NFT ID, key 2 = Propsal ID
-    // mapping (uint256 => mapping (uint256 => bool)) voted;
-
     // number of tokens currently not claimable because of DAO vote
     uint256 tokensManaged;
 
-    // Proposal[] propsals;
+    // #########################
+    // ##                     ##
+    // ##     Constructor     ##
+    // ##                     ##
+    // #########################
 
     constructor( 
-        address _controller,
-        ERC721 _NFT,
-        ERC20 _vaultToken
+        ERC20 _vaultToken,
+        string memory name,
+        string memory symbol
     ) BaseVault( 
-        _controller,
-        _NFT,
-        _vaultToken
+        _vaultToken,
+        name,
+        symbol
     ) {
         // Add NAme info
     }
@@ -60,27 +35,8 @@ contract DaoVault is BaseVault {
     // ##                     ##
     // #########################
 
-    // function createPropsal(string calldata descriptor, Manage calldata _one, Manage calldata _two, Manage calldata _three) external {
-
-    //     uint256 index = propsals.length;
-    //     uint256 snapshot = NFT.currentId();
-
-    //     Proposal memory _proposal = Proposal(descriptor, index, snapshot, _one, _two, _three);
-    //     propsals.push(_proposal);
-
-    // }
-
-    // function vote() external {
-
-    // }
-
-    // function delegateVotes(uint256 id, address who) external {
-
-    // }
-
-    function manage(uint256 amount, address who) external virtual {
-
-        require(msg.sender == controller);
+    // called by executeProposal
+    function _manage(uint256 amount, address who) internal {
 
         //cannot manage funds earning yeild
         require(amount < vaultToken.balanceOf(address(this)));
@@ -90,8 +46,9 @@ contract DaoVault is BaseVault {
 
     }
 
-    function returnManagedFunds(uint256 amount) external virtual {
+    function returnManagedFunds(uint256 amount) external {
 
+        // fails on underflow
         tokensManaged -= amount;
 
         //vault tokens revert on failed transfer
@@ -107,7 +64,7 @@ contract DaoVault is BaseVault {
 
     function withdrawableById(uint256 id) public view override returns (uint256) {
 
-        uint256 yield = yeildPerId(id);
+        uint256 yield = yieldPerId(id);
 
         // claimable may be larger than total deposits but never smaller
         uint256 claimable = vaultToken.balanceOf(address(this)) +
@@ -118,5 +75,4 @@ contract DaoVault is BaseVault {
         return claimId + yield;
 
     }
-
 }
