@@ -5,6 +5,8 @@ import "../DaoVault.sol";
 
 // //ENSURE vault tokens revert on failed transfer
 
+// new ids dont delegate for old proposals
+
 contract PDelegate is DaoVault {
 
     struct Manage {
@@ -132,16 +134,17 @@ contract PDelegate is DaoVault {
 
     
 
-    // 15% Quorum
+    // 15% Quorum // memory
     function executeProposal(bytes32 descriptor) external returns (bool) {
 
-        Proposal storage proposal = proposals[descriptor];
+        Proposal memory proposal = proposals[descriptor];
 
         require(
             proposal.endTime <= block.timestamp &&
             !proposal.executed
         );
 
+        // update storage
         proposals[descriptor].executed = true;
 
         uint256 length = proposal.recipientsLength;
@@ -166,7 +169,7 @@ contract PDelegate is DaoVault {
 
         require(totalVotes >= totalDeposits * quorom / 1e4, "Not Enough Votes");
 
-        manage(
+        _manage(
             proposal.recipients[mostVotedKey].amount, 
             proposal.recipients[mostVotedKey].to
         );
@@ -200,7 +203,7 @@ contract PDelegate is DaoVault {
 
             delegatedAmount[currentDelegatee] -= delegation[fromId].weight;
 
-        } 
+        }
 
         delegatedAmount[toId] += newWeight;
         delegation[fromId].weight = newWeight;

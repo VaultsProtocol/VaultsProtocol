@@ -238,7 +238,7 @@ abstract contract BaseVault is ERC721 {
 
     function setStrat(address addr) external {
 
-        require (msg.sender == deployer && address(strat) == address(0) );
+        require ( msg.sender == deployer && address(strat) == address(0) );
 
         strat = IStrategy(addr);
 

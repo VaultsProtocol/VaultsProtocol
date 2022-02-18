@@ -11,7 +11,7 @@ interface iVault {
 
 
 // creates vaults and returns address of controller / vault nft and the vault
-contract DAOFactory {
+contract VaultFactory {
 
     constructor( address _creator) {
         creator = _creator;
@@ -42,6 +42,7 @@ contract DAOFactory {
         bytes memory newStrat = abi.encodePacked(stratType[_stratType], abi.encode(yield, vaultToken));
         address strat;
 
+        // use create2
         assembly {
             strat := create(0, add(newStrat, 0x20), mload(newStrat))
             vault := create(0, add(newVault, 0x20), mload(newVault))

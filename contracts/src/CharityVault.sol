@@ -17,7 +17,7 @@ contract CharityVault is BaseVault {
     // ##                     ##
     // #########################
 
-    Context ctx;
+    Context immutable ctx;
 
     uint256 yieldForRecipient;
 
