@@ -11,6 +11,10 @@
 		vaultTypeInfo,
 		YieldStrategy,
 		yieldStrategyInfo,
+GovernanceType,
+governanceTypeInfo,
+PayoutType,
+payoutTypeInfo,
 		// GovernanceStrategy,
 		// governanceStrategyInfo,
 	} from '$lib/vaults'
@@ -143,12 +147,12 @@
 			</section>
 
 			<section class="card column">
-				<h2>{$_('Network')}</h2>
+				<h2>{$_('Vault Configuration')}</h2>
 
 				<hr>
 
 				<div class="grid">
-					<label class="column">
+					<label class="card column">
 						<h3>{$_('Chain')}</h3>
 						<div>
 							<Select
@@ -158,9 +162,20 @@
 							/>
 						</div>
 					</label>
-					
 
-					<label class="column">
+					<label class="card column">
+						<h3>{$_('Yield Strategy')}</h3>
+						<div>
+							<Select
+								bind:value={vaultConfig.yieldStrategy}
+								values={Object.keys(YieldStrategy)}
+								labels={Object.fromEntries(Object.entries(yieldStrategyInfo).map(([key, {label}]) => [key, label]))}
+							/>
+						</div>
+						<p>{$_(yieldStrategyInfo[vaultConfig.yieldStrategy].description)}</p>
+					</label>
+
+					<label class="card column">
 						<h3>{$_('Available Tokens')}</h3>
 
 						<TokenSelect bind:token={vaultConfig.tokens[0]} />
@@ -175,7 +190,7 @@
 			</section>
 
 			<section class="card column">
-				<h2>{$_('Vault Type')}</h2>
+				<h2>{$_('Vault Behavior')}</h2>
 
 				<hr>
 
@@ -270,19 +285,50 @@
 								</span>
 							</label>
 						</div>
+
 					{:else if vaultConfig.type === VaultType.DAO}
-						<div class="row" in:fly={{ x: 100 }} out:fly={{ x: -100 }}>
-							Quadratic
-							Proportional
+						<div class="grid" in:fly={{ x: 100 }} out:fly={{ x: -100 }}>
+							<label class="card column">
+								<h3>{$_('Governance Type')}</h3>
+								<div>
+									<Select
+										bind:value={vaultConfig.config.governanceType}
+										values={Object.keys(GovernanceType)}
+										labels={Object.fromEntries(Object.entries(governanceTypeInfo).map(([key, {label}]) => [key, label]))}
+									/>
+								</div>
+								{#if vaultConfig.config.governanceType}
+									<p>{$_(governanceTypeInfo[vaultConfig.config.governanceType].description)}</p>
+								{/if}
+							</label>
+
+							<!-- Quadratic
+							Proportional -->
 						</div>
+
 					{:else if vaultConfig.type === VaultType.Charity}
+						<div class="grid" in:fly={{ x: 100 }} out:fly={{ x: -100 }}>
+							<label class="card column">
+								<h3>{$_('Payout Type')}</h3>
+								<div>
+									<Select
+										bind:value={vaultConfig.config.payoutType}
+										values={Object.keys(PayoutType)}
+										labels={Object.fromEntries(Object.entries(payoutTypeInfo).map(([key, {label}]) => [key, label]))}
+									/>
+								</div>
+								{#if vaultConfig.config.payoutType}
+									<p>{$_(payoutTypeInfo[vaultConfig.config.payoutType].description)}</p>
+								{/if}
+							</label>
+						</div>
 						
-					{:else if vaultConfig.type === VaultType.Superfluid}
+					<!-- {:else if vaultConfig.type === VaultType.Superfluid} -->
 					{/if}
 				</div>
 			</section>
 
-			<section class="card column">
+			<!-- <section class="card column">
 				<h2>{$_('Treasury')}</h2>
 
 				<hr>
@@ -298,7 +344,7 @@
 					</div>
 					<p>{$_(yieldStrategyInfo[vaultConfig.yieldStrategy].description)}</p>
 				</label>
-			</section>
+			</section> -->
 
 			<!-- <section class="card column">
 				<h2>{$_('Governance')}</h2>

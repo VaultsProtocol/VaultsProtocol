@@ -49,9 +49,9 @@
 	import { formatAddress } from '../lib/formatAddress'
 
 
+	import type { ERC20Token } from '$lib/tokens'
 	import TokenIcon from './TokenIcon.svelte'
 	import { expoOut, quintOut } from 'svelte/easing'
-import type { ERC20Token } from '$lib/tokens';
 </script>
 
 

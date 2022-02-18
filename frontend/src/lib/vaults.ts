@@ -8,7 +8,7 @@ export enum VaultType {
 	Degen = 'Degen',
 	DAO = 'DAO',
 	Charity = 'Charity',
-	Superfluid = 'Superfluid',
+	// Superfluid = 'Superfluid',
 }
 
 export const vaultTypeInfo = {
@@ -24,10 +24,10 @@ export const vaultTypeInfo = {
 		label: '🎁 No-Loss Charity',
 		description: 'The funds'
 	},
-	[VaultType.Superfluid]: {
-		label: '🦈 Superfluid',
-		description: 'Stream Superfluid super-tokens into the vault at a specified rate. Dividends are streamed to all past contributors'
-	},
+	// [VaultType.Superfluid]: {
+	// 	label: '🦈 Superfluid',
+	// 	description: 'Stream Superfluid super-tokens into the vault at a specified rate. Dividends are streamed to all past contributors'
+	// },
 	[VaultType.DAO]: {
 		label: '🗳 DAO',
 		description: ''
@@ -69,6 +69,39 @@ export const yieldStrategyInfo = {
 // 	},
 // }
 
+
+export enum GovernanceType {
+	MultiSignature = 'Multi-Signature',
+	TokenVoting = 'Token Voting',
+}
+export const governanceTypeInfo = {
+	[GovernanceType.MultiSignature]: {
+		label: '✍️ Multi-Signature',
+		description: 'A pre-approved list of addresses must sign off to change the vault parameters.'
+	},
+	[GovernanceType.TokenVoting]: {
+		label: '🗳 Token Voting',
+		description: 'Stakeholders cast votes weighted proportionally to their stake to approve or deny changes to the vault parameters.'
+	},
+}
+
+
+export enum PayoutType {
+	Once = 'Once',
+	Superfluid = 'Superfluid',
+}
+export const payoutTypeInfo = {
+	[PayoutType.Once]: {
+		label: '💸 Once',
+		description: 'The recipient is paid fully and immediately'
+	},
+	[PayoutType.Superfluid]: {
+		label: '🌊 Superfluid',
+		description: 'The recipient is streamed tokens over a set period of time.'
+	},
+}
+
+
 type ERC20TokenAndAmount = {
 	contractAddress: string
 	amount: BigNumber
@@ -96,15 +129,21 @@ export type VaultConfig<T extends VaultType> = {
 			}
 		: T extends VaultType.DAO ?
 			{
-
+				governanceType: GovernanceType.MultiSignature,
+				signers: string[],
+				minimumSignatures: number
+			}
+			| {
+				governanceType: GovernanceType.TokenVoting,
+				quorum: number,
 			}
 		: T extends VaultType.Charity ?
 			{
-
+				payoutType: PayoutType.Once
 			}
-		: T extends VaultType.Superfluid ?
-			{
-
+			| {
+				payoutType: PayoutType.Superfluid,
+				payoutRate: number
 			}
 		: {}
 	yieldStrategy: YieldStrategy
@@ -131,16 +170,23 @@ export const getDefaultVaultConfig = () => ({
 		initialLiquidity: {
 			contractAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
 			amount: BigNumber.from(0)
-		}
+		},
 
 		// VaultType.DAO
+		governanceType: GovernanceType.MultiSignature,
+
 		// VaultType.Charity
-		// VaultType.Superfluid
-		
+		payoutType: PayoutType.Once,
 	},
 	yieldStrategy: YieldStrategy.Aave,
 	// governanceStrategy: GovernanceStrategy.None,
 } as VaultConfig)
+
+
+export type VaultStatus = {
+	totalBalance: BigNumber,
+	endTimestamp: number
+}
 
 
 export type VaultPosition = {
@@ -151,5 +197,6 @@ export type VaultPosition = {
 
 export enum MetadataType {
 	TokenBalance = 'TokenBalance',
-	Date = 'Date'
+	Date = 'Date',
+	String = 'String'
 }
