@@ -166,8 +166,6 @@ contract DegenVault is BaseVault {
 
     }
 
-    // overrdie distrubuteYeild 
-
     // possible improvemnt is to send unclaimed depostis into the jackpot
 
     // #########################
