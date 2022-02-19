@@ -82,7 +82,7 @@ task("full-deploy", "Deploy All Contracts")
       "ERC20",
       BigInt(100000e18),
     );
-    console.log("deployed vaultToken", vaultToken);
+    // console.log("deployed vaultToken", vaultToken);
     console.log(
       `To verify: npx hardhat verify ${
         vaultToken.address
@@ -95,16 +95,24 @@ task("full-deploy", "Deploy All Contracts")
       [vaultToken.address, "Sample Base Vault", "SBV"],
     );
 
-    await vaultFactory.createVault(
+    const createVault = await vaultFactory.createVault(
       baseVaultByteCode,
       exampleYearnStratBc,
       vaultToken.address,
       "0xA21B900268c056fB5CBc698450b1aCF38862d4Dd",
       constructorParams,
+      {
+        gasLimit: '2100000'
+      }
     );
-    const sampleVault = await vaultFactory.vaults(0);
+    
+    await createVault.wait(1);
+
+    const sampleVault = await vaultFactory.vaults("0");
+
+    console.log("sample vault is", sampleVault);
     console.log(
-      `To verify: npx hardhat verify ${sampleVault.address} "${vaultToken.address}" "Sample Base Vault" "SBV" --network {network}`,
+      `To verify: npx hardhat verify ${sampleVault} "${vaultToken.address}" "Sample Base Vault" "SBV" --network {network}`,
     );
   });
 
