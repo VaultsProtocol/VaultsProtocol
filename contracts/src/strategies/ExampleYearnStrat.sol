@@ -25,10 +25,10 @@ contract YearnStrategy {
     // ##                     ##
     // #########################
 
-    constructor(yVault _yvault, ERC20 _token) {
+    constructor(address _yVault, address _token) {
 
-        yvault = _yvault;
-        token = _token;
+        yvault = yVault(_yVault);
+        token = ERC20(_token);
         deployer = msg.sender;
         
     }

@@ -1,9 +1,12 @@
 require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-etherscan");
 require("@nomiclabs/hardhat-truffle5");
+require("@nomiclabs/hardhat-web3");
 
 require("dotenv").config();
 const fs = require("fs-extra");
+
+// const { ethers, web3, Web3 } = require("");
 
 // LOAD ENV VARS
 const privatekey = process.env.PRIVATE_KEY;
@@ -17,105 +20,101 @@ const ethscan_api_key = process.env.ETHSCAN_API_KEY;
 const bscscan_api_key = process.env.BSCSCAN_API_KEY;
 
 // Deploy NFT Contract...
-// yarn deploy-genesis-nft-eth-main OR
-// npx hardhat deploy-genesis-nft --network ethMain
-task("deploy-genesis-nft", "Deploy Genesis NFT").setAction(
-  async (args, hre) => {
-    const TEAM_WALLET = "0xAa09de8cF7869629357AE6484c4A7efE614ad5A7";
+// npx hardhat full-deploy --network ethMain
+task("full-deploy", "Deploy All Contracts")
+  // .addParam("yearnAddress", "0x00...")
+  // .addParam("aaveAddress", "0x00...")
+  // .addParam("elementAddress", "0x00...")
+  // .addParam("trueAddress", "0x00...")
+  .setAction(async (args, hre) => {
+    const { yearnAddress } = args;
 
     const [deployer] = await ethers.getSigners();
     console.log("Account: " + deployer.address);
 
-    // Deploy...
-    const WarriorAllianceNFT = await ethers.getContractFactory(
-      "WarriorAllianceNFT",
-    );
-    console.log("Deploying NFTs...");
-    const warriorAllianceNFT = await WarriorAllianceNFT.deploy(
-      TEAM_WALLET,
-      "Warrior Alliance Genesis",
-      "WAG",
-    );
+    /*****************************/
+    /*****************************/
+    /** Deploy Vault Factory... **/
+    /*****************************/
+    /*****************************/
+    console.log("Deploying VaultFactory...");
+    const VaultFactory = await ethers.getContractFactory("VaultFactory");
+    const vaultFactory = await VaultFactory.deploy();
 
-    // Print extra info...
     console.log(
-      `To verify: npx hardhat verify ${warriorAllianceNFT.address} "0xAa09de8cF7869629357AE6484c4A7efE614ad5A7" "Warrior Alliance Genesis" "WAG"  --network {network}`,
+      `To verify: npx hardhat verify ${vaultFactory.address} "${deployer.address}" --network {network}`,
     );
-  },
-);
 
-// Deploy Supplybox Contract...
-// npx hardhat deploy-supply-boxes-nft --network rinkeby
-task("deploy-supply-boxes-nft", "Deploy Supply Boxes NFTs").setAction(
-  async (args, hre) => {
-    const TEAM_WALLET = "0xD0F1ea2C84182DD2858143B4003F115212B5401c";
+    /**********************************/
+    /**********************************/
+    /** Configure Vaults Bytecode... **/
+    /**********************************/
+    /**********************************/
+    console.log("Configuring vaults");
+    const baseVaultByteCode = (await ethers.getContractFactory("BaseVault"))
+      .bytecode;
+    const charityVaultByteCode = (
+      await ethers.getContractFactory("CharityVault")
+    ).bytecode;
+    const degenVaultByteCode = (await ethers.getContractFactory("DegenVault"))
+      .bytecode;
+    const daoVaultByteCode = (await ethers.getContractFactory("DaoVault"))
+      .bytecode;
 
-    const [deployer] = await ethers.getSigners();
-    console.log("Account: " + deployer.address);
+    /*****************************/
+    /*****************************/
+    /** Configure Strategies... **/
+    /*****************************/
+    /*****************************/
+    const exampleYearnStratBc = (
+      await ethers.getContractFactory("YearnStrategy")
+    ).bytecode;
 
-    // Deploy...
-    const SupplyBoxes = await ethers.getContractFactory("SupplyBoxes");
-    console.log("Deploying Supply Boxes...");
-    const supplyBoxes = await SupplyBoxes.deploy();
-
-    await supplyBoxes
-      .connect(deployer)
-      .setBaseUri("ipfs://Qmf4uxNdm54iSzpwVNwR8TqCHniLBfetZTXGDpeuQSNtkV/");
-
-    // Print extra info...
+    /*************************/
+    /*************************/
+    /** Deploy sample vault **/
+    /*************************/
+    /*************************/
+    console.log("Deploying sample vault token");
+    const VaultToken = await ethers.getContractFactory("MockERC20");
+    const vaultToken = await VaultToken.deploy(
+      "ERC20",
+      "ERC20",
+      BigInt(100000e18),
+    );
+    // console.log("deployed vaultToken", vaultToken);
     console.log(
-      `To verify: npx hardhat verify ${supplyBoxes.address} --network {network}`,
-    );
-  },
-);
-
-// Deploy MAIN collection Contract...
-// npx hardhat deploy-main-nft --network ethMain
-task("deploy-main-nft", "Deploy Main NFT").setAction(async (args, hre) => {
-  const TEAM_WALLET = "0xAa09de8cF7869629357AE6484c4A7efE614ad5A7";
-
-  const [deployer] = await ethers.getSigners();
-  console.log("Account: " + deployer.address);
-
-  // Deploy...
-  const WarriorAllianceFreedomFighters = await ethers.getContractFactory(
-    "WarriorAllianceFreedomFighters",
-  );
-  console.log("Deploying Main Collection...");
-  const warriorAllianceFreedomFighters =
-    await WarriorAllianceFreedomFighters.deploy(
-      "Warrior Alliance Freedom Fighters",
-      "WAFF",
-      56,
-      TEAM_WALLET,
+      `To verify: npx hardhat verify ${
+        vaultToken.address
+      } "ERC20" "ERC20" "${(100e18).toString()}" --network {network}`,
     );
 
-  // TODO After deploy:
-  await warriorAllianceFreedomFighters.connect(deployer).setIsLive(true, true);
-
-  // Set price
-  await warriorAllianceFreedomFighters
-    .connect(deployer)
-    .setMintPrices(
-      `${1.3e17}`,
-      [1, 3, 5],
-      [`${1.3e17}`, `${1.2e17}`, `${1.1e17}`],
+    console.log("Deploying sample vault");
+    const constructorParams = web3.eth.abi.encodeParameters(
+      ["address", "string", "string"],
+      ["0x0000000000000000000000000000000000000000", "Sample Base Vault", "SBV"],
     );
 
-  // Set URLs
-  await warriorAllianceFreedomFighters
-    .connect(deployer)
-    .setBaseURI(
-      "ipfs://QmTByUohcSyj9aSgVFfczUSbpYi1tVseXLesFBwPENupn9/",
-      0,
-      8888,
+    const createVault = await vaultFactory.createVault(
+      baseVaultByteCode,
+      exampleYearnStratBc,
+      vaultToken.address,
+      "0xA21B900268c056fB5CBc698450b1aCF38862d4Dd",
+      constructorParams,
+      {
+        gasLimit: '2100000'
+      }
     );
+    
+    await createVault.wait(1);
 
-  // Print extra info...
-  console.log(
-    `To verify: npx hardhat verify ${warriorAllianceFreedomFighters.address} "Warrior Alliance Freedom Fighters" "WAFF" "56" "0xAa09de8cF7869629357AE6484c4A7efE614ad5A7"  --network {network}`,
-  );
-});
+    const sampleVault = await vaultFactory.vaults("0");
+
+    console.log("sample vault is", sampleVault);
+    console.log(
+      `To verify: npx hardhat verify ${sampleVault} "${vaultToken.address}" "Sample Base Vault" "SBV" --network {network}`,
+    );
+  });
 
 module.exports = {
   mocha: {
@@ -174,7 +173,7 @@ module.exports = {
       chainId: 4,
       gasPrice: 10e9,
       gas: 2100000,
-      accounts: { mnemonic: `${mnemonic}` },
+      accounts: [`${privatekey}`],
     },
     // BEFORE USING THIS, CHECK GAS PRICES
 
