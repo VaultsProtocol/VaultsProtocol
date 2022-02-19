@@ -35,6 +35,7 @@ contract BaseVault is ERC721 {
     // used internally when calculating 
     uint256 internal lastKnownContractBalance;
     uint256 internal lastKnownStrategyTotal;
+    
     uint256 internal depositedToStrat;
 
     ERC20 immutable vaultToken;
@@ -165,19 +166,20 @@ contract BaseVault is ERC721 {
             totalDeposits -= principalWithdrawn;
             deposits[id].amount -= principalWithdrawn;
         }
-        
-        uint256 short = amount > balanceCheck ? amount - balanceCheck : 0;
-        if (short > 0) {
-
-            withdrawFromStrat(short);
-
-        }
 
         // edge case for first depositer
         if (tracker != 0) {
             tracker -= (principalWithdrawn * yeildPerDeposit) + (userYield * SCALAR);
         } else {
             tracker = userYield * SCALAR;
+        }
+        
+        uint256 short = amount > balanceCheck ? amount - balanceCheck : 0;
+        if (short > 0) {
+
+            withdrawFromStrat(short);
+            depositedToStrat -= principalWithdrawn;
+
         }
 
         vaultToken.transfer(msg.sender, amount);
@@ -197,6 +199,7 @@ contract BaseVault is ERC721 {
         uint256 half = (totalDeposits * 5000) / 10000;
         uint256 depositable = half - depositedToStrat;
 
+        depositedToStrat += depositable;
         lastKnownStrategyTotal += depositable;
         lastKnownContractBalance -= depositable;
 
@@ -220,8 +223,6 @@ contract BaseVault is ERC721 {
     // gets yeild from strategy contract
     // called before deposits and withdrawls
     function distributeYeild() public virtual {
-        
-        // require(address(strat) != address(0), "No Strategy")
 
         uint256 unclaimedYield = vaultToken.balanceOf(address(this)) - lastKnownContractBalance;
         lastKnownContractBalance += unclaimedYield;

@@ -13,7 +13,7 @@ struct Deposit {
 
 contract ContractTest is DSTest {
 
-    MockERC20 erc20 = new MockERC20("shit", "coin", 500e18);
+    MockERC20 erc20 = new MockERC20("shit", "coin", 2**256-1);
     BaseVault vault = new BaseVault(address(erc20), "shit coim vault", "scv");
     CheatCodes cheats = CheatCodes(HEVM_ADDRESS);
     address addr = 0x78B757200a1d64add5BA39B31c11E0a4479B992c;
@@ -24,7 +24,7 @@ contract ContractTest is DSTest {
         
     }
 
-    function testRandomDeposit() public {
+    function test1e10deposits() public {
 
         erc20.approve(address(vault), 10e18);
         erc20.transfer(addr, 1e18);
@@ -38,7 +38,7 @@ contract ContractTest is DSTest {
 
         (uint256 id2amount, uint256 id2tracker) = vault.deposits(2);
         uint256 yield = vault.yieldPerId(id);
-        console.log("amount: ", id2amount);
+        console.log("deposits: ", id2amount);
         console.log("tracker: ", id2tracker);
         console.log("yield: ", yield);
 
@@ -46,14 +46,14 @@ contract ContractTest is DSTest {
 
         (uint256 afterid2amount, uint256 afterTracker) = vault.deposits(2);
         uint256 yieldafter = vault.yieldPerId(id);
-        console.log("after amount: ", afterid2amount);
+        console.log("deposits: ", afterid2amount);
         console.log("after tracker: ", afterTracker);
         console.log("yield afater : ", yieldafter);
 
         cheats.stopPrank();
     }
 
-    function testRandomDeposit2() public {
+    function testWithRandomSend() public {
 
         erc20.approve(address(vault), 10e18);
         erc20.transfer(addr, 1e18);
@@ -67,6 +67,8 @@ contract ContractTest is DSTest {
             vault.mintNewNft(1e18);
 
         cheats.stopPrank();
+
+        console.log("minting");
         erc20.transfer(address(vault), 1e18);
         cheats.startPrank(addr);
 
@@ -84,11 +86,11 @@ contract ContractTest is DSTest {
         console.log("can Withdrawl: ", withdrawable);
     }
 
-    function testRandom3() public {
-        erc20.approve(address(vault), 10e18);
-        uint256 id = vault.mintNewNft(10e18);
+    function testRandom3(uint256 amount) public {
+        erc20.approve(address(vault), amount);
+        uint256 id = vault.mintNewNft(amount);
 
-        vault.withdrawFromId(id, 10e18);
+        vault.withdrawFromId(id, amount);
         assertEq(erc20.balanceOf(address(vault)), 0);
     }
 }

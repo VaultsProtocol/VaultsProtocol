@@ -14,6 +14,8 @@ contract DaoVault is BaseVault {
     // ##                     ##
     // #########################
 
+    uint256 managed;
+
     constructor( 
         address _vaultToken,
         string memory name,
@@ -38,7 +40,8 @@ contract DaoVault is BaseVault {
         //cannot manage funds earning yeild
         require(amount < vaultToken.balanceOf(address(this)));
 
-        lastKnownContractBalance += amount;
+        managed += amount;
+        lastKnownContractBalance -= amount;
         vaultToken.transfer(who, amount);
 
     }
@@ -50,6 +53,17 @@ contract DaoVault is BaseVault {
 
         //vault tokens revert on failed transfer
         vaultToken.transferFrom(msg.sender, address(this), amount);
+
+    }
+
+    function withdrawableById(uint256 id) 
+        public view 
+        override returns (uint256) {
+
+            // random deposits are not inculded as they are treated as rewards on distro events
+
+            //               expected balance
+            return (((totalDeposits + depositedToStrat) - managed) * deposits[id].amount / totalDeposits) + yieldPerId(id);
 
     }
 }
