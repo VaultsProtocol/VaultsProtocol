@@ -184,7 +184,8 @@ export const getDefaultVaultConfig = () => ({
 
 
 export type VaultStatus = {
-	totalBalance: BigNumber,
+	tokenId: number
+	totalBalance: BigNumber
 	endTimestamp: number
 }
 

@@ -71,7 +71,7 @@ payoutTypeInfo,
 	import TokenAmountSelect from '../components/TokenAmountSelect.svelte'
 
 
-	import { fly } from 'svelte/transition'
+	import { fade, fly, scale } from 'svelte/transition'
 </script>
 
 
@@ -113,6 +113,7 @@ payoutTypeInfo,
 					<textarea
 						bind:value={vaultConfig.about.description}
 						placeholder={$_('Describe {name}...', { values: { name: vaultConfig.about.name || 'your DAO' }})}
+						rows={8}
 					/>
 				</label>
 
@@ -194,26 +195,28 @@ payoutTypeInfo,
 
 				<hr>
 
-				<label class="column">
-					<h3>{$_('Type')}</h3>
-					<div class="">
-						<Tabs
-							bind:value={vaultConfig.type}
-							values={Object.keys(VaultType)}
-							labels={Object.fromEntries(Object.entries(vaultTypeInfo).map(([key, {label}]) => [key, label]))}
-						/>
-					</div>
-					{#if vaultTypeInfo[vaultConfig.type]}
-						<p>{$_(vaultTypeInfo[vaultConfig.type].description)}</p>
-					{/if}
-				</label>
+				<div class="column">
+					<Tabs
+						bind:value={vaultConfig.type}
+						values={Object.keys(VaultType)}
+						labels={Object.fromEntries(Object.entries(vaultTypeInfo).map(([key, {label}]) => [key, label]))}
+					/>
 
-				<div class="stack">
+					<div class="stack">
+						{#key vaultTypeInfo[vaultConfig.type]}
+							<p class="card" transition:scale={{ start: 0.9 }}>
+								{$_(vaultTypeInfo[vaultConfig.type]?.description ?? 'Choose a vault behavior.')}
+							</p>
+						{/key}
+					</div>
+				</div>
+
+				<HeightContainer class="stack align-top">
 					{#if vaultConfig.type === VaultType.Standard}
-						<div class="grid" in:fly={{ x: 50 }} out:fly={{ x: -50 }}>
+						<div class="grid" in:fly={{ x: 20 }} out:fly={{ x: -20 }}>
 						</div>
 					{:else if vaultConfig.type === VaultType.Degen}
-						<div class="grid" in:fly={{ x: 50 }} out:fly={{ x: -50 }}>
+						<div class="grid" in:fly={{ x: 20 }} out:fly={{ x: -20 }}>
 							<label class="card column">
 								<h4>{$_('Jackpot')}</h4>
 								<p>{$_('This portion is paid out to the last contributor when the crowdfund ends.')}</p>
@@ -285,7 +288,7 @@ payoutTypeInfo,
 						</div>
 
 					{:else if vaultConfig.type === VaultType.DAO}
-						<div class="grid" in:fly={{ x: 50 }} out:fly={{ x: -50 }}>
+						<div class="grid" in:fly={{ x: 20 }} out:fly={{ x: -20 }}>
 							<label class="card column">
 								<h3>{$_('Governance Type')}</h3>
 								<div>
@@ -305,7 +308,7 @@ payoutTypeInfo,
 						</div>
 
 					{:else if vaultConfig.type === VaultType.Charity}
-						<div class="grid" in:fly={{ x: 50 }} out:fly={{ x: -50 }}>
+						<div class="grid" in:fly={{ x: 20 }} out:fly={{ x: -20 }}>
 							<label class="card column">
 								<h3>{$_('Payout Type')}</h3>
 								<div>
@@ -323,7 +326,7 @@ payoutTypeInfo,
 						
 					<!-- {:else if vaultConfig.type === VaultType.Superfluid} -->
 					{/if}
-				</div>
+				</HeightContainer>
 			</section>
 
 			<!-- <section class="card column">
@@ -362,7 +365,9 @@ payoutTypeInfo,
 				</label>
 			</section> -->
 
-			<button type="submit" class="large" disabled={!isValid}>{$_('Create DAO')}</button>
+			<div class="row centered">
+				<button type="submit" class="extra-large" disabled={!isValid}>{$_('Create DAO')}</button>
+			</div>
 		</form>
 	</section>
 </main>
@@ -388,6 +393,8 @@ payoutTypeInfo,
 		/* grid-auto-rows: calc(100vh - var(--header-height) - 50vh); */
 
 		scroll-snap-align: center;
+
+		margin-bottom: 33vh;
 	}
 	form > section {
 		margin: auto;
@@ -416,6 +423,15 @@ payoutTypeInfo,
 		place-content: start;
 		place-items: start;
 	} */
+
+	label {
+		transition: 0.2s;
+	}
+	label.card:focus-within {
+		box-shadow: 0 1px 0.25rem var(--background-color-0);
+		transform: translateY(-1px);
+		transition: 0.5s;
+	}
 
 	label p {
 		font-size: 0.9em;

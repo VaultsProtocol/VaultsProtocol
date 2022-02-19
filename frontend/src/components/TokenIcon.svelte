@@ -90,13 +90,10 @@
 	}
 
 	.placeholder-icon {
-		/* background-color: rgba(50, 50, 50, 0.75);
-		background-color: var(--primary-color); */
-		background: radial-gradient(transparent -175%, var(--primary-color) 125%);
-		/* border: 0.1em dotted var(--primary-color); */
-		/* box-shadow: 0 0 0.125em 0.125em var(--primary-color) inset; */
+		background: radial-gradient(transparent -175%, var(--accent-color) 125%);
 
 		color: #fff;
+		background-color: var(--background-color-2);
 
 		display: inline-flex;
 		/* place-items: center; */
@@ -113,5 +110,9 @@
 
 		font-size: 0.5em;
 		font-weight: bold;
+
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 </style>

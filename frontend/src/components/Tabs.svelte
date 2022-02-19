@@ -10,10 +10,10 @@
 </script>
 
 
-<div class="row">
+<div class="row equal">
 	{#each values as optionValue (optionValue)}
 		<label class="select-option">
-			<input type="radio" bind:group={value} value={optionValue}>
+			<input type="radio" bind:group={value} value={optionValue} />
 			<span class="button">{labels[optionValue]}</span>
 		</label>
 	{/each}
@@ -21,17 +21,21 @@
 
 
 <style>
-    label {
+	div {
+		font-size: 1.3em;
+	}
+
+	label {
 		display: grid;
 	}
 
 	input[type="radio"] {
-		display: none;
+		position: absolute;
+		pointer-events: none;
+		opacity: 0;
 	}
 
 	span {
-		display: inline-flex;
-		justify-content: center;
 		background-color: var(--background-color-2);
 		transition: 0.3s;
 		cursor: pointer;

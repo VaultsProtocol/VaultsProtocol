@@ -12,6 +12,7 @@
 	export let vaultConfig: VaultConfig<T>
 
 	export let vaultStatus: VaultStatus = {
+		tokenId: 0,
 		totalBalance: BigNumber.from(10000),
 		endTimestamp: Date.now() + 120000
 	}
@@ -45,6 +46,10 @@
 </script>
 
 
+<svg class="vault-container" viewBox="0 0 400 800" xmlns="http://www.w3.org/2000/svg">
+	<foreignObject x="0" y="0" width="400" height="800">
+		<div xmlns="http://www.w3.org/1999/xhtml">
+
 <article class="vault card">
 	<HeightContainer class="column">
 		<header>
@@ -63,7 +68,7 @@
 		<div class="stack">
 			{#key vaultConfig.type}
 				<figure class="card" transition:fade>
-					<svg>
+					<svg class="illustration">
 						{#if vaultConfig.type === VaultType.Standard}
 							<path class:silhouette={isPosition} />
 						{:else if vaultConfig.type === VaultType.Degen}
@@ -80,27 +85,27 @@
 			{/key}
 		</div>
 
-		{#if vaultTypeInfo[vaultConfig.type]}
-			<div class="row">
-				<img />
-
-				<div class="stack">
-					{#key vaultConfig.type}
-						<p class="card" transition:scale>{$_(vaultTypeInfo[vaultConfig.type].label)}</p>
-					{/key}
-				</div>
-
-				<img />
-
-				<!-- {#if vaultConfig.type === VaultType.Degen}
-					<PieChart data={[
-						{ amount: vaultConfig.config.jackpot, label: 'Jackpot' },
-						{ amount: vaultConfig.config.dividend, label: 'Dividend' },
-						{ amount: vaultConfig.config.treasury, label: 'Treasury' },
-					]} />
-				{/if} -->
+		<div class="vault-type-info row">
+			{vaultStatus.tokenId}
+			
+			<div class="stack">
+				{#key vaultConfig.type}
+					<div class="vault-type card row centered" transition:scale={{ start: 0.33 }}>
+						{$_(vaultTypeInfo[vaultConfig.type]?.label) ?? $_('???')}
+					</div>
+				{/key}
 			</div>
-		{/if}
+
+			<img />
+
+			<!-- {#if vaultConfig.type === VaultType.Degen}
+				<PieChart data={[
+					{ amount: vaultConfig.config.jackpot, label: 'Jackpot' },
+					{ amount: vaultConfig.config.dividend, label: 'Dividend' },
+					{ amount: vaultConfig.config.treasury, label: 'Treasury' },
+				]} />
+			{/if} -->
+		</div>
 
 		{#if vaultConfig.about.description}
 			<p class="align-start" transition:scale>{vaultConfig.about.description}</p>
@@ -167,18 +172,46 @@
 	</HeightContainer>
 </article>
 
+		</div>
+	</foreignObject>
+</svg>
+
 
 <style>
-	.vault {
-		border: var(--background-color-2) 0.5em solid;
-		width: 24rem;
+	.vault-container {
+		width: 400px;
+		height: 800px;
 	}
 
-	svg {
+	.vault {
+		border: var(--background-color-2) 0.5em solid;
+		overflow: auto;
+		max-height: calc(100vh - var(--header-height) - 4rem);
+		width: 400px;
+	}
+
+	.illustration {
 		aspect-ratio: 1.5;
 	}
 
 	.silhouette {
 		fill: black;
+	}
+
+	h2 {
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	p {
+		word-break: break-word;
+	}
+
+	.vault-type-info {
+		grid-template-columns: auto 1fr auto;
+	}
+
+	.vault-type-info .vault-type {
+		padding: 0.5em;
 	}
 </style>

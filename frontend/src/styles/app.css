@@ -4,7 +4,7 @@
 	--font-heading: 'DIN Alternate', var(--font);
 	--font-monospace: 'Andale Mono', monospace;
 
-	--background-color-0: hsl(200deg, 70%, 10%);
+	--background-color-0: hsl(200deg, 70%, 13.5%);
 	--background-color-1: hsl(200deg, 60%, 20%);
 	--background-color-2: hsl(200deg, 50%, 30%);
 	--background-color-3: hsl(200deg, 40%, 40%);
@@ -107,6 +107,11 @@ button, .button, input[type='number'], input[type='text'], textarea {
 	transform-origin: var(--button-transform-origin, center);
 }
 
+textarea {
+	font-size: 1em;
+	padding: 1em;
+}
+
 button:hover, .button:hover, [role='button']:hover {
 	cursor: pointer;
 	filter: brightness(1.111);
@@ -124,6 +129,9 @@ button.primary {
 }
 button.pill {
 	border-radius: 100vmax;
+}
+button.extra-large {
+	font-size: 1.3em;
 }
 button.large {
 	font-size: 1.05em;
@@ -189,7 +197,7 @@ input[type='number'], input[type='text'] {
 	--button-transform-origin: right;
 }
 .align-top {
-	place-items: start start;
+	place-items: start stretch;
 	transform-origin: top;
 	--button-transform-origin: top;
 }
@@ -247,7 +255,7 @@ hr {
 	display: flex;
 	flex-direction: column;
 
-	overflow: hidden;
+	/* overflow: hidden; */
 }
 .card .card {
 	background-color: var(--background-color-2);
@@ -289,7 +297,7 @@ hr {
 
 	display: grid;
 	gap: var(--grid-gap);
-	align-content: space-between;
+	align-content: start;
 }
 .column.centered {
 	justify-items: center;
@@ -308,6 +316,9 @@ hr {
 	justify-content: center;
 	align-items: center;
 	text-align: center;
+}
+.row.equal {
+	grid-auto-columns: 1fr;
 }
 .column > .row {
 	gap: var(--grid-gap) calc(0.5 * var(--grid-gap));
