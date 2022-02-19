@@ -69,6 +69,10 @@
 
 
 <style>
+	/* button {
+		width: 100%;
+	} */
+
 	.menu {
 		transform-origin: top center;
 		min-width: 5rem;

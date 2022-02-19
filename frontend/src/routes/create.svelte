@@ -157,7 +157,7 @@
 
 				<div class="grid">
 					<label class="card column">
-						<h3>{$_('Chain')}</h3>
+						<h3>{$_('Network / Chain')}</h3>
 						<div>
 							<Select
 								bind:value={vaultConfig.chainId}
@@ -180,7 +180,7 @@
 					</label>
 
 					<label class="card column">
-						<h3>{$_('Available Tokens')}</h3>
+						<h3>{$_('Yield Asset')}</h3>
 
 						<TokenSelect bind:token={vaultConfig.tokens[0]} />
 						<!-- {#each vaultConfig.config.tokens as token, i}}
@@ -222,47 +222,35 @@
 						<div class="grid" in:fly={{ x: 20 }} out:fly={{ x: -20 }}>
 							<label class="card column">
 								<h4>{$_('Jackpot')}</h4>
+								<PercentInput bind:value={vaultConfig.config.jackpot} />
 								<p>{$_('This portion is paid out to the last contributor when the crowdfund ends.')}</p>
-								<div class="row">
-									<PercentInput bind:value={vaultConfig.config.jackpot} />
-									<!-- <button
-										type="button"
-										class="small"
-									>
-										{$_('Remaining')}
-									</button> -->
-								</div>
 							</label>
 
 							<label class="card column">
 								<h4>{$_('Dividend')}</h4>
-								<p>{$_('This amount is distributed to all past contributors every time a new contribution is made.')}</p>
 								<PercentInput bind:value={vaultConfig.config.dividend} />
+								<p>{$_('This amount is distributed to all past contributors every time a new contribution is made.')}</p>
 							</label>
 
 							<label class="card column">
 								<h4>{$_('Treasury')}</h4>
-								<p>{$_('After the jackpot winner and the dividends are paid out, the remaining funds go to the DAO treasury.')}</p>
 								<PercentInput bind:value={vaultConfig.config.treasury} />
+								<p>{$_('After the jackpot winner and the dividends are paid out, the remaining funds go to the DAO treasury.')}</p>
 							</label>
 
 							<label class="card column">
 								<h4>{$_('Initial Minimum Amount')}</h4>
+								<TokenAmountSelect
+									bind:token={vaultConfig.config.initialLiquidity.token}
+									bind:amount={vaultConfig.config.initialLiquidity.amount}
+								/>
 								<p>{$_('After the jackpot winner and the dividends are paid out, the remaining funds go to the DAO treasury.')}</p>
-								<span>
-									<TokenAmountSelect
-										bind:token={vaultConfig.config.initialLiquidity.token}
-										bind:amount={vaultConfig.config.initialLiquidity.amount}
-									/>
-								</span>
 							</label>
 
 							<label class="card column">
 								<h4>{$_('Deadline')}</h4>
-								<p>{$_('The vault will be closed.')}</p>
-								<span>
-									<TimeSelect bind:value={vaultConfig.config.deadline} />
-								</span>
+								<TimeSelect bind:value={vaultConfig.config.deadline} />
+								<p>{$_('The vault will stop accepting contributions when .')}</p>
 							</label>
 						</div>
 
@@ -270,16 +258,12 @@
 						<div class="grid" in:fly={{ x: 20 }} out:fly={{ x: -20 }}>
 							<label class="card column">
 								<h3>{$_('Governance Type')}</h3>
-								<div>
-									<Select
-										bind:value={vaultConfig.config.governanceType}
-										values={Object.keys(GovernanceType)}
-										labels={Object.fromEntries(Object.entries(governanceTypeInfo).map(([key, {label}]) => [key, label]))}
-									/>
-								</div>
-								{#if vaultConfig.config.governanceType}
-									<p>{$_(governanceTypeInfo[vaultConfig.config.governanceType].description)}</p>
-								{/if}
+								<p>{$_(governanceTypeInfo[vaultConfig.config.governanceType]?.description)}</p>
+								<Select
+									bind:value={vaultConfig.config.governanceType}
+									values={Object.keys(GovernanceType)}
+									labels={Object.fromEntries(Object.entries(governanceTypeInfo).map(([key, {label}]) => [key, label]))}
+								/>
 							</label>
 
 							<!-- Quadratic
@@ -291,17 +275,13 @@
 							<label class="card column">
 								<h3>{$_('Recipient')}</h3>
 								<p>{$_('The recipient ')}</p>
-								<div>
-									<AddressInput bind:address={vaultConfig.config.recipientAddress} />
-								</div>
+								<AddressInput bind:address={vaultConfig.config.recipientAddress} />
 							</label>
 
 							<label class="card column">
 								<h3>{$_('Yield to Recipient')}</h3>
+								<PercentInput bind:value={vaultConfig.config.recipientYieldPercent} />
 								<p>{$_('The recipient will receive this portion of the earned yield; the rest will be distributed proportionally to holders.')}</p>
-								<div>
-									<PercentInput bind:value={vaultConfig.config.recipientYieldPercent} />
-								</div>
 							</label>
 
 							<label class="card column">

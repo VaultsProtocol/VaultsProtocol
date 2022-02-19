@@ -25,15 +25,16 @@
 </script>
 
 
-<input
-	type="number"
-	min="1"
-	bind:value={timeValue}
-/>
+<div class="row">
+	<input
+		type="number"
+		min="1"
+		bind:value={timeValue}
+	/>
 
-
-<Select
-	bind:value={timeUnit}
-	values={Object.keys(TimeUnit)}
-	labels={TimeUnit}
-/>
+	<Select
+		bind:value={timeUnit}
+		values={Object.keys(TimeUnit)}
+		labels={TimeUnit}
+	/>
+</div>

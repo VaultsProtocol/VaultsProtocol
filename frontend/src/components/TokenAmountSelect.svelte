@@ -12,7 +12,7 @@
 </script>
 
 
-<div class="row equal">
+<div class="row">
 	<input
 		type="number"
 		bind:value={amount}
