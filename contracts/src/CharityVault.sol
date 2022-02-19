@@ -30,7 +30,7 @@ contract CharityVault is BaseVault {
 
     constructor( 
 
-        ERC20 _vaultToken,
+        address _vaultToken,
         address _recipient,
         uint16 _tokenPercent,
         string memory name,
@@ -67,17 +67,22 @@ contract CharityVault is BaseVault {
     // ##                     ##
     // #########################
 
-    function adjustYeild() public override {
+    function distributeYeild() public override {
 
-        uint256 totalInStrat = strat.withdrawlableVaultToken();
-        uint256 totalYield = totalInStrat - depositedToStrat;
+        uint256 unclaimedYield = vaultToken.balanceOf(address(this)) - lastKnownContractBalance;
+        lastKnownContractBalance += unclaimedYield;
+
+        uint256 strategyYield = strat.withdrawlableVaultToken() - lastKnownStrategyTotal;
+        lastKnownStrategyTotal += strategyYield;
+
+        uint256 totalYield = unclaimedYield + strategyYield;
 
         uint256 toCharitable = totalYield * ctx.percentOfYield / 1e4;
-        uint16 percentToSend = 10000 - ctx.percentOfYield;
+        uint256 amountToDistrib = totalYield - toCharitable;
 
         yieldForRecipient += toCharitable;
 
-        yeildPerDeposit += (totalYield * percentToSend / 1e4) * SCALAR / totalDeposits;
+        yeildPerDeposit += (amountToDistrib * SCALAR) / totalDeposits;
 
     }
     

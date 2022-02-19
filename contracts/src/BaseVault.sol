@@ -5,7 +5,6 @@ import "./tokens/ERC721.sol";
 import "./tokens/ERC20.sol";
 import "./interfaces/IStrategy.sol";
 
-
 contract BaseVault is ERC721 {
 
     // #########################
@@ -33,7 +32,10 @@ contract BaseVault is ERC721 {
     uint256 public totalDeposits;
     uint256 SCALAR = 1e10;
 
-    uint256 public depositedToStrat;
+    // used internally when calculating 
+    uint256 internal lastKnownContractBalance;
+    uint256 internal lastKnownStrategyTotal;
+    uint256 internal depositedToStrat;
 
     ERC20 immutable vaultToken;
     address immutable deployer; // can only set the strat ONCE
@@ -46,13 +48,13 @@ contract BaseVault is ERC721 {
     // #########################
 
     constructor(
-        ERC20 _vaultToken,
+        address _vaultToken,
         string memory name,
         string memory symbol
 
     ) ERC721(name, symbol) {
 
-        vaultToken = _vaultToken;
+        vaultToken = ERC20(_vaultToken);
         deployer = msg.sender;
     }
 
@@ -76,7 +78,7 @@ contract BaseVault is ERC721 {
 
     // Burns NFT and withdraws all claimable token + yeild
     function burnNFTAndWithdrawl(uint256 id) public virtual {
-        (uint256 claimable, ) = withdrawableById(id);
+        uint256 claimable = withdrawableById(id);
         _withdrawFromId(claimable, id);
 
         // erc721
@@ -87,17 +89,16 @@ contract BaseVault is ERC721 {
         public 
         view
         virtual 
-        returns (uint256 claimId, uint256 excess)
+        returns (uint256 claimId)
     {
-        uint256 _totalDeposits = totalDeposits;
-        uint256 balance = vaultToken.balanceOf(address(this));
 
-        // claimable may be larger than total deposits
-        uint256 claimable = balance + depositedToStrat;
-        claimId = ((claimable * deposits[id].amount) / _totalDeposits) + yieldPerId(id);
+        // // to account for random deposits
+        // // random deposits are distributed like yeild but a seperate
+        // // var is needed to keep track of them
+        // uint256 actualBalance = vaultToken.balanceOf(address(this)) - nonClaimedTokens;
 
-        uint256 adjusted = claimable - totalDeposits;
-        excess = adjusted * deposits[id].amount / _totalDeposits;
+        return deposits[id].amount + yieldPerId(id);
+
     }
 
     // #########################
@@ -108,63 +109,76 @@ contract BaseVault is ERC721 {
     // #########################
 
     function _mintNewNFT(uint256 amount) internal returns (uint256) {
+
         uint256 id = _mint(msg.sender, currentId);
+
+        if (totalDeposits > 0) {
+            distributeYeild();
+        }
 
         deposits[id].amount = amount;
         deposits[id].tracker += amount * yeildPerDeposit;
+
         totalDeposits += amount;
+        lastKnownContractBalance += amount;
 
         //ensure token reverts on failed
         vaultToken.transferFrom(msg.sender, address(this), amount);
 
         return id;
+
     }
 
     function _depositToId(uint256 amount, uint256 id) internal {
+
         // trusted contract
         require(msg.sender == ownerOf[id]);
 
+        distributeYeild();
+
         deposits[id].amount += amount;
         deposits[id].tracker += amount * yeildPerDeposit;
+
         totalDeposits += amount;
+        lastKnownContractBalance += amount;
 
         //ensure token reverts on failed
         vaultToken.transferFrom(msg.sender, address(this), amount);
+
     }
 
     function _withdrawFromId(uint256 amount, uint256 id) internal {
 
-        (uint256 totalClaimable, uint256 excess) = withdrawableById(id);
-
         require(msg.sender == ownerOf[id]);
-        require(amount <= totalClaimable);
+        require(amount <= withdrawableById(id));
         
-        if (address(strat) != address(0)) {
-            adjustYeild();
-        }
+        uint256 balanceCheck = vaultToken.balanceOf(address(this));
+        uint256 tracker = deposits[id].tracker;
+
+        distributeYeild();
 
         uint256 userYield = yieldPerId(id);
-        uint256 adjusted = amount - (userYield + excess);
+        uint256 principalWithdrawn;
 
-        if (amount > userYield + excess) {
-            totalDeposits -= adjusted;
+        if (amount > userYield) {
+            principalWithdrawn = amount - userYield;
+            totalDeposits -= principalWithdrawn;
+            deposits[id].amount -= principalWithdrawn;
         }
         
-        //trusted contract
-        uint256 balanceCheck = vaultToken.balanceOf(address(this));
-        if (amount > balanceCheck) {
+        uint256 short = amount > balanceCheck ? amount - balanceCheck : 0;
+        if (short > 0) {
 
-            withdrawFromStrat(amount - balanceCheck);
-            depositedToStrat -= adjusted;
+            withdrawFromStrat(short);
 
         }
 
         // edge case for first depositer
-        if (deposits[id].tracker != 0) {
-            deposits[id].tracker -= adjusted * yeildPerDeposit;
+        if (tracker != 0) {
+            tracker -= (principalWithdrawn * yeildPerDeposit) + (userYield * SCALAR);
+        } else {
+            tracker = userYield * SCALAR;
         }
-
-        deposits[id].amount -= adjusted;
 
         vaultToken.transfer(msg.sender, amount);
     }
@@ -183,7 +197,8 @@ contract BaseVault is ERC721 {
         uint256 half = (totalDeposits * 5000) / 10000;
         uint256 depositable = half - depositedToStrat;
 
-        depositedToStrat += depositable;
+        lastKnownStrategyTotal += depositable;
+        lastKnownContractBalance -= depositable;
 
         vaultToken.approve(address(strat), depositable);
         strat.deposit(depositable);
@@ -193,6 +208,7 @@ contract BaseVault is ERC721 {
     // depositedToStrat and totalDeposits = total withdrawn - yeild of msg.sender
     function withdrawFromStrat(uint256 amountNeeded) internal {
         strat.withdrawl(amountNeeded);
+        lastKnownStrategyTotal -= amountNeeded;
     }
 
     // #########################
@@ -202,19 +218,28 @@ contract BaseVault is ERC721 {
     // #########################
 
     // gets yeild from strategy contract
-    //possbily call this before new mints?
-    function adjustYeild() public virtual {
-        require(address(strat) != address(0), "No Strategy");
+    // called before deposits and withdrawls
+    function distributeYeild() public virtual {
+        
+        // require(address(strat) != address(0), "No Strategy")
 
-        uint256 totalInStrat = strat.withdrawlableVaultToken();
-        uint256 totalYield = totalInStrat - depositedToStrat;
+        uint256 unclaimedYield = vaultToken.balanceOf(address(this)) - lastKnownContractBalance;
+        lastKnownContractBalance += unclaimedYield;
+        
+        uint256 strategyYield = address(strat) != address(0) ? 
+            strat.withdrawlableVaultToken() - lastKnownStrategyTotal : 0;
+
+        lastKnownStrategyTotal += strategyYield;
+
+        uint256 totalYield = unclaimedYield + strategyYield;
 
         yeildPerDeposit += (totalYield * SCALAR) / totalDeposits;
+        
     }
 
     function yieldPerId(uint256 id) public view returns (uint256) {
         uint256 pre = (deposits[id].amount * yeildPerDeposit) / SCALAR;
-        return pre - deposits[id].tracker / SCALAR;
+        return pre - (deposits[id].tracker / SCALAR);
     }
 
     // #########################

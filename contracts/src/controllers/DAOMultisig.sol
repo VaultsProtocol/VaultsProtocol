@@ -60,7 +60,7 @@ contract DAOMultsig is DaoVault {
     // #########################
 
     constructor(
-        ERC20 _vaultToken,
+        address _vaultToken,
         string memory name,
         string memory symbol,
         address[] memory _signer,

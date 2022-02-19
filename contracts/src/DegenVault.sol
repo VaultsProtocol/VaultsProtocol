@@ -47,7 +47,7 @@ contract DegenVault is BaseVault {
 
     constructor(
 
-        ERC20 _vaultToken,
+        address _vaultToken,
         uint16 _jackpotBP,
         uint16 _dividendsBP,
         uint256 _minimumPrice,
@@ -126,10 +126,10 @@ contract DegenVault is BaseVault {
             amount * ctxm.dividendsBP / 10000
         );
 
+        jackpot += amount * ctxm.jackpotBP / 10000;
+
         uint256 totalBP = 10000 - (ctxm.jackpotBP + ctxm.dividendsBP);
         uint256 newAmount = amount * totalBP / 10000;
-
-        jackpot += amount * ctxm.jackpotBP / 10000;
         
         adjustFactors();
         _depositToId(newAmount, id);
@@ -138,7 +138,7 @@ contract DegenVault is BaseVault {
 
     function withdrawFromId(uint256 amount, uint256 id) public override {
 
-        (uint256 claimable, ) = withdrawableById(id);
+        uint256 claimable = withdrawableById(id);
         require(amount == claimable, "Use burn");
         burnNFTAndWithdrawl(id);
 
@@ -166,13 +166,9 @@ contract DegenVault is BaseVault {
 
     }
 
-    // override needed for this game
-    function withdrawableById(uint256 id) public override view returns (uint256, uint256) {
+    // overrdie distrubuteYeild 
 
-        uint256 yield = yieldPerId(id);
-        return ((deposits[id].amount + yield), 0);
-
-    }
+    // possible improvemnt is to send unclaimed depostis into the jackpot
 
     // #########################
     // ##                     ##

@@ -41,7 +41,7 @@ contract PDelegate is DaoVault {
     // #########################
 
     constructor(
-        ERC20 _vaultToken,
+        address _vaultToken,
         string memory name,
         string memory symbol,
         uint16 _quorom
