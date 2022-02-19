@@ -76,7 +76,7 @@ contract BaseVault is ERC721 {
 
     // Burns NFT and withdraws all claimable token + yeild
     function burnNFTAndWithdrawl(uint256 id) public virtual {
-        uint256 claimable = withdrawableById(id);
+        (uint256 claimable, ) = withdrawableById(id);
         _withdrawFromId(claimable, id);
 
         // erc721
@@ -84,19 +84,20 @@ contract BaseVault is ERC721 {
     }
 
     function withdrawableById(uint256 id)
-        public
+        public 
         view
-        virtual
-        returns (uint256)
+        virtual 
+        returns (uint256 claimId, uint256 adjusted2)
     {
-        uint256 yield = yieldPerId(id);
+        uint256 _totalDeposits = totalDeposits;
+        uint256 balance = vaultToken.balanceOf(address(this));
 
-        // claimable may be larger than total deposits but never smaller
-        uint256 claimable = vaultToken.balanceOf(address(this)) +
-            depositedToStrat;
-        uint256 claimId = (claimable * deposits[id].amount) / totalDeposits;
+        // claimable may be larger than total deposits
+        uint256 claimable = balance + depositedToStrat;
+        claimId = ((claimable * deposits[id].amount) / _totalDeposits) + yieldPerId(id);
 
-        return claimId + yield;
+        uint256 excess = claimable - totalDeposits;
+        adjusted2 = excess * deposits[id].amount / _totalDeposits;
     }
 
     // #########################
@@ -132,27 +133,28 @@ contract BaseVault is ERC721 {
     }
 
     function _withdrawFromId(uint256 amount, uint256 id) internal {
+
+        (uint256 totalClaimable, uint256 excess) = withdrawableById(id);
+
         require(msg.sender == ownerOf[id]);
-        require(amount <= withdrawableById(id));
+        require(amount <= totalClaimable);
         
         if (address(strat) != address(0)) {
             adjustYeild();
         }
 
         uint256 userYield = yieldPerId(id);
-        uint256 adjusted = amount - userYield;
-        if (amount > userYield) {
+        uint256 adjusted = amount - (userYield + excess);
+
+        if (amount > userYield + excess) {
             totalDeposits -= adjusted;
         }
-
+        
         //trusted contract
         uint256 balanceCheck = vaultToken.balanceOf(address(this));
         if (amount > balanceCheck) {
 
-            withdrawFromStrat(
-                amount - balanceCheck
-            );
-
+            withdrawFromStrat(amount - balanceCheck);
             depositedToStrat -= adjusted;
 
         }

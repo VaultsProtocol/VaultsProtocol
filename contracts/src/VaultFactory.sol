@@ -13,33 +13,31 @@ interface iVault {
 // creates vaults and returns address of controller / vault nft and the vault
 contract VaultFactory {
 
-    constructor(address _creator) {
-        creator = _creator;
-    }
-
-    address immutable creator;
     address[] public vaults;
 
     // construcors are appended to the end of creation code
     function createVault(
-        bytes calldata vaultType,
-        bytes calldata stratType,
-        address vaultToken, 
-        address yield,
+
+        bytes calldata vaultCreationCode,
+        bytes calldata strategyCreationCode,
+        address vaultToken,
+        address yieldVault,
         bytes calldata _constructor
 
     ) public returns(address vault) {
         console.log("here we are");
 
-        bytes memory newVault = abi.encodePacked(vaultType, _constructor);
-        bytes memory newStrat = abi.encodePacked(stratType, abi.encode(yield, vaultToken));
+        bytes memory newVault = abi.encodePacked(vaultCreationCode, _constructor);
+        bytes memory newStrat = abi.encodePacked(strategyCreationCode, abi.encode(yieldVault, vaultToken));
         address strat;
 
-        // use create2
+        // use create2 and elimante arrays
         assembly {
             strat := create(0, add(newStrat, 0x20), mload(newStrat))
             vault := create(0, add(newVault, 0x20), mload(newVault))
         }
+
+        vaults.push(vault);
 
         iVault(vault).setStrat(strat);
         IStrategy(strat).initVault(vault);

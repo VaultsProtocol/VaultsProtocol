@@ -39,8 +39,13 @@ task("full-deploy", "Deploy All Contracts")
     /*****************************/
     console.log("Deploying VaultFactory...");
     const VaultFactory = await ethers.getContractFactory("VaultFactory");
+<<<<<<< Updated upstream
     const vaultFactory = await VaultFactory.deploy(deployer.address);
 
+=======
+    const vaultFactory = await VaultFactory.deploy();
+    console.log("vault factory deployed at :", vaultFactory.address);
+>>>>>>> Stashed changes
     console.log(
       `To verify: npx hardhat verify ${vaultFactory.address} "${deployer.address}" --network {network}`,
     );
@@ -66,6 +71,11 @@ task("full-deploy", "Deploy All Contracts")
     /** Configure Strategies... **/
     /*****************************/
     /*****************************/
+<<<<<<< Updated upstream
+=======
+
+    console.log("Configurating strategies");
+>>>>>>> Stashed changes
     const exampleYearnStratBc = (
       await ethers.getContractFactory("YearnStrategy")
     ).bytecode;
@@ -92,16 +102,25 @@ task("full-deploy", "Deploy All Contracts")
     console.log("Deploying sample vault");
     const constructorParams = web3.eth.abi.encodeParameters(
       ["address", "string", "string"],
-      [vaultToken.address, "Sample Base Vault", "SBV"],
+      ["0x0000000000000000000000000000000000000000", "Sample Base Vault", "SBV"],
     );
 
+<<<<<<< Updated upstream
     const createVault = await vaultFactory.createVault(
+=======
+    
+    console.log("const: ", constructorParams);
+    
+
+    const vaultAddTx = await vaultFactory.createVault(
+>>>>>>> Stashed changes
       baseVaultByteCode,
       exampleYearnStratBc,
       vaultToken.address,
       "0xA21B900268c056fB5CBc698450b1aCF38862d4Dd",
       constructorParams,
       {
+<<<<<<< Updated upstream
         gasLimit: '2100000'
       }
     );
@@ -114,6 +133,20 @@ task("full-deploy", "Deploy All Contracts")
     console.log(
       `To verify: npx hardhat verify ${sampleVault} "${vaultToken.address}" "Sample Base Vault" "SBV" --network {network}`,
     );
+=======
+      gasLimit: 29000000,
+    }
+    );
+    
+    const a = await vaultFactory.vaults(0);
+    console.log("address: ", a);
+
+
+    // console.log("sampleVault", returnVal);
+    // console.log(
+    //   `To verify: npx hardhat verify ${sampleVaultAdd.address} "${vaultToken.address}" "Sample Base Vault" "SBV" --network {network}`,
+    // );
+>>>>>>> Stashed changes
   });
 
 module.exports = {

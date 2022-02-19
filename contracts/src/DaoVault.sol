@@ -62,17 +62,22 @@ contract DaoVault is BaseVault {
     // ##                     ##
     // #########################
 
-    function withdrawableById(uint256 id) public view override returns (uint256) {
+    function withdrawableById(uint256 id)
+        public 
+        view
+        override 
+        returns (uint256 claimId, uint256 adjusted2)
+    {
 
-        uint256 yield = yieldPerId(id);
+        uint256 _totalDeposits = totalDeposits;
+        uint256 balance = vaultToken.balanceOf(address(this));
 
-        // claimable may be larger than total deposits but never smaller
-        uint256 claimable = vaultToken.balanceOf(address(this)) +
-            depositedToStrat - tokensManaged;
-            
-        uint256 claimId = (claimable * deposits[id].amount) / totalDeposits;
+        // claimable may be larger than total deposits
+        uint256 claimable = (balance + depositedToStrat) - tokensManaged;
+        claimId = ((claimable * deposits[id].amount) / _totalDeposits) + yieldPerId(id);
 
-        return claimId + yield;
+        uint256 excess = claimable - totalDeposits;
+        adjusted2 = excess * deposits[id].amount / _totalDeposits;
 
     }
 }

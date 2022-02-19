@@ -138,7 +138,8 @@ contract DegenVault is BaseVault {
 
     function withdrawFromId(uint256 amount, uint256 id) public override {
 
-        require(amount == withdrawableById(id), "Use burn");
+        (uint256 claimable, ) = withdrawableById(id);
+        require(amount == claimable, "Use burn");
         burnNFTAndWithdrawl(id);
 
     }
@@ -166,10 +167,10 @@ contract DegenVault is BaseVault {
     }
 
     // override needed for this game
-    function withdrawableById(uint256 id) public override view returns (uint) {
+    function withdrawableById(uint256 id) public override view returns (uint256, uint256) {
 
         uint256 yield = yieldPerId(id);
-        return deposits[id].amount + yield;
+        return ((deposits[id].amount + yield), 0);
 
     }
 
