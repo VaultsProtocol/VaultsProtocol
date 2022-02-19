@@ -54,7 +54,9 @@
 	<HeightContainer class="column">
 		<header>
 			<div class="row">
-				<TokenIcon token={networksByChainID[vaultConfig.chainId].nativeCurrency} />
+				<span class="chain">
+					<TokenIcon token={networksByChainID[vaultConfig.chainId].nativeCurrency} />
+				</span>
 
 				<h2>{vaultConfig.about.name}</h2>
 				<!-- <h2>{vaultConfig.about.name || $_('My Vault')}</h2> -->
@@ -67,7 +69,7 @@
 
 		<div class="stack">
 			{#key vaultConfig.type}
-				<figure class="card" transition:fade>
+				<figure class="illustration-wrapper card" transition:fade>
 					<svg class="illustration">
 						{#if vaultConfig.type === VaultType.Standard}
 							<path class:silhouette={isPosition} />
@@ -86,7 +88,26 @@
 		</div>
 
 		<div class="vault-type-info row">
-			{vaultStatus.tokenId}
+			<div class="stack centered">
+				<span class="token-id row centered">{vaultStatus.tokenId}</span>
+				<svg width="50" height="50" viewBox="-1.5 -1.5 3 3">
+					<defs>
+						<!-- <path id="c" d="m -1, 0 a 1,1 0 0,1 2,0 a 1,1 0 0,1 -2,0 "/> -->
+						<!-- <path id="c" d="m -1,0 a 1,1 0 0,1 2,0 a 1,1 0 0,1 -2,0 "/> -->
+						<path id="c" d="
+							M-1,0
+							A1,1,0,1,1,1,0 A1,1,0,1,1,-1,0
+							A1,1,0,1,1,1,0 A1,1,0,1,1,-1,0
+						"/>
+					</defs>
+					<text fill="currentColor" style="font-size: 0.66px; letter-spacing: 0.15px">
+						<textPath xlink:href="#c">
+							EDITION
+							<animate additive="sum" attributeName="startOffset" from="0%" to="50%" begin="0s" dur="30s" repeatCount="indefinite" />
+						</textPath>
+					</text>
+				</svg>
+			</div>
 			
 			<div class="stack">
 				{#key vaultConfig.type}
@@ -96,7 +117,7 @@
 				{/key}
 			</div>
 
-			<img />
+			<img width="50" height="50" />
 
 			<!-- {#if vaultConfig.type === VaultType.Degen}
 				<PieChart data={[
@@ -111,45 +132,51 @@
 			<p class="align-start" transition:scale>{vaultConfig.about.description}</p>
 		{/if}
 
-		{#each
-			isPosition ?
-				[
-					{ icon: '', label: 'Balance', displayType: MetadataType.TokenBalance, value: vaultPosition.withdrawableBalance },
-					{ icon: '', label: 'Earned', displayType: MetadataType.TokenBalance, value: vaultPosition.yieldEarned },
-				]
-			: vaultConfig.type === VaultType.Degen ?
-				[
-					{ icon: '', label: 'Jackpot', displayType: MetadataType.TokenBalance, value: vaultConfig.config.jackpot },
-					{ icon: '', label: 'Dividend', displayType: MetadataType.TokenBalance, value: vaultConfig.config.dividend },
-					{ icon: '', label: 'Treasury', displayType: MetadataType.TokenBalance, value: vaultConfig.config.treasury },
-					{ icon: '', label: 'Deadline', displayType: MetadataType.Date, value: vaultConfig.config.deadline },
-				]
-			: vaultConfig.type === VaultType.DAO ?
-				[
-					{ icon: '', label: 'Governance Type', displayType: MetadataType.Date, value: vaultConfig.config.governanceType },
-				]
-			: vaultConfig.type === VaultType.Charity ?
-				[
-					{ icon: '', label: 'Payout Type', displayType: MetadataType.String, value: vaultConfig.config.payoutType },
-				]
-			: []
-			as
-			{ icon, label, displayType, value } (label)
-		}
-			<div class="card row" transition:scale animate:flip>
-				<img src={icon} alt={$_(label)} />
-				<span>
-					{#if displayType === MetadataType.TokenBalance}
-						<TokenBalance {value} />
-					{:else if displayType === MetadataType.Date}
-						{value} seconds
-						<!-- <Countdown toTimestamp={value} /> -->
-					{:else}
-						{$_(value)}
-					{/if}
-				</span>
-			</div>
-		{/each}
+		<div class="metadata column">
+			{#each
+				isPosition ?
+					[
+						{ icon: '', label: 'Balance', displayType: MetadataType.TokenBalance, value: vaultPosition.withdrawableBalance },
+						{ icon: '', label: 'Earned', displayType: MetadataType.TokenBalance, value: vaultPosition.yieldEarned },
+					]
+				: vaultConfig.type === VaultType.Degen ?
+					[
+						{ icon: '', label: 'Jackpot', displayType: MetadataType.TokenBalance, value: vaultConfig.config.jackpot },
+						{ icon: '', label: 'Dividend', displayType: MetadataType.TokenBalance, value: vaultConfig.config.dividend },
+						{ icon: '', label: 'Treasury', displayType: MetadataType.TokenBalance, value: vaultConfig.config.treasury },
+						{ icon: '', label: 'Deadline', displayType: MetadataType.Date, value: vaultConfig.config.deadline },
+					]
+				: vaultConfig.type === VaultType.DAO ?
+					[
+						{ icon: '', label: 'Governance Type', displayType: MetadataType.Date, value: vaultConfig.config.governanceType },
+					]
+				: vaultConfig.type === VaultType.Charity ?
+					[
+						{ icon: '', label: 'Payout Type', displayType: MetadataType.String, value: vaultConfig.config.payoutType },
+					]
+				: []
+				as
+				{ icon, label, displayType, value } (label)
+			}
+				<div class="card row" transition:scale animate:flip>
+					<div class="row">
+						<img src={icon} width="20" height="20" />
+						<span>{$_(label)}</span>
+					</div>
+
+					<span>
+						{#if displayType === MetadataType.TokenBalance}
+							<TokenBalance {value} />
+						{:else if displayType === MetadataType.Date}
+							{value} seconds
+							<!-- <Countdown toTimestamp={value} /> -->
+						{:else}
+							{$_(value)}
+						{/if}
+					</span>
+				</div>
+			{/each}
+		</div>
 
 		{#if vaultConfig.about.website || vaultConfig.about.twitter || vaultConfig.about.discord}
 			<div class="row centered" transition:scale>
@@ -181,15 +208,24 @@
 	.vault-container {
 		width: 400px;
 		height: 800px;
+		filter: drop-shadow(0 1px 0.5em var(--background-color-0));
 	}
-
+	
 	.vault {
 		border: var(--background-color-2) 0.5em solid;
 		overflow: auto;
 		max-height: calc(100vh - var(--header-height) - 4rem);
-		width: 400px;
+		font-size: 16px;
 	}
 
+	.chain {
+		transform: scale(3);
+	}
+
+	.illustration-wrapper {
+		background: var(--background-color-2);
+		border: var(--background-color-3) 0.25em solid;
+	}
 	.illustration {
 		aspect-ratio: 1.5;
 	}
@@ -209,9 +245,35 @@
 
 	.vault-type-info {
 		grid-template-columns: auto 1fr auto;
+		margin: 0 -1em;
+	}
+
+	.vault-type-info .token-id {
+		font-size: 0.85em;
+		background-color: black;
+		border-radius: 50%;
+		width: 1.66em;
+		height: 1.66em;
 	}
 
 	.vault-type-info .vault-type {
 		padding: 0.5em;
+	}
+
+	/* .text-path {
+		animation: Spin 10s linear infinite;
+	}
+	@keyframes Spin {
+		to { transform: rotate(1turn) }
+	} */
+
+	.metadata {
+		gap: 0.5em;
+	}
+	.metadata > * {
+		padding: 0.85em;
+	}
+	.metadata > * > .row {
+		gap: 0.5em;
 	}
 </style>

@@ -286,6 +286,11 @@ hr {
 .stack > * {
 	grid-area: stack;
 }
+.stack.centered {
+	place-content: center;
+	place-items: center;
+	text-align: center;
+}
 
 .column {
 	display: flex;
