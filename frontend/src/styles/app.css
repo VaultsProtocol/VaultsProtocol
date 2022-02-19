@@ -112,7 +112,10 @@ textarea {
 	padding: 1em;
 }
 
-button:hover, .button:hover, [role='button']:hover {
+button:hover, .button:hover, [role='button']:hover,
+button:focus, .button:focus, [role='button']:focus,
+button:focus-within, .button:focus-within, [role='button']:focus-within,
+label:focus-within button, label:focus-within  .button, label:focus-within [role='button'] {
 	cursor: pointer;
 	filter: brightness(1.111);
 	transform: scale(1.02) translateZ(1px);
@@ -176,6 +179,9 @@ input[type='number'], input[type='text'] {
 	font-size: 1.2em;
 	padding: 0.4em 0.75em;
 }
+/* input[type='number'] {
+	width: 6rem;
+} */
 
 ::-webkit-input-placeholder {
 	color: inherit;

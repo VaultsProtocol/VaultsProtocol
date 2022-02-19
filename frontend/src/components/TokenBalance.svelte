@@ -104,7 +104,7 @@
 			})}
 		</span>
 	{:else}
-		<TokenIcon {symbol} {address} {name} {icon} {erc20Token} />
+		<!-- <TokenIcon {symbol} {address} {name} {icon} {erc20Token} /> -->
 		<span>
 			<span class="token-balance">
 				{isNegative ? '−' : ''}{formatValue({
@@ -115,5 +115,6 @@
 			</span>
 			<span class="token-name">{symbol || formatAddress(address)}</span>
 		</span>
+		<TokenIcon {symbol} {address} {name} {icon} {erc20Token} />
 	{/if}
 </span>

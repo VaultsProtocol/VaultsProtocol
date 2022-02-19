@@ -52,19 +52,20 @@
 
 <article class="vault card">
 	<HeightContainer class="column">
-		<header>
+		<header class="row">
 			<div class="row">
 				<span class="chain">
 					<TokenIcon token={networksByChainID[vaultConfig.chainId].nativeCurrency} />
 				</span>
 
-				<h2>{vaultConfig.about.name}</h2>
-				<!-- <h2>{vaultConfig.about.name || $_('My Vault')}</h2> -->
-
-				{#if vaultStatus.totalBalance}
-					<TokenBalance balance={vaultStatus.totalBalance} token={vaultConfig.tokens[0]} />
+				{#if vaultConfig.about.name}
+					<h2 class="align-start" transition:scale>{vaultConfig.about.name}</h2>
 				{/if}
 			</div>
+
+			{#if isPosition ? vaultStatus.totalBalance : vaultConfig.config.initialLiquidity}
+				<TokenBalance balance={isPosition ? vaultStatus.totalBalance : vaultConfig.config.initialLiquidity} token={vaultConfig.tokens[0]} />
+			{/if}
 		</header>
 
 		<div class="stack">
@@ -129,7 +130,9 @@
 		</div>
 
 		{#if vaultConfig.about.description}
-			<p class="align-start" transition:scale>{vaultConfig.about.description}</p>
+			<HeightContainer>
+				<p class="description align-start" transition:scale>{vaultConfig.about.description}</p>
+			</HeightContainer>
 		{/if}
 
 		<div class="metadata column">
@@ -218,8 +221,21 @@
 		font-size: 16px;
 	}
 
+	header {
+		--grid-gap: 2em;
+		/* align-items: start; */
+	}
 	.chain {
 		transform: scale(3);
+		z-index: 1;
+		filter: drop-shadow(0 0 1px var(--background-color-1));
+		align-self: start;
+	}
+	h2 {
+		font-size: 1.1em;
+		line-height: 1;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	.illustration-wrapper {
@@ -234,12 +250,8 @@
 		fill: black;
 	}
 
-	h2 {
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
-
-	p {
+	.description {
+		font-size: 0.8em;
 		word-break: break-word;
 	}
 

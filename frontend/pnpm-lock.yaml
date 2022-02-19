@@ -1,6 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
+  '@ethersproject/address': ^5.5.0
   '@floating-ui/core': ^0.4.0
   '@floating-ui/dom': ^0.2.0
   '@sveltejs/adapter-auto': next
@@ -21,6 +22,7 @@ specifiers:
   typescript: ~4.5.4
 
 dependencies:
+  '@ethersproject/address': 5.5.0
   '@floating-ui/core': 0.4.0
   '@floating-ui/dom': 0.2.0
   ethers: 5.5.4
@@ -28,7 +30,7 @@ dependencies:
 
 devDependencies:
   '@sveltejs/adapter-auto': 1.0.0-next.17
-  '@sveltejs/kit': 1.0.0-next.267_svelte@3.46.4
+  '@sveltejs/kit': 1.0.0-next.278_svelte@3.46.4
   '@typescript-eslint/eslint-plugin': 5.11.0_3bf83de4bfb4bafe384c8467b43d3174
   '@typescript-eslint/parser': 5.11.0_eslint@7.32.0+typescript@4.5.5
   eslint: 7.32.0
@@ -514,8 +516,8 @@ packages:
       esbuild: 0.13.15
     dev: true
 
-  /@sveltejs/kit/1.0.0-next.267_svelte@3.46.4:
-    resolution: {integrity: sha512-zwtSuhgQV4qCXggmSU6hduFLuEE/7HMBNgRDHNjFPlXTn6VZT6whKPIfLGVRpHVveOyYzCxH6Dcy7nl0wfZ9kw==}
+  /@sveltejs/kit/1.0.0-next.278_svelte@3.46.4:
+    resolution: {integrity: sha512-WT93Wnu05X9WG9BMMk/dj0gy6R7iXm9aXRDVgmIl9z8jT2ukejgmkhi5IwBYrK0OMIUALRVfukn+iy+srPc91Q==}
     engines: {node: '>=14.13'}
     hasBin: true
     peerDependencies:

@@ -15,7 +15,7 @@
 		[TimeUnit.Day]: 86400,
 	}
 
-	let timeUnit = Object.entries(timeUnitAmounts).find(([timeUnit, timeUnitAmount]) => value % timeUnitAmount === 0)[0] || TimeUnit.Second
+	let timeUnit = Object.entries(timeUnitAmounts).find(([timeUnit, timeUnitAmount]) => value % timeUnitAmount === 0)?.[0] || TimeUnit.Second
 	let timeValue = value / timeUnitAmounts[timeUnit]
 
 	$: value = timeValue * timeUnitAmounts[timeUnit]
@@ -37,10 +37,3 @@
 	values={Object.keys(TimeUnit)}
 	labels={TimeUnit}
 />
-
-
-<style>
-	input[type="number"] {
-		width: 4rem;
-	}
-</style>

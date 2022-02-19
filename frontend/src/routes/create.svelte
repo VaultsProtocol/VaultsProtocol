@@ -1,4 +1,6 @@
 <script lang="ts">
+  import PercentInput from './PercentInput.svelte';
+
   import TimeSelect from '../components/TimeSelect.svelte';
 
 	// Constants/types
@@ -11,10 +13,10 @@
 		vaultTypeInfo,
 		YieldStrategy,
 		yieldStrategyInfo,
-GovernanceType,
-governanceTypeInfo,
-PayoutType,
-payoutTypeInfo,
+		GovernanceType,
+		governanceTypeInfo,
+		PayoutType,
+		payoutTypeInfo,
 		// GovernanceStrategy,
 		// governanceStrategyInfo,
 	} from '$lib/vaults'
@@ -65,6 +67,7 @@ payoutTypeInfo,
 	// Components
 	import Vault from '../components/Vault.svelte'
 	import HeightContainer from '../components/HeightContainer.svelte'
+	import AddressInput from '../components/AddressInput.svelte'
 	import Select from '../components/Select.svelte'
 	import Tabs from '../components/Tabs.svelte'
 	import TokenSelect from '../components/TokenSelect.svelte'
@@ -221,15 +224,7 @@ payoutTypeInfo,
 								<h4>{$_('Jackpot')}</h4>
 								<p>{$_('This portion is paid out to the last contributor when the crowdfund ends.')}</p>
 								<div class="row">
-									<span>
-										<input
-											type="number"
-											min="0"
-											max="100"
-											bind:value={vaultConfig.config.jackpot}
-										/>
-										%
-									</span>
+									<PercentInput bind:value={vaultConfig.config.jackpot} />
 									<!-- <button
 										type="button"
 										class="small"
@@ -242,29 +237,13 @@ payoutTypeInfo,
 							<label class="card column">
 								<h4>{$_('Dividend')}</h4>
 								<p>{$_('This amount is distributed to all past contributors every time a new contribution is made.')}</p>
-								<span>
-									<input
-										type="number"
-										min="0"
-										max="100"
-										bind:value={vaultConfig.config.dividend}
-									/>
-									%
-								</span>
+								<PercentInput bind:value={vaultConfig.config.dividend} />
 							</label>
 
 							<label class="card column">
 								<h4>{$_('Treasury')}</h4>
 								<p>{$_('After the jackpot winner and the dividends are paid out, the remaining funds go to the DAO treasury.')}</p>
-								<span>
-									<input
-										type="number"
-										min="0"
-										max="100"
-										bind:value={vaultConfig.config.treasury}
-									/>
-									%
-								</span>
+								<PercentInput bind:value={vaultConfig.config.treasury} />
 							</label>
 
 							<label class="card column">
@@ -280,7 +259,7 @@ payoutTypeInfo,
 
 							<label class="card column">
 								<h4>{$_('Deadline')}</h4>
-								<p>{$_('The deadline.')}</p>
+								<p>{$_('The vault will be closed.')}</p>
 								<span>
 									<TimeSelect bind:value={vaultConfig.config.deadline} />
 								</span>
@@ -309,6 +288,22 @@ payoutTypeInfo,
 
 					{:else if vaultConfig.type === VaultType.Charity}
 						<div class="grid" in:fly={{ x: 20 }} out:fly={{ x: -20 }}>
+							<label class="card column">
+								<h3>{$_('Recipient')}</h3>
+								<p>{$_('The recipient ')}</p>
+								<div>
+									<AddressInput bind:address={vaultConfig.config.recipientAddress} />
+								</div>
+							</label>
+
+							<label class="card column">
+								<h3>{$_('Yield to Recipient')}</h3>
+								<p>{$_('The recipient will receive this portion of the earned yield; the rest will be distributed proportionally to holders.')}</p>
+								<div>
+									<PercentInput bind:value={vaultConfig.config.recipientYieldPercent} />
+								</div>
+							</label>
+
 							<label class="card column">
 								<h3>{$_('Payout Type')}</h3>
 								<div>

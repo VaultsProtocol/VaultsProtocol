@@ -22,7 +22,7 @@ export const vaultTypeInfo = {
 	},
 	[VaultType.Charity]: {
 		label: '🎁 No-Loss Charity',
-		description: 'The funds'
+		description: 'A portion of the '
 	},
 	// [VaultType.Superfluid]: {
 	// 	label: '🦈 Superfluid',
@@ -93,7 +93,7 @@ export enum PayoutType {
 export const payoutTypeInfo = {
 	[PayoutType.Once]: {
 		label: '💸 Once',
-		description: 'The recipient is paid fully and immediately'
+		description: 'The recipient claims yield '
 	},
 	[PayoutType.Superfluid]: {
 		label: '🌊 Superfluid',
@@ -139,7 +139,9 @@ export type VaultConfig<T extends VaultType> = {
 			}
 		: T extends VaultType.Charity ?
 			{
-				payoutType: PayoutType.Once
+				payoutType: PayoutType.Once,
+				recipientAddress: string,
+				recipientYieldPercent: number
 			}
 			| {
 				payoutType: PayoutType.Superfluid,

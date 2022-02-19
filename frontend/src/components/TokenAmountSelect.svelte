@@ -12,17 +12,17 @@
 </script>
 
 
-<input
-	type="number"
-	bind:value={amount}
-/>
+<div class="row equal">
+	<input
+		type="number"
+		bind:value={amount}
+		min={0}
+	/>
 
-
-<TokenSelect {availableTokens} bind:token />
+	<TokenSelect {availableTokens} bind:token />
+</div>
 
 
 <style>
-	input[type="number"] {
-		width: 4rem;
-	}
+	
 </style>
