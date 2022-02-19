@@ -96,7 +96,7 @@ contract("DaoVault", ([alice, bob, tom, strategy, deployer]) => {
       });
 
       // should pass ID = 2
-      await bc.daoVault.mintNewNFT(BigInt(2e18), {
+      await bc.daoVault.mintNewNft(BigInt(2e18), {
         from: bob,
       });
 

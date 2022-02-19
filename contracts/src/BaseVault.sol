@@ -222,7 +222,7 @@ contract BaseVault is ERC721 {
     // #########################
 
     function tokenURI(uint256 id) public view override returns (string memory) {
-        return INftDataGenerator(nftDataGenerator).generateTokenUri(this, id);
+        // return INftDataGenerator(nftDataGenerator).generateTokenUri(this, id);
         return "string";
     }
 
