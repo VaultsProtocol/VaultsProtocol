@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0;
 
-import "./tokens/ERC721.sol";
 import "./interfaces/IStrategy.sol";
-import "hardhat/console.sol";
 
 interface iVault {
     function setStrat(address addr) external;
@@ -25,7 +23,6 @@ contract VaultFactory {
         bytes calldata _constructor
 
     ) public returns(address vault) {
-        console.log("here we are");
 
         bytes memory newVault = abi.encodePacked(vaultCreationCode, _constructor);
         bytes memory newStrat = abi.encodePacked(strategyCreationCode, abi.encode(yieldVault, vaultToken));

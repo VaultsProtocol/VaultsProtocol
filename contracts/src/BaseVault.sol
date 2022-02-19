@@ -87,7 +87,7 @@ contract BaseVault is ERC721 {
         public 
         view
         virtual 
-        returns (uint256 claimId, uint256 adjusted2)
+        returns (uint256 claimId, uint256 excess)
     {
         uint256 _totalDeposits = totalDeposits;
         uint256 balance = vaultToken.balanceOf(address(this));
@@ -96,8 +96,8 @@ contract BaseVault is ERC721 {
         uint256 claimable = balance + depositedToStrat;
         claimId = ((claimable * deposits[id].amount) / _totalDeposits) + yieldPerId(id);
 
-        uint256 excess = claimable - totalDeposits;
-        adjusted2 = excess * deposits[id].amount / _totalDeposits;
+        uint256 adjusted = claimable - totalDeposits;
+        excess = adjusted * deposits[id].amount / _totalDeposits;
     }
 
     // #########################
