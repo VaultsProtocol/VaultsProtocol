@@ -76,23 +76,17 @@ contract ContractTest is DSTest {
 
             uint256 withdrawable = vault.withdrawableById(2);
             console.log("can Withdrawl: ", withdrawable);
+            uint256 expected = withdrawable / 2;
 
-            vault.withdrawFromId(2, withdrawable / 2);
-            console.log("withdrawing half!");
+            console.log("Expected Half: ", expected);
+            vault.withdrawFromId(2, expected);
+
+            withdrawable = vault.withdrawableById(2);
+            console.log("actual: ", withdrawable);
 
         cheats.stopPrank();
-
-        withdrawable = vault.withdrawableById(2);
-        console.log("can Withdrawl: ", withdrawable);
     }
 
-    function testRandom3(uint256 amount) public {
-        erc20.approve(address(vault), amount);
-        uint256 id = vault.mintNewNft(amount);
-
-        vault.withdrawFromId(id, amount);
-        assertEq(erc20.balanceOf(address(vault)), 0);
-    }
 }
 
 interface CheatCodes {

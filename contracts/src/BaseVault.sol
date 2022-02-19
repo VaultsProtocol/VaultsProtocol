@@ -15,7 +15,7 @@ contract BaseVault is ERC721 {
 
     struct Deposits {
         uint256 amount;
-        uint256 tracker; //sum of delta(deposit) * yeildPerDeposit
+        uint256 tracker; //sum of delta(deposit) * yeildPerDeposit || SCALED
     }
 
     // #########################
@@ -28,14 +28,13 @@ contract BaseVault is ERC721 {
     mapping(uint256 => Deposits) public deposits;
 
     //sum of yeild/totalDeposits
-    uint256 public yeildPerDeposit;
+    uint256 public yeildPerDeposit; //SCALED
     uint256 public totalDeposits;
-    uint256 SCALAR = 1e10;
+    uint256 internal SCALAR = 1e10;
 
     // used internally when calculating 
     uint256 internal lastKnownContractBalance;
     uint256 internal lastKnownStrategyTotal;
-    
     uint256 internal depositedToStrat;
 
     ERC20 immutable vaultToken;
@@ -154,7 +153,6 @@ contract BaseVault is ERC721 {
         require(amount <= withdrawableById(id));
         
         uint256 balanceCheck = vaultToken.balanceOf(address(this));
-        uint256 tracker = deposits[id].tracker;
 
         distributeYeild();
 
@@ -162,16 +160,21 @@ contract BaseVault is ERC721 {
         uint256 principalWithdrawn;
 
         if (amount > userYield) {
-            principalWithdrawn = amount - userYield;
-            totalDeposits -= principalWithdrawn;
-            deposits[id].amount -= principalWithdrawn;
-        }
 
-        // edge case for first depositer
-        if (tracker != 0) {
-            tracker -= (principalWithdrawn * yeildPerDeposit) + (userYield * SCALAR);
+            principalWithdrawn = amount - userYield;
+            deposits[id].amount -= principalWithdrawn;
+            totalDeposits -= principalWithdrawn;
+            
+            // all user Yield is harvested therefore at the current
+            // point in time the user is not entitled to any yield
+            deposits[id].tracker = deposits[id].amount * yeildPerDeposit;
+
         } else {
-            tracker = userYield * SCALAR;
+            
+            // user yield still remains therefore, deposits not affected
+            // just add nonclaimable to current tracker
+            deposits[id].tracker += amount * SCALAR;
+    
         }
         
         uint256 short = amount > balanceCheck ? amount - balanceCheck : 0;
