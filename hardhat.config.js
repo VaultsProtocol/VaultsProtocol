@@ -20,7 +20,6 @@ const ethscan_api_key = process.env.ETHSCAN_API_KEY;
 const bscscan_api_key = process.env.BSCSCAN_API_KEY;
 
 // Deploy NFT Contract...
-// yarn deploy-genesis-nft-eth-main OR
 // npx hardhat full-deploy --network ethMain
 task("full-deploy", "Deploy All Contracts")
   // .addParam("yearnAddress", "0x00...")
