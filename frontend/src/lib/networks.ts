@@ -1,3 +1,5 @@
+import { erc20Tokens, type ERC20Token } from "./tokens"
+
 export type ChainID = number
 
 export type Network = {
@@ -33,8 +35,22 @@ export type Network = {
 	},
 }
 
+
+export const stableCoinsByNetwork: Record<string, ERC20Token[]> = {
+	'ethereum': [{"chainId":1,"address":"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
+	'ethereum-rinkeby': [{"chainId":4,"address":"0xeb8f08a975ab53e34d8a0330e0d34de942c95926","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
+	'polygon': [{"chainId":137,"address":"0xeb8f08a975ab53e34d8a0330e0d34de942c95926","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
+	'polygon-mumbai': [{"chainId":80001,"address":"0xe6b8a5cf854791412c1f6efc7caf629f5df1c747","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
+	'avalanche-fuji': [{"chainId":43113,"address":"0xAF82969ECF299c1f1Bb5e1D12dDAcc9027431160","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
+	'avalanche': [{"chainId":43114,"address":"0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
+	'celo': [{"chainId":42220,"address":"0x765DE816845861e75A25fCA122bb6898B8B1282a","name":"Celo Dollar","symbol":"cUSD","decimals":18,"icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/7236.png"}],
+	'celo-alfajores': [{"chainId":44787,"address":"0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/7236.png"}],
+	'metis': [{"chainId":1088,"address":"0xAF82969ECF299c1f1Bb5e1D12dDAcc9027431160","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
+	'metis-stardust': [{"chainId":588,"address":"0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
+}
+
 export const networks: Network[] = [
-	{
+  {
 		"slug": "ethereum",
 		"name": "Ethereum",
 		"chainId": 1,
@@ -65,61 +81,6 @@ export const networks: Network[] = [
 			"registry": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e"
 		},
 		"icon": "ethereum",
-	},
-	{
-		"slug": "ethereum-goerli",
-		"name": "Ethereum Görli Testnet",
-		"chainId": 5,
-		"shortName": "gor",
-		"chain": "ETH",
-		"network": "goerli",
-		"networkId": 5,
-		"nativeCurrency": {
-			"name": "Görli Ether",
-			"symbol": "GOR",
-			"decimals": 18
-		},
-		"rpc": [
-			"https://rpc.goerli.mudit.blog/",
-			"https://rpc.slock.it/goerli ",
-			"https://goerli.prylabs.net/"
-		],
-		"faucets": [
-			"https://goerli-faucet.slock.it/?address=${ADDRESS}",
-			"https://faucet.goerli.mudit.blog"
-		],
-		"explorers": [],
-		"infoURL": "https://goerli.net/#about",
-		"ens": {
-			"registry": "0x112234455c3a32fd11230c42e7bccd4a84e02010"
-		}
-	},
-	{
-		"slug": "ethereum-kovan",
-		"name": "Ethereum Kovan Testnet",
-		"chainId": 42,
-		"shortName": "kov",
-		"chain": "ETH",
-		"network": "kovan",
-		"networkId": 42,
-		"nativeCurrency": {
-			"name": "Kovan Ether",
-			"symbol": "KOV",
-			"decimals": 18
-		},
-		"rpc": [
-			"https://kovan.poa.network",
-			"http://kovan.poa.network:8545",
-			"https://kovan.infura.io/v3/${INFURA_PROJECT_ID}",
-			"wss://kovan.infura.io/ws/v3/${INFURA_PROJECT_ID}",
-			"ws://kovan.poa.network:8546"
-		],
-		"faucets": [
-			"https://faucet.kovan.network",
-			"https://gitter.im/kovan-testnet/faucet"
-		],
-		"explorers": [],
-		"infoURL": "https://kovan-testnet.github.io/website"
 	},
 	{
 		"slug": "ethereum-rinkeby",
@@ -153,33 +114,6 @@ export const networks: Network[] = [
 			"registry": "0xe7410170f87102df0055eb195163a03b7f2bff4a"
 		}
 	},
-	{
-		"slug": "ethereum-ropsten",
-		"name": "Ethereum Ropsten Testnet",
-		"chainId": 3,
-		"shortName": "rop",
-		"chain": "ETH",
-		"network": "ropsten",
-		"networkId": 3,
-		"nativeCurrency": {
-			"name": "Ropsten Ether",
-			"symbol": "ROP",
-			"decimals": 18
-		},
-		"rpc": [
-			"https://ropsten.infura.io/v3/${INFURA_PROJECT_ID}",
-			"wss://ropsten.infura.io/ws/v3/${INFURA_PROJECT_ID}"
-		],
-		"faucets": [
-			"https://faucet.ropsten.be?${ADDRESS}"
-		],
-		"explorers": [],
-		"infoURL": "https://github.com/ethereum/ropsten",
-		"ens": {
-			"registry": "0x112234455c3a32fd11230c42e7bccd4a84e02010"
-		}
-	},
-
 	{
 		"slug": "polygon",
 		"name": "Polygon",
@@ -329,33 +263,9 @@ export const networks: Network[] = [
 		"infoURL": "https://docs.celo.org/"
 	},
 	{
-		"slug": "celo-baklava",
-		"name": "Celo Baklava Testnet",
-		"chainId": 62320,
-		"shortName": "BKLV",
-		"chain": "CELO",
-		"network": "Baklava",
-		"networkId": 62320,
-		"nativeCurrency": {
-			"name": "CELO",
-			"symbol": "CELO",
-			"decimals": 18
-		},
-		"rpc": [
-			"https://baklava-forno.celo-testnet.org"
-		],
-		"faucets": [
-			"https://docs.google.com/forms/d/e/1FAIpQLSdfr1BwUTYepVmmvfVUDRCwALejZ-TUva2YujNpvrEmPAX2pg/viewform",
-			"https://cauldron.pretoriaresearchlab.io/baklava-faucet"
-		],
-		"explorers": [],
-		"infoURL": "https://docs.celo.org/"
-	},
-
-	{
 		"slug": "metis",
 		"name": "Metis",
-		"chainId": 488, // 435
+		"chainId": 1088,
 		"nativeCurrency": {
 			"name": "Metis",
 			"symbol": "METIS",
@@ -363,6 +273,23 @@ export const networks: Network[] = [
 		},
 		"rpc": [
 			"https://dragonfire.metis.io/?owner=488",
+			// "https://rocketfuel.metis.io/?owner=435"
+		],
+		"faucets": [],
+		"explorers": [],
+		"infoURL": "https://www.metis.io"
+	},
+  {
+		"slug": "metis-stardust",
+		"name": "Metis Stardust",
+		"chainId": 588,
+		"nativeCurrency": {
+			"name": "Metis",
+			"symbol": "METIS",
+			"decimals": 18
+		},
+		"rpc": [
+			"https://stardust.metis.io/?owner=588",
 			// "https://rocketfuel.metis.io/?owner=435"
 		],
 		"faucets": [],
@@ -410,26 +337,6 @@ export const networks: Network[] = [
 		"explorers": [],
 		"infoURL": "https://aurora.dev"
 	},
-	{
-		"slug": "aurora-betanet",
-		"name": "Aurora BetaNet",
-		"chainId": 1313161556,
-		"shortName": "aurora-betanet",
-		"chain": "NEAR",
-		"network": "betanet",
-		"networkId": 1313161556,
-		"nativeCurrency": {
-			"name": "Ether",
-			"symbol": "aETH",
-			"decimals": 18
-		},
-		"rpc": [
-			"https://rpc.betanet.aurora.dev:8545"
-		],
-		"faucets": [],
-		"explorers": [],
-		"infoURL": "https://aurora.dev"
-	},
 
 	{
 		"slug": "harmony-shard0",
@@ -472,134 +379,6 @@ export const networks: Network[] = [
 		},
 		"rpc": [
 			"https://s1.api.harmony.one"
-		],
-		"faucets": [],
-		"explorers": [],
-		"infoURL": "https://www.harmony.one/"
-	},
-	{
-		"slug": "harmony-shard2",
-		"name": "Harmony Shard 2",
-		"chainId": 1666600002,
-		"shortName": "hmy-s2",
-		"chain": "Harmony",
-		"network": "mainnet",
-		"networkId": 1666600002,
-		"nativeCurrency": {
-			"name": "ONE",
-			"symbol": "ONE",
-			"decimals": 18
-		},
-		"rpc": [
-			"https://s2.api.harmony.one"
-		],
-		"faucets": [],
-		"explorers": [],
-		"infoURL": "https://www.harmony.one/"
-	},
-	{
-		"slug": "harmony-shard3",
-		"name": "Harmony Shard 3",
-		"chainId": 1666600003,
-		"shortName": "hmy-s3",
-		"chain": "Harmony",
-		"network": "mainnet",
-		"networkId": 1666600003,
-		"nativeCurrency": {
-			"name": "ONE",
-			"symbol": "ONE",
-			"decimals": 18
-		},
-		"rpc": [
-			"https://s3.api.harmony.one"
-		],
-		"faucets": [],
-		"explorers": [],
-		"infoURL": "https://www.harmony.one/"
-	},
-	{
-		"slug": "harmony-testnet-shard0",
-		"name": "Harmony Testnet Shard 0",
-		"chainId": 1666700000,
-		"shortName": "hmy-b-s0",
-		"chain": "Harmony",
-		"network": "testnet",
-		"networkId": 1666700000,
-		"nativeCurrency": {
-			"name": "ONE",
-			"symbol": "ONE",
-			"decimals": 18
-		},
-		"rpc": [
-			"https://api.s0.b.hmny.io"
-		],
-		"faucets": [
-			"https://faucet.pops.one"
-		],
-		"explorers": [
-			{
-				"name": "Harmony Testnet Block Explorer",
-				"url": "https://explorer.pops.one",
-				"standard": "EIP3091"
-			}
-		],
-		"infoURL": "https://www.harmony.one/"
-	},
-	{
-		"slug": "harmony-testnet-shard1",
-		"name": "Harmony Testnet Shard 1",
-		"chainId": 1666700001,
-		"shortName": "hmy-b-s1",
-		"chain": "Harmony",
-		"network": "testnet",
-		"networkId": 1666700001,
-		"nativeCurrency": {
-			"name": "ONE",
-			"symbol": "ONE",
-			"decimals": 18
-		},
-		"rpc": [
-			"https://api.s1.b.hmny.io"
-		],
-		"faucets": [],
-		"explorers": [],
-		"infoURL": "https://www.harmony.one/"
-	},
-	{
-		"slug": "harmony-testnet-shard2",
-		"name": "Harmony Testnet Shard 2",
-		"chainId": 1666700002,
-		"shortName": "hmy-b-s2",
-		"chain": "Harmony",
-		"network": "testnet",
-		"networkId": 1666700002,
-		"nativeCurrency": {
-			"name": "ONE",
-			"symbol": "ONE",
-			"decimals": 18
-		},
-		"rpc": [
-			"https://api.s2.b.hmny.io"
-		],
-		"faucets": [],
-		"explorers": [],
-		"infoURL": "https://www.harmony.one/"
-	},
-	{
-		"slug": "harmony-testnet-shard3",
-		"name": "Harmony Testnet Shard 3",
-		"chainId": 1666700003,
-		"shortName": "hmy-b-s3",
-		"chain": "Harmony",
-		"network": "testnet",
-		"networkId": 1666700003,
-		"nativeCurrency": {
-			"name": "ONE",
-			"symbol": "ONE",
-			"decimals": 18
-		},
-		"rpc": [
-			"https://api.s3.b.hmny.io"
 		],
 		"faucets": [],
 		"explorers": [],
