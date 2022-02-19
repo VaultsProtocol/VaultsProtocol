@@ -1,10 +1,12 @@
 require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-etherscan");
 require("@nomiclabs/hardhat-truffle5");
+require("@nomiclabs/hardhat-web3");
 
 require("dotenv").config();
 const fs = require("fs-extra");
-const { ethers, web3, Web3 } = require("hardhat");
+
+// const { ethers, web3, Web3 } = require("");
 
 // LOAD ENV VARS
 const privatekey = process.env.PRIVATE_KEY;
@@ -19,12 +21,12 @@ const bscscan_api_key = process.env.BSCSCAN_API_KEY;
 
 // Deploy NFT Contract...
 // yarn deploy-genesis-nft-eth-main OR
-// npx hardhat deploy-genesis-nft --network ethMain
+// npx hardhat full-deploy --network ethMain
 task("full-deploy", "Deploy All Contracts")
-  .addParam("yearnAddress", "0x00...")
-  .addParam("aaveAddress", "0x00...")
-  .addParam("elementAddress", "0x00...")
-  .addParam("trueAddress", "0x00...")
+  // .addParam("yearnAddress", "0x00...")
+  // .addParam("aaveAddress", "0x00...")
+  // .addParam("elementAddress", "0x00...")
+  // .addParam("trueAddress", "0x00...")
   .setAction(async (args, hre) => {
     const { yearnAddress } = args;
 
@@ -36,7 +38,7 @@ task("full-deploy", "Deploy All Contracts")
     /** Deploy Vault Factory... **/
     /*****************************/
     /*****************************/
-    console.log("Deploying VaultFactory...", VaultFactory);
+    console.log("Deploying VaultFactory...");
     const VaultFactory = await ethers.getContractFactory("VaultFactory");
     const vaultFactory = await VaultFactory.deploy(deployer.address);
     console.log("vault factory deployed at :", vaultFactory.address);
@@ -49,7 +51,7 @@ task("full-deploy", "Deploy All Contracts")
     /** Configure Vaults Bytecode... **/
     /**********************************/
     /**********************************/
-    console.log("Configurating vaults");
+    console.log("Configuring vaults");
     const baseVaultByteCode = (await ethers.getContractFactory("BaseVault"))
       .bytecode;
     const charityVaultByteCode = (
@@ -65,8 +67,12 @@ task("full-deploy", "Deploy All Contracts")
       degenVaultByteCode,
       daoVaultByteCode,
     ];
-    for (let vault in existingVaults) {
-      await vaultFactory.addVault(vault);
+
+    for (let vault of existingVaults) {
+      console.log("adding vault");
+      const addedVault = await vaultFactory.addVault(vault);
+      const conf = await addedVault.wait();
+      console.log("current conf", conf)
     }
 
     /*****************************/
@@ -76,7 +82,7 @@ task("full-deploy", "Deploy All Contracts")
     /*****************************/
     console.log("Configurating strategies");
     const exampleYearnStratBc = (
-      await ethers.getContractFactory("ExampleYearnStrat")
+      await ethers.getContractFactory("YearnStrategy")
     ).bytecode;
     await vaultFactory.addStrat(exampleYearnStratBc);
 
@@ -105,17 +111,17 @@ task("full-deploy", "Deploy All Contracts")
       ["address", "string", "string"],
       [vaultToken.address, "Sample Base Vault", "SBV"],
     );
+
     const sampleVaultAdd = await vaultFactory.createVault(
       0, // Base Vault
       0, // Example Yearn Strat
-      vaultToken.address, //
-      yeild.address,
+      vaultToken.address,
+      "0x000000000000000000000000000000000000dead", // yearn vault
       constructorParams,
     );
+    console.log("sampleVault", sampleVaultAdd);
     console.log(
-      `To verify: npx hardhat verify ${
-        sampleVaultAdd
-      } "${vaultToken.address}" "Sample Base Vault" "SBV" --network {network}`,
+      `To verify: npx hardhat verify ${sampleVaultAdd.address} "${vaultToken.address}" "Sample Base Vault" "SBV" --network {network}`,
     );
   });
 
@@ -176,7 +182,7 @@ module.exports = {
       chainId: 4,
       gasPrice: 10e9,
       gas: 2100000,
-      accounts: { mnemonic: `${mnemonic}` },
+      accounts: [`${privatekey}`],
     },
     // BEFORE USING THIS, CHECK GAS PRICES
 
