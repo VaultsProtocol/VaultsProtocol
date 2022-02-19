@@ -3,7 +3,6 @@ pragma solidity >=0.8.0;
 
 import "./tokens/ERC20.sol";
 import "./BaseVault.sol";
-import "hardhat/console.sol";
 
 // Jackpot & Dividend Vault
 // This is the vault that the Jackpot and Degen dividends go.
