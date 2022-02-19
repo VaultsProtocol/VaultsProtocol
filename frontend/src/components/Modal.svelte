@@ -129,6 +129,14 @@
 		fill: currentColor;
 	}
 
+	.modal {
+		background: var(--background-color-white)
+	}
+
+	.modal h3 {
+		color: var(--font-color-black);
+	}
+
 
 	@media (max-width: 32rem) {
 		.modal {

@@ -82,8 +82,14 @@
 		box-shadow: 0 1px 0.25rem var(--background-color-1);
 	}
 
+	.card.menu {
+		background: pink;
+	}
+
 	.menu button {
 		--button-active-background-color: var(--color-layer-base);
+
+		--button-active-background-color: var(--background-color-white);
 		text-align: left;
 		justify-content: start;
 	}

@@ -95,7 +95,7 @@
 			disabled={currentStep !== Steps.Idle}
 		>
 			<section class="card column">
-				<h2>{$_('About')}</h2>
+				<h2>{$_('Vault Information')}</h2>
 
 				<hr>
 
@@ -363,7 +363,6 @@
 
 		transform: rotateY(10deg);
 	}
-
 	form {
 		/* grid-auto-rows: calc(100vh - var(--header-height) - 50vh); */
 
