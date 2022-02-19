@@ -40,7 +40,7 @@ task("full-deploy", "Deploy All Contracts")
     console.log("Deploying VaultFactory...");
     const VaultFactory = await ethers.getContractFactory("VaultFactory");
     const vaultFactory = await VaultFactory.deploy(deployer.address);
-    console.log("vault factory deployed at :", vaultFactory.address);
+
     console.log(
       `To verify: npx hardhat verify ${vaultFactory.address} "${deployer.address}" --network {network}`,
     );
@@ -60,19 +60,12 @@ task("full-deploy", "Deploy All Contracts")
       .bytecode;
     const daoVaultByteCode = (await ethers.getContractFactory("DaoVault"))
       .bytecode;
-    const existingVaults = [
-      baseVaultByteCode,
-      charityVaultByteCode,
-      degenVaultByteCode,
-      daoVaultByteCode,
-    ];
 
     /*****************************/
     /*****************************/
     /** Configure Strategies... **/
     /*****************************/
     /*****************************/
-    console.log("Configurating strategies");
     const exampleYearnStratBc = (
       await ethers.getContractFactory("YearnStrategy")
     ).bytecode;
@@ -85,16 +78,15 @@ task("full-deploy", "Deploy All Contracts")
     console.log("Deploying sample vault token");
     const VaultToken = await ethers.getContractFactory("MockERC20");
     const vaultToken = await VaultToken.deploy(
-      "MockERC20",
-      "MOCK",
+      "ERC20",
+      "ERC20",
       BigInt(100000e18),
     );
+    console.log("deployed vaultToken", vaultToken);
     console.log(
       `To verify: npx hardhat verify ${
         vaultToken.address
-      } "MockERC20" "MOCK" "${BigInt(
-        100000e18,
-      ).toString()}" --network {network}`,
+      } "ERC20" "ERC20" "${(100e18).toString()}" --network {network}`,
     );
 
     console.log("Deploying sample vault");
@@ -103,16 +95,16 @@ task("full-deploy", "Deploy All Contracts")
       [vaultToken.address, "Sample Base Vault", "SBV"],
     );
 
-    const sampleVaultAdd = await vaultFactory.createVault(
+    await vaultFactory.createVault(
       baseVaultByteCode,
       exampleYearnStratBc,
       vaultToken.address,
-      "0x0000000000000000000000000000000000000000",
+      "0xA21B900268c056fB5CBc698450b1aCF38862d4Dd",
       constructorParams,
     );
-    console.log("sampleVault", sampleVaultAdd);
+    const sampleVault = await vaultFactory.vaults(0);
     console.log(
-      `To verify: npx hardhat verify ${sampleVaultAdd.address} "${vaultToken.address}" "Sample Base Vault" "SBV" --network {network}`,
+      `To verify: npx hardhat verify ${sampleVault.address} "${vaultToken.address}" "Sample Base Vault" "SBV" --network {network}`,
     );
   });
 
