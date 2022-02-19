@@ -17,29 +17,20 @@ contract VaultFactory {
     }
 
     address immutable creator;
-
-    // creation code of vaults and strats
-    mapping (uint256 => bytes) public vaultType;
-    uint256 public vaultsLength;
-    mapping (uint256 => bytes) public stratType;
-    uint256 public stratsLength;
-    mapping (uint256 => bytes) public nftGeneratorType;
-    uint256 public nftGeneratorsLength;
-
     address[] public vaults;
 
     // construcors are appended to the end of creation code
     function createVault(
-        uint256 _vaultKey, 
-        uint256 _stratType,
+        bytes calldata vaultType,
+        bytes calldata stratType,
         address vaultToken, 
         address yield,
         bytes calldata _constructor
 
     ) public returns(address vault) {
 
-        bytes memory newVault = abi.encodePacked(vaultType[_vaultKey], _constructor);
-        bytes memory newStrat = abi.encodePacked(stratType[_stratType], abi.encode(yield, vaultToken));
+        bytes memory newVault = abi.encodePacked(vaultType, _constructor);
+        bytes memory newStrat = abi.encodePacked(stratType, abi.encode(yield, vaultToken));
         address strat;
 
         // use create2
@@ -50,26 +41,6 @@ contract VaultFactory {
 
         iVault(vault).setStrat(strat);
         IStrategy(strat).initVault(vault);
-    }
-
-    function addVault(bytes calldata newVault) external returns (uint256) {
-        require (msg.sender == creator);
-
-        uint256 current = vaultsLength;
-        vaultType[vaultsLength] = newVault;
-        vaultsLength++;
-
-        return current;
-    }
-    function addStrat(bytes calldata newStrat) external returns (uint256) {
-        require (msg.sender == creator);
-
-        uint256 current = stratsLength;
-        stratType[stratsLength] = newStrat;
-        stratsLength++;
-
-        return current;
-
     }
 
 }

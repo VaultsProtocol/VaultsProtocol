@@ -67,13 +67,6 @@ task("full-deploy", "Deploy All Contracts")
       daoVaultByteCode,
     ];
 
-    for (let vault of existingVaults) {
-      console.log("adding vault");
-      const addedVault = await vaultFactory.addVault(vault);
-      const conf = await addedVault.wait();
-      console.log("current conf", conf)
-    }
-
     /*****************************/
     /*****************************/
     /** Configure Strategies... **/
@@ -83,7 +76,6 @@ task("full-deploy", "Deploy All Contracts")
     const exampleYearnStratBc = (
       await ethers.getContractFactory("YearnStrategy")
     ).bytecode;
-    await vaultFactory.addStrat(exampleYearnStratBc);
 
     /*************************/
     /*************************/
@@ -112,10 +104,10 @@ task("full-deploy", "Deploy All Contracts")
     );
 
     const sampleVaultAdd = await vaultFactory.createVault(
-      0, // Base Vault
-      0, // Example Yearn Strat
+      baseVaultByteCode,
+      exampleYearnStratBc,
       vaultToken.address,
-      "0x000000000000000000000000000000000000dead", // yearn vault
+      "0x0000000000000000000000000000000000000000",
       constructorParams,
     );
     console.log("sampleVault", sampleVaultAdd);
