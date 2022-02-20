@@ -69,9 +69,9 @@
 
 
 <style>
-	/* button {
+	button {
 		width: 100%;
-	} */
+	}
 
 	.menu {
 		transform-origin: top center;

@@ -80,6 +80,7 @@ h1 {
 }
 h2 {
 	font-size: 1.7em;
+	font-size: 1.6em;
 }
 h3 {
 	font-size: 1.33em;
@@ -206,6 +207,7 @@ button.active, .button.active {
 
 input[type='number'], input[type='text'] {
 	font-size: 1.2em;
+	font-size: 1.0em;
 	padding: 0.4em 0.75em;
 }
 /* input[type='number'] {
