@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.0;
 
-import "ds-test/test.sol";
-
+import "../../lib/ds-test/src/test.sol";
 import "../BaseVault.sol";
 import "../CharityVault.sol";
 
@@ -20,13 +19,25 @@ contract ContractTest is DSTest {
 
     MockERC20 erc20 = new MockERC20("shit", "coin", 2**256-1);
     BaseVault vault = new BaseVault(address(erc20), "shit coim vault", "scv");
+    CharityVault charityVault = new CharityVault(address(erc20), addr, 5000, "scv", "scv");
     CheatCodes cheats = CheatCodes(HEVM_ADDRESS);
 
     address addr = 0x78B757200a1d64add5BA39B31c11E0a4479B992c;
 
     function setUp() public {
-        vault = new BaseVault(address(erc20), "shit coim vault", "scv");
-        // charityVault = new CharityVault(address(erc20), addr, 5000, "scv", "scv");
+      
+
+    }
+
+    function testCharity() public {
+
+        erc20.approve(address(charityVault), 2e18);
+        charityVault.mintNewNft(1e18);
+
+        erc20.transfer(address(charityVault), 1e18);
+        charityVault.mintNewNft(1e18);
+
+        assertEq(5e17, charityVault.yieldForRecipient());
     }
 
     function testWithRandomSend() public {

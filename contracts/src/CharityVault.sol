@@ -20,7 +20,7 @@ contract CharityVault is BaseVault {
 
     Context ctx;
 
-    uint256 yieldForRecipient;
+    uint256 public yieldForRecipient;
 
     // #########################
     // ##                     ##
@@ -72,11 +72,12 @@ contract CharityVault is BaseVault {
         uint256 unclaimedYield = vaultToken.balanceOf(address(this)) - lastKnownContractBalance;
         lastKnownContractBalance += unclaimedYield;
 
-        uint256 strategyYield = strat.withdrawlableVaultToken() - lastKnownStrategyTotal;
+         uint256 strategyYield = address(strat) != address(0) ? 
+            strat.withdrawlableVaultToken() - lastKnownStrategyTotal : 0;
         lastKnownStrategyTotal += strategyYield;
 
         uint256 totalYield = unclaimedYield + strategyYield;
-
+        
         uint256 toCharitable = totalYield * ctx.percentOfYield / 1e4;
         uint256 amountToDistrib = totalYield - toCharitable;
 
