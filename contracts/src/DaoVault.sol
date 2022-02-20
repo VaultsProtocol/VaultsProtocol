@@ -47,7 +47,8 @@ contract DaoVault is BaseVault {
     function returnManagedFunds(uint256 amount) external {
 
         // fails on underflow
-        lastKnownContractBalance -= amount;
+        lastKnownContractBalance += amount;
+        managed -= amount;
 
         //vault tokens revert on failed transfer
         vaultToken.transferFrom(msg.sender, address(this), amount);
