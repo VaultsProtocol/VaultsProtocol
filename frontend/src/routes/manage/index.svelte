@@ -2,7 +2,7 @@
 	import { _ } from 'svelte-i18n'
 
 
-	import { getDefaultVaultConfig } from '../lib/vaults'
+	import { getDefaultVaultConfig } from '../../lib/vaults'
 
 	import { BigNumber } from 'ethers'
 
@@ -33,7 +33,7 @@
 	]
 
 
-	import Vault from '../components/Vault.svelte'
+	import Vault from '../../components/Vault.svelte'
 </script>
 
 
