@@ -56,34 +56,30 @@ contract ContractTest is DSTest {
         erc20.transfer(address(vault), 1e18);
 
         // distirbute yield to two holders
+        // called regardless on withdrawl
+        // this is just to set up withdrawl amount for test
         vault.distributeYeild();
 
-        console.log("Before [1]: ", vault.withdrawableById(1));
-        console.log("Before [2]: ", vault.withdrawableById(2)); 
-        console.log("Before [3]: ", vault.withdrawableById(3));
+        console.log("Withdrawable [1] ", vault.withdrawableById(1));
+        console.log("Withdrawable [2] ", vault.withdrawableById(2));
+        console.log("Withdrawable [3] ", vault.withdrawableById(3));
 
         // Person 2
         cheats.startPrank(addr);
 
             uint256 withdrawable = vault.withdrawableById(2);
-            console.log("can Withdrawl: ", withdrawable);
 
+            // withdrawl half
             uint256 expected = withdrawable / 2;
-
-            console.log("Expected Half: ", expected);
             vault.withdrawFromId(2, expected);
 
             withdrawable = vault.withdrawableById(2);
 
         cheats.stopPrank();
 
-        console.log("After [3]: ", vault.withdrawableById(3));
-
-
+        vault.tokenURI(2);
         assertEq(withdrawable, expected);
     }
-
-    // function testCharityVault()
 
 }
 

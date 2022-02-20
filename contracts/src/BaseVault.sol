@@ -18,6 +18,14 @@ contract BaseVault is ERC721 {
         uint256 tracker; //sum of delta(deposit) * yeildPerDeposit || SCALED
     }
 
+    struct MetaData {
+        string name;
+        address vaultAddress;
+        uint256 withdrawable;
+        uint256 id;
+        uint256 vaultType;
+    }
+
     // #########################
     // ##                     ##
     // ##       State         ##
@@ -245,9 +253,10 @@ contract BaseVault is ERC721 {
     // ##                     ##
     // #########################
 
-    function tokenURI(uint256 id) public view override returns (string memory) {
-        // return INftDataGenerator(nftDataGenerator).generateTokenUri(this, id);
-        return "string";
+    function tokenURI(uint256 id) public view returns (MetaData memory) {
+
+        return MetaData(name, address(this), withdrawableById(id), id, 0);
+        
     }
 
     // #########################
