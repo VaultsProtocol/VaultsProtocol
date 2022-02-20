@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { ERC20Token } from '$lib/tokens'
-	import { BigNumber } from 'ethers'
-	import { formatUnits, parseUnits } from 'ethers/lib/utils'
+	import { BigNumber, utils } from 'ethers'
+	const { formatUnits, parseUnits } = utils
 	import { _ } from 'svelte-i18n'
 
 

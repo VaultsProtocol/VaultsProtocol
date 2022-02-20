@@ -51,7 +51,8 @@
 	
 	// Methods/hooks/lifecycle
 
-	import { ContractFactory, ethers } from 'ethers'
+	import { ContractFactory, ethers, utils } from 'ethers'
+	const { AbiCoder } = utils
 	import { getContract, getContractBytecode } from '$lib/contracts'
 
 	$: if(currentStep === Steps.TransactionSigning)(async () => {
@@ -119,7 +120,6 @@
 	import { fade, fly, scale } from 'svelte/transition'
 	import Portal from '../components/Portal.svelte'
 	import Modal from '../components/Modal.svelte'
-import { AbiCoder } from 'ethers/lib/utils';
 </script>
 
 

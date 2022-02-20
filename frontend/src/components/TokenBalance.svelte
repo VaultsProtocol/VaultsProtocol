@@ -34,6 +34,9 @@
 
 	import { tweened } from 'svelte/motion'
 
+	import { utils } from 'ethers'
+	const { formatUnits } = utils
+
 	const tweenedValue = tweened(0, {
 		duration: tween ? 200 : 0,
 		delay: tween ? 1 : 0,
@@ -54,7 +57,6 @@
 	import type { ERC20Token } from '$lib/tokens'
 	import Icon from './Icon.svelte'
 	import { expoOut, quintOut } from 'svelte/easing'
-import { formatUnits } from 'ethers/lib/utils';
 </script>
 
 
