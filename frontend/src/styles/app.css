@@ -17,6 +17,14 @@ body {
 
 	--background-color-white: #fff;
 	--background-color-black: #232323;
+	
+	
+	--background-color-standard: #f0f0f0;
+	--background-color-degen: #FC9802;
+	--background-color-DAO: #6AB7CD;
+	--background-color-charity: #E6B12D;
+
+
 
 	--font-color-black: #232323;
 	--font-color-bl34: #343434;
@@ -79,6 +87,7 @@ h1 {
 }
 h2 {
 	font-size: 1.7em;
+	font-size: 1.6em;
 }
 h3 {
 	font-size: 1.33em;
@@ -205,6 +214,7 @@ button.active, .button.active {
 
 input[type='number'], input[type='text'] {
 	font-size: 1.2em;
+	font-size: 1.0em;
 	padding: 0.4em 0.75em;
 }
 /* input[type='number'] {

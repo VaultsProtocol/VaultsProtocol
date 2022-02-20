@@ -183,6 +183,7 @@
 
 		{#if vaultConfig.about.website || vaultConfig.about.twitter || vaultConfig.about.discord}
 			<div class="row centered" transition:scale>
+				
 				{#each
 					[
 						{ label: 'Website', link: vaultConfig.about.website, icon: websiteIcon },
@@ -192,7 +193,7 @@
 					as
 					{ label, link, icon } (label)
 				}
-					<a href={link} transition:scale animate:flip>
+					<a class="button round" href={link} transition:scale animate:flip>
 						<!-- {$_(label)} -->
 						<img src={icon} alt={label} />
 					</a>
@@ -253,6 +254,21 @@
 	.description {
 		font-size: 0.8em;
 		word-break: break-word;
+	}
+
+	.button.round {
+		border-radius: 100vmax;
+		height: 50px;
+		width: 50px;
+		position: relative;
+		border: 2px solid var(--background-color-charity);
+	}
+
+	.button.round img {
+		position: absolute;
+		left: 0;
+		right: 0;
+		margin: auto;
 	}
 
 	.vault-type-info {

@@ -170,7 +170,7 @@
 
 					<label class="card row equal">
 						<h3>{$_('Network / Chain')}</h3>
-						<div>
+						<div class="equal">
 							<Select
 								bind:value={vaultConfig.chainId}
 								values={networks.map(({ chainId }) => String(chainId))}
@@ -210,10 +210,10 @@
 						values={Object.keys(VaultType)}
 						labels={Object.fromEntries(Object.entries(vaultTypeInfo).map(([key, {label}]) => [key, label]))}
 						colors={{
-							[VaultType.Standard]: '',
-							[VaultType.Degen]: '',
-							[VaultType.Charity]: '',
-							[VaultType.DAO]: ''
+							[VaultType.Standard]: 'var(--background-color-standard)',
+							[VaultType.Degen]: 'var(--background-color-degen)',
+							[VaultType.Charity]: 'var(--background-color-charity)',
+							[VaultType.DAO]: 'var(--background-color-DAO)',
 						}}
 					/>
 
@@ -418,6 +418,10 @@
 		--grid-gap: 1rem;
 	}
 
+	.card.row .equal {
+		width: 100%;
+	}
+	
 	.row {
 		align-items: start;
 	}
