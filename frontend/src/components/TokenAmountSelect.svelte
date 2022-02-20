@@ -61,5 +61,6 @@
 	.max {
 		justify-self: end;
 		align-self: center;
+		margin-right: .5rem;
 	}
 </style>

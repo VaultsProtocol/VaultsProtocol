@@ -69,17 +69,19 @@
 		}}
 	/>
 
-	<div class="card column token-amount">
-		<TokenAmountSelect
-			availableTokens={vaultConfig.token}
-			bind:token={vaultConfig.tokens[0]}
-			bind:amount={balanceDelta}
-			min={0}
-			max={managePositionMode === ManagePositionMode.Remove ? vaultPosition.balance : undefined}
-		/>
+	<div class="card column">
+		<div class="token-amount">
+			<TokenAmountSelect
+				availableTokens={vaultConfig.tokens}
+				bind:token={vaultConfig.tokens[0]}
+				bind:amount={balanceDelta}
+				min={0}
+				max={managePositionMode === ManagePositionMode.Remove ? vaultPosition.balance : undefined}
+			/>
+		</div>
 
-		<div class="row balance-row">
-			<h3>Your Balance</h3>
+		<div class="balance-row row">
+			<strong>Your Balance</strong>
 
 			<div class="row">
 				<output>
@@ -105,7 +107,7 @@
 	</div>
 
 	<div class="row centered">
-		<div class="stack align-end">
+		<div class="stack">
 			{#key action}
 				<button class="primary large" transition:scale>{$_(action)}</button>
 			{/key}
@@ -116,22 +118,35 @@
 
 <style>
 	.manage-positions {
-		/* background: red; */
-		max-width: 500px;
+		max-width: 35rem;
 		margin: 0 auto;
 		padding: 30px;
 		border: 20px solid #f3f3f3;
-		box-shadow: 0px 5px 10px  #ccc;
+		box-shadow: 0px 5px 10px #ccc;
 	}
 	
 
-	.balance-row {
+	/* .balance-row {
 		padding-bottom: 20px;
 		width: 90%;
 		margin: 0 auto;
+	} */
+
+	.token-amount {
+		margin: calc(-1 * var(--card-scale-factor) * var(--card-padding));
+		margin-right: 0;
+		margin-bottom: 0;
 	}
 
-	.token-amount h3 {
-		font-size: 12px;
+	.token-amount :global(input) {
+		border-top-left-radius: calc(var(--card-scale-factor) * var(--card-radius));
+		border-top-right-radius: calc(var(--card-scale-factor) * var(--card-radius));
+		border-top-left-radius: 10px;
+		border-top-right-radius: 10px;
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
+		text-align: center;
+		font-size: 2em;
+		background: var(--background-color-f3)
 	}
 </style>
