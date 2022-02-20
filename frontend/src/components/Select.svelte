@@ -32,20 +32,20 @@
 
 <Tooltip bind:isOpen {placement}>
 	<button
-		type="button"
-		class="localization-picker dropdown"
-		class:active={isOpen}
-		{id}
-		aria-haspopup="menu"
-		aria-expanded={isOpen}
-		tabindex="-1"
-	>
-		<slot {value}>
-			{value
-				? labels[value] ?? value
-				: placeholderLabel}
-		</slot>
-	</button>
+	type="button"
+	class="localization-picker dropdown"
+	class:active={isOpen}
+	{id}
+	aria-haspopup="menu"
+	aria-expanded={isOpen}
+	tabindex="-1"
+>
+	<slot {value}>
+		{value
+			? labels[value] ?? value
+			: placeholderLabel}
+	</slot>
+</button>
 
 	<div class="menu card column" slot="tooltip" role="menu" aria-labelledby={id} transition:scale={{ start: 0.8, opacity: 0, duration: 150 }}>
 		{#each values as optionValue (optionValue)}

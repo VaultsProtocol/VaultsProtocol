@@ -16,6 +16,7 @@ body {
 	--background-color-4: #ccc;
 
 	--background-color-white: #fff;
+	--background-color-f3: #f3f3f3;
 	--background-color-black: #232323;
 	
 	
@@ -220,6 +221,21 @@ input[type='number'], input[type='text'] {
 	font-size: 1.0em;
 	padding: 0.4em 0.75em;
 }
+
+.token-amount.card {
+	padding: 0;
+}
+
+.token-amount input {
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	border-bottom-right-radius: 0;
+	border-bottom-left-radius: 0;
+	text-align: center;
+	font-size: 30px;
+	background: var(--background-color-f3)
+}
+
 /* input[type='number'] {
 	width: 6rem;
 } */
