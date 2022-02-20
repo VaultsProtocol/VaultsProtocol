@@ -35,13 +35,13 @@ body {
 	--text-color: #e0e7ff;
 }
 
-@media (prefers-color-scheme: light) {
+/* @media (prefers-color-scheme: light) { */
 	:root {
 		--background-color-4: var(--background-color-white);
 
 		--text-color: #121212;
 	}
-}
+/* } */
 
 *, ::before, ::after {
 	box-sizing: border-box;
