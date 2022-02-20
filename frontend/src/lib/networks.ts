@@ -101,6 +101,38 @@ export const networks: Network[] = [
 		}
 	},
 	{
+		"slug": "ethereum-goerli",
+		"name": "Ethereum Goerli Testnet",
+		"chainId": 4,
+		"shortName": "goe",
+		"chain": "ETH",
+		"network": "goerli",
+		"networkId": 4,
+		"nativeCurrency": {
+			"name": "Goerli Ether",
+			"symbol": "GOE",
+			"decimals": 18
+		},
+		"rpc": [
+			"https://goerli.infura.io/v3/${INFURA_PROJECT_ID}",
+			"wss://goerli.infura.io/ws/v3/${INFURA_PROJECT_ID}"
+		],
+		"faucets": [
+			"https://faucet.goerli.io"
+		],
+		"explorers": [
+			{
+				"name": "etherscan-goerli",
+				"url": "https://goerli.etherscan.io",
+				"standard": "EIP3091"
+			}
+		],
+		"infoURL": "https://www.goerli.net",
+		"ens": {
+			"registry": "0xe7410170f87102df0055eb195163a03b7f2bff4a"
+		}
+	},
+	{
 		"slug": "polygon",
 		"name": "Polygon",
 		"chainId": 137,
@@ -460,6 +492,38 @@ export const networks: Network[] = [
 			
 		],
 		"infoURL": "https://github.com/nervosnetwork/godwoken"
+	},
+	{
+		"slug": "arbitrum-rinkeby",
+		"name": "Arbitrum Rinkeby",
+		"chainId": 421611,
+		"nativeCurrency": {
+			"name": "ETH",
+			"symbol": "ETH",
+			"decimals": 18
+		},
+		"rpc": [
+			"https://rinkeby.arbitrum.io/rpc"
+		],
+		"faucets": [],
+		"explorers": [
+		],
+	},
+	{
+		"slug": "arbitrum",
+		"name": "Arbitrum",
+		"chainId": 42161,
+		"nativeCurrency": {
+			"name": "ETH",
+			"symbol": "ETH",
+			"decimals": 18
+		},
+		"rpc": [
+			"https://arb1.arbitrum.io/rpc"
+		],
+		"faucets": [],
+		"explorers": [
+		],
 	},
 ]
 
