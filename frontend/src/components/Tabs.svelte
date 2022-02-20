@@ -7,6 +7,7 @@
 	export let value: Value
 	export let values: Value[]
 	export let labels: Record<Value, string>
+	export let colors: Record<Value, string>
 </script>
 
 
@@ -14,7 +15,7 @@
 	{#each values as optionValue (optionValue)}
 		<label class="select-option">
 			<input type="radio" bind:group={value} value={optionValue} />
-			<span class="button">{labels[optionValue]}</span>
+			<span class="button" style={colors[optionValue] ? `background-color: ${colors[optionValue]}` : ''}>{labels[optionValue]}</span>
 		</label>
 	{/each}
 </div>

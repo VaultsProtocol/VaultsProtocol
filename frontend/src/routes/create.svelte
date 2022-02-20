@@ -209,6 +209,12 @@
 						bind:value={vaultConfig.type}
 						values={Object.keys(VaultType)}
 						labels={Object.fromEntries(Object.entries(vaultTypeInfo).map(([key, {label}]) => [key, label]))}
+						colors={{
+							[VaultType.Standard]: '',
+							[VaultType.Degen]: '',
+							[VaultType.Charity]: '',
+							[VaultType.DAO]: ''
+						}}
 					/>
 
 					<div class="stack">
