@@ -525,6 +525,38 @@ export const networks: Network[] = [
 		"explorers": [
 		],
 	},
+	{
+		"slug": "reef",
+		"name": "Reef",
+		"chainId": 13939,
+		"nativeCurrency": {
+			"name": "REEF",
+			"symbol": "REEF",
+			"decimals": 18
+		},
+		"rpc": [
+			"https://rpc.reefscan.com"
+		],
+		"faucets": [],
+		"explorers": [
+		],
+	},
+	{
+		"slug": "reefTestnet",
+		"name": "Reef Testnet",
+		"chainId": 13939, // Yes the chainID is same prod vs test
+		"nativeCurrency": {
+			"name": "REEF",
+			"symbol": "REEF",
+			"decimals": 18
+		},
+		"rpc": [
+			"https://rpc-testnet.reefscan.com"
+		],
+		"faucets": [],
+		"explorers": [
+		],
+	},
 ]
 
 
