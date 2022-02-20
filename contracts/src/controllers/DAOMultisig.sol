@@ -120,7 +120,7 @@ contract DAOMultsig is DaoVault {
     }
 
     // true = manage, false = signer
-    function vote(uint256 key, bool flag) external returns (bool) {
+    function vote(uint256 key, bool flag) external {
 
         require(isSigner[msg.sender]);
 

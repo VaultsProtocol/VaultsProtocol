@@ -4,8 +4,6 @@ pragma solidity >=0.8.0;
 import "./BaseVault.sol";
 
 //ENSURE vault tokens revert on failed transfer
-
-// Dao Vault - This contains the DAO treasury.
 contract DaoVault is BaseVault {
 
     // #########################
