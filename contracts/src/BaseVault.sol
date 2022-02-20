@@ -136,7 +136,7 @@ contract BaseVault is ERC721, BasicMetaTransaction {
     function _depositToId(uint256 amount, uint256 id) internal {
 
         // trusted contract
-        require(msg.sender == ownerOf[id]); // Use Biconomy;
+        require(msgSender() == ownerOf[id]); // Use Biconomy;
 
         distributeYeild();
 
@@ -147,13 +147,13 @@ contract BaseVault is ERC721, BasicMetaTransaction {
         lastKnownContractBalance += amount;
 
         //ensure token reverts on failed
-        vaultToken.transferFrom(msg.sender, address(this), amount); // Use Biconomy;
+        vaultToken.transferFrom(msgSender(), address(this), amount); // Use Biconomy;
 
     }
 
     function _withdrawFromId(uint256 amount, uint256 id) internal {
 
-        require(msg.sender == ownerOf[id]); // Use Biconomy;
+        require(msgSender() == ownerOf[id]); // Use Biconomy;
         require(amount <= withdrawableById(id));
         
         uint256 balanceCheck = vaultToken.balanceOf(address(this));
@@ -188,7 +188,7 @@ contract BaseVault is ERC721, BasicMetaTransaction {
 
         }
 
-        vaultToken.transfer(msg.sender, amount); // Use Biconomy;
+        vaultToken.transfer(msgSender(), amount); // Use Biconomy;
     }
 
     // #########################
