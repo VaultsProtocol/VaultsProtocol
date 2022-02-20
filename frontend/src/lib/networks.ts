@@ -659,13 +659,13 @@ export const availableNetworks = [
 ].map(slug => networksBySlug[slug])
 
 
-// import arbitrumIcon from '../assets/networks/arbitrum.svg'
+import arbitrumIcon from '../assets/networks/arbitrum.svg'
 import auroraIcon from '../assets/networks/aurora.svg'
 import avalancheIcon from '../assets/networks/avalanche.svg'
 import celoIcon from '../assets/networks/celo.svg'
 import ethereumIcon from '../assets/networks/ethereum.svg'
 import harmonyIcon from '../assets/networks/harmony.svg'
-import metisIcon from '../assets/networks/metis.svg'
+import metisIcon from '../assets/networks/metis.png'
 import nahmiiIcon from '../assets/networks/nahmii.svg'
 import nervosIcon from '../assets/networks/nervos.svg'
 import polygonIcon from '../assets/networks/polygon.svg'
@@ -673,7 +673,7 @@ import reefIcon from '../assets/networks/reef.svg'
 import skaleIcon from '../assets/networks/skale.svg'
 
 export const chainIcons: Record<string, string> = {
-	// 'arbitrum': arbitrumIcon,
+	'arbitrum': arbitrumIcon,
 	'aurora': auroraIcon,
 	'avalanche': avalancheIcon,
 	'celo': celoIcon,
