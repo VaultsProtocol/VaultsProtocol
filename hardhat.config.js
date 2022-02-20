@@ -266,6 +266,20 @@ module.exports = {
       gasPrice: 10e9,
       gas: 2100000,
       accounts: [`${privatekey}`],
+    },
+    reef:{
+      url: "https://rpc.reefscan.com",
+      chainId: 13939,
+      gasPrice: 10e9,
+      gas: 2100000,
+      accounts: [`${privatekey}`],
+    },
+    reefTestnet:{
+      url: "https://rpc-testnet.reefscan.com",
+      chainId: 13939,
+      gasPrice: 10e9,
+      gas: 2100000,
+      accounts: [`${privatekey}`],
     }
     // BEFORE USING THIS, CHECK GAS PRICES
 
