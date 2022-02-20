@@ -21,6 +21,7 @@
 	// Images
 	import projectLogo from '../assets/project-logo.png'
 	import previewImage from '../assets/project-preview.png'
+	import { networkIcons } from '$lib/networks'
 
 
 	// Components
@@ -45,7 +46,7 @@
 <div class="top">
 	{#if $isLoading}
 		<div class="loading column centered" transition:scale>
-			<img src={projectLogo} width="200" />
+			<img src={networkIcons[1]} width="200" />
 			<h3>Loading...</h3>
 		</div>
 	{:else}
@@ -109,6 +110,7 @@
 	.loading {
 		height: calc(100vh - var(--header-height));
 		animation: Loading 1s infinite ease-in-out;
+		gap: 3rem;
 	}
 	@keyframes Loading {
 		from, to {
