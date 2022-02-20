@@ -141,7 +141,7 @@ import { AbiCoder } from 'ethers/lib/utils';
 		>
 			<section class="card vault-content column">
 				<div class="row">
-					<img src="/" alt="">
+					<!-- <img src="/" alt=""> -->
 					<h2>{$_('Vault Information')}</h2>
 
 
@@ -257,12 +257,7 @@ import { AbiCoder } from 'ethers/lib/utils';
 						bind:value={vaultConfig.type}
 						values={Object.keys(VaultType)}
 						labels={Object.fromEntries(Object.entries(vaultTypeInfo).map(([key, {label}]) => [key, label]))}
-						colors={{
-							[VaultType.Standard]: 'var(--background-color-standard)',
-							[VaultType.Degen]: 'var(--background-color-degen)',
-							[VaultType.Charity]: 'var(--background-color-charity)',
-							[VaultType.DAO]: 'var(--background-color-DAO)',
-						}}
+						colors={Object.fromEntries(Object.entries(vaultTypeInfo).map(([key, {color}]) => [key, color]))}
 					/>
 
 					<div class="stack">

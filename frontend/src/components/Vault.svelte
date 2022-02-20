@@ -45,7 +45,14 @@
 	import twitterIcon from '../assets/icons/twitter.svg'
 	import discordIcon from '../assets/icons/discord.svg'
 	import cardBack from '../assets/card-faces/card-back.svg'
-	import cardFace from '../assets/card-faces/shadow-svg-1.svg'
+	import cardFaceFrog from '../assets/card-faces/frog.svg'
+	import cardFaceGift from '../assets/card-faces/gift.svg'
+	import cardFaceVote from '../assets/card-faces/voting-box.svg'
+	import cardFaceShark from '../assets/card-faces/shark.svg'
+	import cardFaceFrogShadow from '../assets/card-faces/shadow-svg-1.svg'
+	import cardFaceGiftShadow from '../assets/card-faces/shadow-svg-2.svg'
+	import cardFaceVoteShadow from '../assets/card-faces/shadow-svg-3.svg'
+	import cardFaceSharkShadow from '../assets/card-faces/shadow-svg-4.svg'
 
 
 	// Styles/animations
@@ -83,24 +90,37 @@
 			</header>
 
 			<div class="stack">
-				{#key vaultConfig.type}
-					<figure class="illustration-wrapper card" transition:fade>
-						<svg class="illustration">
+				<figure class="illustration-wrapper card stack" style="background-color: {vaultTypeInfo[vaultConfig.type].color}">
+					{#key vaultConfig.type}
+						<div class="illustration row centered" transition:scale>
 							{#if vaultConfig.type === VaultType.Standard}
-								<img src="{cardFace}" alt="">
-								<path class:silhouette={isPosition} />
+								{#if isPosition}
+									<img src="{cardFaceShark}" />
+								{:else}
+									<img src="{cardFaceSharkShadow}" />
+								{/if}
 							{:else if vaultConfig.type === VaultType.Degen}
-								<path class:silhouette={isPosition} />
+								{#if isPosition}
+									<img src="{cardFaceFrog}" />
+								{:else}
+									<img src="{cardFaceFrogShadow}" />
+								{/if}
 							{:else if vaultConfig.type === VaultType.DAO}
-								<path class:silhouette={isPosition} />
+								{#if isPosition}
+									<img src="{cardFaceVote}" />
+								{:else}
+									<img src="{cardFaceVoteShadow}" />
+								{/if}
 							{:else if vaultConfig.type === VaultType.Charity}
-								<path class:silhouette={isPosition} />	
-							<!-- {:else if vaultConfig.type === VaultType.Superfluid}
-								<path class:silhouette={isPosition} /> -->
+								{#if isPosition}
+									<img src="{cardFaceGift}" />
+								{:else}
+									<img src="{cardFaceGiftShadow}" />
+								{/if}
 							{/if}
-						</svg>
-					</figure>
-				{/key}
+						</div>
+					{/key}
+				</figure>
 			</div>
 
 			<div class="vault-type-info row">
@@ -295,11 +315,15 @@
 	}
 
 	.illustration-wrapper {
-		background: var(--background-color-2);
-		border: var(--background-color-3) 0.25em solid;
+		background-color: var(--background-color-2);
+		border: rgba(0, 0, 0, 0.3) 0.25em solid;
+		transition: 0.3s;
 	}
 	.illustration {
 		aspect-ratio: 1.5;
+	}
+	.illustration img {
+		height: 12em;
 	}
 
 	.silhouette {
