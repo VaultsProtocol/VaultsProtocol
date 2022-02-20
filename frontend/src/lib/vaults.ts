@@ -13,23 +13,23 @@ export enum VaultType {
 
 export const vaultTypeInfo = {
 	[VaultType.Standard]: {
-		label: '🏦 Standard',
+		label: '🏦\tStandard',
 		description: 'Contribute to the vault and receive a yield-bearing position NFT. Withdraw anytime.'
 	},
 	[VaultType.Degen]: {
-		label: '🐸 Degen Game',
+		label: '🐸\tDegen Game',
 		description: 'The crowdfund ends if a contribution is not made after a set interval of time. The last person to contribute wins the Jackpot allocation.'
 	},
 	[VaultType.Charity]: {
-		label: '🎁 No-Loss Charity',
+		label: '🎁\tNo-Loss Charity',
 		description: 'A portion of the yield is set aside for a designated recipient to be claimed at any time.'
 	},
 	// [VaultType.Superfluid]: {
-	// 	label: '🦈 Superfluid',
+	// 	label: '🦈\tSuperfluid',
 	// 	description: 'Stream Superfluid super-tokens into the vault at a specified rate. Dividends are streamed to all past contributors'
 	// },
 	[VaultType.DAO]: {
-		label: '🗳 DAO',
+		label: '🗳\tDAO',
 		description: 'The vault parameters can be changed upon the approval of multiple designated signers or by a token-weighted vote by all holdersapproval.'
 	}
 }
@@ -41,15 +41,15 @@ export enum YieldStrategy {
 }
 export const yieldStrategyInfo = {
 	[YieldStrategy.None]: {
-		label: '🚫 None',
+		label: '🚫\tNone',
 		description: 'The DAO treasury.'
 	},
 	[YieldStrategy.Aave]: {
-		label: '👻 Aave Yield-Bearing Vault',
+		label: '👻\tAave Yield-Bearing Vault',
 		description: 'The DAO treasury will be lent to borrowers on Aave. Interest will be paid out to holders.'
 	},
 	[YieldStrategy.Yearn]: {
-		label: '🏦 Yearn Yield-Bearing Vault',
+		label: '🏦\tYearn Yield-Bearing Vault',
 		description: 'The DAO treasury will be deposited into a Yearn vault. Yield will be paid out to holders.'
 	},
 }
@@ -60,11 +60,11 @@ export const yieldStrategyInfo = {
 // }
 // export const governanceStrategyInfo = {
 // 	[GovernanceStrategy.None]: {
-// 		label: '🚫 None',
+// 		label: '🚫\tNone',
 // 		description: 'Stakeholders can withdraw their share from the vault at any time.'
 // 	},
 // 	[GovernanceStrategy.Vote]: {
-// 		label: '🗳 Vote',
+// 		label: '🗳\tVote',
 // 		description: 'Stakeholders must vote to approve changes to yield strategies or send funds out of the vault.'
 // 	},
 // }
@@ -76,11 +76,11 @@ export enum GovernanceType {
 }
 export const governanceTypeInfo = {
 	[GovernanceType.MultiSignature]: {
-		label: '✍️ Multi-Signature',
+		label: '✍️\tMulti-Signature',
 		description: 'Multiple signatures from a pre-approved list of addresses are required to approve changes to the vault parameters.'
 	},
 	[GovernanceType.TokenVoting]: {
-		label: '🗳 Token Voting',
+		label: '🗳\tToken Voting',
 		description: 'Stakeholders cast votes weighted proportional to their vault contribution to approve or deny changes to the vault parameters.'
 	},
 }
@@ -92,11 +92,11 @@ export enum PayoutType {
 }
 export const payoutTypeInfo = {
 	[PayoutType.Once]: {
-		label: '💸 Once',
+		label: '💸\tOnce',
 		description: 'The recipient\'s payout accrues over time; anyone can trigger the claim transaction.'
 	},
 	[PayoutType.Superfluid]: {
-		label: '🌊 Superfluid',
+		label: '🌊\tSuperfluid',
 		description: 'The payout is autmatically streamed to the recipient as Superfluid super tokens. The recipient can redeem their funds by unwrapping their super tokens.'
 	},
 }

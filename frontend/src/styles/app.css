@@ -113,9 +113,12 @@ a:hover, a:focus {
 	color: var(--color-text-light);
 }
 
-button, .button [role='button'] {
+button, .button, [role='button'] {
 	transition: 0.2s;
 	will-change: transform;
+
+	white-space: pre;
+	tab-size: 6;
 }
 button, .button, input[type='number'], input[type='text'], textarea {
 	--button-color: var(--background-color-4);
