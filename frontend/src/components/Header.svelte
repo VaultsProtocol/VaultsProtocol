@@ -35,7 +35,7 @@
 
 
 	// Images
-	import projectLogo from '../assets/project-logo.png'
+	import projectLogo from '../assets/project-logo.svg'
 
 
 	// Components
@@ -51,12 +51,12 @@
 	<nav class="column row-tablet">
 		<div class="header-left row">
 			<a sveltekit:prefetch class:active={$page.url.pathname === '/'} href="/" class="logo">
-				<img src={projectLogo} alt={$_('PROJECT_NAME')} width="70" height="70" />
+				<img src={projectLogo} alt={$_('PROJECT_NAME')}/>
 			</a>
 		</div>
 
 		<div class="stack">
-			<ul class="column row-tablet">
+			<ul class="column row-tablet nav-links">
 				{#each navLinks as {title, link}}
 					<li>
 						<a sveltekit:prefetch href={link} class:active={$page.url.pathname === link}>
@@ -100,6 +100,14 @@
 		gap: 1.25rem;
 	}
 
+	ul.nav-links a {
+		font-size: 14px;
+		font-weight: 400;
+		text-decoration: underline;
+		text-align: center;
+		line-height: 1.5;
+	}
+
 	.header-left {
 		justify-content: start;
 		gap: 1.25rem;
@@ -108,10 +116,15 @@
 	.logo {
 		font-size: 2em;
 	}
+
+	.logo img {
+		width: 400px;
+	}
 	.logo > :global(*) {
-		border-radius: 50%;
+		/* border-radius: 50%; */
 		overflow: hidden;
 	}
+
 
 	ul {
 		list-style: none;
