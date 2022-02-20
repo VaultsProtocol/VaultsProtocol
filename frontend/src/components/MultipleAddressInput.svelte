@@ -27,7 +27,7 @@
 
 	// Methods/hooks/lifecycle
 	var getDefaultValue = () =>
-		$account?.address && !values.includes($account.address)
+		$account?.address && values && !values?.includes($account.address)
 			? $account.address
 			: ''
 
