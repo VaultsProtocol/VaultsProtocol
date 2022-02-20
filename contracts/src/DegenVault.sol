@@ -64,13 +64,6 @@ contract DegenVault is BaseVault {
         // 24 hrs
         deadline = block.timestamp + initialDeadlineSeconds;
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
-        
->>>>>>> Stashed changes
-=======
->>>>>>> main
     }
 
     // #########################
@@ -79,20 +72,12 @@ contract DegenVault is BaseVault {
     // ##                     ##
     // #########################
 
-<<<<<<< HEAD
-    function mintNewNFT(uint256 amount) external override returns (uint256) {
-
-        require(
-            amount >= getMinPrice() &&
-            block.timestamp <= deadline
-=======
     function mintNewNFT(uint256 amount) public override returns (uint256) {
 
         require(
             amount >= minimumPrice &&
             block.timestamp <= deadline,
             "Underpaid, or past deadline"
->>>>>>> main
         );
 
         Context memory ctxm = ctx;
@@ -101,22 +86,6 @@ contract DegenVault is BaseVault {
         // untrusted contract so this pattern is safe
         uint id = NFT.mint(msg.sender);
 
-<<<<<<< HEAD
-        adjustYeild(
-            amount * ctxm.dividendsBP / 10000
-        );
-
-        jackpot += amount * ctxm.jackpotBP / 10000;
-
-        adminFeesAccumulated += amount * ctxm.devFee / 10000;
-
-        uint256 totalBP = 10000 - (ctxm.devFee + ctxm.jackpotBP + ctxm.dividendsBP);
-        uint256 newAmount = amount * totalBP / 10000;
-        
-        deposits[id].amount = newAmount;
-        deposits[id].tracker += newAmount * yeildPerDeposit;
-        totalDeposits += newAmount;
-=======
         if (id > 1) {
 
             jackpot += amount * ctxm.jackpotBP / 10000;
@@ -147,7 +116,6 @@ contract DegenVault is BaseVault {
             totalDeposits += newAmount;
 
         }
->>>>>>> main
 
         lastDepositer = msg.sender;
 
@@ -165,22 +133,11 @@ contract DegenVault is BaseVault {
         // trusted contract
         require(
             msg.sender == NFT.ownerOf(id) &&
-<<<<<<< HEAD
-            amount >= getMinPrice() &&
-=======
             amount >= minimumPrice &&
->>>>>>> main
             block.timestamp <= deadline
         );
 
         Context memory ctxm = ctx;
-<<<<<<< HEAD
-        
-        adjustYeild(
-            amount * ctxm.dividendsBP / 10000
-        );
-=======
->>>>>>> main
 
         jackpot += amount * ctxm.jackpotBP / 10000;
 
@@ -190,11 +147,6 @@ contract DegenVault is BaseVault {
         uint256 newAmount = amount * totalBP / 10000;
         
         deposits[id].amount += newAmount;
-<<<<<<< HEAD
-        deposits[id].tracker += newAmount * yeildPerDeposit;
-        totalDeposits += newAmount;
-
-=======
         totalDeposits += newAmount;
 
         // sorry :( , you dont get your own dividends?!
@@ -204,7 +156,6 @@ contract DegenVault is BaseVault {
 
         deposits[id].tracker += newAmount * yeildPerDeposit;
 
->>>>>>> main
         lastDepositer = msg.sender;
 
         // deadline += 
@@ -215,13 +166,6 @@ contract DegenVault is BaseVault {
 
     }
 
-<<<<<<< HEAD
-    function getMinPrice() public view returns (uint256) {
-        return minimumPrice;
-    }
-
-=======
->>>>>>> main
     function withdrawFromId(uint256 amount, uint256 id) public override {
 
         require(msg.sender == NFT.ownerOf(id));
@@ -268,13 +212,8 @@ contract DegenVault is BaseVault {
     function withdrawableById(uint256 id) public override view returns (uint) {
 
         uint256 yield = yeildPerId(id);
-<<<<<<< HEAD
-
-        return deposits[id].amount + yield;
-=======
         return deposits[id].amount + yield;
 
->>>>>>> main
     }
 
     // #########################
@@ -283,32 +222,6 @@ contract DegenVault is BaseVault {
     // ##                     ##
     // #########################
 
-<<<<<<< HEAD
-
-
-
-
-
-
-    // #########################
-    // ##                     ##
-    // ##      Uneeded        ##
-    // ##                     ##
-    // #########################
-
-    function manage(uint256 amount, address who) override external {
-
-        require(1 == 2);
-
-    }
-
-    function returnManagedFunds(uint256 amount) override external {
-
-        require(1 == 2);
-
-    }
-=======
     //TODO
->>>>>>> main
 
 }
