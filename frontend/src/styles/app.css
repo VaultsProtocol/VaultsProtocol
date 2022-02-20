@@ -1,5 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap');
 
+body {
+	background: var(--background-color-white)
+}
 
 :root {
 	--font: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -10,7 +13,7 @@
 	--background-color-1: hsl(200deg, 60%, 20%);
 	--background-color-2: hsl(200deg, 50%, 30%);
 	--background-color-3: hsl(200deg, 40%, 40%);
-	--background-color-4: hsl(200deg, 30%, 50%);
+	--background-color-4: #f3f3f3;
 
 	--background-color-white: #fff;
 	--background-color-black: #232323;
@@ -19,8 +22,10 @@
 	--font-color-bl34: #343434;
 
 	--border-color-c4: #c4c4c4;
+	--border-color-cc: #ccc;
 
 	--text-color: #e0e7ff;
+	--text-color: #121212;
 }
 
 *, ::before, ::after {
@@ -66,10 +71,11 @@ h1 {
 	text-align: center;
 }
 h2 {
-	font-size: 1.75em;
+	font-size: 1.7em;
 }
 h3 {
 	font-size: 1.33em;
+	font-size: 1.13em;
 }
 h4 {
 	font-size: 1.15em;
@@ -104,6 +110,8 @@ button, .button, input[type='number'], input[type='text'], textarea {
 	grid-auto-flow: column;
 	justify-content: center;
 	align-items: center;
+
+	border: 1px solid #ccc;
 
 	gap: 0.6666em;
 	padding: 0.75em 1em;
@@ -155,6 +163,7 @@ button.small {
 	font-size: 0.8em;
 }
 
+
 button.dropdown:after {
 	content: '▾';
 	color: var(--text-color);
@@ -168,7 +177,7 @@ button.dropdown.active:after {
 }
 
 button.transparent {
-	--button-color: transparent;
+	/* --button-color: transparent; */
 	--button-active-background-color: var(--background-color-3);
 }
 button.transparent:hover {
@@ -254,7 +263,7 @@ source {
 hr {
 	background: none;
 	border: none;
-	border-bottom: var(--background-color-2) 1px solid;
+	border-bottom: var(--background-color-4) 10px solid;
 	justify-self: stretch;
 	grid-column: 1 / -1;
 }
@@ -273,14 +282,27 @@ hr {
 	display: flex;
 	flex-direction: column;
 
+	background: var(--background-color-white);
+	/* border: 1px solid var(--border-color-c4); */
+	/* border: 2px solid var(--border-color-cc); */
+
+	border: 2px solid var(--border-color-cc);
+
 	/* overflow: hidden; */
 }
+
+.card figure { 
+	border-radius: 0;
+}
+
+
 .card .card {
 	background-color: var(--background-color-2);
+	background: white;
 	--card-scale-factor: 0.66;
 }
 .card .card .card {
-	background-color: var(--background-color-2);
+	/* background-color: var(--background-color-2); */
 	--card-scale-factor: 0.33;
 }
 

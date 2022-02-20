@@ -69,9 +69,9 @@
 
 
 <style>
-	/* button {
+	button {
 		width: 100%;
-	} */
+	}
 
 	.menu {
 		transform-origin: top center;
@@ -83,7 +83,7 @@
 	}
 
 	.card.menu {
-		background: pink;
+		/* background: pink; */
 	}
 
 	.menu button {

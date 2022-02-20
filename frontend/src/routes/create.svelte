@@ -155,8 +155,21 @@
 
 				<hr>
 
-				<div class="grid">
-					<label class="card column">
+				<div class="grid vault-row">
+
+					<label class="card row equal">
+						<h3>{$_('Yield Asset')}</h3>
+
+						<TokenSelect bind:token={vaultConfig.tokens[0]} />
+						<!-- {#each vaultConfig.config.tokens as token, i}}
+							<TokenAmountSelect
+								bind:token={vaultConfig.config.initialLiquidity.tokens[i]}
+								bind:amount={vaultConfig.config.initialLiquidity.amount}
+							/>
+						{/each} -->
+					</label>
+
+					<label class="card row equal">
 						<h3>{$_('Network / Chain')}</h3>
 						<div>
 							<Select
@@ -168,28 +181,22 @@
 					</label>
 
 					<label class="card column">
-						<h3>{$_('Yield Strategy')}</h3>
-						<div>
-							<Select
-								bind:value={vaultConfig.yieldStrategy}
-								values={Object.keys(YieldStrategy)}
-								labels={Object.fromEntries(Object.entries(yieldStrategyInfo).map(([key, {label}]) => [key, label]))}
-							/>
+						<div class="row equal">
+							<h3>{$_('Yield Strategy')}</h3>
+							<div>
+								<Select
+									bind:value={vaultConfig.yieldStrategy}
+									values={Object.keys(YieldStrategy)}
+									labels={Object.fromEntries(Object.entries(yieldStrategyInfo).map(([key, {label}]) => [key, label]))}
+								/>
+							</div>
 						</div>
-						<p>{$_(yieldStrategyInfo[vaultConfig.yieldStrategy].description)}</p>
+						<div class="row">
+							<p class="row">{$_(yieldStrategyInfo[vaultConfig.yieldStrategy].description)}</p>
+						</div>
 					</label>
+					
 
-					<label class="card column">
-						<h3>{$_('Yield Asset')}</h3>
-
-						<TokenSelect bind:token={vaultConfig.tokens[0]} />
-						<!-- {#each vaultConfig.config.tokens as token, i}}
-							<TokenAmountSelect
-								bind:token={vaultConfig.config.initialLiquidity.tokens[i]}
-								bind:amount={vaultConfig.config.initialLiquidity.amount}
-							/>
-						{/each} -->
-					</label>
 				</div>
 			</section>
 
@@ -386,17 +393,27 @@
 	.grid {
 		display: grid;
 		gap: var(--grid-gap);
-		grid-template-columns: repeat(auto-fit, minmax(min(12rem, 50vw), 1fr));
+		/* grid-template-columns: repeat(auto-fit, minmax(min(12rem, 50vw), 1fr)); */
 	}
 
 	form > section > .card {
 		--grid-gap: 3rem;
 	}
 
+	
 	/* .card {
 		place-content: start;
 		place-items: start;
 	} */
+
+	.vault-row label {
+		border-color: #f3f3f3;
+	}
+
+
+button.dropdown {
+		background: red;
+	}
 
 	label {
 		transition: 0.2s;

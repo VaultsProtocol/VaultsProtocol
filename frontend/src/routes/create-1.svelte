@@ -260,16 +260,21 @@
 				<hr>
 
 				<label class="column">
-					<h3>{$_('Yield Strategy')}</h3>
-					<div>
-						<Select
-							bind:value={vaultConfig.yieldStrategy}
-							values={Object.keys(YieldStrategy)}
-							labels={Object.fromEntries(Object.entries(yieldStrategyInfo).map(([key, {label}]) => [key, label]))}
-						/>
+					<div class="row">
+						<h3>{$_('Yield Strategy')}</h3>
+						<div>
+							<Select
+								bind:value={vaultConfig.yieldStrategy}
+								values={Object.keys(YieldStrategy)}
+								labels={Object.fromEntries(Object.entries(yieldStrategyInfo).map(([key, {label}]) => [key, label]))}
+							/>
+						</div>
 					</div>
-					<p>{$_(yieldStrategyInfo[vaultConfig.yieldStrategy].description)}</p>
 				</label>
+
+				<!-- <div class="row">
+					<p>{$_(yieldStrategyInfo[vaultConfig.yieldStrategy].description)}</p>
+				</div> -->
 			</section>
 
 			<section class="card column">
@@ -367,4 +372,5 @@
 	input[type="number"][max="100"] {
 		max-width: 5em;
 	}
+
 </style>

@@ -208,7 +208,7 @@
 	.connnected-account {
 		--button-color: var(--background-color-3);
 		--button-color: white;
-		border: 1px solid white;
+		border: 1px solid #ccc;
 		padding: 0.5em;
 		padding: 5px 20px;
 		padding-left: 5px;

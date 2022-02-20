@@ -104,7 +104,7 @@
 					<text fill="currentColor" style="font-size: 0.66px; letter-spacing: 0.15px">
 						<textPath xlink:href="#c">
 							EDITION
-							<animate additive="sum" attributeName="startOffset" from="0%" to="50%" begin="0s" dur="30s" repeatCount="indefinite" />
+							<animate additive="sum" attributeName="startOffset" from="0%" to="100%" begin="0s" dur="30s" repeatCount="indefinite" />
 						</textPath>
 					</text>
 				</svg>
@@ -270,6 +270,16 @@
 
 	.vault-type-info .vault-type {
 		padding: 0.5em;
+		border-radius: 0;
+		border: 0;
+		background: radial-gradient(50% 50% at 50% 50%, #D2C26E 0%, #DEB60D 100%);
+		font-weight: 800;
+	}
+
+	.vault-type .card .row {
+		background: radial-gradient(50% 50% at 50% 50%, #D2C26E 0%, #DEB60D 100%);
+		border: 30px solid red;
+
 	}
 
 	/* .text-path {

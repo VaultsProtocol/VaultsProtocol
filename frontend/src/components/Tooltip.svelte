@@ -89,6 +89,11 @@
 
 
 <style>
+
+	details {
+		width: 100%;
+	}
+
 	.tooltip {
 		position: absolute;
 		left: 0;
