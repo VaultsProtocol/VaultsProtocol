@@ -90,7 +90,7 @@
 			</header>
 
 			<div class="stack">
-				<figure class="illustration-wrapper card stack" style="background-color: {vaultTypeInfo[vaultConfig.type].color}">
+				<figure class="illustration-wrapper card stack" style="background-color: {vaultTypeInfo[vaultConfig.type]?.color}">
 					{#key vaultConfig.type}
 						<div class="illustration row centered" transition:scale>
 							{#if vaultConfig.type === VaultType.Standard}
@@ -179,18 +179,18 @@
 						]
 					: vaultConfig.type === VaultType.Degen ?
 						[
-							{ icon: '', label: 'Jackpot', displayType: MetadataType.TokenBalance, value: vaultConfig.config.jackpot },
-							{ icon: '', label: 'Dividend', displayType: MetadataType.TokenBalance, value: vaultConfig.config.dividend },
-							{ icon: '', label: 'Treasury', displayType: MetadataType.TokenBalance, value: vaultConfig.config.treasury },
-							{ icon: '', label: 'Deadline', displayType: MetadataType.Date, value: vaultConfig.config.deadline },
+							{ icon: '🎰', label: 'Jackpot', displayType: MetadataType.TokenBalance, value: vaultConfig.config.jackpot },
+							{ icon: '💸', label: 'Dividend', displayType: MetadataType.TokenBalance, value: vaultConfig.config.dividend },
+							{ icon: '💸', label: 'Treasury', displayType: MetadataType.TokenBalance, value: vaultConfig.config.treasury },
+							{ icon: '🛑', label: 'Deadline', displayType: MetadataType.Date, value: vaultConfig.config.deadline },
 						]
 					: vaultConfig.type === VaultType.DAO ?
 						[
-							{ icon: '', label: 'Governance Type', displayType: MetadataType.Date, value: vaultConfig.config.governanceType },
+							{ icon: '🗳', label: 'Governance Type', displayType: MetadataType.Date, value: vaultConfig.config.governanceType },
 						]
 					: vaultConfig.type === VaultType.Charity ?
 						[
-							{ icon: '', label: 'Payout Type', displayType: MetadataType.String, value: vaultConfig.config.payoutType },
+							{ icon: '💰', label: 'Payout Type', displayType: MetadataType.String, value: vaultConfig.config.payoutType },
 						]
 					: []
 					as
@@ -198,7 +198,8 @@
 				}
 					<div class="card row" transition:scale animate:flip>
 						<div class="row">
-							<img src={icon} width="20" height="20" />
+							<!-- <img src={icon} width="20" height="20" /> -->
+							<span>{$_(icon)}</span>
 							<span>{$_(label)}</span>
 						</div>
 
@@ -321,9 +322,14 @@
 	}
 	.illustration {
 		aspect-ratio: 1.5;
+		animation: Float 6s infinite ease-in-out;
 	}
 	.illustration img {
 		height: 12em;
+	}
+	@keyframes Float {
+		0%, 100% { transform: translateY(3px) }
+		50% { transform: translateY(-3px) }
 	}
 
 	.silhouette {
