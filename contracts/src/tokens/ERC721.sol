@@ -23,8 +23,6 @@ abstract contract ERC721 {
 
     string public symbol;
 
-    function tokenURI(uint256 id) public view virtual returns (string memory);
-
     /*///////////////////////////////////////////////////////////////
                             ERC721 STORAGE                        
     //////////////////////////////////////////////////////////////*/

@@ -4,8 +4,6 @@ pragma solidity >=0.8.0;
 import "./BaseVault.sol";
 
 //ENSURE vault tokens revert on failed transfer
-
-// Dao Vault - This contains the DAO treasury.
 contract DaoVault is BaseVault {
 
     // #########################
@@ -61,7 +59,7 @@ contract DaoVault is BaseVault {
         override returns (uint256) {
 
             // random deposits are not inculded as they are treated as rewards on distro events
-
+            //
             //               expected balance
             return (((totalDeposits + depositedToStrat) - managed) * deposits[id].amount / totalDeposits) + yieldPerId(id);
 
