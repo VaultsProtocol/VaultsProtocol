@@ -153,8 +153,10 @@ contract BaseVault is ERC721, BasicMetaTransaction {
 
     function _withdrawFromId(uint256 amount, uint256 id) internal {
 
-        require(msgSender() == ownerOf[id]); // Use Biconomy;
-        require(amount <= withdrawableById(id));
+        require(
+            msgSender() == ownerOf[id] && 
+            amount <= withdrawableById(id)
+        ); // Use Biconomy;
         
         uint256 balanceCheck = vaultToken.balanceOf(address(this));
         uint256 principalWithdrawn;
