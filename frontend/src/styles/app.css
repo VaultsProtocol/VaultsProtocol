@@ -215,6 +215,12 @@ button.active, .button.active {
 	transition: 0.2s, background-color 0.1s;
 }
 
+button > img {
+	margin: -0.25em;
+	width: 1.5em;
+	height: 1.5em;
+}
+
 input[type='number'], input[type='text'] {
 	font-size: 1.2em;
 	font-size: 1.0em;

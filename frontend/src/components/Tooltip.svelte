@@ -89,9 +89,15 @@
 
 
 <style>
-
 	details {
 		width: 100%;
+	}
+
+	details[open] {
+		position: relative;
+		z-index: 1;
+		transform: translateZ(1px);
+		will-change: transform;
 	}
 
 	.tooltip {
@@ -99,6 +105,7 @@
 		left: 0;
 		top: 0;
 		z-index: 1;
+		transform: translateZ(1px);
 	}
 
 	summary {

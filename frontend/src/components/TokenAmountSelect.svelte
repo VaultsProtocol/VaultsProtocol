@@ -45,7 +45,7 @@
 			{max}
 		/>
 
-		<button class="max small" on:click={() => amount = max}>{$_('max')}</button>
+		<button type="button" class="max small" on:click={() => amount = max}>{$_('max')}</button>
 	</div>
 
 	<TokenSelect {availableTokens} bind:token />

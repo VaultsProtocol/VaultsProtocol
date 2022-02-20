@@ -186,6 +186,7 @@
 									bind:value={vaultConfig.yieldStrategy}
 									values={Object.keys(YieldStrategy)}
 									labels={Object.fromEntries(Object.entries(yieldStrategyInfo).map(([key, {label}]) => [key, label]))}
+									icons={Object.fromEntries(Object.entries(yieldStrategyInfo).map(([key, {icon}]) => [key, icon]))}
 								/>
 							</div>
 						</div>
@@ -445,26 +446,16 @@
 		border-color: #f3f3f3;
 	}
 
-
-button.dropdown {
-		background: red;
-	}
-
 	label {
 		transition: 0.2s;
 	}
 	label.card:focus-within {
 		box-shadow: 0 1px 0.25rem var(--background-color-0);
-		transform: translateY(-1px);
 		transition: 0.5s;
 	}
 
 	label p {
 		font-size: 0.9em;
 		/* opacity: 0.8; */
-	}
-
-	input[type="number"][max="100"] {
-		max-width: 5em;
 	}
 </style>

@@ -103,11 +103,11 @@ export const networks: Network[] = [
 	{
 		"slug": "ethereum-goerli",
 		"name": "Ethereum Goerli Testnet",
-		"chainId": 4,
+		"chainId": 5,
 		"shortName": "goe",
 		"chain": "ETH",
 		"network": "goerli",
-		"networkId": 4,
+		"networkId": 5,
 		"nativeCurrency": {
 			"name": "Goerli Ether",
 			"symbol": "GOE",
@@ -132,35 +132,35 @@ export const networks: Network[] = [
 			"registry": "0xe7410170f87102df0055eb195163a03b7f2bff4a"
 		}
 	},
-	{
-		"slug": "polygon",
-		"name": "Polygon",
-		"chainId": 137,
-		"shortName": "polygon",
-		"chain": "Polygon",
-		"network": "mainnet",
-		"networkId": 137,
-		"nativeCurrency": {
-			"name": "Matic",
-			"symbol": "MATIC",
-			"decimals": 18
-		},
-		"rpc": [
-			"https://rpc-mainnet.matic.network",
-			"wss://ws-mainnet.matic.network",
-			"https://rpc-mainnet.matic.quiknode.pro",
-			"https://matic-mainnet.chainstacklabs.com"
-		],
-		"faucets": [],
-		"explorers": [
-			{
-				"name": "polygonscan",
-				"url": "https://polygonscan.com",
-				"standard": "EIP3091"
-			}
-		],
-		"infoURL": "https://polygon.technology"
-	},
+	// {
+	// 	"slug": "polygon",
+	// 	"name": "Polygon",
+	// 	"chainId": 137,
+	// 	"shortName": "polygon",
+	// 	"chain": "Polygon",
+	// 	"network": "mainnet",
+	// 	"networkId": 137,
+	// 	"nativeCurrency": {
+	// 		"name": "Matic",
+	// 		"symbol": "MATIC",
+	// 		"decimals": 18
+	// 	},
+	// 	"rpc": [
+	// 		"https://rpc-mainnet.matic.network",
+	// 		"wss://ws-mainnet.matic.network",
+	// 		"https://rpc-mainnet.matic.quiknode.pro",
+	// 		"https://matic-mainnet.chainstacklabs.com"
+	// 	],
+	// 	"faucets": [],
+	// 	"explorers": [
+	// 		{
+	// 			"name": "polygonscan",
+	// 			"url": "https://polygonscan.com",
+	// 			"standard": "EIP3091"
+	// 		}
+	// 	],
+	// 	"infoURL": "https://polygon.technology"
+	// },
 	{
 		"slug": "polygon-mumbai",
 		"name": "Polygon Mumbai Testnet",
@@ -191,26 +191,26 @@ export const networks: Network[] = [
 		"infoURL": "https://matic.network/"
 	},
 
-	{
-		"slug": "avalanche",
-		"name": "Avalanche C-Chain",
-		"chainId": 43114,
-		"shortName": "Avalanche",
-		"chain": "AVAX",
-		"network": "mainnet",
-		"networkId": 1,
-		"nativeCurrency": {
-			"name": "Avalanche",
-			"symbol": "AVAX",
-			"decimals": 18
-		},
-		"rpc": [
-			"https://api.avax.network/ext/bc/C/rpc"
-		],
-		"faucets": [],
-		"explorers": [],
-		"infoURL": "https://cchain.explorer.avax.network/"
-	},
+	// {
+	// 	"slug": "avalanche",
+	// 	"name": "Avalanche C-Chain",
+	// 	"chainId": 43114,
+	// 	"shortName": "Avalanche",
+	// 	"chain": "AVAX",
+	// 	"network": "mainnet",
+	// 	"networkId": 1,
+	// 	"nativeCurrency": {
+	// 		"name": "Avalanche",
+	// 		"symbol": "AVAX",
+	// 		"decimals": 18
+	// 	},
+	// 	"rpc": [
+	// 		"https://api.avax.network/ext/bc/C/rpc"
+	// 	],
+	// 	"faucets": [],
+	// 	"explorers": [],
+	// 	"infoURL": "https://cchain.explorer.avax.network/"
+	// },
 	{
 		"slug": "avalanche-fuji",
 		"name": "Avalanche Fuji Testnet",
@@ -234,28 +234,28 @@ export const networks: Network[] = [
 		"infoURL": "https://cchain.explorer.avax-test.network"
 	},
 
-	{
-		"slug": "celo",
-		"name": "Celo",
-		"chainId": 42220,
-		"shortName": "CELO",
-		"chain": "CELO",
-		"network": "Mainnet",
-		"networkId": 42220,
-		"nativeCurrency": {
-			"name": "CELO",
-			"symbol": "CELO",
-			"decimals": 18
-		},
-		"rpc": [
-			"https://explorer.celo.org/api/eth-rpc",
-			"https://forno.celo.org",
-			"wss://forno.celo.org/ws"
-		],
-		"faucets": [],
-		"explorers": [],
-		"infoURL": "https://docs.celo.org/"
-	},
+	// {
+	// 	"slug": "celo",
+	// 	"name": "Celo",
+	// 	"chainId": 42220,
+	// 	"shortName": "CELO",
+	// 	"chain": "CELO",
+	// 	"network": "Mainnet",
+	// 	"networkId": 42220,
+	// 	"nativeCurrency": {
+	// 		"name": "CELO",
+	// 		"symbol": "CELO",
+	// 		"decimals": 18
+	// 	},
+	// 	"rpc": [
+	// 		"https://explorer.celo.org/api/eth-rpc",
+	// 		"https://forno.celo.org",
+	// 		"wss://forno.celo.org/ws"
+	// 	],
+	// 	"faucets": [],
+	// 	"explorers": [],
+	// 	"infoURL": "https://docs.celo.org/"
+	// },
 	{
 		"slug": "celo-alfajores",
 		"name": "Celo Alfajores Testnet",
@@ -280,24 +280,25 @@ export const networks: Network[] = [
 		"explorers": [],
 		"infoURL": "https://docs.celo.org/"
 	},
-	{
-		"slug": "metis",
-		"name": "Metis",
-		"chainId": 1088,
-		"nativeCurrency": {
-			"name": "Metis",
-			"symbol": "METIS",
-			"decimals": 18
-		},
-		"rpc": [
-			"https://dragonfire.metis.io/?owner=488",
-			// "https://rocketfuel.metis.io/?owner=435"
-		],
-		"faucets": [],
-		"explorers": [],
-		"infoURL": "https://www.metis.io"
-	},
-  {
+
+	// {
+	// 	"slug": "metis",
+	// 	"name": "Metis",
+	// 	"chainId": 1088,
+	// 	"nativeCurrency": {
+	// 		"name": "Metis",
+	// 		"symbol": "METIS",
+	// 		"decimals": 18
+	// 	},
+	// 	"rpc": [
+	// 		"https://dragonfire.metis.io/?owner=488",
+	// 		// "https://rocketfuel.metis.io/?owner=435"
+	// 	],
+	// 	"faucets": [],
+	// 	"explorers": [],
+	// 	"infoURL": "https://www.metis.io"
+	// },
+  	{
 		"slug": "metis-stardust",
 		"name": "Metis Stardust",
 		"chainId": 588,
@@ -315,26 +316,26 @@ export const networks: Network[] = [
 		"infoURL": "https://www.metis.io"
 	},
 
-	{
-		"slug": "aurora",
-		"name": "Aurora",
-		"chainId": 1313161554,
-		"shortName": "aurora",
-		"chain": "NEAR",
-		"network": "mainnet",
-		"networkId": 1313161554,
-		"nativeCurrency": {
-			"name": "Ether",
-			"symbol": "aETH",
-			"decimals": 18
-		},
-		"rpc": [
-			"https://rpc.mainnet.aurora.dev:8545"
-		],
-		"faucets": [],
-		"explorers": [],
-		"infoURL": "https://aurora.dev"
-	},
+	// {
+	// 	"slug": "aurora",
+	// 	"name": "Aurora",
+	// 	"chainId": 1313161554,
+	// 	"shortName": "aurora",
+	// 	"chain": "NEAR",
+	// 	"network": "mainnet",
+	// 	"networkId": 1313161554,
+	// 	"nativeCurrency": {
+	// 		"name": "Ether",
+	// 		"symbol": "aETH",
+	// 		"decimals": 18
+	// 	},
+	// 	"rpc": [
+	// 		"https://rpc.mainnet.aurora.dev:8545"
+	// 	],
+	// 	"faucets": [],
+	// 	"explorers": [],
+	// 	"infoURL": "https://aurora.dev"
+	// },
 	{
 		"slug": "aurora-testnet",
 		"name": "Aurora TestNet",
@@ -426,28 +427,28 @@ export const networks: Network[] = [
 		"infoURL": "https://skale.network/"
 	},
 
-	{
-		"slug": "nahmii",
-		"name": "Nahmii",
-		"chainId": 5513,
-		"nativeCurrency": {
-			"name": "ETH",
-			"symbol": "ETH",
-			"decimals": 18
-		},
-		"rpc": [
-			"https://l2.nahmii.io"
-		],
-		"faucets": [],
-		"explorers": [
-			{
-				"name": "Nahmii Explorer",
-				"url": "https://explorer.testnet.nahmii.io/"
-			}
+	// {
+	// 	"slug": "nahmii",
+	// 	"name": "Nahmii",
+	// 	"chainId": 5513,
+	// 	"nativeCurrency": {
+	// 		"name": "ETH",
+	// 		"symbol": "ETH",
+	// 		"decimals": 18
+	// 	},
+	// 	"rpc": [
+	// 		"https://l2.nahmii.io"
+	// 	],
+	// 	"faucets": [],
+	// 	"explorers": [
+	// 		{
+	// 			"name": "Nahmii Explorer",
+	// 			"url": "https://explorer.testnet.nahmii.io/"
+	// 		}
 			
-		],
-		"infoURL": "https://nahmii.io/"
-	},
+	// 	],
+	// 	"infoURL": "https://nahmii.io/"
+	// },
 	{
 		"slug": "nahmii-testnet",
 		"name": "Nahmii Testnet",
@@ -493,6 +494,7 @@ export const networks: Network[] = [
 		],
 		"infoURL": "https://github.com/nervosnetwork/godwoken"
 	},
+
 	{
 		"slug": "arbitrum-rinkeby",
 		"name": "Arbitrum Rinkeby",
@@ -509,22 +511,23 @@ export const networks: Network[] = [
 		"explorers": [
 		],
 	},
-	{
-		"slug": "arbitrum",
-		"name": "Arbitrum",
-		"chainId": 42161,
-		"nativeCurrency": {
-			"name": "ETH",
-			"symbol": "ETH",
-			"decimals": 18
-		},
-		"rpc": [
-			"https://arb1.arbitrum.io/rpc"
-		],
-		"faucets": [],
-		"explorers": [
-		],
-	},
+	// {
+	// 	"slug": "arbitrum",
+	// 	"name": "Arbitrum",
+	// 	"chainId": 42161,
+	// 	"nativeCurrency": {
+	// 		"name": "ETH",
+	// 		"symbol": "ETH",
+	// 		"decimals": 18
+	// 	},
+	// 	"rpc": [
+	// 		"https://arb1.arbitrum.io/rpc"
+	// 	],
+	// 	"faucets": [],
+	// 	"explorers": [
+	// 	],
+	// },
+
 	// {
 	// 	"slug": "reef",
 	// 	"name": "Reef",

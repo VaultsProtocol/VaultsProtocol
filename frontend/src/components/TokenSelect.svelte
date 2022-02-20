@@ -38,8 +38,8 @@
 	/* .row {
 		--grid-gap: 0.66em;
 	} */
-	img {
+	/* img {
 		width: 1em;
 		height: 1em;
-	}
+	} */
 </style>

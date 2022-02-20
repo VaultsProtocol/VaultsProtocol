@@ -9,6 +9,7 @@
 	export let value: Value
 	export let values: Value[]
 	export let labels: Record<Value, string>
+	export let icons: Record<Value, string>
 
 	export let placeholderLabel: string = 'Choose...'
 
@@ -40,7 +41,10 @@
 		aria-expanded={isOpen}
 		tabindex="-1"
 	>
-		<slot {value}>
+		<slot {value} label={labels?.[value] ?? value}>
+			{#if icons?.[value]}
+				<img src={icons[value]} />
+			{/if}
 			{value
 				? labels[value] ?? value
 				: placeholderLabel}
@@ -59,7 +63,10 @@
 					isOpen = false
 				}}
 			>
-				<slot value={optionValue}>
+				<slot value={optionValue} label={labels?.[optionValue]}>
+					{#if icons?.[optionValue]}
+						<img src={icons[optionValue]} />
+					{/if}
 					{labels[optionValue]}
 				</slot>
 			</button>

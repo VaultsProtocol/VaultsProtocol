@@ -3,6 +3,10 @@ import { BigNumber } from 'ethers'
 import { type ERC20Token, erc20TokensBySymbol } from './tokens'
 
 
+import aaveIcon from '../assets/logos/aave.svg'
+import yearnIcon from '../assets/logos/yearn.svg'
+
+
 export enum VaultType {
 	Standard = 'Standard',
 	Charity = 'Charity',
@@ -30,6 +34,7 @@ export const vaultTypeInfo = {
 	// },
 	[VaultType.DAO]: {
 		label: '🗳\tDAO',
+		// description: 'The vault parameters can be changed upon the approval of multiple designated signers or by a token-weighted vote by all holdersapproval.'
 		description: 'Democratized captial control via delegatable weighted voting or multi-sig'
 	}
 }
@@ -45,11 +50,13 @@ export const yieldStrategyInfo = {
 		description: 'The DAO treasury.'
 	},
 	[YieldStrategy.Aave]: {
-		label: '👻\tAave',
+		icon: aaveIcon,
+		label: 'Aave',
 		description: 'The DAO treasury will be lent to borrowers on Aave. Interest will be paid out to holders.'
 	},
 	[YieldStrategy.Yearn]: {
-		label: '🏦\tYearn Finance',
+		icon: yearnIcon,
+		label: 'Yearn Finance',
 		description: 'The DAO treasury will be deposited into a Yearn vault. Yield will be paid out to holders.'
 	},
 }
