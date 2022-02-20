@@ -370,7 +370,7 @@ import { formatAddress } from '$lib/formatAddress';
 	}
 
 	.yield-strategy {
-		display: flex;
+		/* display: flex; */
 		padding: 0.5rem;
 	}
 
