@@ -56,157 +56,163 @@
 	<foreignObject x="0" y="0" width="400" height="800">
 		<div xmlns="http://www.w3.org/1999/xhtml">
 
-<article class="vault card">
-	<HeightContainer class="column">
-		<header class="row">
-			<div class="row">
-				<span class="chain">
-					<Icon token={network?.nativeCurrency} />
-				</span>
+<article class="vault stack">
+	<div class="back card">
 
-				{#if vaultConfig.about.name}
-					<h2 class="align-start" transition:scale>{vaultConfig.about.name}</h2>
+	</div>
+
+	<div class="front card">
+		<HeightContainer class="column">
+			<header class="row">
+				<div class="row">
+					<span class="chain">
+						<Icon token={network?.nativeCurrency} />
+					</span>
+
+					{#if vaultConfig.about.name}
+						<h2 class="align-start" transition:scale>{vaultConfig.about.name}</h2>
+					{/if}
+				</div>
+
+				{#if isPosition ? vaultStatus.totalBalance : vaultConfig.config.initialLiquidity}
+					<TokenBalance balance={isPosition ? vaultStatus.totalBalance : vaultConfig.config.initialLiquidity} token={vaultConfig.tokens[0]} />
 				{/if}
-			</div>
+			</header>
 
-			{#if isPosition ? vaultStatus.totalBalance : vaultConfig.config.initialLiquidity}
-				<TokenBalance balance={isPosition ? vaultStatus.totalBalance : vaultConfig.config.initialLiquidity} token={vaultConfig.tokens[0]} />
-			{/if}
-		</header>
-
-		<div class="stack">
-			{#key vaultConfig.type}
-				<figure class="illustration-wrapper card" transition:fade>
-					<svg class="illustration">
-						{#if vaultConfig.type === VaultType.Standard}
-							<path class:silhouette={isPosition} />
-						{:else if vaultConfig.type === VaultType.Degen}
-							<path class:silhouette={isPosition} />
-						{:else if vaultConfig.type === VaultType.DAO}
-							<path class:silhouette={isPosition} />
-						{:else if vaultConfig.type === VaultType.Charity}
-							<path class:silhouette={isPosition} />	
-						<!-- {:else if vaultConfig.type === VaultType.Superfluid}
-							<path class:silhouette={isPosition} /> -->
-						{/if}
-					</svg>
-				</figure>
-			{/key}
-		</div>
-
-		<div class="vault-type-info row">
-			<div class="stack centered">
-				<span class="token-id row centered">{vaultStatus.tokenId}</span>
-				<svg class="text-path" width="50" height="50" viewBox="-1.5 -1.5 3 3">
-					<defs>
-						<!-- <path id="c" d="m -1, 0 a 1,1 0 0,1 2,0 a 1,1 0 0,1 -2,0 "/> -->
-						<!-- <path id="c" d="m -1,0 a 1,1 0 0,1 2,0 a 1,1 0 0,1 -2,0 "/> -->
-						<path id="c" d="
-							M-1,0
-							A1,1,0,1,1,1,0 A1,1,0,1,1,-1,0
-							A1,1,0,1,1,1,0 A1,1,0,1,1,-1,0
-						"/>
-					</defs>
-					<text fill="currentColor" style="font-size: 0.66px; letter-spacing: 0.15px">
-						<textPath xlink:href="#c">
-							EDITION
-							<!-- <animate additive="sum" attributeName="startOffset" from="0%" to="100%" begin="0s" dur="30s" repeatCount="indefinite" /> -->
-						</textPath>
-					</text>
-				</svg>
-			</div>
-			
 			<div class="stack">
 				{#key vaultConfig.type}
-					<div class="vault-type card row centered" transition:scale={{ start: 0.33 }}>
-						{$_(vaultTypeInfo[vaultConfig.type]?.label) ?? $_('???')}
-					</div>
+					<figure class="illustration-wrapper card" transition:fade>
+						<svg class="illustration">
+							{#if vaultConfig.type === VaultType.Standard}
+								<path class:silhouette={isPosition} />
+							{:else if vaultConfig.type === VaultType.Degen}
+								<path class:silhouette={isPosition} />
+							{:else if vaultConfig.type === VaultType.DAO}
+								<path class:silhouette={isPosition} />
+							{:else if vaultConfig.type === VaultType.Charity}
+								<path class:silhouette={isPosition} />	
+							<!-- {:else if vaultConfig.type === VaultType.Superfluid}
+								<path class:silhouette={isPosition} /> -->
+							{/if}
+						</svg>
+					</figure>
 				{/key}
 			</div>
 
-			<img width="50" height="50" />
-
-			<!-- {#if vaultConfig.type === VaultType.Degen}
-				<PieChart data={[
-					{ amount: vaultConfig.config.jackpot, label: 'Jackpot' },
-					{ amount: vaultConfig.config.dividend, label: 'Dividend' },
-					{ amount: vaultConfig.config.treasury, label: 'Treasury' },
-				]} />
-			{/if} -->
-		</div>
-
-		{#if vaultConfig.about.description}
-			<HeightContainer>
-				<p class="description align-start" transition:scale>{vaultConfig.about.description}</p>
-			</HeightContainer>
-		{/if}
-
-		<div class="metadata column">
-			{#each
-				isPosition ?
-					[
-						{ icon: '', label: 'Balance', displayType: MetadataType.TokenBalance, value: vaultPosition.withdrawableBalance },
-						{ icon: '', label: 'Earned', displayType: MetadataType.TokenBalance, value: vaultPosition.yieldEarned },
-					]
-				: vaultConfig.type === VaultType.Degen ?
-					[
-						{ icon: '', label: 'Jackpot', displayType: MetadataType.TokenBalance, value: vaultConfig.config.jackpot },
-						{ icon: '', label: 'Dividend', displayType: MetadataType.TokenBalance, value: vaultConfig.config.dividend },
-						{ icon: '', label: 'Treasury', displayType: MetadataType.TokenBalance, value: vaultConfig.config.treasury },
-						{ icon: '', label: 'Deadline', displayType: MetadataType.Date, value: vaultConfig.config.deadline },
-					]
-				: vaultConfig.type === VaultType.DAO ?
-					[
-						{ icon: '', label: 'Governance Type', displayType: MetadataType.Date, value: vaultConfig.config.governanceType },
-					]
-				: vaultConfig.type === VaultType.Charity ?
-					[
-						{ icon: '', label: 'Payout Type', displayType: MetadataType.String, value: vaultConfig.config.payoutType },
-					]
-				: []
-				as
-				{ icon, label, displayType, value } (label)
-			}
-				<div class="card row" transition:scale animate:flip>
-					<div class="row">
-						<img src={icon} width="20" height="20" />
-						<span>{$_(label)}</span>
-					</div>
-
-					<span>
-						{#if displayType === MetadataType.TokenBalance}
-							<TokenBalance {value} />
-						{:else if displayType === MetadataType.Date}
-							{value} seconds
-							<!-- <Countdown toTimestamp={value} /> -->
-						{:else}
-							{$_(value)}
-						{/if}
-					</span>
+			<div class="vault-type-info row">
+				<div class="stack centered">
+					<span class="token-id row centered">{vaultStatus.tokenId}</span>
+					<svg class="text-path" width="50" height="50" viewBox="-1.5 -1.5 3 3">
+						<defs>
+							<!-- <path id="c" d="m -1, 0 a 1,1 0 0,1 2,0 a 1,1 0 0,1 -2,0 "/> -->
+							<!-- <path id="c" d="m -1,0 a 1,1 0 0,1 2,0 a 1,1 0 0,1 -2,0 "/> -->
+							<path id="c" d="
+								M-1,0
+								A1,1,0,1,1,1,0 A1,1,0,1,1,-1,0
+								A1,1,0,1,1,1,0 A1,1,0,1,1,-1,0
+							"/>
+						</defs>
+						<text fill="currentColor" style="font-size: 0.66px; letter-spacing: 0.15px">
+							<textPath xlink:href="#c">
+								EDITION
+								<!-- <animate additive="sum" attributeName="startOffset" from="0%" to="100%" begin="0s" dur="30s" repeatCount="indefinite" /> -->
+							</textPath>
+						</text>
+					</svg>
 				</div>
-			{/each}
-		</div>
-
-		{#if vaultConfig.about.website || vaultConfig.about.twitter || vaultConfig.about.discord}
-			<div class="row centered" transition:scale>
 				
+				<div class="stack">
+					{#key vaultConfig.type}
+						<div class="vault-type card row centered" transition:scale={{ start: 0.33 }}>
+							{$_(vaultTypeInfo[vaultConfig.type]?.label) ?? $_('???')}
+						</div>
+					{/key}
+				</div>
+
+				<img width="50" height="50" />
+
+				<!-- {#if vaultConfig.type === VaultType.Degen}
+					<PieChart data={[
+						{ amount: vaultConfig.config.jackpot, label: 'Jackpot' },
+						{ amount: vaultConfig.config.dividend, label: 'Dividend' },
+						{ amount: vaultConfig.config.treasury, label: 'Treasury' },
+					]} />
+				{/if} -->
+			</div>
+
+			{#if vaultConfig.about.description}
+				<HeightContainer>
+					<p class="description align-start" transition:scale>{vaultConfig.about.description}</p>
+				</HeightContainer>
+			{/if}
+
+			<div class="metadata column">
 				{#each
-					[
-						{ label: 'Website', link: vaultConfig.about.website, icon: websiteIcon },
-						{ label: 'Twitter', link: vaultConfig.about.twitter, icon: twitterIcon },
-						{ label: 'Discord', link: vaultConfig.about.discord, icon: discordIcon }
-					].filter(({ link }) => link)
+					isPosition ?
+						[
+							{ icon: '', label: 'Balance', displayType: MetadataType.TokenBalance, value: vaultPosition.withdrawableBalance },
+							{ icon: '', label: 'Earned', displayType: MetadataType.TokenBalance, value: vaultPosition.yieldEarned },
+						]
+					: vaultConfig.type === VaultType.Degen ?
+						[
+							{ icon: '', label: 'Jackpot', displayType: MetadataType.TokenBalance, value: vaultConfig.config.jackpot },
+							{ icon: '', label: 'Dividend', displayType: MetadataType.TokenBalance, value: vaultConfig.config.dividend },
+							{ icon: '', label: 'Treasury', displayType: MetadataType.TokenBalance, value: vaultConfig.config.treasury },
+							{ icon: '', label: 'Deadline', displayType: MetadataType.Date, value: vaultConfig.config.deadline },
+						]
+					: vaultConfig.type === VaultType.DAO ?
+						[
+							{ icon: '', label: 'Governance Type', displayType: MetadataType.Date, value: vaultConfig.config.governanceType },
+						]
+					: vaultConfig.type === VaultType.Charity ?
+						[
+							{ icon: '', label: 'Payout Type', displayType: MetadataType.String, value: vaultConfig.config.payoutType },
+						]
+					: []
 					as
-					{ label, link, icon } (label)
+					{ icon, label, displayType, value } (label)
 				}
-					<a class="icon button round" href={link.includes('://') ? link : 'https://' + link} target="_blank" rel="nofollow" transition:scale animate:flip>
-						<!-- {$_(label)} -->
-						<img src={icon} alt={label} width="27" />
-					</a>
+					<div class="card row" transition:scale animate:flip>
+						<div class="row">
+							<img src={icon} width="20" height="20" />
+							<span>{$_(label)}</span>
+						</div>
+
+						<span>
+							{#if displayType === MetadataType.TokenBalance}
+								<TokenBalance {value} />
+							{:else if displayType === MetadataType.Date}
+								{value} seconds
+								<!-- <Countdown toTimestamp={value} /> -->
+							{:else}
+								{$_(value)}
+							{/if}
+						</span>
+					</div>
 				{/each}
 			</div>
-		{/if}
-	</HeightContainer>
+
+			{#if vaultConfig.about.website || vaultConfig.about.twitter || vaultConfig.about.discord}
+				<div class="row centered" transition:scale>
+					
+					{#each
+						[
+							{ label: 'Website', link: vaultConfig.about.website, icon: websiteIcon },
+							{ label: 'Twitter', link: vaultConfig.about.twitter, icon: twitterIcon },
+							{ label: 'Discord', link: vaultConfig.about.discord, icon: discordIcon }
+						].filter(({ link }) => link)
+						as
+						{ label, link, icon } (label)
+					}
+						<a class="icon button round" href={link.includes('://') ? link : 'https://' + link} target="_blank" rel="nofollow" transition:scale animate:flip>
+							<!-- {$_(label)} -->
+							<img src={icon} alt={label} width="27" />
+						</a>
+					{/each}
+				</div>
+			{/if}
+		</HeightContainer>
+	</div>
 </article>
 
 		</div>
@@ -226,6 +232,31 @@
 		overflow: auto;
 		max-height: calc(100vh - var(--header-height) - 4rem);
 		font-size: 16px;
+		transition: 1s;
+
+		perspective: 1000px;
+		/* transform-style: preserve-3d; */
+	}
+
+	.vault:hover, .vault:focus {
+		transform: rotateY(0.5turn);
+	}
+
+	.card {
+		backface-visibility: hidden;
+		transition: 1s;
+	}
+	.card.front {
+		/* background: blue; */
+	}
+	.vault:hover .card.front, .vault:focus .card.front {
+		/* z-index: -1; */
+		/* opacity: 0; */
+	}
+	.card.back {
+		background: red;
+		transform: rotateY(0.5turn);
+		transform: translateZ(-1px);
 	}
 
 	header {
