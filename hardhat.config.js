@@ -239,16 +239,9 @@ module.exports = {
       gas: 2100000,
       accounts: [`${privatekey}`],
     },
-    harmony:{
-      url: "https://api.harmony.one",
-      chainId: 1666600000,
-      gasPrice: 10e9,
-      gas: 2100000,
-      accounts: [`${privatekey}`],
-    },
-    skaleTestnet:{
-      url: "https://dev-testnet-v1-0.skalelabs.com",
-      chainId: 344435,
+    harmonyTestnet:{
+      url: "https://api.s0.b.hmny.io",
+      chainId: 1666700000,
       gasPrice: 10e9,
       gas: 2100000,
       accounts: [`${privatekey}`],
@@ -267,16 +260,16 @@ module.exports = {
       gas: 2100000,
       accounts: [`${privatekey}`],
     },
-    reef:{
-      url: "https://rpc.reefscan.com",
-      chainId: 13939,
+    nahmii:{
+      url: "https://l2.nahmii.io",
+      chainId: 5551,
       gasPrice: 10e9,
       gas: 2100000,
       accounts: [`${privatekey}`],
     },
-    reefTestnet:{
-      url: "https://rpc-testnet.reefscan.com",
-      chainId: 13939,
+    nahmiiTestnet:{
+      url: "https://l2.testnet.nahmii.io/",
+      chainId: 5553,
       gasPrice: 10e9,
       gas: 2100000,
       accounts: [`${privatekey}`],
