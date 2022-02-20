@@ -37,6 +37,7 @@
 
 	span {
 		background-color: var(--background-color-2);
+		background-color: var(--background-color-white);
 		transition: 0.3s;
 		cursor: pointer;
 	}

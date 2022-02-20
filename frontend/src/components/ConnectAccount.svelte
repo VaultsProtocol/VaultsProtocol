@@ -196,9 +196,12 @@
 		aspect-ratio: 1;
 
 		border-radius: calc(var(--radius) * 0.85);
+		border-radius: 120px;
+		border: 1px solid #ccc;
 		overflow: hidden;
 
 		background-color: var(--background-color-4);
+		background-color: var(--background-color-white)
 	}
 	.avatar .wallet-icon {
 		margin: 0.55rem;
@@ -206,8 +209,13 @@
 
 	.connnected-account {
 		--button-color: var(--background-color-3);
+		--button-color: white;
+		border: 1px solid #ccc;
 		padding: 0.5em;
+		padding: 5px 20px;
+		padding-left: 5px;
 		text-align: left;
+		border-radius: 120px;
 
 		max-width: calc(100vw - 19.5rem);
 	}
@@ -220,16 +228,21 @@
 	}
 	.connnected-account > .column > :first-child {
 		color: var(--color-text-light);
-		font-weight: 700;
+		color: #343434;
+		font-weight: 600;
 	}
 	.connnected-account > .column > :nth-child(2) {
-		color: var(--text-color);
+		color: var(--font-color-bl34);
 		font-weight: 200;
 		font-size: 0.75em;
 		letter-spacing: 0.5px;
 	}
 	.connnected-account.dropdown:after {
 		width: 2ch;
+	}
+
+	.connnected-account.active {
+		background: #f3f3f3;
 	}
 
 
