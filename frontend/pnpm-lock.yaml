@@ -6,6 +6,7 @@ specifiers:
   '@floating-ui/core': ^0.4.0
   '@floating-ui/dom': ^0.2.0
   '@sveltejs/adapter-auto': next
+  '@sveltejs/adapter-static': ^1.0.0-next.0
   '@sveltejs/kit': next
   '@typescript-eslint/eslint-plugin': ^5.10.1
   '@typescript-eslint/parser': ^5.10.1
@@ -16,7 +17,6 @@ specifiers:
   ethers: ^5.5.4
   prettier: ^2.5.1
   prettier-plugin-svelte: ^2.5.0
-  siwe: ^1.1.0
   svelte: ^3.44.0
   svelte-check: ^2.2.6
   svelte-i18n: ^3.3.13
@@ -31,11 +31,11 @@ dependencies:
   '@floating-ui/dom': 0.2.0
   buffer: 6.0.3
   ethers: 5.5.4
-  siwe: 1.1.0
   svelte-i18n: 3.3.13_svelte@3.46.4
 
 devDependencies:
   '@sveltejs/adapter-auto': 1.0.0-next.17
+  '@sveltejs/adapter-static': 1.0.0-next.0
   '@sveltejs/kit': 1.0.0-next.278_svelte@3.46.4
   '@typescript-eslint/eslint-plugin': 5.12.0_39008ab451aed7e12174fadc21405fee
   '@typescript-eslint/parser': 5.12.0_eslint@7.32.0+typescript@4.5.5
@@ -494,27 +494,6 @@ packages:
       picomatch: 2.3.1
     dev: true
 
-  /@stablelib/binary/1.0.1:
-    resolution: {integrity: sha512-ClJWvmL6UBM/wjkvv/7m5VP3GMr9t0osr4yVgLZsLCOz4hGN9gIAFEqnJ0TsSMAN+n840nf2cHZnA5/KFqHC7Q==}
-    dependencies:
-      '@stablelib/int': 1.0.1
-    dev: false
-
-  /@stablelib/int/1.0.1:
-    resolution: {integrity: sha512-byr69X/sDtDiIjIV6m4roLVWnNNlRGzsvxw+agj8CIEazqWGOQp2dTYgQhtyVXV9wpO6WyXRQUzLV/JRNumT2w==}
-    dev: false
-
-  /@stablelib/random/1.0.1:
-    resolution: {integrity: sha512-zOh+JHX3XG9MSfIB0LZl/YwPP9w3o6WBiJkZvjPoKKu5LKFW4OLV71vMxWp9qG5T43NaWyn0QQTWgqCdO+yOBQ==}
-    dependencies:
-      '@stablelib/binary': 1.0.1
-      '@stablelib/wipe': 1.0.1
-    dev: false
-
-  /@stablelib/wipe/1.0.1:
-    resolution: {integrity: sha512-WfqfX/eXGiAd3RJe4VU2snh/ZPwtSjLG4ynQ/vYzvghTh7dHFcI1wl+nrkWG6lGhukOxOsUHfv8dUXr58D0ayg==}
-    dev: false
-
   /@sveltejs/adapter-auto/1.0.0-next.17:
     resolution: {integrity: sha512-jLMh+5whg9uSJkvAYyVhi4z4GpqWxSR/XhhFCUqDMYN2hMTGCBaB4ReUAHSYIFw3IPV7m318z9igXriOaL6agQ==}
     dependencies:
@@ -535,6 +514,10 @@ packages:
       '@iarna/toml': 2.2.5
       esbuild: 0.13.15
       tiny-glob: 0.2.9
+    dev: true
+
+  /@sveltejs/adapter-static/1.0.0-next.0:
+    resolution: {integrity: sha512-5QYrPSjfqI/Jd2av/WuwhZjRZHaWu8tGmBHM6dh5W7cd4s0PG3eW0p4eASZESHmtCFWGG00PYMRjUUFPPtEcOg==}
     dev: true
 
   /@sveltejs/adapter-vercel/1.0.0-next.39:
@@ -795,10 +778,6 @@ packages:
       normalize-path: 3.0.0
       picomatch: 2.3.1
     dev: true
-
-  /apg-js/4.1.1:
-    resolution: {integrity: sha512-DwTfzx1YuCrnEvywiU/AYKiX8Y6JzhY8PwaM9syh54zzBPaHzonN7c4YsAspC6YcdSu/jfBXBJ1S9hj1QsiePA==}
-    dev: false
 
   /argparse/1.0.10:
     resolution: {integrity: sha512-o5Roy6tNG4SL/FOkCAN6RzjiakZS25RLYFrcMttJqbdd8BWrnA+fGz57iN5Pb06pvBGvl5gQ0B48dJlslXvoTg==}
@@ -2132,17 +2111,6 @@ packages:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
     dev: true
-
-  /siwe/1.1.0:
-    resolution: {integrity: sha512-dOv8Y3756kdE5sdXdqvyAJzvIub+e4dGtY7TVdMeu6/PzK+Bu9do2kcXga2zgunZW0eiM2N9Hd0+u0Wd5OLitg==}
-    dependencies:
-      '@stablelib/random': 1.0.1
-      apg-js: 4.1.1
-      ethers: 5.5.4
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-    dev: false
 
   /slash/3.0.0:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
