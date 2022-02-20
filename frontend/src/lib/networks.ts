@@ -70,7 +70,7 @@ export const networks: Network[] = [
 	},
 	{
 		"slug": "ethereum-ropsten",
-		"name": "Ethereum Ropsten Testnet",
+		"name": "Ethereum Ropsten",
 		"chainId": 3,
 		"shortName": "rop",
 		"chain": "ETH",
@@ -96,7 +96,7 @@ export const networks: Network[] = [
 	},
 	{
 		"slug": "ethereum-rinkeby",
-		"name": "Ethereum Rinkeby Testnet",
+		"name": "Ethereum Rinkeby",
 		"chainId": 4,
 		"shortName": "rin",
 		"chain": "ETH",
@@ -128,7 +128,7 @@ export const networks: Network[] = [
 	},
 	{
 		"slug": "ethereum-goerli",
-		"name": "Ethereum Goerli Testnet",
+		"name": "Ethereum Goerli",
 		"chainId": 5,
 		"shortName": "goe",
 		"chain": "ETH",
@@ -713,6 +713,23 @@ const networkSlugToIcon: Record<string, string> = {
 export const networkIcons: Record<string, string> = Object.fromEntries(availableNetworks.map(({ slug, chainId }) => [chainId, networkSlugToIcon[slug] ?? networkSlugToIcon[mainnetForTestnet[slug]?.slug]]))
 
 export const vaultAssetsByNetwork: Record<string, ERC20Token[]> = {
+	"ethereum": [],
+	"ethereum-ropsten": [],
+	"ethereum-rinkeby": [],
+	"ethereum-goerli": [],
+	"polygon-mumbai": [],
+	// "avalanche-fuji": [],
+	"celo-alfajores": [],
+	"metis-stardust": [],
+	"aurora-testnet": [],
+	"harmony-shard0": [],
+	"harmony-shard1": [],
+	"skale-testnet": [],
+	"nahmii-testnet": [],
+	"nervos-godwoken": [],
+	"arbitrum-rinkeby": [],
+	"reef-testnet": [],
+
 	'ethereum': [{"chainId":1,"address":"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
 	'ethereum-rinkeby': [{"chainId":4,"address":"0xeb8f08a975ab53e34d8a0330e0d34de942c95926","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
 	'polygon': [{"chainId":137,"address":"0xeb8f08a975ab53e34d8a0330e0d34de942c95926","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
@@ -723,4 +740,52 @@ export const vaultAssetsByNetwork: Record<string, ERC20Token[]> = {
 	'celo-alfajores': [{"chainId":44787,"address":"0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1","name":"Celo Dollar","symbol":"cUSD","decimals":18,"icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/7236.png"}],
 	'metis': [{"chainId":1088,"address":"0xAF82969ECF299c1f1Bb5e1D12dDAcc9027431160","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
 	'metis-stardust': [{"chainId":588,"address":"0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
+}
+
+
+
+
+import pocketNetworkIcon from '../assets/dapps/pocket.svg'
+import alchemyIcon from '../assets/dapps/alchemy.svg'
+import blockdaemonIcon from '../assets/dapps/blockdaemon.svg'
+
+export const rpcProviders = [
+	{ name: 'Pocket Network', icon: pocketNetworkIcon },
+	{ name: 'Alchemy', icon: alchemyIcon },
+	{ name: 'Blockdaemon', icon: blockdaemonIcon },
+]
+export const rpcProvidersForNetwork = {
+	"ethereum": [],
+	"ethereum-ropsten": [],
+	"ethereum-rinkeby": [],
+	"ethereum-goerli": [],
+	"polygon-mumbai": [],
+	// "avalanche-fuji": [],
+	"celo-alfajores": [],
+	"metis-stardust": [],
+	"aurora-testnet": [],
+	"harmony-shard0": [],
+	"harmony-shard1": [],
+	"skale-testnet": [],
+	"nahmii-testnet": [],
+	"nervos-godwoken": [],
+	"arbitrum-rinkeby": [],
+	"reef-testnet": [],
+
+	"ethereum": rpcProviders,
+	"ethereum-ropsten": rpcProviders,
+	"ethereum-rinkeby": rpcProviders,
+	"ethereum-goerli": rpcProviders,
+	"polygon-mumbai": rpcProviders,
+	// "avalanche-fuji": rpcProviders,
+	"celo-alfajores": rpcProviders,
+	"metis-stardust": rpcProviders,
+	"aurora-testnet": rpcProviders,
+	"harmony-shard0": rpcProviders,
+	"harmony-shard1": rpcProviders,
+	"skale-testnet": rpcProviders,
+	"nahmii-testnet": rpcProviders,
+	"nervos-godwoken": rpcProviders,
+	"arbitrum-rinkeby": rpcProviders,
+	"reef-testnet": rpcProviders,
 }

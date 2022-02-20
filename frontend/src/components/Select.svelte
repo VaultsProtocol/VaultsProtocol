@@ -52,7 +52,7 @@
 				<img src={icons[value]} />
 			{/if}
 			{value
-				? labels[value] ?? value
+				? labels?.[value] ?? value
 				: placeholderLabel}
 		</slot>
 	</button>
@@ -73,7 +73,7 @@
 					{#if icons?.[optionValue]}
 						<img src={icons[optionValue]} />
 					{/if}
-					{labels[optionValue]}
+					{labels?.[optionValue] || optionValue}
 				</slot>
 			</button>
 		{/each}

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Network } from '@ethersproject/providers'
-	import { availableNetworks as _availableNetworks, networkIcons, networks, networksBySlug } from '$lib/networks'
+	import { availableNetworks as _availableNetworks, networkIcons, networks, networksBySlug, rpcProviders } from '$lib/networks'
 
 
 	export let availableNetworks: Network[] = _availableNetworks
@@ -15,6 +15,12 @@
 	import { scale } from 'svelte/transition'
 </script>
 
+
+<Select
+	bind:value={network}
+	values={rpcProviders.map(rpcProvider => rpcProvider.name)}
+	icons={Object.fromEntries(rpcProviders.map(({ name, icon }) => [name, icon]))}
+/>
 
 <Select
 	bind:value={network}
