@@ -38,6 +38,12 @@
 				'Withdraw'
 
 
+	// Methods/hooks/lifecycle
+	const onSubmit = () => {
+		
+	}
+
+
 	// Components
 	import Tabs from '../components/Tabs.svelte'
 	import TokenAmountSelect from './TokenAmountSelect.svelte'
@@ -49,7 +55,7 @@
 </script>
 
 
-<div class="card column">
+<form class="card column" on:submit={onSubmit}>
 	<h2>Manage Position</h2>
 
 	<hr>
@@ -108,4 +114,4 @@
 
 	<div class="row centered">
 	</div>
-</div>
+</form>
