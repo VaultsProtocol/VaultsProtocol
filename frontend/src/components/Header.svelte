@@ -40,6 +40,7 @@
 
 	// Components
 	import ConnectAccount from './ConnectAccount.svelte'
+	import NetworkSelect from './NetworkSelect.svelte'
 
 
 	// Styles/animations
@@ -69,6 +70,8 @@
 	</nav>
 
 	<div class="header-right row">
+		<NetworkSelect />
+
 		<ConnectAccount />
 
 		<div class="burger" role="button" tabIndex={0} on:mousedown={(e) => document.activeElement?.blur?.()}>
