@@ -100,6 +100,7 @@
 
 
 	.loading {
+		height: calc(100vh - var(--header-height));
 		animation: Loading 1s infinite ease-in-out;
 	}
 	@keyframes Loading {

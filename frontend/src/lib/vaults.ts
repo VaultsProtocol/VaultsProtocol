@@ -1,6 +1,6 @@
-import type { ChainID } from '$lib/networks'
+import { vaultAssetsByNetwork, type ChainID } from '$lib/networks'
 import { BigNumber } from 'ethers'
-import type { ERC20Token } from './tokens'
+import { type ERC20Token, erc20TokensBySymbol } from './tokens'
 
 
 export enum VaultType {
@@ -152,7 +152,7 @@ export type VaultConfig<T extends VaultType> = {
 	// governanceStrategy: GovernanceStrategy
 }
 
-export const getDefaultVaultConfig = () => ({
+export const getDefaultVaultConfig = (typę: VaultType) => ({
 	about: {
 		name: '',
 		description: '',
@@ -161,7 +161,7 @@ export const getDefaultVaultConfig = () => ({
 		discord: '',
 	},
 	chainId: 1,
-	tokens: [],
+	tokens: vaultAssetsByNetwork['ethereum'],
 	type: undefined,
 	config: {
 		// VaultType.Degen
@@ -201,7 +201,7 @@ export type VaultStatus = {
 
 
 export type VaultPosition = {
-	withdrawableBalance: BigNumber
+	balance: BigNumber
 	yieldEarned: BigNumber
 }
 

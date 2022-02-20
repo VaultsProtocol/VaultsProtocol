@@ -263,6 +263,8 @@ export const connectWallet = async ({
 	const chainId = parseInt(await provider.request({ method: 'eth_chainId' }), 16)
 	const accounts = await provider.request({ method: 'eth_accounts' })
 
+	console.log('getProviderName', getProviderName(provider))
+
 	return {
 		chainId,
 		accounts,
@@ -281,5 +283,143 @@ export const disconnectWallet = async ({ walletType }) => {
 	} else if(walletConnectProvider?.disconnect){
 		walletConnectProvider.qrcode = false
 		await walletConnectProvider.disconnect()
+	}
+}
+
+
+
+export function getProviderName(provider: any): string | undefined {
+	if (!provider) return
+
+	if (provider.isMathWallet) {
+		return 'MathWallet'
+	}
+
+	if (provider.isDIDWallet) {
+		return 'DIDWallet'
+	}
+
+	if (provider.isWalletIO) {
+		return 'wallet.io'
+	}
+
+	if (provider.isDcentWallet) {
+		return "D'CENT"
+	}
+
+	if (provider.isTokenPocket) {
+		return 'TokenPocket'
+	}
+
+	if (provider.isOwnbit) {
+		return 'Ownbit'
+	}
+
+	if (provider.wallet === 'MEETONE') {
+		return 'MEETONE'
+	}
+
+	if (provider.isTorus) {
+		return 'Torus'
+	}
+
+	if (provider.isImToken) {
+		return 'imToken'
+	}
+
+	if (provider.isDapper) {
+		return 'Dapper'
+	}
+
+	if (provider.isWalletConnect) {
+		return 'WalletConnect'
+	}
+
+	if (provider.isTrust) {
+		return 'Trust'
+	}
+
+	if (provider.isCoinbaseWallet) {
+		return 'Coinbase'
+	}
+
+	if (provider.isOpera) {
+		return 'Opera'
+	}
+
+	if (provider.isStatus) {
+		return 'Status'
+	}
+
+	if (provider.isXDEFI) {
+		return 'XDEFI'
+	}
+
+	if (provider.isTally) {
+		return 'Tally'
+	}
+
+	if (provider.isTokenary) {
+		return 'Tokenary'
+	}
+
+	if (provider.isFrame) {
+		return 'Frame'
+	}
+
+	if (provider.isMYKEY) {
+		return 'MYKEY'
+	}
+
+	if (provider.isHbWallet) {
+		return 'huobiwallet'
+	}
+
+	if (provider.isHyperPay) {
+		return 'HyperPay'
+	}
+
+	if (provider.isAToken) {
+		return 'AToken'
+	}
+
+	if (provider.isLiquality) {
+		return 'Liquality'
+	}
+
+	if (provider.isAlphaWallet) {
+		return 'AlphaWallet'
+	}
+
+	if (provider.isBitpie) {
+		return 'Bitpie'
+	}
+
+	if (provider.isTp) {
+		return 'tp'
+	}
+
+	if (provider.isBlockWallet) {
+		return 'BlockWallet'
+	}
+
+	if (provider.isOneInchIOSWallet) {
+		return '1inch'
+	}
+
+	if (provider.isOneInchIOSWallet) {
+		return '1inch'
+	}
+
+	// =====================================
+	// When adding new wallet place above this metamask check as some providers
+	// have an isMetaMask property in addition to the wallet's own `is[WalletName]`
+
+	if (provider.isMetaMask && provider._metamask) {
+		return 'MetaMask'
+	}
+
+	if (provider.host && provider.host.indexOf('localhost') !== -1) {
+		return 'localhost'
 	}
 }

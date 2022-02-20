@@ -18,7 +18,7 @@
 	} from '$lib/vaults'
 
 	import { erc20Tokens } from '$lib/tokens'
-	import { networks } from '$lib/networks'
+	import { networks, networksByChainID, vaultAssetsByNetwork } from '$lib/networks'
 
 
 
@@ -155,19 +155,6 @@
 				<hr>
 
 				<div class="column vault-row">
-
-					<label class="card row equal">
-						<h3>{$_('Yield Asset')}</h3>
-
-						<TokenSelect bind:token={vaultConfig.tokens[0]} />
-						<!-- {#each vaultConfig.config.tokens as token, i}}
-							<TokenAmountSelect
-								bind:token={vaultConfig.config.initialLiquidity.tokens[i]}
-								bind:amount={vaultConfig.config.initialLiquidity.amount}
-							/>
-						{/each} -->
-					</label>
-
 					<label class="card row equal">
 						<h3>{$_('Network / Chain')}</h3>
 						<div class="equal">
@@ -177,6 +164,18 @@
 								labels={Object.fromEntries(networks.map(({ chainId, name }) => [chainId, name]))}
 							/>
 						</div>
+					</label>
+
+					<label class="card row equal">
+						<h3>{$_('Yield Asset')}</h3>
+
+						<TokenSelect availableTokens={vaultAssetsByNetwork[networksByChainID[vaultConfig.chainId].slug] ?? []} bind:token={vaultConfig.tokens[0]} />
+						<!-- {#each vaultConfig.config.tokens as token, i}}
+							<TokenAmountSelect
+								bind:token={vaultConfig.config.initialLiquidity.tokens[i]}
+								bind:amount={vaultConfig.config.initialLiquidity.amount}
+							/>
+						{/each} -->
 					</label>
 
 					<label class="card column">
@@ -263,7 +262,7 @@
 							<label class="card column">
 								<h4>{$_('Deadline')}</h4>
 								<TimeSelect bind:value={vaultConfig.config.deadline} />
-								<p>{$_('The window of time starting from the time of the slast contribution for another contribution to be made.')}</p>
+								<p>{$_('The window of time starting from the time of the last contribution for another contribution to be made.')}</p>
 							</label>
 						</div>
 

@@ -8,7 +8,7 @@
 
 
 	import Select from '../components/Select.svelte'
-    import TokenIcon from './TokenIcon.svelte'
+    import Icon from './Icon.svelte'
 
 
 	import { scale } from 'svelte/transition'
@@ -25,8 +25,8 @@
 		{#key value}
 			<div class="row" transition:scale> -->
 				<img src={value.icon} alt={value.symbol} />
-                <!-- <TokenIcon {token} /> -->
-                <!-- <TokenIcon icon={value.icon} /> -->
+                <!-- <Icon {token} /> -->
+                <!-- <Icon icon={value.icon} /> -->
 				{value.symbol}
 			<!-- </div>
 		{/key}

@@ -2,23 +2,30 @@
 	import { _ } from 'svelte-i18n'
 
 
-	import { getDefaultVaultConfig } from '../../lib/vaults'
+	import { getDefaultVaultConfig, VaultType } from '../../lib/vaults'
 
 	import { BigNumber } from 'ethers'
 
-	const getPlaceholderVault = () => ({
-		vaultConfig: getDefaultVaultConfig(),
+	const getPlaceholderVault = () => {
+		const vaultConfig = getDefaultVaultConfig(Object.values(VaultType)[Math.random() * Object.values(VaultType).length | 0])
 
-		vaultStatus: {
-			tokenId: 0,
-			totalBalance: BigNumber.from(10000),
-			endTimestamp: Date.now() + 120000
-		},
+		const { decimals } = vaultConfig.tokens[0]
 
-		vaultPosition: {
+		return {
+			vaultConfig,
 
+			vaultStatus: {
+				tokenId: 0,
+				totalBalance: parseUnits('12345678', decimals),
+				endTimestamp: Date.now() + 120000
+			},
+
+			vaultPosition: {
+				balance: parseUnits('1234', decimals),
+				yieldEarned: parseUnits('1000', decimals)
+			}
 		}
-	})
+	}
 
 	const vaults = [
 		getPlaceholderVault(),
@@ -34,6 +41,8 @@
 
 
 	import Vault from '../../components/Vault.svelte'
+	import VaultManager from '../../components/VaultManager.svelte'
+import { parseUnits } from 'ethers/lib/utils';
 </script>
 
 
@@ -43,13 +52,21 @@
 	</section>
 
 	<section id="top">
-		<div class="grid">
+		<div class="column">
 			{#each vaults as { vaultConfig, vaultStatus, vaultPosition }}
-				<Vault
-					{vaultConfig}
-					{vaultStatus}
-					{vaultPosition}
-				/>
+				<div class="row">
+					<Vault
+						{vaultConfig}
+						{vaultStatus}
+						{vaultPosition}
+					/>
+
+					<VaultManager
+						{vaultConfig}
+						{vaultStatus}
+						{vaultPosition}
+					/>
+				</div>
 			{/each}
 		</div>
 	</section>
@@ -57,9 +74,8 @@
 
 
 <style>
-	.grid {
-		--grid-size: 400px;
-		grid-auto-rows: 540px;
-		/* --grid-gap: 2rem; */
+	.row {
+		align-items: start;
+		grid-template-columns: auto 1fr;
 	}
 </style>

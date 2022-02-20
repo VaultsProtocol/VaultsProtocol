@@ -5,12 +5,14 @@
 	export let address: string
 	export let name: string
 	export let icon: string
+	export let decimals: number
 
 	export let erc20Token: ERC20Token
 	$: symbol = $$props.symbol || erc20Token?.symbol
 	$: address = $$props.address || erc20Token?.address
 	$: name = $$props.name || erc20Token?.name
 	$: icon = $$props.icon || erc20Token?.icon
+	$: decimals = $$props.decimals || erc20Token?.decimals
 
 	export let balance: number | string | BigNumberish = 0
 	export let price
@@ -33,7 +35,7 @@
 	import { tweened } from 'svelte/motion'
 
 	const tweenedValue = tweened(0, {
-		duration: tween ? 1000 : 0,
+		duration: tween ? 200 : 0,
 		delay: tween ? 1 : 0,
 		easing: quintOut,
 		interpolate: (from, to) => t => {
@@ -42,7 +44,7 @@
 			return Math.pow(10, logFrom + t * (logTo - logFrom))
 		}
 	})
-	$: tweenedValue.set(Math.abs(balance || 0))
+	$: tweenedValue.set(Math.abs(formatUnits(balance, erc20Token?.decimals || 18) || 0))
 
 
 	import { formatValue } from '../lib/formatValue'
@@ -50,8 +52,9 @@
 
 
 	import type { ERC20Token } from '$lib/tokens'
-	import TokenIcon from './TokenIcon.svelte'
+	import Icon from './Icon.svelte'
 	import { expoOut, quintOut } from 'svelte/easing'
+import { formatUnits } from 'ethers/lib/utils';
 </script>
 
 
@@ -104,7 +107,7 @@
 			})}
 		</span>
 	{:else}
-		<!-- <TokenIcon {symbol} {address} {name} {icon} {erc20Token} /> -->
+		<!-- <Icon {symbol} {address} {name} {icon} {erc20Token} /> -->
 		<span>
 			<span class="token-balance">
 				{isNegative ? '−' : ''}{formatValue({
@@ -115,6 +118,6 @@
 			</span>
 			<span class="token-name">{symbol || formatAddress(address)}</span>
 		</span>
-		<TokenIcon {symbol} {address} {name} {icon} {erc20Token} />
+		<Icon {symbol} {address} {name} {icon} {erc20Token} />
 	{/if}
 </span>

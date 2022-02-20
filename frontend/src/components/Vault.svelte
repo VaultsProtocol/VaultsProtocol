@@ -18,7 +18,7 @@
 	}
 
 	export let vaultPosition: VaultPosition = {
-		withdrawableBalance: BigNumber.from(0),
+		balance: BigNumber.from(0),
 		yieldEarned: BigNumber.from(0)
 	}
 
@@ -31,7 +31,7 @@
 	import HeightContainer from './HeightContainer.svelte'
 	import PieChart from './PieChart.svelte'
 	import TokenBalance from './TokenBalance.svelte'
-	import TokenIcon from './TokenIcon.svelte'
+	import Icon from './Icon.svelte'
 
 
 	// Images
@@ -55,7 +55,7 @@
 		<header class="row">
 			<div class="row">
 				<span class="chain">
-					<TokenIcon token={networksByChainID[vaultConfig.chainId].nativeCurrency} />
+					<Icon token={networksByChainID[vaultConfig.chainId].nativeCurrency} />
 				</span>
 
 				{#if vaultConfig.about.name}
@@ -193,7 +193,7 @@
 					as
 					{ label, link, icon } (label)
 				}
-					<a class="icon button round" href={link} transition:scale animate:flip>
+					<a class="icon button round" href={link.includes('://') ? link : 'https://' + link} target="_blank" rel="nofollow" transition:scale animate:flip>
 						<!-- {$_(label)} -->
 						<img src={icon} alt={label} width="27" />
 					</a>
