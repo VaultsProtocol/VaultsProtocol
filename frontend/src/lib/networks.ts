@@ -661,7 +661,7 @@ export const availableNetworks = [
 
 // import arbitrumIcon from '../assets/networks/arbitrum.svg'
 import auroraIcon from '../assets/networks/aurora.svg'
-// import avalancheIcon from '../assets/networks/avalanche.svg'
+import avalancheIcon from '../assets/networks/avalanche.svg'
 import celoIcon from '../assets/networks/celo.svg'
 import ethereumIcon from '../assets/networks/ethereum.svg'
 import harmonyIcon from '../assets/networks/harmony.svg'
@@ -675,17 +675,17 @@ import skaleIcon from '../assets/networks/skale.svg'
 export const chainIcons: Record<string, string> = {
 	// 'arbitrum': arbitrumIcon,
 	'aurora': auroraIcon,
-	// 'avalanche': avalancheIcon,
+	'avalanche': avalancheIcon,
 	'celo': celoIcon,
 	'ethereum': ethereumIcon,
 	'harmony-shard0': harmonyIcon,
 	'harmony-shard1': harmonyIcon,
 	'metis': metisIcon,
-	'nahmii': nahmiiIcon,
-	'nervos': nervosIcon,
+	'nahmii-testnet': nahmiiIcon,
+	'nervos-godwoken': nervosIcon,
 	'polygon': polygonIcon,
 	'reef': reefIcon,
-	'skale': skaleIcon,
+	'skale-testnet': skaleIcon,
 }
 
 export const vaultAssetsByNetwork: Record<string, ERC20Token[]> = {
