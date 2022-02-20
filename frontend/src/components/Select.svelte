@@ -23,7 +23,7 @@
 
 
 	// Methods/hooks/lifecycle
-	$: if(!values.includes(value))
+	$: if(values && !values.includes(value))
 		value = values[0]
 		// value = undefined
 
