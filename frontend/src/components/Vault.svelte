@@ -31,7 +31,7 @@
 	import HeightContainer from './HeightContainer.svelte'
 	import PieChart from './PieChart.svelte'
 	import TokenBalance from './TokenBalance.svelte'
-	import TokenIcon from './TokenIcon.svelte'
+	import Icon from './Icon.svelte'
 
 
 	// Images
@@ -55,7 +55,7 @@
 		<header class="row">
 			<div class="row">
 				<span class="chain">
-					<TokenIcon token={networksByChainID[vaultConfig.chainId].nativeCurrency} />
+					<Icon token={networksByChainID[vaultConfig.chainId].nativeCurrency} />
 				</span>
 
 				{#if vaultConfig.about.name}

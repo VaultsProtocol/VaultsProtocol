@@ -52,7 +52,7 @@
 
 
 	import type { ERC20Token } from '$lib/tokens'
-	import TokenIcon from './TokenIcon.svelte'
+	import Icon from './Icon.svelte'
 	import { expoOut, quintOut } from 'svelte/easing'
 import { formatUnits } from 'ethers/lib/utils';
 </script>
@@ -107,7 +107,7 @@ import { formatUnits } from 'ethers/lib/utils';
 			})}
 		</span>
 	{:else}
-		<!-- <TokenIcon {symbol} {address} {name} {icon} {erc20Token} /> -->
+		<!-- <Icon {symbol} {address} {name} {icon} {erc20Token} /> -->
 		<span>
 			<span class="token-balance">
 				{isNegative ? '−' : ''}{formatValue({
@@ -118,6 +118,6 @@ import { formatUnits } from 'ethers/lib/utils';
 			</span>
 			<span class="token-name">{symbol || formatAddress(address)}</span>
 		</span>
-		<TokenIcon {symbol} {address} {name} {icon} {erc20Token} />
+		<Icon {symbol} {address} {name} {icon} {erc20Token} />
 	{/if}
 </span>

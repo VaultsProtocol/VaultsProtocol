@@ -26,40 +26,38 @@
 	let i = cachedIndex[(chainId + address) || symbol] ||= 0
 	$: cachedIndex[(chainId + address) || symbol] = i
 	$: imageSources = cachedImageSources[(chainId + address) || symbol] ||= [
-		symbol === 'AVAX' && '/logos/avax-token.svg',
-		symbol === 'MATIC' && '/logos/matic-token.svg',
-		symbol === 'FTM' && '/logos/fantom-token.svg',
-		symbol === 'METIS' && '/logos/metis-token.png',
-		symbol === 'AETH' && '/logos/arbitrum.svg',
-		symbol === 'skETH' && '/logos/skale-token.svg',
-		symbol === 'CELO' && '/logos/celo.svg',
-		symbol === 'AAVE' && 'https://token-icons.s3.amazonaws.com/0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9.png',
-		address && `https://token-icons.s3.amazonaws.com/${address.toLowerCase()}.png`,
-		icon,
-		symbol && `https://zapper.fi/images/${symbol}-icon.png`,
-		address && `https://tokens.1inch.exchange/${address.toLowerCase()}.png`,
-		address && `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`,
-		address && erc20TokensByContractAddress[address.toLowerCase()]?.icon,
-		symbol && erc20TokensBySymbol[symbol]?.icon,
+		symbol === 'AAVE' && 'assets/logos/aave.svg',
+		symbol === 'AURORA' && 'assets/logos/aurora.svg',
+		symbol === 'AVAX' && 'assets/logos/avalanche.svg',
+		symbol === 'CELO' && 'assets/logos/celo.svg',
+		symbol === 'DAI' && 'assets/logos/dai.svg',
+		symbol === 'ONE' && 'assets/logos/harmony.svg',
+		symbol === 'METIS' && 'assets/logos/metis.svg',
+		symbol === 'NAHMII' && 'assets/logos/nahmii.svg',
+		symbol === 'NERVOS' && 'assets/logos/nervos.svg',
+		symbol === 'MATIC' && 'assets/logos/polygon.svg',
+		symbol === 'SKALE' && 'assets/logos/skale.svg',
+		symbol === 'USDC' && 'assets/logos/usdc.svg',
+		symbol === 'YFI' && 'assets/logos/yearn.svg',
+
+		// symbol && `https://zapper.fi/images/${symbol}-icon.png`,
+		// address && `https://tokens.1inch.exchange/${address.toLowerCase()}.png`,
+		// address && `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`,
+		// address && erc20TokensByContractAddress[address.toLowerCase()]?.icon,
+		// symbol && erc20TokensBySymbol[symbol]?.icon,
 	].filter(Boolean)
 
 	// let loadingError
 </script>
 
 
-{#if symbol?.includes(' / ')}
-	{#each symbol.split(' / ') as symbol}
-		<svelte:self {symbol} />
-	{/each}
-{:else}
-	<picture class="token-icon" title={symbol + (address ? ` (${address})` : '')} on:click={e=>console.log(address || symbol)}>
-        {#if imageSources[i]}
-			<img src={imageSources[i]} on:error={e => i++} />
-		{:else}
-			<span class="placeholder-icon" data-icon={symbol ?? '?'} />
-		{/if}
-	</picture>
-{/if}
+<picture class="token-icon" title={symbol + (address ? ` (${address})` : '')} on:click={e=>console.log(address || symbol)}>
+	{#if imageSources[i]}
+		<img src={imageSources[i]} on:error={e => i++} />
+	{:else}
+		<span class="placeholder-icon" data-icon={symbol ?? '?'} />
+	{/if}
+</picture>
 
 
 <style>
@@ -74,10 +72,6 @@
 	}
 	.token-icon + :global(.token-icon) {
 		margin-left: calc(-0.25em - var(--padding-inner));
-	}
-
-	source {
-		display: none;
 	}
 
 	img, .placeholder-icon, .token-icon > :global(svg) {

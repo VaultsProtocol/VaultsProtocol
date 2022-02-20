@@ -1,4 +1,4 @@
-import type { ChainID } from '$lib/networks'
+import { vaultAssetsByNetwork, type ChainID } from '$lib/networks'
 import { BigNumber } from 'ethers'
 import { type ERC20Token, erc20TokensBySymbol } from './tokens'
 
@@ -161,9 +161,7 @@ export const getDefaultVaultConfig = (typę: VaultType) => ({
 		discord: '',
 	},
 	chainId: 1,
-	tokens: [
-		erc20TokensBySymbol['DAI']
-	],
+	tokens: vaultAssetsByNetwork['ethereum'],
 	type: undefined,
 	config: {
 		// VaultType.Degen
