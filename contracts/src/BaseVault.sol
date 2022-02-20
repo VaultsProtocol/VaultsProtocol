@@ -253,10 +253,10 @@ contract BaseVault is ERC721 {
     // ##                     ##
     // #########################
 
-    function tokenURI(uint256 id) public view returns (MetaData memory) {
+    function tokenURI(uint256 id) public view virtual returns (MetaData memory) {
 
         return MetaData(name, address(this), withdrawableById(id), id, 0);
-        
+
     }
 
     // #########################

@@ -13,8 +13,6 @@ contract SuperFluidVault is CharityVault {
 
 
 
-
-
     // #########################
     // ##                     ##
     // ##     Constructor     ##
