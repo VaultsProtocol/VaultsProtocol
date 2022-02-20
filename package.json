@@ -2,6 +2,7 @@
   "name": "Something",
   "license": "",
   "scripts": {
+    "compile": "npx hardhat compile && rm -rf frontend/src/lib/contracts && cp -r artifacts/contracts/src frontend/src/lib/contracts && rm frontend/src/lib/contracts/**/*.dbg.json; npx typechain --target ethers-v5  frontend/src/lib/contracts/**/*.json",
     "test": "npx hardhat test",
     "deploy-genesis-nft-eth-main": "npx hardhat deploy-genesis-nft --network ethMain",
     "deploy-supply-boxes-nft-eth-main": "npx hardhat deploy-suply-boxes-nft --network ethMain",
@@ -20,7 +21,9 @@
     "chai-as-promised": "^7.1.1",
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.5.1",
-    "hardhat": "^2.8.4"
+    "hardhat": "^2.8.4",
+    "typechain": "^7.0.0",
+    "typescript": "^4.5.5"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.4.2",

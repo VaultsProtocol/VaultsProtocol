@@ -17,3 +17,7 @@ out/
 #Hardhat files
 cache
 artifacts
+
+
+# Frontend
+# frontend/src/lib/contracts
