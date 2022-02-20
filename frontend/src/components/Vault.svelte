@@ -46,8 +46,8 @@
 </script>
 
 
-<svg class="vault-container" viewBox="0 0 400 800" xmlns="http://www.w3.org/2000/svg">
-	<foreignObject x="0" y="0" width="400" height="800">
+<svg class="vault-container" viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg">
+	<foreignObject x="0" y="0" width="400" height="600">
 		<div xmlns="http://www.w3.org/1999/xhtml">
 
 <article class="vault card">

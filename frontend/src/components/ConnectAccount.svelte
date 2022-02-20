@@ -201,7 +201,6 @@
 		overflow: hidden;
 
 		background-color: var(--background-color-4);
-		background-color: var(--background-color-white)
 	}
 	.avatar .wallet-icon {
 		margin: 0.55rem;

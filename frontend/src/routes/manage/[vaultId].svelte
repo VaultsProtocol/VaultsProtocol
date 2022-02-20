@@ -32,7 +32,10 @@
 
 
 	// Stores
-	import { provider } from '../stores/provider'
+	import { provider } from '../../../stores/provider'
+
+	let vaultId
+	$: ({ vaultId } = $page.params)
 
 
 	// Internal state
@@ -61,25 +64,26 @@
 
 
 	// Components
-	import Vault from '../components/Vault.svelte'
-	import HeightContainer from '../components/HeightContainer.svelte'
-	import AddressInput from '../components/AddressInput.svelte'
-	import Select from '../components/Select.svelte'
-	import Tabs from '../components/Tabs.svelte'
-	import TokenSelect from '../components/TokenSelect.svelte'
-	import TokenAmountSelect from '../components/TokenAmountSelect.svelte'
-	import MultipleAddressInput from '../components/MultipleAddressInput.svelte'
-	import PercentInput from '../components/PercentInput.svelte'
-	import TimeSelect from '../components/TimeSelect.svelte'
+	import Vault from '../../components/Vault.svelte'
+	import HeightContainer from '../../components/HeightContainer.svelte'
+	import AddressInput from '../../components/AddressInput.svelte'
+	import Select from '../../components/Select.svelte'
+	import Tabs from '../../components/Tabs.svelte'
+	import TokenSelect from '../../components/TokenSelect.svelte'
+	import TokenAmountSelect from '../../components/TokenAmountSelect.svelte'
+	import MultipleAddressInput from '../../components/MultipleAddressInput.svelte'
+	import PercentInput from '../../components/PercentInput.svelte'
+	import TimeSelect from '../../components/TimeSelect.svelte'
 
 
 	import { fade, fly, scale } from 'svelte/transition'
+import { page } from '$app/stores';
 </script>
 
 
 <main>
 	<section>
-		<h1>{$_('Create a Vault')}</h1>
+		<h1>{$_('Manage Vault')}</h1>
 	</section>
 
 	<section class="row">
@@ -270,15 +274,15 @@
 					{:else if vaultConfig.type === VaultType.DAO}
 						<div class="grid" in:fly={{ x: 20 }} out:fly={{ x: -20 }}>
 							<div class="card column">
-								<div class="column">
+								<label class="column">
 									<h3>{$_('Governance Type')}</h3>
-									<Tabs
+									<Select
 										bind:value={vaultConfig.config.governanceType}
 										values={Object.values(GovernanceType)}
 										labels={Object.fromEntries(Object.entries(governanceTypeInfo).map(([key, {label}]) => [key, label]))}
 									/>
 									<p>{$_(governanceTypeInfo[vaultConfig.config.governanceType]?.description)}</p>
-								</div>
+								</label>
 
 								<div class="stack">
 									{#if vaultConfig.config.governanceType === GovernanceType.MultiSignature}
@@ -420,6 +424,12 @@
 
 	.row {
 		align-items: start;
+	}
+
+	.grid {
+		display: grid;
+		gap: var(--grid-gap);
+		/* grid-template-columns: repeat(auto-fit, minmax(min(12rem, 50vw), 1fr)); */
 	}
 
 	form > section > .card {

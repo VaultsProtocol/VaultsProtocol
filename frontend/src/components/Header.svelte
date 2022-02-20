@@ -14,12 +14,16 @@
 
 	const navLinks = [
 		{
-			title: $_('Create'),
+			title: $_('Create Vault'),
 			link: '/create',
 		},
 		{
-			title: $_('Invest'),
-			link: '/invest',
+			title: $_('Browse Vaults'),
+			link: '/browse',
+		},
+		{
+			title: $_('Manage Vaults'),
+			link: '/manage',
 		},
 	] as Link[]
 

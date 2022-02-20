@@ -1,4 +1,9 @@
-<script lang="ts">	
+<script context="module">
+	let key = 0
+</script>
+
+
+<script lang="ts">
 	// Constants/types
 	type Value = string // $$Generic<string | any>
 
@@ -6,14 +11,14 @@
 
 
 	// External state
-	export let values: Value[] = [getDefaultValue(), getDefaultValue()]
+	export let values: Value[] = []
 
 	export let minimumLength = 1
 	export let defaultLength = 2
 
 
 	// Internal state
-	let keys = []
+	let keys = values.map(_ => key++)
 
 
 	// Stores
@@ -28,7 +33,7 @@
 
 	const add = (value = getDefaultValue()) => {
 		values = [...values, value]
-		keys = [...keys, Math.random()]
+		keys = [...keys, key++]
 	}
 
 	const remove = (i) => {

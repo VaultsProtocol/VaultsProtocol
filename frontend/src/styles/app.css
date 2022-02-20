@@ -25,7 +25,14 @@ body {
 	--border-color-cc: #ccc;
 
 	--text-color: #e0e7ff;
-	--text-color: #121212;
+}
+
+@media (prefers-color-scheme: light) {
+	:root {
+		--background-color-4: var(--background-color-white);
+
+		--text-color: #121212;
+	}
 }
 
 *, ::before, ::after {
@@ -419,6 +426,13 @@ hr {
 	.row-desktop.row-reverse > :nth-child(2) {
 		order: -1;
 	}
+}
+
+
+.grid {
+	display: grid;
+	gap: var(--grid-gap);
+	grid-template-columns: repeat(auto-fit, minmax(min(var(--grid-size, 16rem), 50vw), 1fr));
 }
 
 

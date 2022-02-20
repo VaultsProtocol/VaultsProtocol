@@ -7,7 +7,7 @@
 	export let value: Value
 	export let values: Value[]
 	export let labels: Record<Value, string>
-	export let colors: Record<Value, string>
+	export let colors: Record<Value, string> = {}
 </script>
 
 
