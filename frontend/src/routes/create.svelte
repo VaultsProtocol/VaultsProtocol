@@ -33,6 +33,7 @@
 
 	// Stores
 	import { provider } from '../stores/provider'
+	import { account } from '../stores/account'
 
 
 	// Internal state
@@ -50,23 +51,52 @@
 	
 	// Methods/hooks/lifecycle
 
-	import { getContract } from '$lib/contracts'
+	import { ContractFactory, ethers } from 'ethers'
+	import { getContract, getContractBytecode } from '$lib/contracts'
 
-	$: if(currentStep = Steps.TransactionSigning)(async () => {
+	$: if(currentStep === Steps.TransactionSigning)(async () => {
+		const network = networksByChainID[vaultConfig.chainId]
+
+		// const { address, signer } = $account
+		const { address } = $account
+		const signer = globalThis.ethereum
+
+		console.log('signer', signer)
+
 		try {
 			const VaultFactory = getContract({
-				provider: $provider,
-				network: networksByChainID[vaultConfig.chainId],
+				signer,
+				network,
 				name: 'VaultFactory'
 			})
 
 			console.log('VaultFactory', VaultFactory)
 
-			console.log(1)
-			await VaultFactory.estimateGas.createDao()
-			console.log(2)
-			await VaultFactory.estimateGas.createDao()
+			console.log("Deploying sample vault")
+
+			const tx = await VaultFactory.createVault(
+				getContractBytecode({ network, name: 'BaseVault' }),
+				getContractBytecode({ network, name: 'YearnStrategy' }),
+				vaultConfig.tokens[0].address,
+				address,
+				new AbiCoder().encode(
+					["address", "string", "string"],
+					[vaultConfig.tokens[0].address, vaultConfig.about.name, vaultConfig.about.tickerSymbol ?? 'TEST'],
+				),
+				{
+					gasLimit: '3500000'
+				}
+			)
+
+			console.log('tx', tx)
+
+			await tx.wait(1)
+
+			// const sampleVault = await VaultFactory.vaults("0")
+
+			// console.log("sample vault is", sampleVault)
 		}catch(e){
+			console.error(e)
 			errorMessage = e.message
 			currentStep = Steps.TransactionFailed
 		}
@@ -89,6 +119,7 @@
 	import { fade, fly, scale } from 'svelte/transition'
 	import Portal from '../components/Portal.svelte'
 	import Modal from '../components/Modal.svelte'
+import { AbiCoder } from 'ethers/lib/utils';
 </script>
 
 
@@ -392,7 +423,7 @@
 			</section> -->
 
 			<div class="row centered">
-				<button type="submit" class="extra-large round primary" disabled={!isValid}>{$_('Create Vault')}</button>
+				<button type="submit" class="extra-large round primary" disabled={!isValid || !$account}>{$_('Create Vault')}</button>
 			</div>
 		</form>
 	</section>

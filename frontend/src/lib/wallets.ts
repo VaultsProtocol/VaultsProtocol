@@ -219,6 +219,9 @@ const getProvider = async ({
 }
 
 
+// import { providers } from 'ethers'
+import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
+
 export const connectWallet = async ({
 	walletType,
 	options = {},
@@ -263,9 +266,10 @@ export const connectWallet = async ({
 	const chainId = parseInt(await provider.request({ method: 'eth_chainId' }), 16)
 	const accounts = await provider.request({ method: 'eth_accounts' })
 
-	console.log('getProviderName', getProviderName(provider))
+	const signer = new Web3Provider(globalThis.ethereum).getSigner()
 
 	return {
+		signer: Object.assign(signer, { address: accounts[0] }),
 		chainId,
 		accounts,
 		onAccountChanged: (callback?: (accounts: string[]) => void) => {

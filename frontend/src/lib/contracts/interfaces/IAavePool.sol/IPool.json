@@ -1,17 +1,32 @@
 {
   "_format": "hh-sol-artifact-1",
-  "contractName": "IStrategy",
-  "sourceName": "contracts/src/interfaces/IStrategy.sol",
+  "contractName": "IPool",
+  "sourceName": "contracts/src/interfaces/IAavePool.sol",
   "abi": [
     {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "asset",
+          "type": "address"
+        },
+        {
           "internalType": "uint256",
           "name": "amount",
           "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "onBehalfOf",
+          "type": "address"
+        },
+        {
+          "internalType": "uint16",
+          "name": "referralCode",
+          "type": "uint16"
         }
       ],
-      "name": "deposit",
+      "name": "supply",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -20,31 +35,21 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "vault",
+          "name": "asset",
           "type": "address"
-        }
-      ],
-      "name": "initVault",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
+        },
         {
           "internalType": "uint256",
           "name": "amount",
           "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
         }
       ],
-      "name": "withdrawl",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "withdrawlableVaultToken",
+      "name": "withdraw",
       "outputs": [
         {
           "internalType": "uint256",
@@ -52,7 +57,7 @@
           "type": "uint256"
         }
       ],
-      "stateMutability": "view",
+      "stateMutability": "nonpayable",
       "type": "function"
     }
   ],
