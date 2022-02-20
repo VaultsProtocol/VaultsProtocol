@@ -4,7 +4,9 @@
 
 	import { getDefaultVaultConfig, VaultType } from '../../lib/vaults'
 
-	import { BigNumber } from 'ethers'
+	import { BigNumber, utils } from 'ethers'
+	const { parseUnits } = utils
+
 
 	const getPlaceholderVault = () => {
 		const vaultConfig = getDefaultVaultConfig(random(Object.values(VaultType)))
@@ -42,7 +44,6 @@
 
 	import Vault from '../../components/Vault.svelte'
 	import VaultManager from '../../components/VaultManager.svelte'
-import { parseUnits } from 'ethers/lib/utils';
 import { random } from '../../lib/random';
 </script>
 
