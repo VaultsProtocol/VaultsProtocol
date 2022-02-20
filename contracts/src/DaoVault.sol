@@ -61,7 +61,7 @@ contract DaoVault is BaseVault {
         override returns (uint256) {
 
             // random deposits are not inculded as they are treated as rewards on distro events
-
+            //
             //               expected balance
             return (((totalDeposits + depositedToStrat) - managed) * deposits[id].amount / totalDeposits) + yieldPerId(id);
 
