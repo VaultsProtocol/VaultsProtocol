@@ -6,7 +6,7 @@ specifiers:
   '@floating-ui/core': ^0.4.0
   '@floating-ui/dom': ^0.2.0
   '@sveltejs/adapter-auto': next
-  '@sveltejs/adapter-static': ^1.0.0-next.0
+  '@sveltejs/adapter-static': next
   '@sveltejs/kit': next
   '@textile/tableland': ^0.0.8-dev8
   '@typescript-eslint/eslint-plugin': ^5.10.1
@@ -37,7 +37,7 @@ dependencies:
 
 devDependencies:
   '@sveltejs/adapter-auto': 1.0.0-next.17
-  '@sveltejs/adapter-static': 1.0.0-next.0
+  '@sveltejs/adapter-static': 1.0.0-next.28
   '@sveltejs/kit': 1.0.0-next.278_svelte@3.46.4
   '@typescript-eslint/eslint-plugin': 5.12.0_39008ab451aed7e12174fadc21405fee
   '@typescript-eslint/parser': 5.12.0_eslint@7.32.0+typescript@4.5.5
@@ -1563,8 +1563,10 @@ packages:
       tiny-glob: 0.2.9
     dev: true
 
-  /@sveltejs/adapter-static/1.0.0-next.0:
-    resolution: {integrity: sha512-5QYrPSjfqI/Jd2av/WuwhZjRZHaWu8tGmBHM6dh5W7cd4s0PG3eW0p4eASZESHmtCFWGG00PYMRjUUFPPtEcOg==}
+  /@sveltejs/adapter-static/1.0.0-next.28:
+    resolution: {integrity: sha512-c4xLyeSwnbGQxe4f1SLpHTbxZDm3TEr43scR3tOlVgQN+mnAL9aDdl3nTtdzWmrUDmDEmY4GriAwLyFLZuINLw==}
+    dependencies:
+      tiny-glob: 0.2.9
     dev: true
 
   /@sveltejs/adapter-vercel/1.0.0-next.39:
