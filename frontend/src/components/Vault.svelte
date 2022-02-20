@@ -18,7 +18,7 @@
 	}
 
 	export let vaultPosition: VaultPosition = {
-		withdrawableBalance: BigNumber.from(0),
+		balance: BigNumber.from(0),
 		yieldEarned: BigNumber.from(0)
 	}
 
