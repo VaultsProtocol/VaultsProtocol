@@ -193,7 +193,7 @@
 					as
 					{ label, link, icon } (label)
 				}
-					<a class="icon button round" href={link} transition:scale animate:flip>
+					<a class="icon button round" href={link.includes('://') ? link : 'https://' + link} target="_blank" rel="nofollow" transition:scale animate:flip>
 						<!-- {$_(label)} -->
 						<img src={icon} alt={label} width="27" />
 					</a>

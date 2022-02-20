@@ -263,7 +263,7 @@
 							<label class="card column">
 								<h4>{$_('Deadline')}</h4>
 								<TimeSelect bind:value={vaultConfig.config.deadline} />
-								<p>{$_('The window of time starting from the time of the slast contribution for another contribution to be made.')}</p>
+								<p>{$_('The window of time starting from the time of the last contribution for another contribution to be made.')}</p>
 							</label>
 						</div>
 
