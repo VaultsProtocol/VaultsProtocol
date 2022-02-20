@@ -5,6 +5,7 @@ import { type ERC20Token, erc20TokensBySymbol } from './tokens'
 
 import aaveIcon from '../assets/dapps/aave.svg'
 import yearnIcon from '../assets/dapps/yearn.svg'
+import { random } from './random'
 
 
 export enum VaultType {
@@ -165,7 +166,7 @@ export type VaultConfig<T extends VaultType> = {
 
 export const getDefaultVaultConfig = (typę: VaultType) => ({
 	about: {
-		name: 'My Test Vault',
+		name: random(['My Test Vault']),
 		description: '',
 		website: '',
 		twitter: '',
@@ -220,5 +221,7 @@ export type VaultPosition = {
 export enum MetadataType {
 	TokenBalance = 'TokenBalance',
 	Date = 'Date',
-	String = 'String'
+	String = 'String',
+	Percent = 'Percent',
+	Address = 'Address'
 }

@@ -668,7 +668,7 @@ import polygonIcon from '../assets/networks/polygon.svg'
 import reefIcon from '../assets/networks/reef.svg'
 import skaleIcon from '../assets/networks/skale.svg'
 
-export const chainIcons: Record<string, string> = {
+const networkSlugToIcon: Record<string, string> = {
 	'arbitrum': arbitrumIcon,
 	'aurora': auroraIcon,
 	'avalanche': avalancheIcon,
@@ -683,6 +683,7 @@ export const chainIcons: Record<string, string> = {
 	'reef': reefIcon,
 	'skale-testnet': skaleIcon,
 }
+export const networkIcons: Record<string, string> = Object.fromEntries(availableNetworks.map(({ slug, chainId }) => [chainId, networkSlugToIcon[slug] ?? networkSlugToIcon[mainnetForTestnet[slug]?.slug]]))
 
 export const vaultAssetsByNetwork: Record<string, ERC20Token[]> = {
 	'ethereum': [{"chainId":1,"address":"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],

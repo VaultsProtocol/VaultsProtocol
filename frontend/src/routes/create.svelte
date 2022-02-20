@@ -18,7 +18,7 @@
 	} from '$lib/vaults'
 
 	import { erc20Tokens } from '$lib/tokens'
-	import { availableNetworks, chainIcons, mainnetForTestnet, networks, networksByChainID, networksBySlug, vaultAssetsByNetwork } from '$lib/networks'
+	import { availableNetworks, networkIcons, mainnetForTestnet, networks, networksByChainID, networksBySlug, vaultAssetsByNetwork } from '$lib/networks'
 
 
 
@@ -212,7 +212,7 @@ import { AbiCoder } from 'ethers/lib/utils';
 							bind:value={vaultConfig.chainId}
 							values={availableNetworks.map(({ chainId }) => String(chainId))}
 							labels={Object.fromEntries(networks.map(({ chainId, name }) => [chainId, name]))}
-							icons={Object.fromEntries(availableNetworks.map(({ slug, chainId }) => [chainId, chainIcons[slug] ?? chainIcons[mainnetForTestnet[slug]?.slug]]))}
+							icons={networkIcons}
 						/>
 					</label>
 

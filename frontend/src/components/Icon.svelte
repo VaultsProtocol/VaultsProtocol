@@ -26,6 +26,7 @@
 	let i = cachedIndex[(chainId + address) || symbol] ||= 0
 	$: cachedIndex[(chainId + address) || symbol] = i
 	$: imageSources = cachedImageSources[(chainId + address) || symbol] ||= [
+		icon,
 		// symbol === 'AAVE' && 'assets/logos/aave.svg',
 		// symbol === 'AURORA' && 'assets/logos/aurora.svg',
 		// symbol === 'AVAX' && 'assets/logos/avalanche.svg',

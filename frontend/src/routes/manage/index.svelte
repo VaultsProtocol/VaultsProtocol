@@ -7,9 +7,9 @@
 	import { BigNumber } from 'ethers'
 
 	const getPlaceholderVault = () => {
-		const vaultConfig = getDefaultVaultConfig(Object.values(VaultType)[Math.random() * Object.values(VaultType).length | 0])
+		const vaultConfig = getDefaultVaultConfig(random(Object.values(VaultType)))
 
-		const { decimals } = vaultConfig.tokens[0]
+		const { decimals } = vaultConfig.tokens[0] ?? {}
 
 		return {
 			vaultConfig,
@@ -43,6 +43,7 @@
 	import Vault from '../../components/Vault.svelte'
 	import VaultManager from '../../components/VaultManager.svelte'
 import { parseUnits } from 'ethers/lib/utils';
+import { random } from '../../lib/random';
 </script>
 
 
