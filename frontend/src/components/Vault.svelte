@@ -154,10 +154,12 @@ import { formatAddress } from '$lib/formatAddress';
 					{/key}
 				</div>
 
-				<div class="yield-strategy">
-					{#if vaultConfig.yieldStrategy !== YieldStrategy.None}
-						<img src={yieldStrategyInfo[vaultConfig.yieldStrategy]?.icon} width="32" height="32" />
-					{/if}
+				<div class="yield-strategy stack">
+					{#key vaultConfig.yieldStrategy}
+						{#if vaultConfig.yieldStrategy !== YieldStrategy.None}
+							<img src={yieldStrategyInfo[vaultConfig.yieldStrategy]?.icon} width="32" height="32" transition:scale />
+						{/if}
+					{/key}
 				</div>
 
 				<!-- {#if vaultConfig.type === VaultType.Degen}
