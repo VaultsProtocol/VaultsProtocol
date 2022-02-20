@@ -34,8 +34,6 @@ contract VaultFactory {
             vault := create(0, add(newVault, 0x20), mload(newVault))
         }
 
-        vaults.push(vault);
-
         iVault(vault).setStrat(strat);
         IStrategy(strat).initVault(vault);
         vaults.push(vault);

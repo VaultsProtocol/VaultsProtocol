@@ -3,6 +3,8 @@ pragma solidity >=0.8.0;
 
 import "../../lib/ds-test/src/test.sol";
 import "../BaseVault.sol";
+import "../CharityVault.sol";
+
 import "../tokens/MockERC20.sol";
 import {console} from "./Console.sol";
 
@@ -13,78 +15,69 @@ struct Deposit {
 
 contract ContractTest is DSTest {
 
+    uint256 id;
+
     MockERC20 erc20 = new MockERC20("shit", "coin", 2**256-1);
     BaseVault vault = new BaseVault(address(erc20), "shit coim vault", "scv");
     CheatCodes cheats = CheatCodes(HEVM_ADDRESS);
+
     address addr = 0x78B757200a1d64add5BA39B31c11E0a4479B992c;
 
-    uint256 id;
-
     function setUp() public {
-        
-    }
-
-    function test1e10deposits() public {
-
-        erc20.approve(address(vault), 10e18);
-        erc20.transfer(addr, 1e18);
-        id = vault.mintNewNft(10e18);
-
-        erc20.transfer(address(vault), 1e18);
-
-        cheats.startPrank(addr);
-        erc20.approve(address(vault), 1e18);
-        vault.mintNewNft(1e18);
-
-        (uint256 id2amount, uint256 id2tracker) = vault.deposits(2);
-        uint256 yield = vault.yieldPerId(id);
-        console.log("deposits: ", id2amount);
-        console.log("tracker: ", id2tracker);
-        console.log("yield: ", yield);
-
-        vault.withdrawFromId(2, 1e18);
-
-        (uint256 afterid2amount, uint256 afterTracker) = vault.deposits(2);
-        uint256 yieldafter = vault.yieldPerId(id);
-        console.log("deposits: ", afterid2amount);
-        console.log("after tracker: ", afterTracker);
-        console.log("yield afater : ", yieldafter);
-
-        cheats.stopPrank();
+        vault = new BaseVault(address(erc20), "shit coim vault", "scv");
+        // charityVault = new CharityVault(address(erc20), addr, 5000, "scv", "scv");
     }
 
     function testWithRandomSend() public {
 
+        // Person 1
         erc20.approve(address(vault), 10e18);
+
+        // set up
         erc20.transfer(addr, 1e18);
-        id = vault.mintNewNft(10e18);
 
-        
+        // mint 1
+        id = vault.mintNewNft(1e18);
 
+        // Person 2
         cheats.startPrank(addr);
 
+            // mint 2
             erc20.approve(address(vault), 1e18);
             vault.mintNewNft(1e18);
 
         cheats.stopPrank();
 
-        console.log("minting");
+        // person 1 second nft = 3
+        vault.mintNewNft(1e18);
+
+        // non claimed deposit
         erc20.transfer(address(vault), 1e18);
+
+        // distirbute yield to two holders
+        // called regardless on withdrawl
+        // this is just to set up withdrawl amount for test
+        vault.distributeYeild();
+
+        console.log("Withdrawable [1] ", vault.withdrawableById(1));
+        console.log("Withdrawable [2] ", vault.withdrawableById(2));
+        console.log("Withdrawable [3] ", vault.withdrawableById(3));
+
+        // Person 2
         cheats.startPrank(addr);
 
-            vault.distributeYeild();
-
             uint256 withdrawable = vault.withdrawableById(2);
-            console.log("can Withdrawl: ", withdrawable);
-            uint256 expected = withdrawable / 2;
 
-            console.log("Expected Half: ", expected);
+            // withdrawl half
+            uint256 expected = withdrawable / 2;
             vault.withdrawFromId(2, expected);
 
             withdrawable = vault.withdrawableById(2);
-            console.log("actual: ", withdrawable);
 
         cheats.stopPrank();
+
+        vault.tokenURI(2);
+        assertEq(withdrawable, expected);
     }
 
 }

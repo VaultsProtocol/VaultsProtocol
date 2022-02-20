@@ -18,6 +18,14 @@ contract BaseVault is ERC721 {
         uint256 tracker; //sum of delta(deposit) * yeildPerDeposit || SCALED
     }
 
+    struct MetaData {
+        string name;
+        address vaultAddress;
+        uint256 withdrawable;
+        uint256 id;
+        uint256 vaultType;
+    }
+
     // #########################
     // ##                     ##
     // ##       State         ##
@@ -76,7 +84,6 @@ contract BaseVault is ERC721 {
         _withdrawFromId(amount, id);
     }
 
-    // Burns NFT and withdraws all claimable token + yeild
     function burnNFTAndWithdrawl(uint256 id) public virtual {
         uint256 claimable = withdrawableById(id);
         _withdrawFromId(claimable, id);
@@ -91,11 +98,6 @@ contract BaseVault is ERC721 {
         virtual 
         returns (uint256 claimId)
     {
-
-        // // to account for random deposits
-        // // random deposits are distributed like yeild but a seperate
-        // // var is needed to keep track of them
-        // uint256 actualBalance = vaultToken.balanceOf(address(this)) - nonClaimedTokens;
 
         return deposits[id].amount + yieldPerId(id);
 
@@ -153,11 +155,10 @@ contract BaseVault is ERC721 {
         require(amount <= withdrawableById(id));
         
         uint256 balanceCheck = vaultToken.balanceOf(address(this));
+        uint256 principalWithdrawn;
 
         distributeYeild();
-
         uint256 userYield = yieldPerId(id);
-        uint256 principalWithdrawn;
 
         if (amount > userYield) {
 
@@ -171,7 +172,7 @@ contract BaseVault is ERC721 {
 
         } else {
             
-            // user yield still remains therefore, deposits not affected
+            // user yield still remains therefore principal not affected
             // just add nonclaimable to current tracker
             deposits[id].tracker += amount * SCALAR;
     
@@ -252,9 +253,10 @@ contract BaseVault is ERC721 {
     // ##                     ##
     // #########################
 
-    function tokenURI(uint256 id) public view override returns (string memory) {
-        // return INftDataGenerator(nftDataGenerator).generateTokenUri(this, id);
-        return "string";
+    function tokenURI(uint256 id) public view returns (MetaData memory) {
+
+        return MetaData(name, address(this), withdrawableById(id), id, 0);
+        
     }
 
     // #########################
