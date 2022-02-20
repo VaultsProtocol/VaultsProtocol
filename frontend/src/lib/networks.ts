@@ -618,15 +618,11 @@ export const testnetsForMainnets = Object.fromEntries<Network[]>(
 	)
 )
 
-console.log('testnetsForMainnets', testnetsForMainnets)
 export const mainnetForTestnet = Object.fromEntries(
 	Object.entries(testnetSlugsForMainnetSlugs).flatMap(([mainnetSlug, testnetSlugs]) =>
 		testnetSlugs.map(slug => [slug, networksBySlug[mainnetSlug]])
 	)
 )
-console.log('mainnetForTestnet', mainnetForTestnet)
-console.log('networks', networks.map(_=>_.slug))
-networks
 
 export const testnetNetworks = Object.values(testnetsForMainnets).flat()
 

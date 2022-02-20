@@ -254,6 +254,7 @@
 		/* opacity: 0; */
 	}
 	.card.back {
+		display: none;
 		background: red;
 		transform: rotateY(0.5turn);
 		transform: translateZ(-1px);
