@@ -101,11 +101,12 @@
 	}
 
 	ul.nav-links a {
-		font-size: 14px;
-		font-weight: 400;
+		font-size: 16px;
+		font-weight: 600;
 		text-decoration: underline;
 		text-align: center;
 		line-height: 1.5;
+
 	}
 
 	.header-left {
@@ -140,11 +141,11 @@
 		height: var(--header-height);
 		align-items: center;
 
-		font-weight: 400;
 		text-decoration: none;
 	}
 	nav a:not(:hover):not(.active) {
 		color: var(--text-color);
+		color: #07a6ca;
 		/* text-rendering: geometricPrecision;
 		color: rgba(227, 197, 255, 0.4); */
 	}
