@@ -1,8 +1,8 @@
 <script lang="ts">
 	// Constants/types
 	import { _ } from 'svelte-i18n'
-	import { MetadataType, VaultType, vaultTypeInfo, type VaultConfig, type VaultStatus, type VaultPosition } from '../lib/vaults'
-	import { networksByChainID, type Network } from '$lib/networks'
+	import { MetadataType, VaultType, vaultTypeInfo, type VaultConfig, type VaultStatus, type VaultPosition, yieldStrategyInfo, GovernanceType, YieldStrategy } from '../lib/vaults'
+	import { networkIcons, networksByChainID, type Network } from '$lib/networks'
 	import { BigNumber } from 'ethers'
 	
 	
@@ -45,13 +45,21 @@
 	import twitterIcon from '../assets/icons/twitter.svg'
 	import discordIcon from '../assets/icons/discord.svg'
 	import cardBack from '../assets/card-faces/card-back.svg'
-	import cardFace from '../assets/card-faces/shadow-svg-1.svg'
+	import cardFaceFrog from '../assets/card-faces/frog.svg'
+	import cardFaceGift from '../assets/card-faces/gift.svg'
+	import cardFaceVote from '../assets/card-faces/voting-box.svg'
+	import cardFaceShark from '../assets/card-faces/shark.svg'
+	import cardFaceFrogShadow from '../assets/card-faces/shadow-svg-1.svg'
+	import cardFaceGiftShadow from '../assets/card-faces/shadow-svg-2.svg'
+	import cardFaceVoteShadow from '../assets/card-faces/shadow-svg-3.svg'
+	import cardFaceSharkShadow from '../assets/card-faces/shadow-svg-4.svg'
 
 
 	// Styles/animations
 	import { fade, scale } from 'svelte/transition'
 	import { flip } from 'svelte/animate'
 	import Tabs from './Tabs.svelte'
+import { formatAddress } from '$lib/formatAddress';
 </script>
 
 
@@ -68,8 +76,8 @@
 		<HeightContainer class="column">
 			<header class="row">
 				<div class="row">
-					<span class="chain">
-						<Icon token={network?.nativeCurrency} />
+					<span class="chain stack">
+						<img src={networkIcons[vaultConfig.chainId]} width="14" transition:scale />
 					</span>
 
 					{#if vaultConfig.about.name}
@@ -78,29 +86,42 @@
 				</div>
 
 				{#if isPosition ? vaultStatus.totalBalance : vaultConfig.config.initialLiquidity}
-					<TokenBalance balance={isPosition ? vaultStatus.totalBalance : vaultConfig.config.initialLiquidity} token={vaultConfig.tokens[0]} />
+					<TokenBalance balance={isPosition ? vaultStatus.totalBalance : vaultConfig.config.initialLiquidity} erc20Token={vaultConfig.tokens[0]} />
 				{/if}
 			</header>
 
 			<div class="stack">
-				{#key vaultConfig.type}
-					<figure class="illustration-wrapper card" transition:fade>
-						<svg class="illustration">
+				<figure class="illustration-wrapper card stack" style="background-color: {vaultTypeInfo[vaultConfig.type]?.color}">
+					{#key vaultConfig.type}
+						<div class="illustration row centered" transition:scale>
 							{#if vaultConfig.type === VaultType.Standard}
-								<img src="{cardFace}" alt="">
-								<path class:silhouette={isPosition} />
+								{#if isPosition}
+									<img src="{cardFaceShark}" />
+								{:else}
+									<img src="{cardFaceSharkShadow}" />
+								{/if}
 							{:else if vaultConfig.type === VaultType.Degen}
-								<path class:silhouette={isPosition} />
+								{#if isPosition}
+									<img src="{cardFaceFrog}" />
+								{:else}
+									<img src="{cardFaceFrogShadow}" />
+								{/if}
 							{:else if vaultConfig.type === VaultType.DAO}
-								<path class:silhouette={isPosition} />
+								{#if isPosition}
+									<img src="{cardFaceVote}" />
+								{:else}
+									<img src="{cardFaceVoteShadow}" />
+								{/if}
 							{:else if vaultConfig.type === VaultType.Charity}
-								<path class:silhouette={isPosition} />	
-							<!-- {:else if vaultConfig.type === VaultType.Superfluid}
-								<path class:silhouette={isPosition} /> -->
+								{#if isPosition}
+									<img src="{cardFaceGift}" />
+								{:else}
+									<img src="{cardFaceGiftShadow}" />
+								{/if}
 							{/if}
-						</svg>
-					</figure>
-				{/key}
+						</div>
+					{/key}
+				</figure>
 			</div>
 
 			<div class="vault-type-info row">
@@ -133,7 +154,13 @@
 					{/key}
 				</div>
 
-				<img width="50" height="50" />
+				<div class="yield-strategy stack">
+					{#key vaultConfig.yieldStrategy}
+						{#if vaultConfig.yieldStrategy !== YieldStrategy.None}
+							<img src={yieldStrategyInfo[vaultConfig.yieldStrategy]?.icon} width="32" height="32" transition:scale />
+						{/if}
+					{/key}
+				</div>
 
 				<!-- {#if vaultConfig.type === VaultType.Degen}
 					<PieChart data={[
@@ -152,46 +179,65 @@
 
 			<div class="metadata column">
 				{#each
-					isPosition ?
+					/* isPosition ?
 						[
 							{ icon: '', label: 'Balance', displayType: MetadataType.TokenBalance, value: vaultPosition.withdrawableBalance },
 							{ icon: '', label: 'Earned', displayType: MetadataType.TokenBalance, value: vaultPosition.yieldEarned },
 						]
-					: vaultConfig.type === VaultType.Degen ?
+					: */ vaultConfig.type === VaultType.Degen ?
 						[
-							{ icon: '', label: 'Jackpot', displayType: MetadataType.TokenBalance, value: vaultConfig.config.jackpot },
-							{ icon: '', label: 'Dividend', displayType: MetadataType.TokenBalance, value: vaultConfig.config.dividend },
-							{ icon: '', label: 'Treasury', displayType: MetadataType.TokenBalance, value: vaultConfig.config.treasury },
-							{ icon: '', label: 'Deadline', displayType: MetadataType.Date, value: vaultConfig.config.deadline },
+							{ icon: '🎰', label: 'Jackpot', displayType: MetadataType.Percent, value: vaultConfig.config.jackpot },
+							{ icon: '💸', label: 'Dividend', displayType: MetadataType.Percent, value: vaultConfig.config.dividend },
+							{ icon: '💸', label: 'Treasury', displayType: MetadataType.Percent, value: vaultConfig.config.treasury },
+							{ icon: '🛑', label: 'Deadline', displayType: MetadataType.Date, value: vaultConfig.config.deadline },
 						]
-					: vaultConfig.type === VaultType.DAO ?
+					: vaultConfig.type === VaultType.DAO && vaultConfig.config.governanceType === GovernanceType.MultiSignature ?
 						[
-							{ icon: '', label: 'Governance Type', displayType: MetadataType.Date, value: vaultConfig.config.governanceType },
+							{ icon: '🗳', label: 'Governance Type', displayType: MetadataType.String, value: vaultConfig.config.governanceType },
+							{ icon: '📝', label: 'Minimum Signatures', displayType: MetadataType.String, value: vaultConfig.config.minimumSignatures },
+							{ icon: '✍️', label: 'Signers', displayType: MetadataType.String, value: vaultConfig.config.signers.filter(Boolean).length },
+						]
+					: vaultConfig.type === VaultType.DAO && vaultConfig.config.governanceType === GovernanceType.TokenVoting ?
+						[
+							{ icon: '🗳', label: 'Governance Type', displayType: MetadataType.String, value: vaultConfig.config.governanceType },
+							{ icon: '👋', label: 'Quorum', displayType: MetadataType.Percent, value: vaultConfig.config.quorum },
 						]
 					: vaultConfig.type === VaultType.Charity ?
 						[
-							{ icon: '', label: 'Payout Type', displayType: MetadataType.String, value: vaultConfig.config.payoutType },
+							{ icon: '🤲', label: 'Recipient', displayType: MetadataType.Address, value: vaultConfig.config.recipientAddress },
+							{ icon: '🍰', label: 'Yield to Recipient', displayType: MetadataType.Percent, value: vaultConfig.config.recipientYieldPercent },
+							{ icon: '💰', label: 'Payout Type', displayType: MetadataType.String, value: vaultConfig.config.payoutType },
 						]
 					: []
 					as
-					{ icon, label, displayType, value } (label)
+					{ icon, label, displayType, value }, i (label)
 				}
-					<div class="card row" transition:scale animate:flip>
+					<div class="card row" in:scale={{ delay: i * 100 }} out:scale animate:flip>
 						<div class="row">
-							<img src={icon} width="20" height="20" />
-							<span>{$_(label)}</span>
+							<!-- <img src={icon} width="20" height="20" /> -->
+							<span>{$_(icon)}</span>
+							<span class="label">{$_(label)}</span>
 						</div>
 
-						<span>
-							{#if displayType === MetadataType.TokenBalance}
-								<TokenBalance {value} />
-							{:else if displayType === MetadataType.Date}
-								{value} seconds
-								<!-- <Countdown toTimestamp={value} /> -->
-							{:else}
-								{$_(value)}
-							{/if}
-						</span>
+						<div class="stack align-end">
+							{#key value}
+								<span class="value" transition:scale={{ start: 0.3 }}>
+									{#if displayType === MetadataType.TokenBalance}
+										<TokenBalance {value} erc20Token={vaultConfig.tokens[0]} />
+									{:else if displayType === MetadataType.Date}
+										<span>{value} seconds</span>
+										<!-- <Countdown toTimestamp={value} /> -->
+									{:else if displayType === MetadataType.Percent}
+										<span>{value}%</span>
+									{:else if displayType === MetadataType.Address}
+										<span>{formatAddress(value)}</span>
+									{:else if displayType === MetadataType.String}
+										<!-- <span>{$_(value)}</span> -->
+										{value ?? ''}
+									{/if}
+								</span>
+							{/key}
+						</div>
 					</div>
 				{/each}
 			</div>
@@ -229,31 +275,31 @@
 		width: 400px;
 		height: 800px;
 		filter: drop-shadow(0 1px 0.5em var(--background-color-0));
+		transition: 1s;
+		transform-style: preserve-3d;
+	}
+
+	.vault-container:hover, .vault-container:focus {
+		transform: perspective(1200px) rotateY(0.5turn);
 	}
 	
 	.vault {
 		overflow: auto;
 		max-height: calc(100vh - var(--header-height) - 4rem);
 		font-size: 16px;
-		transition: 1s;
 		/* position: absolute; */
 
 		perspective: 1000px;
-		/* transform-style: preserve-3d; */
-	}
-
-	/* .vault:hover, .vault:focus {
-		transform: rotateY(0.5turn);
 	}
 
 	.vault:hover .card.front, .vault:focus .card.front {
-		z-index: -1;
-		opacity: 0;
+		/* z-index: -1; */
+		/* opacity: 0; */
 	}
 
 	.vault:hover .card.back, .vault:focus .card.back {
 		z-index: 1;
-	} */
+	}
 
 	.card {
 		backface-visibility: hidden;
@@ -264,8 +310,8 @@
 	}
 	
 	.card.back {
-		display: none;
-		background: red;
+		/* display: none; */
+		background: black;
 		transform: rotateY(0.5turn);
 		transform: translateZ(-1px);
 		z-index: -1;
@@ -282,7 +328,14 @@
 		/* align-items: start; */
 	}
 	.chain {
-		transform: scale(3);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background-color: var(--background-color-white);
+		width: 1.25em;
+		height: 1.25em;
+		border-radius: 50%;
+		transform: scale(3) translateZ(1px);
 		z-index: 1;
 		filter: drop-shadow(0 0 1px var(--background-color-1));
 		align-self: start;
@@ -295,15 +348,30 @@
 	}
 
 	.illustration-wrapper {
-		background: var(--background-color-2);
-		border: var(--background-color-3) 0.25em solid;
+		background-color: var(--background-color-2);
+		border: rgba(0, 0, 0, 0.3) 0.25em solid;
+		transition: 0.3s;
+		border-radius: 5px;
 	}
 	.illustration {
 		aspect-ratio: 1.5;
+		animation: Float 6s infinite ease-in-out;
+	}
+	.illustration img {
+		height: 12em;
+	}
+	@keyframes Float {
+		0%, 100% { transform: translateY(3px) }
+		50% { transform: translateY(-3px) }
 	}
 
 	.silhouette {
 		fill: black;
+	}
+
+	.yield-strategy {
+		/* display: flex; */
+		padding: 0.5rem;
 	}
 
 	.description {
@@ -335,11 +403,12 @@
 		border-radius: 50%;
 		width: 1.66em;
 		height: 1.66em;
+		color: #fff;
 	}
 
 	.vault-type-info .vault-type {
 		padding: 0.5em;
-		border-radius: 0;
+		border-radius: 3px;
 		border: 0;
 		background: radial-gradient(50% 50% at 50% 50%, #D2C26E 0%, #DEB60D 100%);
 		font-weight: 800;
@@ -366,6 +435,18 @@
 	}
 	.metadata > * > .row {
 		gap: 0.5em;
+	}
+	.metadata .label {
+		font-weight: 500;
+	}
+	.metadata .value {
+		display: block;
+		overflow: hidden;
+		line-height: 1.2;
+		text-overflow: ellipsis;
+		opacity: 0.8;
+		text-align: right;
+		transform-origin: right;
 	}
 
 	.icons-row {

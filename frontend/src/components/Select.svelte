@@ -90,6 +90,7 @@
 		transform-origin: top center;
 		min-width: 5rem;
 		overflow: auto;
+		width: max-content;
 		max-height: inherit;
 
 		box-shadow: 0 1px 0.25rem var(--background-color-1);

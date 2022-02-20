@@ -2,12 +2,12 @@
 	import { _ } from 'svelte-i18n'
 
 
-	import { getDefaultVaultConfig } from '../lib/vaults'
+	import { getDefaultVaultConfig, VaultType } from '../lib/vaults'
 
 	import { BigNumber } from 'ethers'
 
 	const getPlaceholderVault = () => ({
-		vaultConfig: getDefaultVaultConfig(),
+		vaultConfig: getDefaultVaultConfig(random(Object.values(VaultType))),
 
 		vaultStatus: {
 			tokenId: 0,
@@ -29,7 +29,14 @@
 	]
 
 
+	// import { queryTable } from '$lib/tableland'
+
+	// let results
+	// queryTable({ query: 'SELECT * FROM table' }).then(_ => vaults = _)
+
+
 	import Vault from '../components/Vault.svelte'
+	import { random } from '../lib/random'
 </script>
 
 

@@ -69,6 +69,32 @@ export const networks: Network[] = [
 		"icon": "ethereum",
 	},
 	{
+		"slug": "ethereum-ropsten",
+		"name": "Ethereum Ropsten Testnet",
+		"chainId": 3,
+		"shortName": "rop",
+		"chain": "ETH",
+		"network": "ropsten",
+		"networkId": 3,
+		"nativeCurrency": {
+			"name": "Ropsten Ether",
+			"symbol": "ROP",
+			"decimals": 18
+		},
+		"rpc": [
+			"https://ropsten.infura.io/v3/${INFURA_PROJECT_ID}",
+			"wss://ropsten.infura.io/ws/v3/${INFURA_PROJECT_ID}"
+		],
+		"faucets": [
+			"https://faucet.ropsten.be?${ADDRESS}"
+		],
+		"explorers": [],
+		"infoURL": "https://github.com/ethereum/ropsten",
+		"ens": {
+			"registry": "0x112234455c3a32fd11230c42e7bccd4a84e02010"
+		}
+	},
+	{
 		"slug": "ethereum-rinkeby",
 		"name": "Ethereum Rinkeby Testnet",
 		"chainId": 4,
@@ -638,6 +664,7 @@ export function isTestnet(network: Network){
 
 export const availableNetworks = [
 	"ethereum",
+	"ethereum-ropsten",
 	"ethereum-rinkeby",
 	"ethereum-goerli",
 	"polygon-mumbai",
@@ -668,7 +695,7 @@ import polygonIcon from '../assets/networks/polygon.svg'
 import reefIcon from '../assets/networks/reef.svg'
 import skaleIcon from '../assets/networks/skale.svg'
 
-export const chainIcons: Record<string, string> = {
+const networkSlugToIcon: Record<string, string> = {
 	'arbitrum': arbitrumIcon,
 	'aurora': auroraIcon,
 	'avalanche': avalancheIcon,
@@ -683,6 +710,7 @@ export const chainIcons: Record<string, string> = {
 	'reef': reefIcon,
 	'skale-testnet': skaleIcon,
 }
+export const networkIcons: Record<string, string> = Object.fromEntries(availableNetworks.map(({ slug, chainId }) => [chainId, networkSlugToIcon[slug] ?? networkSlugToIcon[mainnetForTestnet[slug]?.slug]]))
 
 export const vaultAssetsByNetwork: Record<string, ERC20Token[]> = {
 	'ethereum': [{"chainId":1,"address":"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],

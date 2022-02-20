@@ -3,7 +3,7 @@
 
 
 	// External state
-	export let placement: Placement = 'bottom-start'
+	export let placement: Placement = 'bottom-end'
 	export let allowedPlacements: Placement[] | undefined
 	export let offset = 8
 

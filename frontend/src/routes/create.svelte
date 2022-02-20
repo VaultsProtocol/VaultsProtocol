@@ -18,7 +18,7 @@
 	} from '$lib/vaults'
 
 	import { erc20Tokens } from '$lib/tokens'
-	import { availableNetworks, chainIcons, mainnetForTestnet, networks, networksByChainID, networksBySlug, vaultAssetsByNetwork } from '$lib/networks'
+	import { availableNetworks, networkIcons, mainnetForTestnet, networks, networksByChainID, networksBySlug, vaultAssetsByNetwork } from '$lib/networks'
 
 
 
@@ -51,7 +51,8 @@
 	
 	// Methods/hooks/lifecycle
 
-	import { ContractFactory, ethers } from 'ethers'
+	import { ContractFactory, ethers, utils } from 'ethers'
+	const { AbiCoder } = utils
 	import { getContract, getContractBytecode } from '$lib/contracts'
 
 	$: if(currentStep === Steps.TransactionSigning)(async () => {
@@ -119,7 +120,6 @@
 	import { fade, fly, scale } from 'svelte/transition'
 	import Portal from '../components/Portal.svelte'
 	import Modal from '../components/Modal.svelte'
-import { AbiCoder } from 'ethers/lib/utils';
 </script>
 
 
@@ -141,7 +141,7 @@ import { AbiCoder } from 'ethers/lib/utils';
 		>
 			<section class="card vault-content column">
 				<div class="row">
-					<img src="/" alt="">
+					<!-- <img src="/" alt=""> -->
 					<h2>{$_('Vault Information')}</h2>
 
 
@@ -212,7 +212,7 @@ import { AbiCoder } from 'ethers/lib/utils';
 							bind:value={vaultConfig.chainId}
 							values={availableNetworks.map(({ chainId }) => String(chainId))}
 							labels={Object.fromEntries(networks.map(({ chainId, name }) => [chainId, name]))}
-							icons={Object.fromEntries(availableNetworks.map(({ slug, chainId }) => [chainId, chainIcons[slug] ?? chainIcons[mainnetForTestnet[slug]?.slug]]))}
+							icons={networkIcons}
 						/>
 					</label>
 
@@ -257,12 +257,7 @@ import { AbiCoder } from 'ethers/lib/utils';
 						bind:value={vaultConfig.type}
 						values={Object.keys(VaultType)}
 						labels={Object.fromEntries(Object.entries(vaultTypeInfo).map(([key, {label}]) => [key, label]))}
-						colors={{
-							[VaultType.Standard]: 'var(--background-color-standard)',
-							[VaultType.Degen]: 'var(--background-color-degen)',
-							[VaultType.Charity]: 'var(--background-color-charity)',
-							[VaultType.DAO]: 'var(--background-color-DAO)',
-						}}
+						colors={Object.fromEntries(Object.entries(vaultTypeInfo).map(([key, {color}]) => [key, color]))}
 					/>
 
 					<div class="stack">
@@ -540,5 +535,9 @@ import { AbiCoder } from 'ethers/lib/utils';
 	label p {
 		font-size: 0.9em;
 		/* opacity: 0.8; */
+	}
+
+	main :global(details) {
+		font-size: 1.2em;
 	}
 </style>

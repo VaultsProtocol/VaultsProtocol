@@ -40,6 +40,7 @@
 
 	// Components
 	import ConnectAccount from './ConnectAccount.svelte'
+	import NetworkSelect from './NetworkSelect.svelte'
 
 
 	// Styles/animations
@@ -69,6 +70,8 @@
 	</nav>
 
 	<div class="header-right row">
+		<NetworkSelect />
+
 		<ConnectAccount />
 
 		<div class="burger" role="button" tabIndex={0} on:mousedown={(e) => document.activeElement?.blur?.()}>
@@ -97,13 +100,13 @@
 	}
 
 	nav {
-		gap: 1.25rem;
+		gap: 1.5rem;
 	}
 
 	ul.nav-links a {
 		font-size: 16px;
 		font-weight: 600;
-		text-decoration: underline;
+		/* text-decoration: underline; */
 		text-align: center;
 		line-height: 1.5;
 

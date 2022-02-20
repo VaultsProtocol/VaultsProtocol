@@ -5,6 +5,7 @@ import { type ERC20Token, erc20TokensBySymbol } from './tokens'
 
 import aaveIcon from '../assets/dapps/aave.svg'
 import yearnIcon from '../assets/dapps/yearn.svg'
+import { random } from './random'
 
 
 export enum VaultType {
@@ -18,15 +19,18 @@ export enum VaultType {
 export const vaultTypeInfo = {
 	[VaultType.Standard]: {
 		label: '🏦\tStandard',
-		description: 'Contribute to the vault and receive yield simply by holding an NFT. Withdraw anytime.'
+		description: 'Contribute to the vault and receive yield simply by holding an NFT. Withdraw anytime.',
+		color: 'var(--background-color-standard)'
 	},
 	[VaultType.Degen]: {
 		label: '🐸\tDegen Game',
-		description: 'The game ends if a contribution is not made after a set interval of time. The last person to contribute wins the Jackpot allocation.'
+		description: 'The game ends if a contribution is not made after a set interval of time. The last person to contribute wins the Jackpot allocation.',
+		color: 'var(--background-color-degen)'
 	},
 	[VaultType.Charity]: {
 		label: '🎁\tNo-Loss Charity',
-		description: 'A portion of the yield is set aside for a designated recipient to be claimed at any time.'
+		description: 'A portion of the yield is set aside for a designated recipient to be claimed at any time.',
+		color: 'var(--background-color-charity)'
 	},
 	// [VaultType.Superfluid]: {
 	// 	label: '🦈\tSuperfluid',
@@ -35,7 +39,8 @@ export const vaultTypeInfo = {
 	[VaultType.DAO]: {
 		label: '🗳\tDAO',
 		// description: 'The vault parameters can be changed upon the approval of multiple designated signers or by a token-weighted vote by all holdersapproval.'
-		description: 'Democratized captial control via delegatable weighted voting or multi-sig'
+		description: 'Democratized captial control via delegatable weighted voting or multi-sig',
+		color: 'var(--background-color-DAO)'
 	}
 }
 
@@ -161,7 +166,7 @@ export type VaultConfig<T extends VaultType> = {
 
 export const getDefaultVaultConfig = (typę: VaultType) => ({
 	about: {
-		name: 'My Test Vault',
+		name: '',//random(['My Test Vault']),
 		description: '',
 		website: '',
 		twitter: '',
@@ -195,7 +200,7 @@ export const getDefaultVaultConfig = (typę: VaultType) => ({
 		// payoutType === PayoutType.Superfluid,
 		payoutRate: 10
 	},
-	yieldStrategy: YieldStrategy.Aave,
+	yieldStrategy: YieldStrategy.None,
 	// governanceStrategy: GovernanceStrategy.None,
 } as VaultConfig)
 
@@ -216,5 +221,7 @@ export type VaultPosition = {
 export enum MetadataType {
 	TokenBalance = 'TokenBalance',
 	Date = 'Date',
-	String = 'String'
+	String = 'String',
+	Percent = 'Percent',
+	Address = 'Address'
 }
