@@ -124,6 +124,11 @@
 		border: 20px solid #f3f3f3;
 		box-shadow: 0px 5px 10px #ccc;
 	}
+
+	.manage-positions :global(.button) {
+		/* background: red; */
+		padding: 10px;
+	}
 	
 
 	/* .balance-row {

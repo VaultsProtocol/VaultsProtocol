@@ -44,11 +44,13 @@
 	import websiteIcon from '../assets/icons/website.svg'
 	import twitterIcon from '../assets/icons/twitter.svg'
 	import discordIcon from '../assets/icons/discord.svg'
+	import cardBack from '../assets/card-faces/card-back.svg'
 
 
 	// Styles/animations
 	import { fade, scale } from 'svelte/transition'
 	import { flip } from 'svelte/animate'
+	import Tabs from './Tabs.svelte'
 </script>
 
 
@@ -56,9 +58,9 @@
 	<foreignObject x="0" y="0" width="400" height="800">
 		<div xmlns="http://www.w3.org/1999/xhtml">
 
-<article class="vault stack">
+		<article class="vault stack" style="--background: url({cardBack})">
 	<div class="back card">
-
+		
 	</div>
 
 	<div class="front card">
@@ -193,7 +195,7 @@
 			</div>
 
 			{#if vaultConfig.about.website || vaultConfig.about.twitter || vaultConfig.about.discord}
-				<div class="row centered" transition:scale>
+				<div class="row centered icons-row" transition:scale>
 					
 					{#each
 						[
@@ -206,7 +208,7 @@
 					}
 						<a class="icon button round" href={link.includes('://') ? link : 'https://' + link} target="_blank" rel="nofollow" transition:scale animate:flip>
 							<!-- {$_(label)} -->
-							<img src={icon} alt={label} width="27" />
+							<img src={icon} alt={label} width="22" />
 						</a>
 					{/each}
 				</div>
@@ -228,19 +230,28 @@
 	}
 	
 	.vault {
-		border: var(--background-color-2) 0.5em solid;
 		overflow: auto;
 		max-height: calc(100vh - var(--header-height) - 4rem);
 		font-size: 16px;
 		transition: 1s;
+		/* position: absolute; */
 
 		perspective: 1000px;
 		/* transform-style: preserve-3d; */
 	}
 
-	.vault:hover, .vault:focus {
+	/* .vault:hover, .vault:focus {
 		transform: rotateY(0.5turn);
 	}
+
+	.vault:hover .card.front, .vault:focus .card.front {
+		z-index: -1;
+		opacity: 0;
+	}
+
+	.vault:hover .card.back, .vault:focus .card.back {
+		z-index: 1;
+	} */
 
 	.card {
 		backface-visibility: hidden;
@@ -249,14 +260,18 @@
 	.card.front {
 		/* background: blue; */
 	}
-	.vault:hover .card.front, .vault:focus .card.front {
-		/* z-index: -1; */
-		/* opacity: 0; */
-	}
+	
 	.card.back {
-		background: red;
+		background: #000;
 		transform: rotateY(0.5turn);
 		transform: translateZ(-1px);
+		z-index: -1;
+		
+		background-image: var(--background);
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: cover;
+		
 	}
 
 	header {
@@ -295,8 +310,8 @@
 
 	.icon {
 		border-radius: 100vmax;
-		height: 50px;
-		width: 50px;
+		height: 40px;
+		width: 40px;
 		position: relative;
 		border: 2px solid var(--background-color-charity);
 		padding: 0;
@@ -348,5 +363,13 @@
 	}
 	.metadata > * > .row {
 		gap: 0.5em;
+	}
+
+	.icons-row {
+		margin-top: 20px;
+	}
+
+	.icons-row .icon {
+		margin: 0 10px;
 	}
 </style>
