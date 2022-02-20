@@ -114,7 +114,7 @@
 					<p>{$_('Tell your community what your goals are.')}</p>
 					<textarea
 						bind:value={vaultConfig.about.description}
-						placeholder={$_('Describe {name}...', { values: { name: vaultConfig.about.name || 'your DAO' }})}
+						placeholder={$_('Describe {name}...', { values: { name: vaultConfig.about.name || 'your Vault' }})}
 						rows={8}
 					/>
 				</label>
@@ -167,7 +167,7 @@
 					</label>
 
 					<label class="card row equal">
-						<h3>{$_('Yield Asset')}</h3>
+						<h3>{$_('Vault Asset')}</h3>
 
 						<TokenSelect availableTokens={vaultAssetsByNetwork[networksByChainID[vaultConfig.chainId].slug] ?? []} bind:token={vaultConfig.tokens[0]} />
 						<!-- {#each vaultConfig.config.tokens as token, i}}
@@ -234,7 +234,7 @@
 							<label class="card column">
 								<h4>{$_('Jackpot')}</h4>
 								<PercentInput bind:value={vaultConfig.config.jackpot} />
-								<p>{$_('This portion is paid out to the last contributor when the crowdfund ends.')}</p>
+								<p>{$_('This portion is paid out to the last contributor when the game ends.')}</p>
 							</label>
 
 							<label class="card column">

@@ -118,7 +118,7 @@ import { page } from '$app/stores';
 					<p>{$_('Tell your community what your goals are.')}</p>
 					<textarea
 						bind:value={vaultConfig.about.description}
-						placeholder={$_('Describe {name}...', { values: { name: vaultConfig.about.name || 'your DAO' }})}
+						placeholder={$_('Describe {name}...', { values: { name: vaultConfig.about.name || 'your Vault' }})}
 						rows={8}
 					/>
 				</label>
