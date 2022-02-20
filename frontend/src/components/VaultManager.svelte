@@ -55,7 +55,7 @@
 </script>
 
 
-<form class="card column" on:submit={onSubmit}>
+<form class="card column manage-positions" on:submit={onSubmit}>
 	<h2>Manage Position</h2>
 
 	<hr>
@@ -69,7 +69,7 @@
 		}}
 	/>
 
-	<div class="card column">
+	<div class="card column token-amount">
 		<TokenAmountSelect
 			availableTokens={vaultConfig.token}
 			bind:token={vaultConfig.tokens[0]}
@@ -78,9 +78,7 @@
 			max={managePositionMode === ManagePositionMode.Remove ? vaultPosition.balance : undefined}
 		/>
 
-		<hr>
-
-		<div class="row">
+		<div class="row balance-row">
 			<h3>Your Balance</h3>
 
 			<div class="row">
@@ -103,15 +101,37 @@
 					/>
 				</output>
 			</div>
-
-			<div class="stack align-end">
-				{#key action}
-					<button class="primary large" transition:scale>{$_(action)}</button>
-				{/key}
-			</div>
 		</div>
 	</div>
 
 	<div class="row centered">
+		<div class="stack align-end">
+			{#key action}
+				<button class="primary large" transition:scale>{$_(action)}</button>
+			{/key}
+		</div>
 	</div>
 </form>
+
+
+<style>
+	.manage-positions {
+		/* background: red; */
+		max-width: 500px;
+		margin: 0 auto;
+		padding: 30px;
+		border: 20px solid #f3f3f3;
+		box-shadow: 0px 5px 10px  #ccc;
+	}
+	
+
+	.balance-row {
+		padding-bottom: 20px;
+		width: 90%;
+		margin: 0 auto;
+	}
+
+	.token-amount h3 {
+		font-size: 12px;
+	}
+</style>
