@@ -22,6 +22,12 @@
 	export let isOpen: boolean
 
 
+	// Methods/hooks/lifecycle
+	$: if(!values.includes(value))
+		value = values[0]
+		// value = undefined
+
+
 	// Components
 	import Tooltip from './Tooltip.svelte'
 	

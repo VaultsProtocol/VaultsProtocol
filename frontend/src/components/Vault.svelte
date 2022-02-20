@@ -2,7 +2,7 @@
 	// Constants/types
 	import { _ } from 'svelte-i18n'
 	import { MetadataType, VaultType, vaultTypeInfo, type VaultConfig, type VaultStatus, type VaultPosition } from '../lib/vaults'
-	import { networksByChainID } from '$lib/networks'
+	import { networksByChainID, type Network } from '$lib/networks'
 	import { BigNumber } from 'ethers'
 	
 	
@@ -22,8 +22,14 @@
 		yieldEarned: BigNumber.from(0)
 	}
 
+
+	// Internal state
+
 	let isPosition = false // Vault vs individual position
 	$: isPosition = !!vaultPosition
+
+	let network: Network
+	$: network = networksByChainID[vaultConfig.chainId]
 
 
 	// Components
@@ -55,7 +61,7 @@
 		<header class="row">
 			<div class="row">
 				<span class="chain">
-					<Icon token={networksByChainID[vaultConfig.chainId].nativeCurrency} />
+					<Icon token={network?.nativeCurrency} />
 				</span>
 
 				{#if vaultConfig.about.name}

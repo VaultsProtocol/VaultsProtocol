@@ -24,10 +24,10 @@
 	<!-- <div class="stack">
 		{#key value}
 			<div class="row" transition:scale> -->
-				<img src={value.icon} alt={value.symbol} />
+				<img src={value?.icon} alt={value?.symbol} />
                 <!-- <Icon {token} /> -->
-                <!-- <Icon icon={value.icon} /> -->
-				{value.symbol}
+                <!-- <Icon icon={value?.icon} /> -->
+				{value?.symbol}
 			<!-- </div>
 		{/key}
 	</div> -->

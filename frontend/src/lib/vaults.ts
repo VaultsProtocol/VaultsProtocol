@@ -3,8 +3,8 @@ import { BigNumber } from 'ethers'
 import { type ERC20Token, erc20TokensBySymbol } from './tokens'
 
 
-import aaveIcon from '../assets/logos/aave.svg'
-import yearnIcon from '../assets/logos/yearn.svg'
+import aaveIcon from '../assets/dapps/aave.svg'
+import yearnIcon from '../assets/dapps/yearn.svg'
 
 
 export enum VaultType {

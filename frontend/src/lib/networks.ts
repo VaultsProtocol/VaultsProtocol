@@ -132,35 +132,35 @@ export const networks: Network[] = [
 			"registry": "0xe7410170f87102df0055eb195163a03b7f2bff4a"
 		}
 	},
-	// {
-	// 	"slug": "polygon",
-	// 	"name": "Polygon",
-	// 	"chainId": 137,
-	// 	"shortName": "polygon",
-	// 	"chain": "Polygon",
-	// 	"network": "mainnet",
-	// 	"networkId": 137,
-	// 	"nativeCurrency": {
-	// 		"name": "Matic",
-	// 		"symbol": "MATIC",
-	// 		"decimals": 18
-	// 	},
-	// 	"rpc": [
-	// 		"https://rpc-mainnet.matic.network",
-	// 		"wss://ws-mainnet.matic.network",
-	// 		"https://rpc-mainnet.matic.quiknode.pro",
-	// 		"https://matic-mainnet.chainstacklabs.com"
-	// 	],
-	// 	"faucets": [],
-	// 	"explorers": [
-	// 		{
-	// 			"name": "polygonscan",
-	// 			"url": "https://polygonscan.com",
-	// 			"standard": "EIP3091"
-	// 		}
-	// 	],
-	// 	"infoURL": "https://polygon.technology"
-	// },
+	{
+		"slug": "polygon",
+		"name": "Polygon",
+		"chainId": 137,
+		"shortName": "polygon",
+		"chain": "Polygon",
+		"network": "mainnet",
+		"networkId": 137,
+		"nativeCurrency": {
+			"name": "Matic",
+			"symbol": "MATIC",
+			"decimals": 18
+		},
+		"rpc": [
+			"https://rpc-mainnet.matic.network",
+			"wss://ws-mainnet.matic.network",
+			"https://rpc-mainnet.matic.quiknode.pro",
+			"https://matic-mainnet.chainstacklabs.com"
+		],
+		"faucets": [],
+		"explorers": [
+			{
+				"name": "polygonscan",
+				"url": "https://polygonscan.com",
+				"standard": "EIP3091"
+			}
+		],
+		"infoURL": "https://polygon.technology"
+	},
 	{
 		"slug": "polygon-mumbai",
 		"name": "Polygon Mumbai Testnet",
@@ -191,26 +191,26 @@ export const networks: Network[] = [
 		"infoURL": "https://matic.network/"
 	},
 
-	// {
-	// 	"slug": "avalanche",
-	// 	"name": "Avalanche C-Chain",
-	// 	"chainId": 43114,
-	// 	"shortName": "Avalanche",
-	// 	"chain": "AVAX",
-	// 	"network": "mainnet",
-	// 	"networkId": 1,
-	// 	"nativeCurrency": {
-	// 		"name": "Avalanche",
-	// 		"symbol": "AVAX",
-	// 		"decimals": 18
-	// 	},
-	// 	"rpc": [
-	// 		"https://api.avax.network/ext/bc/C/rpc"
-	// 	],
-	// 	"faucets": [],
-	// 	"explorers": [],
-	// 	"infoURL": "https://cchain.explorer.avax.network/"
-	// },
+	{
+		"slug": "avalanche",
+		"name": "Avalanche C-Chain",
+		"chainId": 43114,
+		"shortName": "Avalanche",
+		"chain": "AVAX",
+		"network": "mainnet",
+		"networkId": 1,
+		"nativeCurrency": {
+			"name": "Avalanche",
+			"symbol": "AVAX",
+			"decimals": 18
+		},
+		"rpc": [
+			"https://api.avax.network/ext/bc/C/rpc"
+		],
+		"faucets": [],
+		"explorers": [],
+		"infoURL": "https://cchain.explorer.avax.network/"
+	},
 	{
 		"slug": "avalanche-fuji",
 		"name": "Avalanche Fuji Testnet",
@@ -234,28 +234,28 @@ export const networks: Network[] = [
 		"infoURL": "https://cchain.explorer.avax-test.network"
 	},
 
-	// {
-	// 	"slug": "celo",
-	// 	"name": "Celo",
-	// 	"chainId": 42220,
-	// 	"shortName": "CELO",
-	// 	"chain": "CELO",
-	// 	"network": "Mainnet",
-	// 	"networkId": 42220,
-	// 	"nativeCurrency": {
-	// 		"name": "CELO",
-	// 		"symbol": "CELO",
-	// 		"decimals": 18
-	// 	},
-	// 	"rpc": [
-	// 		"https://explorer.celo.org/api/eth-rpc",
-	// 		"https://forno.celo.org",
-	// 		"wss://forno.celo.org/ws"
-	// 	],
-	// 	"faucets": [],
-	// 	"explorers": [],
-	// 	"infoURL": "https://docs.celo.org/"
-	// },
+	{
+		"slug": "celo",
+		"name": "Celo",
+		"chainId": 42220,
+		"shortName": "CELO",
+		"chain": "CELO",
+		"network": "Mainnet",
+		"networkId": 42220,
+		"nativeCurrency": {
+			"name": "CELO",
+			"symbol": "CELO",
+			"decimals": 18
+		},
+		"rpc": [
+			"https://explorer.celo.org/api/eth-rpc",
+			"https://forno.celo.org",
+			"wss://forno.celo.org/ws"
+		],
+		"faucets": [],
+		"explorers": [],
+		"infoURL": "https://docs.celo.org/"
+	},
 	{
 		"slug": "celo-alfajores",
 		"name": "Celo Alfajores Testnet",
@@ -281,23 +281,23 @@ export const networks: Network[] = [
 		"infoURL": "https://docs.celo.org/"
 	},
 
-	// {
-	// 	"slug": "metis",
-	// 	"name": "Metis",
-	// 	"chainId": 1088,
-	// 	"nativeCurrency": {
-	// 		"name": "Metis",
-	// 		"symbol": "METIS",
-	// 		"decimals": 18
-	// 	},
-	// 	"rpc": [
-	// 		"https://dragonfire.metis.io/?owner=488",
-	// 		// "https://rocketfuel.metis.io/?owner=435"
-	// 	],
-	// 	"faucets": [],
-	// 	"explorers": [],
-	// 	"infoURL": "https://www.metis.io"
-	// },
+	{
+		"slug": "metis",
+		"name": "Metis",
+		"chainId": 1088,
+		"nativeCurrency": {
+			"name": "Metis",
+			"symbol": "METIS",
+			"decimals": 18
+		},
+		"rpc": [
+			"https://dragonfire.metis.io/?owner=488",
+			// "https://rocketfuel.metis.io/?owner=435"
+		],
+		"faucets": [],
+		"explorers": [],
+		"infoURL": "https://www.metis.io"
+	},
   	{
 		"slug": "metis-stardust",
 		"name": "Metis Stardust",
@@ -316,26 +316,26 @@ export const networks: Network[] = [
 		"infoURL": "https://www.metis.io"
 	},
 
-	// {
-	// 	"slug": "aurora",
-	// 	"name": "Aurora",
-	// 	"chainId": 1313161554,
-	// 	"shortName": "aurora",
-	// 	"chain": "NEAR",
-	// 	"network": "mainnet",
-	// 	"networkId": 1313161554,
-	// 	"nativeCurrency": {
-	// 		"name": "Ether",
-	// 		"symbol": "aETH",
-	// 		"decimals": 18
-	// 	},
-	// 	"rpc": [
-	// 		"https://rpc.mainnet.aurora.dev:8545"
-	// 	],
-	// 	"faucets": [],
-	// 	"explorers": [],
-	// 	"infoURL": "https://aurora.dev"
-	// },
+	{
+		"slug": "aurora",
+		"name": "Aurora",
+		"chainId": 1313161554,
+		"shortName": "aurora",
+		"chain": "NEAR",
+		"network": "mainnet",
+		"networkId": 1313161554,
+		"nativeCurrency": {
+			"name": "Ether",
+			"symbol": "aETH",
+			"decimals": 18
+		},
+		"rpc": [
+			"https://rpc.mainnet.aurora.dev:8545"
+		],
+		"faucets": [],
+		"explorers": [],
+		"infoURL": "https://aurora.dev"
+	},
 	{
 		"slug": "aurora-testnet",
 		"name": "Aurora TestNet",
@@ -427,28 +427,28 @@ export const networks: Network[] = [
 		"infoURL": "https://skale.network/"
 	},
 
-	// {
-	// 	"slug": "nahmii",
-	// 	"name": "Nahmii",
-	// 	"chainId": 5513,
-	// 	"nativeCurrency": {
-	// 		"name": "ETH",
-	// 		"symbol": "ETH",
-	// 		"decimals": 18
-	// 	},
-	// 	"rpc": [
-	// 		"https://l2.nahmii.io"
-	// 	],
-	// 	"faucets": [],
-	// 	"explorers": [
-	// 		{
-	// 			"name": "Nahmii Explorer",
-	// 			"url": "https://explorer.testnet.nahmii.io/"
-	// 		}
+	{
+		"slug": "nahmii",
+		"name": "Nahmii",
+		"chainId": 5513,
+		"nativeCurrency": {
+			"name": "ETH",
+			"symbol": "ETH",
+			"decimals": 18
+		},
+		"rpc": [
+			"https://l2.nahmii.io"
+		],
+		"faucets": [],
+		"explorers": [
+			{
+				"name": "Nahmii Explorer",
+				"url": "https://explorer.testnet.nahmii.io/"
+			}
 			
-	// 	],
-	// 	"infoURL": "https://nahmii.io/"
-	// },
+		],
+		"infoURL": "https://nahmii.io/"
+	},
 	{
 		"slug": "nahmii-testnet",
 		"name": "Nahmii Testnet",
@@ -473,7 +473,7 @@ export const networks: Network[] = [
 	},
 
 	{
-		"slug": "nervos-godwoken-testnet",
+		"slug": "nervos-godwoken",
 		"name": "Nervos Godwoken Testnet",
 		"chainId": 71393,
 		"nativeCurrency": {
@@ -496,6 +496,22 @@ export const networks: Network[] = [
 	},
 
 	{
+		"slug": "arbitrum",
+		"name": "Arbitrum",
+		"chainId": 42161,
+		"nativeCurrency": {
+			"name": "ETH",
+			"symbol": "ETH",
+			"decimals": 18
+		},
+		"rpc": [
+			"https://arb1.arbitrum.io/rpc"
+		],
+		"faucets": [],
+		"explorers": [
+		],
+	},
+	{
 		"slug": "arbitrum-rinkeby",
 		"name": "Arbitrum Rinkeby",
 		"chainId": 421611,
@@ -511,41 +527,25 @@ export const networks: Network[] = [
 		"explorers": [
 		],
 	},
-	// {
-	// 	"slug": "arbitrum",
-	// 	"name": "Arbitrum",
-	// 	"chainId": 42161,
-	// 	"nativeCurrency": {
-	// 		"name": "ETH",
-	// 		"symbol": "ETH",
-	// 		"decimals": 18
-	// 	},
-	// 	"rpc": [
-	// 		"https://arb1.arbitrum.io/rpc"
-	// 	],
-	// 	"faucets": [],
-	// 	"explorers": [
-	// 	],
-	// },
 
-	// {
-	// 	"slug": "reef",
-	// 	"name": "Reef",
-	// 	"chainId": 13939,
-	// 	"nativeCurrency": {
-	// 		"name": "REEF",
-	// 		"symbol": "REEF",
-	// 		"decimals": 18
-	// 	},
-	// 	"rpc": [
-	// 		"https://rpc.reefscan.com"
-	// 	],
-	// 	"faucets": [],
-	// 	"explorers": [
-	// 	],
-	// },
 	{
-		"slug": "reefTestnet",
+		"slug": "reef",
+		"name": "Reef",
+		"chainId": 13939,
+		"nativeCurrency": {
+			"name": "REEF",
+			"symbol": "REEF",
+			"decimals": 18
+		},
+		"rpc": [
+			"https://rpc.reefscan.com"
+		],
+		"faucets": [],
+		"explorers": [
+		],
+	},
+	{
+		"slug": "reef-testnet",
 		"name": "Reef Testnet",
 		"chainId": 13939, // Yes the chainID is same prod vs test
 		"nativeCurrency": {
@@ -572,31 +572,61 @@ for(const network of networks)
 	networksBySlug[network.slug] = network
 
 
+const testnetSlugsForMainnetSlugs = {
+	'ethereum': [
+		'ethereum-kovan',
+		'ethereum-rinkeby',
+		'ethereum-ropsten',
+		'ethereum-goerli',
+	],
+	'polygon': [
+		'polygon-mumbai',
+	],
+	'avalanche': [
+		'avalanche-fuji',
+	],
+	'celo': [
+		'celo-alfajores',
+		'celo-baklava',
+	],
+	'nahmii': [
+		'nahmii-testnet',
+	],
+	'metis': [
+		'metis-stardust',
+	],
+	'arbitrum': [
+		'arbitrum-rinkeby',
+	],
+	'reef': [
+		'reef-testnet',
+	],
+	'skale': [
+		'skale-testnet',
+	],
+	'aurora': [
+		'aurora-testnet',
+	],
+	'nervos': [
+		'nervos-godwoken',
+	]
+}
+
 export const testnetsForMainnets = Object.fromEntries<Network[]>(
-	Object.entries({
-		'ethereum': [
-			'ethereum-kovan',
-			'ethereum-rinkeby',
-			'ethereum-ropsten',
-			'ethereum-goerli',
-		],
-		'polygon': [
-			'polygon-mumbai',
-		],
-		'avalanche': [
-			'avalanche-fuji',
-		],
-		'celo': [
-			'celo-alfajores',
-			'celo-baklava',
-		],
-		'nahmii': [
-			'nahmii-testnet',
-		]
-	}).map(([mainnetSlug, testnetSlugs]) =>
+	Object.entries(testnetSlugsForMainnetSlugs).map(([mainnetSlug, testnetSlugs]) =>
 		[mainnetSlug, testnetSlugs.map(slug => networksBySlug[slug])]
 	)
 )
+
+console.log('testnetsForMainnets', testnetsForMainnets)
+export const mainnetForTestnet = Object.fromEntries(
+	Object.entries(testnetSlugsForMainnetSlugs).flatMap(([mainnetSlug, testnetSlugs]) =>
+		testnetSlugs.map(slug => [slug, networksBySlug[mainnetSlug]])
+	)
+)
+console.log('mainnetForTestnet', mainnetForTestnet)
+console.log('networks', networks.map(_=>_.slug))
+networks
 
 export const testnetNetworks = Object.values(testnetsForMainnets).flat()
 
@@ -608,6 +638,56 @@ export function isTestnet(network: Network){
 }
 
 
+
+
+export const availableNetworks = [
+	"ethereum",
+	"ethereum-rinkeby",
+	"ethereum-goerli",
+	"polygon-mumbai",
+	// "avalanche-fuji",
+	"celo-alfajores",
+	"metis-stardust",
+	"aurora-testnet",
+	"harmony-shard0",
+	"harmony-shard1",
+	"skale-testnet",
+	"nahmii-testnet",
+	"nervos-godwoken",
+	"arbitrum-rinkeby",
+	"reef-testnet"
+].map(slug => networksBySlug[slug])
+
+
+// import arbitrumIcon from '../assets/networks/arbitrum.svg'
+import auroraIcon from '../assets/networks/aurora.svg'
+// import avalancheIcon from '../assets/networks/avalanche.svg'
+import celoIcon from '../assets/networks/celo.svg'
+import ethereumIcon from '../assets/networks/ethereum.svg'
+import harmonyIcon from '../assets/networks/harmony.svg'
+import metisIcon from '../assets/networks/metis.svg'
+import nahmiiIcon from '../assets/networks/nahmii.svg'
+import nervosIcon from '../assets/networks/nervos.svg'
+import polygonIcon from '../assets/networks/polygon.svg'
+import reefIcon from '../assets/networks/reef.svg'
+import skaleIcon from '../assets/networks/skale.svg'
+
+export const chainIcons: Record<string, string> = {
+	// 'arbitrum': arbitrumIcon,
+	'aurora': auroraIcon,
+	// 'avalanche': avalancheIcon,
+	'celo': celoIcon,
+	'ethereum': ethereumIcon,
+	'harmony-shard0': harmonyIcon,
+	'harmony-shard1': harmonyIcon,
+	'metis': metisIcon,
+	'nahmii': nahmiiIcon,
+	'nervos': nervosIcon,
+	'polygon': polygonIcon,
+	'reef': reefIcon,
+	'skale': skaleIcon,
+}
+
 export const vaultAssetsByNetwork: Record<string, ERC20Token[]> = {
 	'ethereum': [{"chainId":1,"address":"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
 	'ethereum-rinkeby': [{"chainId":4,"address":"0xeb8f08a975ab53e34d8a0330e0d34de942c95926","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
@@ -616,7 +696,7 @@ export const vaultAssetsByNetwork: Record<string, ERC20Token[]> = {
 	'avalanche-fuji': [{"chainId":43113,"address":"0xAF82969ECF299c1f1Bb5e1D12dDAcc9027431160","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
 	'avalanche': [{"chainId":43114,"address":"0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
 	'celo': [{"chainId":42220,"address":"0x765DE816845861e75A25fCA122bb6898B8B1282a","name":"Celo Dollar","symbol":"cUSD","decimals":18,"icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/7236.png"}],
-	'celo-alfajores': [{"chainId":44787,"address":"0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/7236.png"}],
+	'celo-alfajores': [{"chainId":44787,"address":"0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1","name":"Celo Dollar","symbol":"cUSD","decimals":18,"icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/7236.png"}],
 	'metis': [{"chainId":1088,"address":"0xAF82969ECF299c1f1Bb5e1D12dDAcc9027431160","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
 	'metis-stardust': [{"chainId":588,"address":"0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
 }
