@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.10;
+pragma solidity >=0.8.0;
 
-import "ds-test/test.sol";
+import "../../lib/ds-test/src/test.sol";
 import "../BaseVault.sol";
 import "../tokens/MockERC20.sol";
 import {console} from "./Console.sol";
