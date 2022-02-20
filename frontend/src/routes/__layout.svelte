@@ -3,6 +3,13 @@
 	import '../styles/app.css'
 
 
+	// Globals/polyfills
+	// import { Buffer } from 'buffer'
+	// console.log('Buffer', Buffer)
+	// globalThis.Buffer = Buffer
+	// console.log('buffer', Buffer)
+
+
 	// App initialization
 	import '../lib/i18n'
 

@@ -1,4 +1,4 @@
-import { vaultAssetsByNetwork, type ChainID } from '$lib/networks'
+import { networksByChainID, networksBySlug, vaultAssetsByNetwork, type ChainID } from '$lib/networks'
 import { BigNumber } from 'ethers'
 import { type ERC20Token, erc20TokensBySymbol } from './tokens'
 
@@ -161,14 +161,14 @@ export type VaultConfig<T extends VaultType> = {
 
 export const getDefaultVaultConfig = (typę: VaultType) => ({
 	about: {
-		name: '',
+		name: 'My Test Vault',
 		description: '',
 		website: '',
 		twitter: '',
 		discord: '',
 	},
-	chainId: 1,
-	tokens: vaultAssetsByNetwork['ethereum-rinkeby'],
+	chainId: networksBySlug['ethereum-rinkeby'].chainId,
+	tokens: [],
 	type: undefined,
 	config: {
 		// VaultType.Degen

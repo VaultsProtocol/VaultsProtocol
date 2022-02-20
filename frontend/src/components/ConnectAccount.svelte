@@ -97,6 +97,7 @@
 
 	// Formatting
 	import { formatAddress } from '$lib/formatAddress'
+import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 
 
 	// Components

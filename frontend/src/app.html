@@ -5,6 +5,19 @@
 		<meta name="description" content="" />
 		<link rel="icon" href="%svelte.assets%/favicon.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<script>
+			Object.assign(globalThis, {
+				global: globalThis,
+				process: {
+					env: {}
+				}
+			})
+		</script>
+		<!-- <script type="module">
+			import buffer from 'https://cdn.skypack.dev/buffer'
+			globalThis.Buffer = buffer.Buffer
+		  </script> -->
+		<!-- <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script> -->
 		%svelte.head%
 	</head>
 	<body>
