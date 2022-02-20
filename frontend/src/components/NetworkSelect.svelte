@@ -5,7 +5,7 @@
 
 	export let availableNetworks: Network[] = _availableNetworks
 
-	export let network: Network = networksBySlug['ethereum-ropsten']
+	export let network: Network = networksBySlug['ethereum-rinkeby']
 	
 	
 	import Select from '../components/Select.svelte'

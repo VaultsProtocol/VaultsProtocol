@@ -69,6 +69,32 @@ export const networks: Network[] = [
 		"icon": "ethereum",
 	},
 	{
+		"slug": "ethereum-ropsten",
+		"name": "Ethereum Ropsten Testnet",
+		"chainId": 3,
+		"shortName": "rop",
+		"chain": "ETH",
+		"network": "ropsten",
+		"networkId": 3,
+		"nativeCurrency": {
+			"name": "Ropsten Ether",
+			"symbol": "ROP",
+			"decimals": 18
+		},
+		"rpc": [
+			"https://ropsten.infura.io/v3/${INFURA_PROJECT_ID}",
+			"wss://ropsten.infura.io/ws/v3/${INFURA_PROJECT_ID}"
+		],
+		"faucets": [
+			"https://faucet.ropsten.be?${ADDRESS}"
+		],
+		"explorers": [],
+		"infoURL": "https://github.com/ethereum/ropsten",
+		"ens": {
+			"registry": "0x112234455c3a32fd11230c42e7bccd4a84e02010"
+		}
+	},
+	{
 		"slug": "ethereum-rinkeby",
 		"name": "Ethereum Rinkeby Testnet",
 		"chainId": 4,
@@ -638,6 +664,7 @@ export function isTestnet(network: Network){
 
 export const availableNetworks = [
 	"ethereum",
+	"ethereum-ropsten",
 	"ethereum-rinkeby",
 	"ethereum-goerli",
 	"polygon-mumbai",
