@@ -2,6 +2,7 @@
 	export let value: number
 	export let min = 0
 	export let max = 100
+	export let maxDecimals = 2
 </script>
 
 
@@ -10,9 +11,11 @@
 		type="number"
 		{min}
 		{max}
+		step={10 ** -maxDecimals}
 		bind:value
-		on:blur={() => value = Math.max(Math.min(value, max), min)}
+		on:blur={() => value = Number(Math.max(Math.min(value, max), min).toFixed(maxDecimals))}
 	/>
+	<!-- on:blur={() => value = Math.floor(Math.max(Math.min(value, max), min) / step) * step} -->
 	%
 </span>
 <!-- <button

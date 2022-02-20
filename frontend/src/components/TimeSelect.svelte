@@ -9,10 +9,10 @@
 	}
 
 	const timeUnitAmounts = {
-		[TimeUnit.Second]: 1,
-		[TimeUnit.Minute]: 60,
-		[TimeUnit.Hour]: 3600,
 		[TimeUnit.Day]: 86400,
+		[TimeUnit.Hour]: 3600,
+		[TimeUnit.Minute]: 60,
+		[TimeUnit.Second]: 1,
 	}
 
 	let timeUnit = Object.entries(timeUnitAmounts).find(([timeUnit, timeUnitAmount]) => value % timeUnitAmount === 0)?.[0] || TimeUnit.Second

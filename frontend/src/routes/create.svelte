@@ -1,8 +1,4 @@
 <script lang="ts">
-  import PercentInput from './PercentInput.svelte';
-
-  import TimeSelect from '../components/TimeSelect.svelte';
-
 	// Constants/types
 	import { _ } from 'svelte-i18n'
 
@@ -72,6 +68,9 @@
 	import Tabs from '../components/Tabs.svelte'
 	import TokenSelect from '../components/TokenSelect.svelte'
 	import TokenAmountSelect from '../components/TokenAmountSelect.svelte'
+	import MultipleAddressInput from '../components/MultipleAddressInput.svelte'
+	import PercentInput from './PercentInput.svelte'
+	import TimeSelect from '../components/TimeSelect.svelte'
 
 
 	import { fade, fly, scale } from 'svelte/transition'
@@ -241,30 +240,57 @@
 							<label class="card column">
 								<h4>{$_('Initial Minimum Amount')}</h4>
 								<TokenAmountSelect
+									availableTokens={vaultConfig.tokens}
 									bind:token={vaultConfig.config.initialLiquidity.token}
 									bind:amount={vaultConfig.config.initialLiquidity.amount}
 								/>
-								<p>{$_('After the jackpot winner and the dividends are paid out, the remaining funds go to the DAO treasury.')}</p>
+								<p>{$_('The initial amount of tokens to supply.')}</p>
 							</label>
 
 							<label class="card column">
 								<h4>{$_('Deadline')}</h4>
 								<TimeSelect bind:value={vaultConfig.config.deadline} />
-								<p>{$_('The vault will stop accepting contributions when .')}</p>
+								<p>{$_('The window of time starting from the time of the slast contribution for another contribution to be made.')}</p>
 							</label>
 						</div>
 
 					{:else if vaultConfig.type === VaultType.DAO}
 						<div class="grid" in:fly={{ x: 20 }} out:fly={{ x: -20 }}>
-							<label class="card column">
-								<h3>{$_('Governance Type')}</h3>
-								<p>{$_(governanceTypeInfo[vaultConfig.config.governanceType]?.description)}</p>
-								<Select
-									bind:value={vaultConfig.config.governanceType}
-									values={Object.keys(GovernanceType)}
-									labels={Object.fromEntries(Object.entries(governanceTypeInfo).map(([key, {label}]) => [key, label]))}
-								/>
-							</label>
+							<div class="card column">
+								<label class="column">
+									<h3>{$_('Governance Type')}</h3>
+									<Select
+										bind:value={vaultConfig.config.governanceType}
+										values={Object.values(GovernanceType)}
+										labels={Object.fromEntries(Object.entries(governanceTypeInfo).map(([key, {label}]) => [key, label]))}
+									/>
+									<p>{$_(governanceTypeInfo[vaultConfig.config.governanceType]?.description)}</p>
+								</label>
+
+								<div class="stack">
+									{#if vaultConfig.config.governanceType === GovernanceType.MultiSignature}
+										<div class="grid">
+											<label class="card column" transition:scale>
+												<h3>{$_('Minimum Signatures')}</h3>
+												<input type="number" bind:value={vaultConfig.config.minimumSignatures} />
+												<p>{$_('The number of signers needed to approve changes to the vault.')}</p>
+											</label>
+
+											<label class="card column" transition:scale>
+												<h3>{$_('Signers')}</h3>
+												<p>{$_('The addresses of the signers participating in the multi-signature vault.')}</p>
+												<MultipleAddressInput bind:values={vaultConfig.config.signers} />
+											</label>
+										</div>
+									{:else if vaultConfig.config.governanceType === GovernanceType.TokenVoting}
+										<label class="card column" transition:scale>
+											<h3>{$_('Quorum')}</h3>
+											<PercentInput bind:value={vaultConfig.config.quorum} />
+											<p>{$_('The minimum amount of voting power participating in the vote for a proposal to be decided.')}</p>
+										</label>
+									{/if}
+								</div>
+							</div>
 
 							<!-- Quadratic
 							Proportional -->
@@ -274,14 +300,14 @@
 						<div class="grid" in:fly={{ x: 20 }} out:fly={{ x: -20 }}>
 							<label class="card column">
 								<h3>{$_('Recipient')}</h3>
-								<p>{$_('The recipient ')}</p>
 								<AddressInput bind:address={vaultConfig.config.recipientAddress} />
+								<p>{$_('The recipient to whom a specified portion of the yield will be sent.')}</p>
 							</label>
 
 							<label class="card column">
 								<h3>{$_('Yield to Recipient')}</h3>
 								<PercentInput bind:value={vaultConfig.config.recipientYieldPercent} />
-								<p>{$_('The recipient will receive this portion of the earned yield; the rest will be distributed proportionally to holders.')}</p>
+								<p>{$_('The portion of the yield to set aside for the recipient. Remaining yield is distributed proportionally to holders.')}</p>
 							</label>
 
 							<label class="card column">
@@ -341,7 +367,7 @@
 			</section> -->
 
 			<div class="row centered">
-				<button type="submit" class="extra-large" disabled={!isValid}>{$_('Create DAO')}</button>
+				<button type="submit" class="extra-large round" disabled={!isValid}>{$_('Create DAO')}</button>
 			</div>
 		</form>
 	</section>

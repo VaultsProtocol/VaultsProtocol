@@ -35,20 +35,6 @@ export type Network = {
 	},
 }
 
-
-export const stableCoinsByNetwork: Record<string, ERC20Token[]> = {
-	'ethereum': [{"chainId":1,"address":"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
-	'ethereum-rinkeby': [{"chainId":4,"address":"0xeb8f08a975ab53e34d8a0330e0d34de942c95926","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
-	'polygon': [{"chainId":137,"address":"0xeb8f08a975ab53e34d8a0330e0d34de942c95926","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
-	'polygon-mumbai': [{"chainId":80001,"address":"0xe6b8a5cf854791412c1f6efc7caf629f5df1c747","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
-	'avalanche-fuji': [{"chainId":43113,"address":"0xAF82969ECF299c1f1Bb5e1D12dDAcc9027431160","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
-	'avalanche': [{"chainId":43114,"address":"0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
-	'celo': [{"chainId":42220,"address":"0x765DE816845861e75A25fCA122bb6898B8B1282a","name":"Celo Dollar","symbol":"cUSD","decimals":18,"icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/7236.png"}],
-	'celo-alfajores': [{"chainId":44787,"address":"0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/7236.png"}],
-	'metis': [{"chainId":1088,"address":"0xAF82969ECF299c1f1Bb5e1D12dDAcc9027431160","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
-	'metis-stardust': [{"chainId":588,"address":"0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
-}
-
 export const networks: Network[] = [
   {
 		"slug": "ethereum",
@@ -520,4 +506,18 @@ export function isTestnet(network: Network){
 		|| network.slug?.includes('testnet')
 		|| network.name?.toLowerCase().includes('testnet')
 		|| testnetNetworks.includes(network)
+}
+
+
+export const vaultAssetsByNetwork: Record<string, ERC20Token[]> = {
+	'ethereum': [{"chainId":1,"address":"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
+	'ethereum-rinkeby': [{"chainId":4,"address":"0xeb8f08a975ab53e34d8a0330e0d34de942c95926","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
+	'polygon': [{"chainId":137,"address":"0xeb8f08a975ab53e34d8a0330e0d34de942c95926","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
+	'polygon-mumbai': [{"chainId":80001,"address":"0xe6b8a5cf854791412c1f6efc7caf629f5df1c747","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
+	'avalanche-fuji': [{"chainId":43113,"address":"0xAF82969ECF299c1f1Bb5e1D12dDAcc9027431160","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
+	'avalanche': [{"chainId":43114,"address":"0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
+	'celo': [{"chainId":42220,"address":"0x765DE816845861e75A25fCA122bb6898B8B1282a","name":"Celo Dollar","symbol":"cUSD","decimals":18,"icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/7236.png"}],
+	'celo-alfajores': [{"chainId":44787,"address":"0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/7236.png"}],
+	'metis': [{"chainId":1088,"address":"0xAF82969ECF299c1f1Bb5e1D12dDAcc9027431160","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
+	'metis-stardust': [{"chainId":588,"address":"0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
 }

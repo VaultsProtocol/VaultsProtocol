@@ -130,7 +130,7 @@ button:active, .button:active, [role='button']:active {
 button.primary {
 	--button-color: var(--accent-color);
 }
-button.pill {
+button.round {
 	border-radius: 100vmax;
 }
 button.extra-large {
@@ -268,8 +268,9 @@ hr {
 	--card-scale-factor: 0.66;
 }
 .card .card .card {
-	background-color: var(--background-color-2);
-	--card-scale-factor: 0.33;
+	background-color: var(--background-color-3);
+	font-size: 0.85em;
+	--card-scale-factor: 0.5;
 }
 
 .card.menu {

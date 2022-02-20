@@ -5,9 +5,9 @@ import type { ERC20Token } from './tokens'
 
 export enum VaultType {
 	Standard = 'Standard',
-	Degen = 'Degen',
-	DAO = 'DAO',
 	Charity = 'Charity',
+	DAO = 'DAO',
+	Degen = 'Degen',
 	// Superfluid = 'Superfluid',
 }
 
@@ -22,7 +22,7 @@ export const vaultTypeInfo = {
 	},
 	[VaultType.Charity]: {
 		label: '🎁 No-Loss Charity',
-		description: 'A portion of the '
+		description: 'A portion of the yield is set aside for a designated recipient to be claimed at any time.'
 	},
 	// [VaultType.Superfluid]: {
 	// 	label: '🦈 Superfluid',
@@ -30,7 +30,7 @@ export const vaultTypeInfo = {
 	// },
 	[VaultType.DAO]: {
 		label: '🗳 DAO',
-		description: ''
+		description: 'The vault parameters can be changed upon the approval of multiple designated signers or by a token-weighted vote by all holdersapproval.'
 	}
 }
 
@@ -77,11 +77,11 @@ export enum GovernanceType {
 export const governanceTypeInfo = {
 	[GovernanceType.MultiSignature]: {
 		label: '✍️ Multi-Signature',
-		description: 'A pre-approved list of addresses must sign off to change the vault parameters.'
+		description: 'Multiple signatures from a pre-approved list of addresses are required to approve changes to the vault parameters.'
 	},
 	[GovernanceType.TokenVoting]: {
 		label: '🗳 Token Voting',
-		description: 'Stakeholders cast votes weighted proportionally to their stake to approve or deny changes to the vault parameters.'
+		description: 'Stakeholders cast votes weighted proportional to their vault contribution to approve or deny changes to the vault parameters.'
 	},
 }
 
@@ -93,11 +93,11 @@ export enum PayoutType {
 export const payoutTypeInfo = {
 	[PayoutType.Once]: {
 		label: '💸 Once',
-		description: 'The recipient claims yield '
+		description: 'The recipient\'s payout accrues over time; anyone can trigger the claim transaction.'
 	},
 	[PayoutType.Superfluid]: {
 		label: '🌊 Superfluid',
-		description: 'The recipient is streamed tokens over a set period of time.'
+		description: 'The payout is autmatically streamed to the recipient as Superfluid super tokens. The recipient can redeem their funds by unwrapping their super tokens.'
 	},
 }
 
@@ -176,9 +176,17 @@ export const getDefaultVaultConfig = () => ({
 
 		// VaultType.DAO
 		governanceType: GovernanceType.MultiSignature,
+		signers: [],
+		minimumSignatures: 2,
+		quorum: 50,
 
 		// VaultType.Charity
 		payoutType: PayoutType.Once,
+		recipientAddress: '',
+		recipientYieldPercent: 0,
+
+		// payoutType === PayoutType.Superfluid,
+		payoutRate: 10
 	},
 	yieldStrategy: YieldStrategy.Aave,
 	// governanceStrategy: GovernanceStrategy.None,

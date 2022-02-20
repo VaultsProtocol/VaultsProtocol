@@ -22,7 +22,7 @@
 <input
 	type="text"
 	bind:value={address}
-	class:invalid={!isValid}
+	class:invalid={address && !isValid}
 	placeholder="0xabc...6789 / ens.eth"
 	on:blur={() => address = address.trim()}
 />
