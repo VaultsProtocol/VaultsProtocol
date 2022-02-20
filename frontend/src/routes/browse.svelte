@@ -29,8 +29,14 @@
 	]
 
 
+	// import { queryTable } from '$lib/tableland'
+
+	// let results
+	// queryTable({ query: 'SELECT * FROM table' }).then(_ => vaults = _)
+
+
 	import Vault from '../components/Vault.svelte'
-import { random } from '../lib/random';
+	import { random } from '../lib/random'
 </script>
 
 
