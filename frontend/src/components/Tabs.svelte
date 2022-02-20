@@ -11,7 +11,7 @@
 </script>
 
 
-<div class="row equal">
+<div class="row tabs-row equal">
 	{#each values as optionValue (optionValue)}
 		<label class="select-option">
 			<input type="radio" bind:group={value} value={optionValue} />
@@ -36,6 +36,16 @@
 		opacity: 0;
 	}
 
+	.tabs-row .button{
+		border: 2px solid #343434;
+		padding: 5px 10px;
+		min-height: 40px;
+		height: 100%;
+		border-radius: 120px;
+		text-align: center;
+		font-size: 0.75em;
+	}
+
 	span {
 		background-color: var(--background-color-2);
 		background-color: var(--background-color-white);
@@ -46,7 +56,7 @@
 		opacity: 0.9;
 	}
 	input[type="radio"]:checked ~ span {
-		background-color: var(--active-background-color, var(--background-color-4));
+		background-color: var(--active-background-color, var(--background-color-DAO));
 		font-weight: bold;
 		opacity: 1;
 	}
