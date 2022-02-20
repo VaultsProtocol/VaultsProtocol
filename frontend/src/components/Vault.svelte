@@ -206,9 +206,9 @@ import { formatAddress } from '$lib/formatAddress';
 						]
 					: []
 					as
-					{ icon, label, displayType, value } (label)
+					{ icon, label, displayType, value }, i (label)
 				}
-					<div class="card row" transition:scale animate:flip>
+					<div class="card row" in:scale={{ delay: i * 100 }} out:scale animate:flip>
 						<div class="row">
 							<!-- <img src={icon} width="20" height="20" /> -->
 							<span>{$_(icon)}</span>
