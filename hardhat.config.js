@@ -42,7 +42,7 @@ task("full-deploy", "Deploy All Contracts")
     const vaultFactory = await VaultFactory.deploy();
 
     console.log(
-      `To verify: npx hardhat verify ${vaultFactory.address} "${deployer.address}" --network {network}`,
+      `To verify: npx hardhat verify ${vaultFactory.address} --network {network}`,
     );
 
     /**********************************/
@@ -175,6 +175,98 @@ module.exports = {
       gas: 2100000,
       accounts: [`${privatekey}`],
     },
+    goerli:{
+      url: "https://rpc.goerli.mudit.blog/",
+      chainId: 5,
+      gasPrice: 10e9,
+      gas: 2100000,
+      accounts: [`${privatekey}`],
+    },
+    polygon:{
+      url: "https://rpc-mainnet.matic.network",
+      chainId: 137,
+      gasPrice: 10e9,
+      gas: 2100000,
+      accounts: [`${privatekey}`],
+    },
+    polygonMumbai:{
+      url: "https://rpc-mumbai.matic.today",
+      chainId: 80001,
+      gasPrice: 10e9,
+      gas: 2100000,
+      accounts: [`${privatekey}`],
+    },
+    celo:{
+      url: "https://explorer.celo.org/api/eth-rpc",
+      chainId: 42220,
+      gasPrice: 10e9,
+      gas: 2100000,
+      accounts: [`${privatekey}`],
+    },
+    celoAlfajores:{
+      url: "https://alfajores-forno.celo-testnet.org",
+      chainId: 44787,
+      gasPrice: 10e9,
+      gas: 2100000,
+      accounts: [`${privatekey}`],
+
+    },
+    metis:{
+      url: "https://dragonfire.metis.io/?owner=488",
+      chainId: 1088,
+      gasPrice: 10e9,
+      gas: 2100000,
+      accounts: [`${privatekey}`],
+    },
+    metisStardust:{
+      url: "https://stardust.metis.io/?owner=588",
+      chainId: 588,
+      gasPrice: 10e9,
+      gas: 2100000,
+      accounts: [`${privatekey}`],
+    },
+    near:{
+      url: "https://rpc.mainnet.aurora.dev:8545",
+      chainId: 1313161554,
+      gasPrice: 10e9,
+      gas: 2100000,
+      accounts: [`${privatekey}`],
+    },
+    nearTestnet:{
+      url: "https://rpc.testnet.aurora.dev:8545",
+      chainId: 1313161555,
+      gasPrice: 10e9,
+      gas: 2100000,
+      accounts: [`${privatekey}`],
+    },
+    harmony:{
+      url: "https://api.harmony.one",
+      chainId: 1666600000,
+      gasPrice: 10e9,
+      gas: 2100000,
+      accounts: [`${privatekey}`],
+    },
+    skaleTestnet:{
+      url: "https://dev-testnet-v1-0.skalelabs.com",
+      chainId: 344435,
+      gasPrice: 10e9,
+      gas: 2100000,
+      accounts: [`${privatekey}`],
+    },
+    arbitrumRinkeby: {
+      url: "https://rinkeby.arbitrum.io/rpc",
+      chainId: 421611,
+      gasPrice: 10e9,
+      gas: 2100000,
+      accounts: [`${privatekey}`],
+    },
+    arbitrum: {
+      url: "https://arb1.arbitrum.io/rpc",
+      chainId: 42161,
+      gasPrice: 10e9,
+      gas: 2100000,
+      accounts: [`${privatekey}`],
+    }
     // BEFORE USING THIS, CHECK GAS PRICES
 
     // ethMain: {
