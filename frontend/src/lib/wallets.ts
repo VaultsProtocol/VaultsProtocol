@@ -4,6 +4,7 @@ export enum WalletType {
 	OtherWallet = 'Other',
 	Tally = 'Tally',
 	WalletConnect = 'WalletConnect',
+	MEW = 'MEW',
 }
 
 
@@ -19,6 +20,8 @@ import iconCoinbaseWallet from '../assets/wallets/coinbase-wallet.png'
 import iconMetaMask from '../assets/wallets/metamask.svg'
 import iconTally from '../assets/wallets/tally.svg'
 import iconWalletConnect from '../assets/wallets/walletconnect.svg'
+import iconMEW from '../assets/wallets/mew.svg'
+// import iconSpruce from '../assets/wallets/spruce.svg'
 
 
 export const wallets: WalletConfig[] = [
@@ -41,6 +44,11 @@ export const wallets: WalletConfig[] = [
 		type: WalletType.CoinbaseWallet,
 		name: _ => _('Wallets.Coinbase Wallet'),
 		icon: iconCoinbaseWallet,
+	},
+	{
+		type: WalletType.MEW,
+		name: _ => _('My Ether Wallet'),
+		icon: iconMEW,
 	},
 ]
 

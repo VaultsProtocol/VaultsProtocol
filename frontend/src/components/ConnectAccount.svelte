@@ -166,7 +166,7 @@ import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 	<Modal
 		bind:isOpen={modalIsOpen}
 		closeButton
-		width="26rem"
+		width="30rem"
 		title={$_('Sign in with Web3')}
 	>
 		<!-- <div class="card"> -->
@@ -255,7 +255,7 @@ import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 	}
 	.wallet {
 		flex: 1 0 auto;
-		flex: 1 8rem;
+		flex: 1 10rem;
 		margin: calc(0.5 * var(--grid-gap));
 	}
 	.wallet img {

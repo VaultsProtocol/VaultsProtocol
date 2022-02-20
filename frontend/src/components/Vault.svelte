@@ -331,7 +331,7 @@ import { formatAddress } from '$lib/formatAddress';
 		width: 1.25em;
 		height: 1.25em;
 		border-radius: 50%;
-		transform: scale(3);
+		transform: scale(3) translateZ(1px);
 		z-index: 1;
 		filter: drop-shadow(0 0 1px var(--background-color-1));
 		align-self: start;

@@ -536,4 +536,8 @@ import { AbiCoder } from 'ethers/lib/utils';
 		font-size: 0.9em;
 		/* opacity: 0.8; */
 	}
+
+	main :global(details) {
+		font-size: 1.2em;
+	}
 </style>

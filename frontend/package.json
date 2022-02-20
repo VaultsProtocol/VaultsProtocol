@@ -35,6 +35,7 @@
 		"@floating-ui/dom": "^0.2.0",
 		"buffer": "^6.0.3",
 		"ethers": "^5.5.4",
+		"siwe": "^1.1.0",
 		"svelte-i18n": "^3.3.13"
 	}
 }
