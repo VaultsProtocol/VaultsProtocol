@@ -52,6 +52,7 @@
 	
 	// Styles/animations
 	import { scale } from 'svelte/transition'
+import { networksByChainID, vaultAssetsByNetwork } from '$lib/networks';
 </script>
 
 
@@ -72,7 +73,7 @@
 	<div class="card column">
 		<div class="token-amount">
 			<TokenAmountSelect
-				availableTokens={vaultConfig.tokens}
+				availableTokens={vaultConfig.tokens.length ? vaultConfig.tokens : vaultAssetsByNetwork[networksByChainID[vaultConfig.chainId]?.slug][0]}
 				bind:token={vaultConfig.tokens[0]}
 				bind:amount={balanceDelta}
 				min={0}
