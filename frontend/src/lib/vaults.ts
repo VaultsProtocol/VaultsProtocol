@@ -168,7 +168,7 @@ export const getDefaultVaultConfig = (typę: VaultType) => ({
 		discord: '',
 	},
 	chainId: 1,
-	tokens: vaultAssetsByNetwork['ethereum'],
+	tokens: vaultAssetsByNetwork['ethereum-rinkeby'],
 	type: undefined,
 	config: {
 		// VaultType.Degen

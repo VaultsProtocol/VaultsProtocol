@@ -44,20 +44,33 @@
 	$: isValid =
 		!!vaultConfig.about.name &&
 		!!vaultConfig.about.name && vaultConfig.about.name && vaultConfig.about.name
+	
+	let errorMessage
 
+	
+	// Methods/hooks/lifecycle
 
-	// import DAOFactory from '../lib/contracts/DAOFactory.sol/DAOFactory.json'
-	// $: if(currentStep = Steps.TransactionSigning)(async () => {
-	// 	const contract = new Contract('0x', DAOFactory.abi, $provider)
+	import { getContract } from '$lib/contracts'
 
-	// 	try {
-	// 		await contract.estimateGas.createDao()
-	// 		await contract.estimateGas.createDao()
-	// 	}catch(e){
-	// 		errorMessage = e.message
-	// 		currentStep = Steps.TransactionFailed
-	// 	}
-	// })()
+	$: if(currentStep = Steps.TransactionSigning)(async () => {
+		try {
+			const VaultFactory = getContract({
+				provider: $provider,
+				network: networksByChainID[vaultConfig.chainId],
+				name: 'VaultFactory'
+			})
+
+			console.log('VaultFactory', VaultFactory)
+
+			console.log(1)
+			await VaultFactory.estimateGas.createDao()
+			console.log(2)
+			await VaultFactory.estimateGas.createDao()
+		}catch(e){
+			errorMessage = e.message
+			currentStep = Steps.TransactionFailed
+		}
+	})()
 
 
 	// Components
@@ -74,6 +87,8 @@
 
 
 	import { fade, fly, scale } from 'svelte/transition'
+	import Portal from '../components/Portal.svelte'
+	import Modal from '../components/Modal.svelte'
 </script>
 
 
@@ -94,7 +109,12 @@
 			disabled={currentStep !== Steps.Idle}
 		>
 			<section class="card vault-content column">
-				<h2>{$_('Vault Information')}</h2>
+				<div class="row">
+					<img src="/" alt="">
+					<h2>{$_('Vault Information')}</h2>
+
+
+				</div>
 
 				<hr>
 
@@ -104,7 +124,7 @@
 					<input
 						type="text"
 						bind:value={vaultConfig.about.name}
-						placeholder={$_('My Vault')}
+						placeholder={$_('Your Vault')}
 						required
 					/>
 				</label>
@@ -124,7 +144,7 @@
 					<input
 						type="text"
 						bind:value={vaultConfig.about.website}
-						placeholder={$_('mydao.example.com')}
+						placeholder={$_('all-your-vault.example.com')}
 					/>
 				</label>
 
@@ -377,11 +397,20 @@
 			</section> -->
 
 			<div class="row centered">
-				<button type="submit" class="extra-large round primary" disabled={!isValid}>{$_('Create DAO')}</button>
+				<button type="submit" class="extra-large round primary" disabled={!isValid}>{$_('Create Vault')}</button>
 			</div>
 		</form>
 	</section>
 </main>
+
+
+{#if currentStep !== Steps.Idle}
+	<Portal>
+		<Modal>
+			{errorMessage}
+		</Modal>
+	</Portal>
+{/if}
 
 
 <style>

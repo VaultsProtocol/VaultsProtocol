@@ -45,6 +45,7 @@
 	import twitterIcon from '../assets/icons/twitter.svg'
 	import discordIcon from '../assets/icons/discord.svg'
 	import cardBack from '../assets/card-faces/card-back.svg'
+	import cardFace from '../assets/card-faces/shadow-svg-1.svg'
 
 
 	// Styles/animations
@@ -86,6 +87,7 @@
 					<figure class="illustration-wrapper card" transition:fade>
 						<svg class="illustration">
 							{#if vaultConfig.type === VaultType.Standard}
+								<img src="{cardFace}" alt="">
 								<path class:silhouette={isPosition} />
 							{:else if vaultConfig.type === VaultType.Degen}
 								<path class:silhouette={isPosition} />
@@ -262,7 +264,8 @@
 	}
 	
 	.card.back {
-		background: #000;
+		display: none;
+		background: red;
 		transform: rotateY(0.5turn);
 		transform: translateZ(-1px);
 		z-index: -1;
@@ -366,7 +369,7 @@
 	}
 
 	.icons-row {
-		margin-top: 20px;
+		margin-top: 10px;
 	}
 
 	.icons-row .icon {

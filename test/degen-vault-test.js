@@ -24,9 +24,6 @@ contract("degenVault", ([alice, bob, tom, deployer]) => {
     before(async () => {
       
       bc.nft = await ERC721.new('NFT', "NFT");
-<<<<<<< HEAD
-      bc.vaultToken = await MockERC20.new("ERC20", "ERC20", '10000000000000000000000000');
-=======
       bc.vaultToken = await MockERC20.new("ERC20", "ERC20", 100e18.toString(), {
         from: deployer
       });
@@ -38,17 +35,12 @@ contract("degenVault", ([alice, bob, tom, deployer]) => {
       await bc.vaultToken.transfer(bob, 10e18.toString(), {
         from: deployer
       })
->>>>>>> main
 
       bc.initialLiquidity = '10000000000000000000000'; // 10 ERC20 as initial liquidity
       bc.jackpotBps = 2500;
       bc.dividendBps = 3500;
       bc.initialDeadlineSeconds = 30;
-<<<<<<< HEAD
-      bc.minimumPrice = 1e17.toString(); //0.1 TOK
-=======
       bc.minimumPrice = 10e18.toString();
->>>>>>> main
       bc.devFee = 500 ;
       bc.degenVault = await DegenVault.new(
         tom, // Controller
@@ -58,27 +50,17 @@ contract("degenVault", ([alice, bob, tom, deployer]) => {
         bc.dividendBps,
         bc.devFee,
         bc.minimumPrice,
-<<<<<<< HEAD
-        bc.initialLiquidity,
-=======
->>>>>>> main
         bc.initialDeadlineSeconds,
         { from: deployer },
       );
     });
     it("Mints NFT if paid ", async () => {
-<<<<<<< HEAD
-      bc.price = await bc.degenVault.getMinPrice();
-=======
       bc.price = await bc.degenVault.minimumPrice();
->>>>>>> main
 
       // ensure price is correctly calculated
       // await expect(bc.price, bc.nft.totalSupply() / bc.initialLiquidity);
       await expect(bc.minimumPrice, bc.price);
 
-<<<<<<< HEAD
-=======
       //approve ERC20 spend
       await bc.vaultToken.approve(bc.degenVault.address, bc.price, {
         from: alice
@@ -90,41 +72,10 @@ contract("degenVault", ([alice, bob, tom, deployer]) => {
       })
 
       // expected to fail underpaid
->>>>>>> main
       await expect(
         bc.degenVault.mintNewNFT(9e18.toString(), {
           from: alice,
         }),
-<<<<<<< HEAD
-      ).to.eventually.rejectedWith(revert`Underpaid`);
-
-      await bc.degenVault.mintNewNFT(10e18, {
-        from: alice,
-      });
-
-      // Ensure mint happened
-      assert.equal(Number(await bc.nft.balanceOf(alice)), 1);
-
-      // Ensure internal calculation for balances is good.
-      assert.equal(
-        Number(bc.degenVault.getTreasuryBalance()),
-        (bc.price * bc.treasuryBps) / 1e4,
-      );
-      assert.equal(
-        Number(bc.degenVault.getJackpotBalance()),
-        (bc.price * bc.jackpotBps) / 1e4,
-      );
-      assert.equal(
-        Number(bc.degenVault.getDividendBalance()),
-        (bc.price * bc.dividendBps) / 1e4,
-      );
-
-      // Ensure Previous holders have claimable.
-      assert.equal(
-        Number(await bc.degenVault.claimableBalance(deployer)),
-        (bc.price * bc.dividendBps) / 1e4,
-      );
-=======
       ).to.eventually.rejectedWith(revert`Underpaid, or past deadline`);
 
       // ID = 1
@@ -169,7 +120,6 @@ contract("degenVault", ([alice, bob, tom, deployer]) => {
         Number(expectedAliceRewardNow) + Number(aliceBalance.amount),
       );
 
->>>>>>> main
     });
   });
 

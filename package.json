@@ -2,7 +2,7 @@
   "name": "Something",
   "license": "",
   "scripts": {
-    "compile": "npx hardhat compile && rm -rf frontend/src/lib/contracts && cp -r artifacts/contracts/src frontend/src/lib/contracts && rm frontend/src/lib/contracts/**/*.dbg.json; npx typechain --target ethers-v5  frontend/src/lib/contracts/**/*.json",
+    "compile": "rm -rf artifacts cache; npx hardhat compile && rm -rf frontend/src/lib/contracts && cp -r artifacts/contracts/src frontend/src/lib/contracts && rm frontend/src/lib/contracts/**/*.dbg.json; npx typechain --target ethers-v5  frontend/src/lib/contracts/**/*.json",
     "test": "npx hardhat test",
     "deploy-genesis-nft-eth-main": "npx hardhat deploy-genesis-nft --network ethMain",
     "deploy-supply-boxes-nft-eth-main": "npx hardhat deploy-suply-boxes-nft --network ethMain",

@@ -1,0 +1,40 @@
+{
+	"ethereum-ropsten": {
+		"VaultFactory": "0x46b05B885a555BdF2eEa82c206E8470039BbF510",
+		"SampleToken": "0x0ed74bb9fb5fCd061C2D23304166f177cafF2A96"
+	},
+	"ethereum-rinkeby": {
+		"VaultFactory": "0x8a14fE6684B07A1A3dF74D67673AeD3DD32F2426",
+		"SampleToken": "0x10f6DDf4Ab7d9a3Aa18c29C1060D67CB3AecDa3c",
+		"SampleVault": "0xbF24a14F0320047593bC4ABfdEaC4B6948Ee0DD3"
+	},
+	"ethereum-goerli": {
+		"VaultFactory": "0x46b05B885a555BdF2eEa82c206E8470039BbF510",
+		"SampleToken": "0x0ed74bb9fb5fCd061C2D23304166f177cafF2A96",
+		"SampleVault": "0xC4ea9b65Aa6cA03916D47f7F11b0C0A57E0Aa3E6"
+	},
+	"polygon-mumbai": {
+		"VaultFactory": "0x46b05B885a555BdF2eEa82c206E8470039BbF510",
+		"SampleToken": "0x0ed74bb9fb5fCd061C2D23304166f177cafF2A96",
+		"SampleVault": "0xC4ea9b65Aa6cA03916D47f7F11b0C0A57E0Aa3E6"
+	},
+	"celo-alfajores": {
+		"VaultFactory": "0x46b05B885a555BdF2eEa82c206E8470039BbF510",
+		"SampleToken": "0x0ed74bb9fb5fCd061C2D23304166f177cafF2A96",
+		"SampleVault": "0xC4ea9b65Aa6cA03916D47f7F11b0C0A57E0Aa3E6"
+	},
+	"metis-stardust": {
+		"VaultFactory": "0x46b05B885a555BdF2eEa82c206E8470039BbF510",
+		"SampleToken": "0x0ed74bb9fb5fCd061C2D23304166f177cafF2A96",
+		"SampleVault": "0xC4ea9b65Aa6cA03916D47f7F11b0C0A57E0Aa3E6"
+	},
+	"near-testnet": {
+		"VaultFactory": "0x0ed74bb9fb5fCd061C2D23304166f177cafF2A96",
+		"SampleToken": "0x1733fa62f943911D5fa1CF84546E6A555109ADAe",
+		"SampleVault": "0xEd99b44D5B7Ff2680acf17fE3B65Fc2864cc9845"
+	},
+	"arbitrum-rinkeby": {
+		"VaultFactory": "0x46b05B885a555BdF2eEa82c206E8470039BbF510",
+		"SampleToken": "0x0ed74bb9fb5fCd061C2D23304166f177cafF2A96"
+	}
+}
