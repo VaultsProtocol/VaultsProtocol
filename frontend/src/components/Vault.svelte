@@ -366,8 +366,9 @@ import { formatAddress } from '$lib/formatAddress';
 		height: 12em;
 	}
 	@keyframes Float {
-		0%, 100% { transform: translateY(3px) }
-		50% { transform: translateY(-3px) }
+		0%, 100% { transform: translateY(3px) rotate(-0.5deg) }
+		25%, 75% { transform: scale(1.03) }
+		50% { transform: translateY(-3px) rotate(0.5deg) }
 	}
 
 	.silhouette {
