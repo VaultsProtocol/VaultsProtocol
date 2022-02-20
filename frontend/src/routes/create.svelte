@@ -154,7 +154,7 @@
 
 				<hr>
 
-				<div class="grid vault-row">
+				<div class="column vault-row">
 
 					<label class="card row equal">
 						<h3>{$_('Yield Asset')}</h3>

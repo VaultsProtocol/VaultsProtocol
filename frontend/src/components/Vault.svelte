@@ -46,8 +46,8 @@
 </script>
 
 
-<svg class="vault-container" viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg">
-	<foreignObject x="0" y="0" width="400" height="600">
+<svg class="vault-container" viewBox="0 0 400 800" xmlns="http://www.w3.org/2000/svg">
+	<foreignObject x="0" y="0" width="400" height="800">
 		<div xmlns="http://www.w3.org/1999/xhtml">
 
 <article class="vault card">
@@ -193,9 +193,9 @@
 					as
 					{ label, link, icon } (label)
 				}
-					<a class="button round" href={link} transition:scale animate:flip>
+					<a class="icon button round" href={link} transition:scale animate:flip>
 						<!-- {$_(label)} -->
-						<img src={icon} alt={label} />
+						<img src={icon} alt={label} width="27" />
 					</a>
 				{/each}
 			</div>
@@ -256,18 +256,16 @@
 		word-break: break-word;
 	}
 
-	.button.round {
+	.icon {
 		border-radius: 100vmax;
 		height: 50px;
 		width: 50px;
 		position: relative;
 		border: 2px solid var(--background-color-charity);
+		padding: 0;
 	}
 
 	.button.round img {
-		position: absolute;
-		left: 0;
-		right: 0;
 		margin: auto;
 	}
 
