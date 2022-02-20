@@ -85,13 +85,13 @@
 		font-size: 1.125em;
 		padding: 0 var(--header-padding);
 
-		background: linear-gradient(var(--background-color-0), transparent);
+		/* background: linear-gradient(var(--background-color-0), transparent); */
 
 		transition: 0.2s;
 	}
 	@supports not (backdrop-filter: blur(0)) {
 		header {
-			background: linear-gradient(var(--background-color-2), transparent);
+			/* background: linear-gradient(var(--background-color-2), transparent); */
 			background: white;
 		}
 	}

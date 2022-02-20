@@ -13,13 +13,13 @@ body {
 	--background-color-1: hsl(200deg, 60%, 20%);
 	--background-color-2: hsl(200deg, 50%, 30%);
 	--background-color-3: hsl(200deg, 40%, 40%);
-	--background-color-4: #f3f3f3;
+	--background-color-4: #ccc;
 
 	--background-color-white: #fff;
 	--background-color-black: #232323;
 	
 	
-	--background-color-standard: #f0f0f0;
+	--background-color-standard: #ccc;
 	--background-color-degen: #FC9802;
 	--background-color-DAO: #6AB7CD;
 	--background-color-charity: #E6B12D;
@@ -100,7 +100,6 @@ h4 {
 p {
 	line-height: 1.4;
 	font-weight: 300;
-	/* background: red; */
 }
 
 pre, code, output, kbd, samp {
@@ -164,7 +163,8 @@ button:active, .button:active, [role='button']:active {
 }
 
 button.primary {
-	--button-color: var(--accent-color);
+	--button-color: var(--background-color-degen);
+	color: white;
 }
 button.round {
 	border-radius: 100vmax;
@@ -319,7 +319,7 @@ hr {
 	--card-scale-factor: 0.66;
 }
 .card .card .card {
-	background-color: var(--background-color-3);
+	/* background-color: var(--background-color-4); */
 	font-size: 0.85em;
 	--card-scale-factor: 0.5;
 }

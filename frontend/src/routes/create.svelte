@@ -93,7 +93,7 @@
 			on:submit|preventDefault={() => currentStep = Steps.TransactionSigning}
 			disabled={currentStep !== Steps.Idle}
 		>
-			<section class="card column">
+			<section class="card vault-content column">
 				<h2>{$_('Vault Information')}</h2>
 
 				<hr>
@@ -198,7 +198,7 @@
 				</div>
 			</section>
 
-			<section class="card column">
+			<section class="card column vault-behavior">
 				<h2>{$_('Vault Behavior')}</h2>
 
 				<hr>
@@ -379,7 +379,7 @@
 			</section> -->
 
 			<div class="row centered">
-				<button type="submit" class="extra-large round" disabled={!isValid}>{$_('Create DAO')}</button>
+				<button type="submit" class="extra-large round primary" disabled={!isValid}>{$_('Create DAO')}</button>
 			</div>
 		</form>
 	</section>
@@ -416,6 +416,12 @@
 
 		--grid-gap: 1rem;
 	}
+
+	.vault-behavior .card,
+	.vault-behavior p {
+		border-color: #f3f3f3;
+	}
+
 
 	.card.row .equal {
 		width: 100%;
