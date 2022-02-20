@@ -18,7 +18,7 @@
 
 	const onInput = (value: number) => {
 		if(value != undefined && value !== '')
-			amount = parseUnits(String(value), token.decimals || 18)
+			amount = parseUnits(String(value), token?.decimals || 18)
 	}
 
 	const onBlur = () => {
@@ -38,7 +38,7 @@
 		<input
 			type="number"
 			step={10 ** -stepDecimals}
-			value={formatUnits(amount, token.decimals || 18)}
+			value={formatUnits(amount, token?.decimals || 18)}
 			on:input={e => onInput(e.target.value)}
 			on:blur={onBlur}
 			{min}
