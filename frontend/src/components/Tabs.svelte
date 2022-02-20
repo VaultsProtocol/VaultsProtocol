@@ -15,7 +15,7 @@
 	{#each values as optionValue (optionValue)}
 		<label class="select-option">
 			<input type="radio" bind:group={value} value={optionValue} />
-			<span class="button" style={colors[optionValue] ? `background-color: ${colors[optionValue]}` : ''}>{labels[optionValue]}</span>
+			<span class="button" style={colors[optionValue] ? `--active-background-color: ${colors[optionValue]}` : ''}>{labels[optionValue]}</span>
 		</label>
 	{/each}
 </div>
@@ -46,7 +46,7 @@
 		opacity: 0.9;
 	}
 	input[type="radio"]:checked ~ span {
-		background-color: var(--background-color-4);
+		background-color: var(--active-background-color, var(--background-color-4));
 		font-weight: bold;
 		opacity: 1;
 	}
