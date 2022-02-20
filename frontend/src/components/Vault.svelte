@@ -297,8 +297,13 @@ import { formatAddress } from '$lib/formatAddress';
 		/* opacity: 0; */
 	}
 
+	.card.back {
+		opacity: 0;
+		/* transition: z-index 0.4s linear; */
+	}
 	.vault:hover .card.back, .vault:focus .card.back {
 		z-index: 1;
+		opacity: 1;
 	}
 
 	.card {

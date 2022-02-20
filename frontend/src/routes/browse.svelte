@@ -2,12 +2,12 @@
 	import { _ } from 'svelte-i18n'
 
 
-	import { getDefaultVaultConfig, VaultType } from '../lib/vaults'
+	import { getRandomVaultConfig } from '../lib/vaults'
 
 	import { BigNumber } from 'ethers'
 
 	const getPlaceholderVault = () => ({
-		vaultConfig: getDefaultVaultConfig(random(Object.values(VaultType))),
+		vaultConfig: getRandomVaultConfig(),
 
 		vaultStatus: {
 			tokenId: 0,
@@ -16,17 +16,9 @@
 		}
 	})
 
-	const vaults = [
-		getPlaceholderVault(),
-		getPlaceholderVault(),
-		getPlaceholderVault(),
-		getPlaceholderVault(),
-		getPlaceholderVault(),
-		getPlaceholderVault(),
-		getPlaceholderVault(),
-		getPlaceholderVault(),
-		getPlaceholderVault(),
-	]
+	const vaults = []
+	for(let i = 0; i < 50; i++)
+		vaults.push(getPlaceholderVault())
 
 
 	// import { queryTable } from '$lib/tableland'
@@ -36,7 +28,6 @@
 
 
 	import Vault from '../components/Vault.svelte'
-	import { random } from '../lib/random'
 </script>
 
 
@@ -62,6 +53,7 @@
 	.grid {
 		--grid-size: 400px;
 		grid-auto-rows: 540px;
+		grid-auto-rows: 800px;
 		/* --grid-gap: 2rem; */
 	}
 </style>

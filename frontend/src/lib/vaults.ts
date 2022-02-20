@@ -1,4 +1,4 @@
-import { networksByChainID, networksBySlug, vaultAssetsByNetwork, type ChainID } from '$lib/networks'
+import { availableNetworks, networksByChainID, networksBySlug, vaultAssetsByNetwork, type ChainID } from '$lib/networks'
 import { BigNumber } from 'ethers'
 import { type ERC20Token, erc20TokensBySymbol } from './tokens'
 
@@ -164,7 +164,7 @@ export type VaultConfig<T extends VaultType> = {
 	// governanceStrategy: GovernanceStrategy
 }
 
-export const getDefaultVaultConfig = (typę: VaultType) => ({
+export const getDefaultVaultConfig = (type?: VaultType) => ({
 	about: {
 		name: '',//random(['My Test Vault']),
 		description: '',
@@ -174,7 +174,7 @@ export const getDefaultVaultConfig = (typę: VaultType) => ({
 	},
 	chainId: networksBySlug['ethereum-rinkeby'].chainId,
 	tokens: [],
-	type: undefined,
+	type,
 	config: {
 		// VaultType.Degen
 		jackpot: 20,
@@ -203,6 +203,50 @@ export const getDefaultVaultConfig = (typę: VaultType) => ({
 	yieldStrategy: YieldStrategy.None,
 	// governanceStrategy: GovernanceStrategy.None,
 } as VaultConfig)
+
+
+export const getRandomVaultConfig = () => {
+	const chainId = random(availableNetworks).chainId
+	return {
+		about: {
+			name: random(['Vaultalik', 'Ape Chicken', 'Vaultron', 'Pool Vault', 'Vault-n-Pepper', 'LunchBox', 'VaultTogether', 'WAGMI', 'Egg', 'Vaultage', 'Vaultility', 'ApeReserve', 'Orangutan Chicken', 'Vault Me Daddy']),
+			description: '',
+			website: random(['', 'https://ethdenver.com']),
+			twitter: random(['', 'https://twitter.com']),
+			discord: random(['', 'https://discord.gg']),
+		},
+		chainId,
+		tokens: [random(vaultAssetsByNetwork[networksByChainID[chainId].slug])],
+		type: random(Object.values(VaultType)),
+		config: {
+			// VaultType.Degen
+			jackpot: 20,
+			dividend: 30,
+			treasury: 50,
+			deadline: Math.random() * 10000 | 0,
+			initialLiquidity: {
+				contractAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+				amount: BigNumber.from(0)
+			},
+
+			// VaultType.DAO
+			governanceType: GovernanceType.MultiSignature,
+			signers: [],
+			minimumSignatures: 2,
+			quorum: 50,
+
+			// VaultType.Charity
+			payoutType: PayoutType.Once,
+			recipientAddress: '',
+			recipientYieldPercent: 0,
+
+			// payoutType === PayoutType.Superfluid,
+			payoutRate: 10
+		},
+		yieldStrategy: YieldStrategy.None,
+		// governanceStrategy: GovernanceStrategy.None,
+	} as VaultConfig
+}
 
 
 export type VaultStatus = {
