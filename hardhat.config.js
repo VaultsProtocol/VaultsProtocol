@@ -102,7 +102,7 @@ task("full-deploy", "Deploy All Contracts")
       "0xA21B900268c056fB5CBc698450b1aCF38862d4Dd",
       constructorParams,
       {
-        gasLimit: '2100000'
+        gasLimit: '3500000'
       }
     );
     
@@ -166,7 +166,7 @@ module.exports = {
       chainId: 3,
       gasPrice: 20000000000,
       gas: 2100000,
-      accounts: { mnemonic: `${mnemonic}` },
+      accounts: [`${privatekey}`],
     },
     rinkeby: {
       url: infura_rinkeby_url,
@@ -233,7 +233,7 @@ module.exports = {
       accounts: [`${privatekey}`],
     },
     nearTestnet:{
-      url: "https://rpc.testnet.aurora.dev:8545",
+      url: "https://testnet.aurora.dev/",
       chainId: 1313161555,
       gasPrice: 10e9,
       gas: 2100000,
@@ -242,8 +242,8 @@ module.exports = {
     harmonyTestnet:{
       url: "https://api.s0.b.hmny.io",
       chainId: 1666700000,
-      gasPrice: 10e9,
-      gas: 2100000,
+      gasPrice: 20e9,
+      gas: 4200000,
       accounts: [`${privatekey}`],
     },
     arbitrumRinkeby: {
@@ -268,7 +268,7 @@ module.exports = {
       accounts: [`${privatekey}`],
     },
     nahmiiTestnet:{
-      url: "https://l2.testnet.nahmii.io/",
+      url: "https://l2.testnet.nahmii.io",
       chainId: 5553,
       gasPrice: 10e9,
       gas: 2100000,
