@@ -14,11 +14,11 @@ export enum VaultType {
 export const vaultTypeInfo = {
 	[VaultType.Standard]: {
 		label: '🏦 Standard',
-		description: 'Contribute to the vault and receive a yield-bearing position NFT. Withdraw anytime.'
+		description: 'Contribute to the vault and receive yield simply by holding an NFT. Withdraw anytime.'
 	},
 	[VaultType.Degen]: {
 		label: '🐸 Degen Game',
-		description: 'The crowdfund ends if a contribution is not made after a set interval of time. The last person to contribute wins the Jackpot allocation.'
+		description: 'The game ends if a contribution is not made after a set interval of time. The last person to contribute wins the Jackpot allocation.'
 	},
 	[VaultType.Charity]: {
 		label: '🎁 No-Loss Charity',
@@ -30,7 +30,7 @@ export const vaultTypeInfo = {
 	// },
 	[VaultType.DAO]: {
 		label: '🗳 DAO',
-		description: 'The vault parameters can be changed upon the approval of multiple designated signers or by a token-weighted vote by all holdersapproval.'
+		description: 'Democratized captial control via delegatable weighted voting or multi-sig'
 	}
 }
 
@@ -45,11 +45,11 @@ export const yieldStrategyInfo = {
 		description: 'The DAO treasury.'
 	},
 	[YieldStrategy.Aave]: {
-		label: '👻 Aave Yield-Bearing Vault',
+		label: '👻 Aave',
 		description: 'The DAO treasury will be lent to borrowers on Aave. Interest will be paid out to holders.'
 	},
 	[YieldStrategy.Yearn]: {
-		label: '🏦 Yearn Yield-Bearing Vault',
+		label: '🏦 Yearn Finance',
 		description: 'The DAO treasury will be deposited into a Yearn vault. Yield will be paid out to holders.'
 	},
 }
@@ -72,16 +72,16 @@ export const yieldStrategyInfo = {
 
 export enum GovernanceType {
 	MultiSignature = 'Multi-Signature',
-	TokenVoting = 'Token Voting',
+	TokenVoting = 'Community Voting',
 }
 export const governanceTypeInfo = {
 	[GovernanceType.MultiSignature]: {
 		label: '✍️ Multi-Signature',
-		description: 'Multiple signatures from a pre-approved list of addresses are required to approve changes to the vault parameters.'
+		description: 'Multiple signatures from a pre-approved list of addresses are required to approve changes to the vault parameters and manage DAO funds'
 	},
 	[GovernanceType.TokenVoting]: {
-		label: '🗳 Token Voting',
-		description: 'Stakeholders cast votes weighted proportional to their vault contribution to approve or deny changes to the vault parameters.'
+		label: '🗳 Community Voting',
+		description: 'Stakeholders cast votes weighted proportionally to their vault contribution to approve or deny changes to the vault parameters and manage DAO funds.'
 	},
 }
 

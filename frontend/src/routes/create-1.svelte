@@ -15,7 +15,7 @@
 	const fundingStrategyInfo = {
 		[FundingStrategy.ApeChicken]: {
 			label: '🦍 Ape Chicken', // 🦍🦧
-			description: 'The crowdfund ends if a contribution is not made after a set interval of time. The last person to contribute wins the Jackpot allocation.'
+			description: 'The game ends if a contribution is not made after a set interval of time. The last person to contribute wins the Jackpot allocation.'
 		},
 		[FundingStrategy.OrangutanChicken]: {
 			label: '🦧 Orangutan Chicken',
@@ -316,7 +316,7 @@
 					<p>{$_('Tell your community what your goals are.')}</p>
 					<textarea
 						bind:value={vaultConfig.about.description}
-						placeholder={$_('Describe {name}...', { values: { name: vaultConfig.about.name || 'your DAO' }})}
+						placeholder={$_('Describe {name}...', { values: { name: vaultConfig.about.name || 'your Vault' }})}
 					/>
 				</label>
 
