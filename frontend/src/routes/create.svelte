@@ -18,7 +18,7 @@
 	} from '$lib/vaults'
 
 	import { erc20Tokens } from '$lib/tokens'
-	import { networks, networksByChainID, vaultAssetsByNetwork } from '$lib/networks'
+	import { availableNetworks, chainIcons, mainnetForTestnet, networks, networksByChainID, networksBySlug, vaultAssetsByNetwork } from '$lib/networks'
 
 
 
@@ -157,19 +157,18 @@
 				<div class="column vault-row">
 					<label class="card row equal">
 						<h3>{$_('Network / Chain')}</h3>
-						<div class="equal">
-							<Select
-								bind:value={vaultConfig.chainId}
-								values={networks.map(({ chainId }) => String(chainId))}
-								labels={Object.fromEntries(networks.map(({ chainId, name }) => [chainId, name]))}
-							/>
-						</div>
+						<Select
+							bind:value={vaultConfig.chainId}
+							values={availableNetworks.map(({ chainId }) => String(chainId))}
+							labels={Object.fromEntries(networks.map(({ chainId, name }) => [chainId, name]))}
+							icons={Object.fromEntries(availableNetworks.map(({ slug, chainId }) => [chainId, chainIcons[slug] ?? chainIcons[mainnetForTestnet[slug]?.slug]]))}
+						/>
 					</label>
 
 					<label class="card row equal">
 						<h3>{$_('Vault Asset')}</h3>
 
-						<TokenSelect availableTokens={vaultAssetsByNetwork[networksByChainID[vaultConfig.chainId].slug] ?? []} bind:token={vaultConfig.tokens[0]} />
+						<TokenSelect availableTokens={vaultAssetsByNetwork[networksByChainID[vaultConfig.chainId]?.slug] ?? []} bind:token={vaultConfig.tokens[0]} />
 						<!-- {#each vaultConfig.config.tokens as token, i}}
 							<TokenAmountSelect
 								bind:token={vaultConfig.config.initialLiquidity.tokens[i]}
@@ -181,14 +180,12 @@
 					<label class="card column">
 						<div class="row equal">
 							<h3>{$_('Yield Strategy')}</h3>
-							<div>
-								<Select
-									bind:value={vaultConfig.yieldStrategy}
-									values={Object.keys(YieldStrategy)}
-									labels={Object.fromEntries(Object.entries(yieldStrategyInfo).map(([key, {label}]) => [key, label]))}
-									icons={Object.fromEntries(Object.entries(yieldStrategyInfo).map(([key, {icon}]) => [key, icon]))}
-								/>
-							</div>
+							<Select
+								bind:value={vaultConfig.yieldStrategy}
+								values={Object.keys(YieldStrategy)}
+								labels={Object.fromEntries(Object.entries(yieldStrategyInfo).map(([key, {label}]) => [key, label]))}
+								icons={Object.fromEntries(Object.entries(yieldStrategyInfo).map(([key, {icon}]) => [key, icon]))}
+							/>
 						</div>
 						<div class="row">
 							<p class="row">{$_(yieldStrategyInfo[vaultConfig.yieldStrategy].description)}</p>
