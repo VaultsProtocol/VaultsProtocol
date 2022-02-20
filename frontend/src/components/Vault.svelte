@@ -260,21 +260,21 @@
 		/* position: absolute; */
 
 		perspective: 1000px;
-		/* transform-style: preserve-3d; */
+		transform-style: preserve-3d;
 	}
 
-	/* .vault:hover, .vault:focus {
+	.vault:hover, .vault:focus {
 		transform: rotateY(0.5turn);
 	}
 
 	.vault:hover .card.front, .vault:focus .card.front {
-		z-index: -1;
-		opacity: 0;
+		/* z-index: -1; */
+		/* opacity: 0; */
 	}
 
 	.vault:hover .card.back, .vault:focus .card.back {
 		z-index: 1;
-	} */
+	}
 
 	.card {
 		backface-visibility: hidden;
@@ -285,8 +285,8 @@
 	}
 	
 	.card.back {
-		display: none;
-		background: red;
+		/* display: none; */
+		background: black;
 		transform: rotateY(0.5turn);
 		transform: translateZ(-1px);
 		z-index: -1;
