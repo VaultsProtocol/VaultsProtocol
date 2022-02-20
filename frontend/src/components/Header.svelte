@@ -97,13 +97,13 @@
 	}
 
 	nav {
-		gap: 1.25rem;
+		gap: 1.5rem;
 	}
 
 	ul.nav-links a {
 		font-size: 16px;
 		font-weight: 600;
-		text-decoration: underline;
+		/* text-decoration: underline; */
 		text-align: center;
 		line-height: 1.5;
 

@@ -1,7 +1,7 @@
 <script lang="ts">
 	// Constants/types
 	import { _ } from 'svelte-i18n'
-	import { MetadataType, VaultType, vaultTypeInfo, type VaultConfig, type VaultStatus, type VaultPosition, yieldStrategyInfo, GovernanceType } from '../lib/vaults'
+	import { MetadataType, VaultType, vaultTypeInfo, type VaultConfig, type VaultStatus, type VaultPosition, yieldStrategyInfo, GovernanceType, YieldStrategy } from '../lib/vaults'
 	import { networkIcons, networksByChainID, type Network } from '$lib/networks'
 	import { BigNumber } from 'ethers'
 	
@@ -155,7 +155,9 @@ import { formatAddress } from '$lib/formatAddress';
 				</div>
 
 				<div class="yield-strategy">
-					<img src={yieldStrategyInfo[vaultConfig.yieldStrategy]?.icon} width="32" height="32" />
+					{#if vaultConfig.yieldStrategy !== YieldStrategy.None}
+						<img src={yieldStrategyInfo[vaultConfig.yieldStrategy]?.icon} width="32" height="32" />
+					{/if}
 				</div>
 
 				<!-- {#if vaultConfig.type === VaultType.Degen}

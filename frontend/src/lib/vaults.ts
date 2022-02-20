@@ -166,7 +166,7 @@ export type VaultConfig<T extends VaultType> = {
 
 export const getDefaultVaultConfig = (typę: VaultType) => ({
 	about: {
-		name: random(['My Test Vault']),
+		name: '',//random(['My Test Vault']),
 		description: '',
 		website: '',
 		twitter: '',
@@ -200,7 +200,7 @@ export const getDefaultVaultConfig = (typę: VaultType) => ({
 		// payoutType === PayoutType.Superfluid,
 		payoutRate: 10
 	},
-	yieldStrategy: YieldStrategy.Aave,
+	yieldStrategy: YieldStrategy.None,
 	// governanceStrategy: GovernanceStrategy.None,
 } as VaultConfig)
 
