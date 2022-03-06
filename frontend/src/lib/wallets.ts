@@ -122,24 +122,59 @@ export const wallets: WalletConfig[] = [
 export const walletsByType = Object.fromEntries(wallets.map(wallet => [wallet.type, wallet]))
 
 
+import type { ExternalProvider } from '@ethersproject/providers'
+import type WalletLink from 'walletlink'
+import type WalletConnectProvider from '@walletconnect/web3-provider'
+
 type WalletConnection = {
 	connectionType: WalletConnectionType
-	provider: ExternalProvider | WalletConnectProvider,
+	provider: ExternalProvider | WalletConnectProvider | WalletLink,
+	connect?: () => void,
+	disconnect?: () => void,
 }
 
 
-
-let walletConnectProvider
-
-
-import { _ } from 'svelte-i18n'
 import { env } from './env'
 
 import { importExternalPackage } from './loadExternalPackages'
 
-import type WalletConnectProvider from '@walletconnect/web3-provider'
+import { Web3Provider } from '@ethersproject/providers'
 
-import { JsonRpcSigner, Web3Provider, type ExternalProvider } from '@ethersproject/providers'
+const connectEip1193 = async (provider: ExternalProvider) => {
+	try {
+		if(!provider.request){
+			// provider.request = (request) => provider.sendPromise(request.method, request.params)
+			provider.request = async (request) => await new Promise((resolve, reject) => {
+				provider.sendAsync(request, (error, result) => {
+					console.log('sendAsync', error, result)
+					error ? reject(error) : resolve(result)
+				})
+			})
+		}
+
+		console.log('provider.request...')
+		await provider.request({ method: 'eth_requestAccounts' })
+		console.log('provider.request done')
+
+		// provider.request = async (request) => await new Promise((resolve, reject) => provider.sendAsync(request, reject))
+		// if(provider.request)
+		// 	await provider.request({ method: 'eth_requestAccounts' })
+		// else{
+		// 	console.log('env.ETHEREUM_NODE_URI', ETHEREUM_NODE_URI)
+		// 	let _provider = new provider.requestManager.providers.HttpProvider(ETHEREUM_NODE_URI)
+		// 	console.log('_provider', _provider, _provider)
+		// 	console.log('9')
+		// 	await _provider.sendAsync({ method: 'eth_requestAccounts' })
+		// 	console.log('dohne')
+		// 	await new Promise((resolve, reject) =>
+		// 		provider.sendAsync({ method: 'eth_requestAccounts' }, reject)
+		// 	)
+		// }
+	}catch(e){
+		if(e.message.includes('User rejected the request'))
+			throw e
+	}
+}
 
 const getWalletConnection = async ({
 	walletType,
@@ -153,37 +188,56 @@ const getWalletConnection = async ({
 	for (const connectionType of walletConfig.connectionTypes) {
 		switch (connectionType) {
 			case WalletConnectionType.InjectedEip1193: {
-				if (globalThis[walletConfig.injectedEip1193ProviderGlobal]?.[walletConfig.injectedEip1193ProviderFlag]) {
+				const provider = globalThis[walletConfig.injectedEip1193ProviderGlobal]
+
+				if (provider?.[walletConfig.injectedEip1193ProviderFlag]) {
 					return {
 						connectionType: WalletConnectionType.InjectedEip1193,
-						provider: globalThis[walletConfig.injectedEip1193ProviderGlobal],
+
+						provider,
+
+						connect: async () => await connectEip1193(provider),
 					}
 				}
 			}
 
 			case WalletConnectionType.InjectedEthereum: {
+				const provider = globalThis.ethereum
+
 				if (
-					!walletConfig.injectedEip1193ProviderFlag
-					|| globalThis.ethereum?.[walletConfig.injectedEip1193ProviderFlag]
+					provider && (
+						!walletConfig.injectedEip1193ProviderFlag
+						|| provider[walletConfig.injectedEip1193ProviderFlag]
+					)
 				) {
 					// https://docs.metamask.io/guide/provider-migration.html#migrating-to-the-new-provider-api
-					globalThis.ethereum.autoRefreshOnNetworkChange = false
+					provider.autoRefreshOnNetworkChange = false
 
 					return {
 						connectionType: WalletConnectionType.InjectedEthereum,
-						provider: globalThis.ethereum,
+
+						provider,
+
+						connect: async () => await connectEip1193(provider),
 					}
 				}
 			}
 
 			case WalletConnectionType.InjectedWeb3: {
+				const provider = globalThis.web3?.currentProvider
+
 				if (
-					!walletConfig.injectedEip1193ProviderFlag
-					|| globalThis.web3?.currentProvider?.[walletConfig.injectedEip1193ProviderFlag]
+					provider && (
+						!walletConfig.injectedEip1193ProviderFlag
+						|| provider[walletConfig.injectedEip1193ProviderFlag]
+					)
 				) {
 					return {
-						connectionType: WalletConnectionType.InjectedEthereum,
-						provider: globalThis.web3.currentProvider,
+						connectionType: WalletConnectionType.InjectedWeb3,
+
+						provider,
+
+						connect: async () => await connectEip1193(provider),
 					}
 				}
 			}
@@ -193,34 +247,70 @@ const getWalletConnection = async ({
 
 				const WalletLink = globalThis.WalletLink
 
+				const provider: WalletLink = new WalletLink({
+					appName: 'DAO Creator',
+					appLogoUrl: ''
+				}).makeWeb3Provider(
+					ETHEREUM_NODE_URI,
+					chainId
+				)
+
 				return {
 					connectionType: WalletConnectionType.WalletLink,
-					provider: new WalletLink({
-						appName: 'DAO Creator',
-						appLogoUrl: ''
-					}).makeWeb3Provider(
-						ETHEREUM_NODE_URI,
-						chainId
-					)
+
+					provider,
+
+					connect: async () => {
+						try {
+							await provider.request({ method: 'eth_requestAccounts' })
+						}catch(e){
+							if(e.message.includes('User denied account authorization'))
+								throw e
+						}
+					},
+
+					disconnect: async () => {
+						await provider.disconnect()
+					}
 				}
 			}
 
 			case WalletConnectionType.WalletConnect: {
 				const WalletConnectProvider: WalletConnectProvider = await importExternalPackage('@walletconnect/web3-provider')
 
+				const provider: WalletConnectProvider = new WalletConnectProvider({
+					rpc: {
+						[chainId]: ETHEREUM_NODE_URI || '',
+					},
+					bridge: env.WALLET_CONNECT_BRIDGE_URI,
+
+					// Restrict WalletConnect options to the selected wallet
+					...walletConfig.walletConnectMobileLinks
+						? { qrcodeModalOptions: { mobileLinks: walletConfig.walletConnectMobileLinks } }
+						: {},
+				})
+
 				return {
 					connectionType: WalletConnectionType.WalletConnect,
-					provider: new WalletConnectProvider({
-						rpc: {
-							[chainId]: ETHEREUM_NODE_URI || '',
-						},
-						bridge: env.WALLET_CONNECT_BRIDGE_URI,
 
-						// Restrict WalletConnect options to the selected wallet
-						...walletConfig.walletConnectMobileLinks
-							? { qrcodeModalOptions: { mobileLinks: walletConfig.walletConnectMobileLinks } }
-							: {},
-					})
+					provider,
+
+					connect: async () => {
+						try {
+							await provider.enable()
+						}catch(e){
+							if(
+								e.message.includes('User closed WalletConnect modal') ||
+								e.message.includes('User closed modal')
+							)
+								throw e
+						}
+					},
+
+					disconnect: async () => {
+						provider.qrcode = false
+						await provider.disconnect()
+					}
 				}
 			}
 		}
@@ -233,22 +323,19 @@ const getWalletConnection = async ({
 }
 
 
-window.addEventListener(
-	'ethereum#initialized',
-	(e) => console.log('ethereum#initialized', e),
-	{ once: true },
-);
-
 export const connectWallet = async ({
 	walletType,
-	chainId,
-	autoReconnect = false
+	chainId
 }: {
 	walletType: WalletType,
-	chainId: number,
-	autoReconnect: boolean
+	chainId?: number
 }) => {
-	const { connectionType, provider } = await getWalletConnection({
+	const {
+		connectionType,
+		provider,
+		connect,
+		disconnect
+	} = await getWalletConnection({
 		chainId,
 		walletType
 	})
@@ -256,70 +343,17 @@ export const connectWallet = async ({
 	if(!provider)
 		throw new Error('No provider found')
 
-	if(connectionType === WalletConnectionType.WalletConnect){
-		try {
-			await provider.enable()
-		}catch(e){
-			if(
-				e.message.includes('User closed WalletConnect modal') ||
-				e.message.includes('User closed modal')
-			)
-				throw e
-
-			return
-		}
-	}
-	
-	else if(connectionType === WalletConnectionType.WalletLink){
-		try {
-			await provider.request({ method: 'eth_requestAccounts' })
-		}catch(e){
-			if(e.message.includes('User denied account authorization'))
-				throw e
-		}
-	}
-	
-	else if (!autoReconnect) {
-		try {
-			if(!provider.request){
-				// provider.request = (request) => provider.sendPromise(request.method, request.params)
-				provider.request = async (request) => await new Promise((resolve, reject) => {
-					provider.sendAsync(request, (error, result) => {
-						console.log('sendAsync', error, result)
-						error ? reject(error) : resolve(result)
-					})
-				})
-			}
-
-			console.log('provider.request...')
-			await provider.request({ method: 'eth_requestAccounts' })
-			console.log('provider.request done')
-
-			// provider.request = async (request) => await new Promise((resolve, reject) => provider.sendAsync(request, reject))
-			// if(provider.request)
-			// 	await provider.request({ method: 'eth_requestAccounts' })
-			// else{
-			// 	console.log('env.ETHEREUM_NODE_URI', ETHEREUM_NODE_URI)
-			// 	let _provider = new provider.requestManager.providers.HttpProvider(ETHEREUM_NODE_URI)
-			// 	console.log('_provider', _provider, _provider)
-			// 	console.log('9')
-			// 	await _provider.sendAsync({ method: 'eth_requestAccounts' })
-			// 	console.log('dohne')
-			// 	await new Promise((resolve, reject) =>
-			// 		provider.sendAsync({ method: 'eth_requestAccounts' }, reject)
-			// 	)
-			// }
-		}catch(e){
-			if(e.message.includes('User rejected the request'))
-				throw e
-		}
-	}
+	await connect()
 
 	const accounts = await provider.request({ method: 'eth_accounts' })
-
 	const signer = new Web3Provider(provider).getSigner()
 
 	return {
+		connectionType,
+		provider,
+		connect,
+		disconnect,
+
 		signer: Object.assign(signer, { address: accounts[0] }),
 		chainId: Number(await provider.request({ method: 'eth_chainId' })),
 		accounts,
@@ -329,15 +363,6 @@ export const connectWallet = async ({
 		onChainIdChanged: (callback: (chainId: number) => void) => {
 			provider.on?.('chainChanged', callback)
 		}
-	}
-}
-
-export const disconnectWallet = async ({ walletType }) => {
-	if(walletType === WalletType.CoinbaseWallet){
-		await walletLinkInstance.disconnect()
-	} else if(walletConnectProvider?.disconnect){
-		walletConnectProvider.qrcode = false
-		await walletConnectProvider.disconnect()
 	}
 }
 

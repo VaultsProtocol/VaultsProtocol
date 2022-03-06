@@ -34,9 +34,11 @@
 
 	let connectingWalletType: WalletType
 
+	let disconnect
+
 
 	// Methods/hooks/lifecycle
-	import { connectWallet, disconnectWallet } from '../lib/wallets'
+	import { connectWallet } from '../lib/wallets'
 
 	const onConnectWallet = async (type: WalletType) => {
 		connectingWalletType = type
@@ -44,6 +46,11 @@
 
 		try {
 			const {
+				connectionType,
+				provider,
+				connect,
+				disconnect: _disconnect,
+
 				signer,
 				chainId,
 				accounts,
@@ -52,6 +59,9 @@
 			} = await connectWallet({
 				walletType: connectingWalletType
 			})
+
+			disconnect = _disconnect
+			console.log('_disconnect', _disconnect)
 
 			console.log('accounts', accounts)
 
@@ -86,9 +96,11 @@
 	}
 
 	const onDisconnectWallet = async () => {
+		disconnect?.()
+
 		$connectedWalletType = undefined
 		$account = undefined
-		disconnectWallet({walletType: connectedWalletType})
+		disconnect = undefined
 	}
 
 	if($connectedWalletType)
@@ -97,7 +109,6 @@
 
 	// Formatting
 	import { formatAddress } from '$lib/formatAddress'
-import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 
 
 	// Components
