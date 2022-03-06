@@ -126,8 +126,9 @@ import type { ExternalProvider } from '@ethersproject/providers'
 import type WalletLink from 'walletlink'
 import type WalletConnectProvider from '@walletconnect/web3-provider'
 
-type WalletConnection = {
-	connectionType: WalletConnectionType
+export type WalletConnection = {
+	walletType: WalletType,
+	connectionType: WalletConnectionType,
 	provider: ExternalProvider | WalletConnectProvider | WalletLink,
 	connect?: () => void,
 	disconnect?: () => void,
@@ -192,8 +193,8 @@ const getWalletConnection = async ({
 
 				if (provider?.[walletConfig.injectedEip1193ProviderFlag]) {
 					return {
+						walletType,
 						connectionType: WalletConnectionType.InjectedEip1193,
-
 						provider,
 
 						connect: async () => await connectEip1193(provider),
@@ -214,8 +215,8 @@ const getWalletConnection = async ({
 					provider.autoRefreshOnNetworkChange = false
 
 					return {
+						walletType,
 						connectionType: WalletConnectionType.InjectedEthereum,
-
 						provider,
 
 						connect: async () => await connectEip1193(provider),
@@ -233,8 +234,8 @@ const getWalletConnection = async ({
 					)
 				) {
 					return {
+						walletType,
 						connectionType: WalletConnectionType.InjectedWeb3,
-
 						provider,
 
 						connect: async () => await connectEip1193(provider),
@@ -256,8 +257,8 @@ const getWalletConnection = async ({
 				)
 
 				return {
+					walletType,
 					connectionType: WalletConnectionType.WalletLink,
-
 					provider,
 
 					connect: async () => {
@@ -291,8 +292,8 @@ const getWalletConnection = async ({
 				})
 
 				return {
+					walletType,
 					connectionType: WalletConnectionType.WalletConnect,
-
 					provider,
 
 					connect: async () => {
@@ -317,6 +318,7 @@ const getWalletConnection = async ({
 	}
 
 	return {
+		walletType: undefined,
 		connectionType: undefined,
 		provider: undefined
 	}
@@ -330,29 +332,23 @@ export const connectWallet = async ({
 	walletType: WalletType,
 	chainId?: number
 }) => {
-	const {
-		connectionType,
-		provider,
-		connect,
-		disconnect
-	} = await getWalletConnection({
+	const walletConnection = await getWalletConnection({
 		chainId,
 		walletType
 	})
 
-	if(!provider)
+	const { provider } = walletConnection
+
+	if(!walletConnection.provider)
 		throw new Error('No provider found')
 
-	await connect()
+	await walletConnection.connect()
 
 	const accounts = await provider.request({ method: 'eth_accounts' })
 	const signer = new Web3Provider(provider).getSigner()
 
 	return {
-		connectionType,
-		provider,
-		connect,
-		disconnect,
+		walletConnection,
 
 		signer: Object.assign(signer, { address: accounts[0] }),
 		chainId: Number(await provider.request({ method: 'eth_chainId' })),

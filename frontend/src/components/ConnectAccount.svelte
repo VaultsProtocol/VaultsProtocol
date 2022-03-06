@@ -40,16 +40,13 @@
 	// Methods/hooks/lifecycle
 	import { connectWallet } from '../lib/wallets'
 
-	const onConnectWallet = async (type: WalletType) => {
-		connectingWalletType = type
+	const onConnectWallet = async (walletType: WalletType) => {
+		connectingWalletType = walletType
 		modalIsOpen = false
 
 		try {
 			const {
-				connectionType,
-				provider,
-				connect,
-				disconnect: _disconnect,
+				walletConnection,
 
 				signer,
 				chainId,
@@ -60,14 +57,11 @@
 				walletType: connectingWalletType
 			})
 
-			disconnect = _disconnect
-			console.log('_disconnect', _disconnect)
-
 			console.log('accounts', accounts)
 
 			const address = accounts[0]
 
-			$account = { signer, address }
+			$account = { walletConnection, signer, address }
 
 			// $provider.resolveEnsName(address).then(async ensName => {
 			// 	$account = { ...$account, ensName }
@@ -81,7 +75,7 @@
 				$account = { ...$account, address }
 			})
 
-			$connectedWalletType = type
+			$connectedWalletType = walletConnection.walletType
 			modalIsOpen = false
 		}catch(e){
 			console.error(e)
@@ -96,11 +90,10 @@
 	}
 
 	const onDisconnectWallet = async () => {
-		disconnect?.()
+		$account.walletConnection.disconnect?.()
 
 		$connectedWalletType = undefined
 		$account = undefined
-		disconnect = undefined
 	}
 
 	if($connectedWalletType)
