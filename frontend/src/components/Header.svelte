@@ -95,7 +95,7 @@
 	@supports not (backdrop-filter: blur(0)) {
 		header {
 			/* background: linear-gradient(var(--background-color-2), transparent); */
-			background: white;
+			background: var(--background-color-1);
 		}
 	}
 

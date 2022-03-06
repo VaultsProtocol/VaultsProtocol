@@ -309,6 +309,10 @@ import { formatAddress } from '$lib/formatAddress';
 	.card {
 		backface-visibility: hidden;
 		transition: 1s;
+
+		background-color: var(--background-color-white);
+		border: 2px solid var(--border-color-cc);
+		box-shadow: none;
 	}
 	.card.front {
 		/* background: blue; */
@@ -342,7 +346,8 @@ import { formatAddress } from '$lib/formatAddress';
 		border-radius: 50%;
 		transform: scale(3) translateZ(1px);
 		z-index: 1;
-		filter: drop-shadow(0 0 1px var(--background-color-1));
+		border: 0.1px solid var(--background-color-4);
+		filter: drop-shadow(0 0 1px var(--background-color-3));
 		align-self: start;
 	}
 	h2 {

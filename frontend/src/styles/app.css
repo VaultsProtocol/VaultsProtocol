@@ -1,9 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap');
 
-body {
-	background: var(--background-color-white)
-}
-
 :root {
 	--font: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 	--font-heading: 'Open Sans', var(--font);
@@ -38,7 +34,11 @@ body {
 
 /* @media (prefers-color-scheme: light) { */
 	:root {
-		--background-color-4: var(--background-color-white);
+		--background-color-0: hsl(200deg, 0%, 100%);
+		--background-color-1: hsl(200deg, 0%, 97%);
+		--background-color-2: hsl(200deg, 0%, 95%);
+		--background-color-3: hsl(200deg, 0%, 90%);
+		--background-color-4: hsl(200deg, 0%, 82%);
 
 		--text-color: #121212;
 	}
@@ -73,7 +73,7 @@ body {
 
 	user-select: none;
 
-	background-color: var(--background-color-0);
+	background-color: var(--background-color-1);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -122,7 +122,7 @@ button, .button, [role='button'] {
 	tab-size: 6;
 }
 button, .button, input[type='number'], input[type='text'], textarea {
-	--button-color: var(--background-color-4);
+	--button-color: var(--background-color-0);
 	--radius: 0.5em;
 
 	display: inline-grid;
@@ -130,7 +130,7 @@ button, .button, input[type='number'], input[type='text'], textarea {
 	justify-content: center;
 	align-items: center;
 
-	border: 1px solid #ccc;
+	border: 1px solid var(--background-color-4);
 
 	gap: 0.6666em;
 	padding: 0.75em 1em;
@@ -293,7 +293,8 @@ source {
 hr {
 	background: none;
 	border: none;
-	border-bottom: var(--background-color-4) 10px solid;
+	/* border-bottom: var(--background-color-4) 10px solid; */
+	border-bottom: var(--background-color-4) 2px solid;
 	justify-self: stretch;
 	grid-column: 1 / -1;
 }
@@ -302,21 +303,19 @@ hr {
 .card {
 	--card-scale-factor: 1;
 
-	background-color: var(--background-color-1);
+	background-color: var(--background-color-0);
 	border-radius: calc(var(--card-scale-factor) * var(--card-radius));
 	padding: calc(var(--card-scale-factor) * var(--card-padding));
 
 	/* background: linear-gradient(var(--background-color-2), var(--background-color-3)); */
-    /* box-shadow: inset var(--background-color-1) 0 2px 4px; */
+    box-shadow: var(--background-color-3) 0 0 1px 2px;
 
 	display: flex;
 	flex-direction: column;
 
-	background: var(--background-color-white);
+	/* background: var(--background-color-white); */
 	/* border: 1px solid var(--border-color-c4); */
 	/* border: 2px solid var(--border-color-cc); */
-
-	border: 2px solid var(--border-color-cc);
 
 	/* overflow: hidden; */
 }
@@ -327,8 +326,7 @@ hr {
 
 
 .card .card {
-	background-color: var(--background-color-2);
-	background: white;
+	background-color: var(--background-color-1);
 	--card-scale-factor: 0.66;
 }
 .card .card .card {
@@ -344,7 +342,8 @@ hr {
 
 	--button-transform-origin: center;
 
-	background: var(--background-color-white);
+	/* background: var(--background-color-white); */
+	border: 1px solid var(--background-color-4);
 
 	font-weight: 600;
 
