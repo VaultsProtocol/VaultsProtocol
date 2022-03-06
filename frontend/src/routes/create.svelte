@@ -20,13 +20,17 @@
 	import { erc20Tokens } from '$lib/tokens'
 	import { availableNetworks, networkIcons, mainnetForTestnet, networks, networksByChainID, networksBySlug, vaultAssetsByNetwork } from '$lib/networks'
 
+	import { walletsByType } from '$lib/wallets'
+
 
 
 	enum Steps {
 		Idle,
+		Confirming,
 		TransactionSigning,
 		TransactionPending,
 		TransactionFailed,
+		TransactionReverted,
 		TransactionSuccess
 	}
 
@@ -43,9 +47,11 @@
 	let vaultConfig: VaultConfig = getDefaultVaultConfig()
 
 	$: isValid =
-		!!vaultConfig.about.name &&
-		!!vaultConfig.about.name && vaultConfig.about.name && vaultConfig.about.name
+		true
+		// !!vaultConfig.about.name &&
+		// !!vaultConfig.about.name && vaultConfig.about.name && vaultConfig.about.name
 	
+	let tx
 	let errorMessage
 
 	
@@ -86,20 +92,36 @@
 					gasLimit: '3500000'
 				}
 			)
-
-			console.log('tx', tx)
-
-			await tx.wait(1)
-
-			// const sampleVault = await VaultFactory.vaults("0")
-
-			// console.log("sample vault is", sampleVault)
 		}catch(e){
-			console.error(e)
 			errorMessage = e.message
 			currentStep = Steps.TransactionFailed
 		}
 	})()
+
+	$: if(tx)(async () => {
+			console.log('tx', tx)
+
+		currentStep = Steps.TransactionPending
+
+		try {
+			await tx.wait(1)
+		}catch(e){
+			errorMessage = e.message
+			currentStep = Steps.TransactionReverted
+			// currentStep = Steps.TransactionFailed
+
+			return
+		}
+
+		currentStep = Steps.TransactionSuccess
+
+			// const sampleVault = await VaultFactory.vaults("0")
+
+			// console.log("sample vault is", sampleVault)
+	})()
+
+	$: if(errorMessage)
+		console.error(errorMessage)
 
 
 	// Components
@@ -118,6 +140,7 @@
 	import { fade, fly, scale } from 'svelte/transition'
 	import Portal from '../components/Portal.svelte'
 	import Modal from '../components/Modal.svelte'
+import { formatAddress } from '$lib/formatAddress'
 </script>
 
 
@@ -131,11 +154,14 @@
 			<Vault {vaultConfig} />
 		</div>
 
+		<div class="stack align-top">
+			{#if currentStep === Steps.Idle}
 		<!-- svelte-ignore a11y-label-has-associated-control -->
 		<form
 			class="column"
-			on:submit|preventDefault={() => currentStep = Steps.TransactionSigning}
+					on:submit|preventDefault={() => currentStep++}
 			disabled={currentStep !== Steps.Idle}
+					transition:fly={{ x: -100 }}
 		>
 			<section class="card vault-content column">
 				<div class="row">
@@ -424,6 +450,94 @@
 				<button type="submit" class="extra-large round primary" disabled={!isValid || !$account}>{$_('Create Vault')}</button>
 			</div>
 		</form>
+			{:else if currentStep === Steps.Confirming}
+				<form
+					class="card column centered"
+					on:submit|preventDefault={() => currentStep++}
+					transition:fly={{ x: -100 }}
+				>
+					<h2>{$_('Your {vaultType} vault "{vaultName}" is ready to be deployed to {networkName}!', {
+						values: {
+							vaultType: vaultTypeInfo[vaultConfig.type].label,
+							vaultName: vaultConfig.about.name,
+							networkName: networksByChainID[vaultConfig.chainId].name
+						}
+					})}</h2>
+
+					<div class="column centered">
+						<button type="submit" class="extra-large round primary" disabled={!isValid || !$account}>{$_('Sign Transaction')}</button>
+						<button type="button" class="large round" on:click={() => currentStep--}>{$_('Go Back')}</button>
+					</div>
+				</form>
+			{:else if currentStep === Steps.TransactionSigning}
+				<div
+					class="card column centered"
+					transition:scale
+				>
+					<img src={walletsByType[$account.walletConnection.walletType].icon} width="100" />
+
+					<h2>{$_('Sign Transaction')}</h2>
+
+					<p>{$_('Sign the transaction with {walletName} ({address}).', {
+						values: {
+							walletName: walletsByType[$account.walletConnection.walletType].name,
+							address: formatAddress($account.address)
+						}
+					})}</p>
+
+					<button type="button" class="large round" on:click={() => currentStep--}>{$_('Go Back')}</button>
+				</div>
+			{:else if currentStep === Steps.TransactionPending}
+				<div
+					class="card column centered"
+					transition:scale
+				>
+					<h2>{$_('Waiting...')}</h2>
+
+					<p>{$_('Deploying your {vaultType} vault "{vaultName}" to {networkName}...', {
+						values: {
+							vaultType: vaultTypeInfo[vaultConfig.type].label,
+							vaultName: vaultConfig.about.name,
+							networkName: networksByChainID[vaultConfig.chainId].name
+						}
+					})}</p>
+				</div>
+			{:else if currentStep === Steps.TransactionFailed || currentStep === Steps.TransactionReverted}
+				<div
+					class="card column centered"
+					transition:scale
+				>
+					<h2>{$_('Transaction Failed')}</h2>
+
+					<output>{errorMessage}</output>
+
+					<div class="row centered">
+						<button class="large round primary" on:click={() => currentStep = Steps.TransactionSigning}>{$_('Try Again')}</button>
+						<button class="large round" on:click={() => currentStep = Steps.Idle}>{$_('Cancel')}</button>
+					</div>
+				</div>
+			{:else if currentStep === Steps.TransactionSuccess}
+				<div
+					class="card column centered"
+					transition:scale
+				>
+					<h3>{$_('Success!')}</h3>
+					
+					<p>{$_('Your {vaultType} vault "{vaultName}" was deployed to {networkName}!', {
+						values: {
+							vaultType: vaultTypeInfo[vaultConfig.type].label,
+							vaultName: vaultConfig.about.name,
+							networkName: networksByChainID[vaultConfig.chainId].name
+						}
+					})}</p>
+
+					<div class="column centered">
+						<a href="/manage"><button>{$_('Manage')}</button></a>
+						<a href="/exploree"><button>{$_('Explore')}</button>
+					</div>
+				</div>
+			{/if}
+		</div>
 	</section>
 </main>
 
@@ -468,7 +582,8 @@
 
 		scroll-snap-align: center;
 
-		margin-bottom: 33vh;
+		/* margin-bottom: 33vh; */
+		margin-bottom: 10vh;
 	}
 	form > section {
 		margin: auto;
