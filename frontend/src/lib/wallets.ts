@@ -146,77 +146,79 @@ const getProvider = async ({
 }> => {
 	const walletConfig = walletsByType[walletType]
 
-	if(
-		walletConfig.connectionTypes.includes(WalletConnectionType.InjectedEip1193)
-		&& globalThis[walletConfig.injectedEip1193ProviderGlobal]?.[walletConfig.injectedEip1193ProviderFlag]
-	){
-		return {
-			connectionType: WalletConnectionType.InjectedEip1193,
-			provider: globalThis[walletConfig.injectedEip1193ProviderGlobal],
-		}
-	}
+	for (const connectionType of walletConfig.connectionTypes) {
+		switch (connectionType) {
+			case WalletConnectionType.InjectedEip1193: {
+				if (globalThis[walletConfig.injectedEip1193ProviderGlobal]?.[walletConfig.injectedEip1193ProviderFlag]) {
+					return {
+						connectionType: WalletConnectionType.InjectedEip1193,
+						provider: globalThis[walletConfig.injectedEip1193ProviderGlobal],
+					}
+				}
+			}
 
-	if(
-		walletConfig.connectionTypes.includes(WalletConnectionType.InjectedEthereum)
-		&& (
-			!walletConfig.injectedEip1193ProviderFlag
-			|| globalThis.ethereum?.[walletConfig.injectedEip1193ProviderFlag]
-		)
-	){
-		// https://docs.metamask.io/guide/provider-migration.html#migrating-to-the-new-provider-api
-		globalThis.ethereum.autoRefreshOnNetworkChange = false
+			case WalletConnectionType.InjectedEthereum: {
+				if (
+					!walletConfig.injectedEip1193ProviderFlag
+					|| globalThis.ethereum?.[walletConfig.injectedEip1193ProviderFlag]
+				) {
+					// https://docs.metamask.io/guide/provider-migration.html#migrating-to-the-new-provider-api
+					globalThis.ethereum.autoRefreshOnNetworkChange = false
 
-		return {
-			connectionType: WalletConnectionType.InjectedEthereum,
-			provider: globalThis.ethereum,
-		}
-	}
+					return {
+						connectionType: WalletConnectionType.InjectedEthereum,
+						provider: globalThis.ethereum,
+					}
+				}
+			}
 
-	if(
-		walletConfig.connectionTypes.includes(WalletConnectionType.InjectedWeb3) && (
-			!walletConfig.injectedEip1193ProviderFlag
-			|| globalThis.web3?.currentProvider?.[walletConfig.injectedEip1193ProviderFlag]
-		)
-	){
-		return {
-			connectionType: WalletConnectionType.InjectedEthereum,
-			provider: globalThis.web3.currentProvider,
-		}
-	}
+			case WalletConnectionType.InjectedWeb3: {
+				if (
+					!walletConfig.injectedEip1193ProviderFlag
+					|| globalThis.web3?.currentProvider?.[walletConfig.injectedEip1193ProviderFlag]
+				) {
+					return {
+						connectionType: WalletConnectionType.InjectedEthereum,
+						provider: globalThis.web3.currentProvider,
+					}
+				}
+			}
 
-	if(walletConfig.connectionTypes.includes(WalletConnectionType.WalletLink)){
-		await import('./walletlink')
+			case WalletConnectionType.WalletLink: {
+				await import('./walletlink')
 
-		const WalletLink = globalThis.WalletLink
+				const WalletLink = globalThis.WalletLink
 
-		return {
-			connectionType: WalletConnectionType.WalletLink,
-			provider: new WalletLink({
-				appName: 'DAO Creator',
-				appLogoUrl: ''
-			}).makeWeb3Provider(
-				ETHEREUM_NODE_URI,
-				chainId
-			)
-		}
-	}
+				return {
+					connectionType: WalletConnectionType.WalletLink,
+					provider: new WalletLink({
+						appName: 'DAO Creator',
+						appLogoUrl: ''
+					}).makeWeb3Provider(
+						ETHEREUM_NODE_URI,
+						chainId
+					)
+				}
+			}
 
-	if(walletConfig.connectionTypes.includes(WalletConnectionType.WalletConnect)){
-		const WalletConnectProvider: WalletConnectProvider = await importExternalPackage('@walletconnect/web3-provider')
+			case WalletConnectionType.WalletConnect: {
+				const WalletConnectProvider: WalletConnectProvider = await importExternalPackage('@walletconnect/web3-provider')
 
-		return {
-			connectionType: WalletConnectionType.WalletConnect,
-			provider: new WalletConnectProvider({
-				rpc: {
-					[chainId]: ETHEREUM_NODE_URI || '',
-				},
-				bridge: env.WALLET_CONNECT_BRIDGE_URI,
+				return {
+					connectionType: WalletConnectionType.WalletConnect,
+					provider: new WalletConnectProvider({
+						rpc: {
+							[chainId]: ETHEREUM_NODE_URI || '',
+						},
+						bridge: env.WALLET_CONNECT_BRIDGE_URI,
 
-				// Restrict WalletConnect options to the selected wallet
-				... walletConfig.walletConnectMobileLinks
-					? { qrcodeModalOptions: { mobileLinks: walletConfig.walletConnectMobileLinks } }
-					: {},
-			})
+						// Restrict WalletConnect options to the selected wallet
+						...walletConfig.walletConnectMobileLinks
+							? { qrcodeModalOptions: { mobileLinks: walletConfig.walletConnectMobileLinks } }
+							: {},
+					})
+				}
+			}
 		}
 	}
 
@@ -238,8 +240,6 @@ export const connectWallet = async ({
 	autoReconnect = false
 }) => {
 	const { connectionType, provider } = await getProvider({ walletType })
-
-	console.log('provider', connectionType, provider, provider.__proto__)
 
 	if(!provider)
 		throw new Error('No provider found')
@@ -307,7 +307,6 @@ export const connectWallet = async ({
 	const accounts = await provider.request({ method: 'eth_accounts' })
 
 	const signer = new Web3Provider(provider).getSigner()
-	
 
 	return {
 		signer: Object.assign(signer, { address: accounts[0] }),
