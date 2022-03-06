@@ -34,7 +34,7 @@
 
 	let connectingWalletType: WalletType
 
-	let disconnect
+	let walletConnectionAndDetails
 
 
 	// Methods/hooks/lifecycle
@@ -45,42 +45,13 @@
 		modalIsOpen = false
 
 		try {
-			const {
-				walletConnection,
-
-				signer,
-				chainId,
-				accounts,
-				onAccountChanged,
-				onChainIdChanged
-			} = await connectWallet({
+			walletConnectionAndDetails = await connectWallet({
 				walletType: connectingWalletType
 			})
-
-			console.log('accounts', accounts)
-
-			const address = accounts[0]
-
-			$account = { walletConnection, signer, address }
-
-			// $provider.resolveEnsName(address).then(async ensName => {
-			// 	$account = { ...$account, ensName }
-
-			// 	const ensAvatarUri = await contractClient.resolveEnsAvatar(ensName)
-			// 	$account = { ...$account, ensAvatarUri }
-			// })
-
-			onAccountChanged(accounts => {
-				const address = accounts[0]
-				$account = { ...$account, address }
-			})
-
-			$connectedWalletType = walletConnection.walletType
 			modalIsOpen = false
 		}catch(e){
 			console.error(e)
 
-			$connectedWalletType = undefined
 			await onDisconnectWallet()
 
 			modalIsOpen = true
@@ -90,8 +61,28 @@
 	}
 
 	const onDisconnectWallet = async () => {
-		$account.walletConnection.disconnect?.()
+		await $account.walletConnection.disconnect?.()
 
+		walletConnectionAndDetails = undefined
+	}
+
+	$: if(walletConnectionAndDetails){
+		const { walletConnection, signer, accounts, chainId } = walletConnectionAndDetails
+
+		$connectedWalletType = walletConnection.walletType
+
+		$account = { walletConnection, signer }
+
+		accounts.subscribe(accounts => $account = { ...$account, accounts, address: accounts[0] })
+		chainId.subscribe(chainId => $account = { ...$account, chainId })
+
+		// $provider.resolveEnsName(address).then(async ensName => {
+		// 	$account = { ...$account, ensName }
+
+		// 	const ensAvatarUri = await contractClient.resolveEnsAvatar(ensName)
+		// 	$account = { ...$account, ensAvatarUri }
+		// })
+	}else{
 		$connectedWalletType = undefined
 		$account = undefined
 	}

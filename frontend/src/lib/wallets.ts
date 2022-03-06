@@ -16,11 +16,6 @@ export enum WalletConnectionType {
 }
 
 
-const ETHEREUM_NODE_URI = env.ETHEREUM_NODE_URI || `https://eth-rinkeby.alchemyapi.io/v2/${env.ALCHEMY_API_KEY_MAINNET}`
-
-
-import type { MessageFormatter } from 'svelte-i18n/types/runtime/types'
-
 type WalletConfig = {
 	type: WalletType,
 	name: string,
@@ -136,6 +131,8 @@ export type WalletConnection = {
 
 
 import { env } from './env'
+
+const ETHEREUM_NODE_URI = env.ETHEREUM_NODE_URI || `https://eth-rinkeby.alchemyapi.io/v2/${env.ALCHEMY_API_KEY_MAINNET}`
 
 import { importExternalPackage } from './loadExternalPackages'
 
@@ -325,6 +322,8 @@ const getWalletConnection = async ({
 }
 
 
+import { readable } from 'svelte/store'
+
 export const connectWallet = async ({
 	walletType,
 	chainId
@@ -333,8 +332,8 @@ export const connectWallet = async ({
 	chainId?: number
 }) => {
 	const walletConnection = await getWalletConnection({
-		chainId,
-		walletType
+		walletType,
+		chainId
 	})
 
 	const { provider } = walletConnection
@@ -344,21 +343,30 @@ export const connectWallet = async ({
 
 	await walletConnection.connect()
 
-	const accounts = await provider.request({ method: 'eth_accounts' })
-	const signer = new Web3Provider(provider).getSigner()
-
 	return {
 		walletConnection,
 
-		signer: Object.assign(signer, { address: accounts[0] }),
-		chainId: Number(await provider.request({ method: 'eth_chainId' })),
-		accounts,
-		onAccountChanged: (callback?: (accounts: string[]) => void) => {
-			provider.on?.('accountsChanged', callback)
-		},
-		onChainIdChanged: (callback: (chainId: number) => void) => {
-			provider.on?.('chainChanged', callback)
-		}
+		signer: new Web3Provider(provider).getSigner(), // Object.assign(signer, { address: accounts[0] }),
+
+		accounts: readable<string[]>([], set => {
+			const onAccountsChanged = (accounts: string[]) => set(accounts)
+
+			provider.request({ method: 'eth_accounts' }).then(onAccountsChanged)
+
+			provider.on?.('accountsChanged', onAccountsChanged)
+
+			return () => provider.off?.('accountsChanged', onAccountsChanged)
+		}),
+
+		chainId: readable<number>(chainId, set => {
+			const onChainIdChanged = (chainId: number | string) => set(Number(chainId))
+
+			provider.request({ method: 'eth_chainId' }).then(onChainIdChanged)
+
+			provider.on?.('chainChanged', onChainIdChanged)
+
+			return () => provider.off?.('chainChanged', onChainIdChanged)
+		}),
 	}
 }
 
