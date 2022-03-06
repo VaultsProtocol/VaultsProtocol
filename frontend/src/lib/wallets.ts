@@ -8,8 +8,9 @@ export enum WalletType {
 }
 
 export enum WalletConnectionType {
-	InjectedWeb3 = 'InjectedWeb3',
+	InjectedEip1193 = 'InjectedEip1193',
 	InjectedEthereum = 'InjectedEthereum',
+	InjectedWeb3 = 'InjectedWeb3',
 	WalletConnect = 'WalletConnect',
 	WalletLink = 'WalletLink',
 }
@@ -28,7 +29,8 @@ type WalletConfig = {
 	connectionTypes: WalletConnectionType[],
 
 	// connectionType === WalletConnectionType.InjectedWeb3 || connectionType === WalletConnectionType.InjectedEthereum
-	injectedWalletFlag?: string,
+	injectedEip1193ProviderGlobal?: string,
+	injectedEip1193ProviderFlag?: string,
 	
 	// connectionType === WalletConnectionType.WalletConnect 
 	walletConnectMobileLinks?: string[],
@@ -42,12 +44,12 @@ export const wallets: WalletConfig[] = [
 		icon: (await import('../assets/wallets/metamask.svg')).default,
 
 		connectionTypes: [
-			WalletConnectionType.InjectedWeb3,
 			WalletConnectionType.InjectedEthereum,
+			WalletConnectionType.InjectedWeb3,
 			WalletConnectionType.WalletConnect,
 		],
 
-		injectedWalletFlag: 'isMetaMask',
+		injectedEip1193ProviderFlag: 'isMetaMask',
 		walletConnectMobileLinks: ['metamask'],
 	},
 	{
@@ -56,12 +58,14 @@ export const wallets: WalletConfig[] = [
 		icon: (await import('../assets/wallets/tally.svg')).default,
 
 		connectionTypes: [
-			WalletConnectionType.InjectedWeb3,
+			WalletConnectionType.InjectedEip1193,
 			WalletConnectionType.InjectedEthereum,
+			WalletConnectionType.InjectedWeb3,
 			WalletConnectionType.WalletConnect,
 		],
 
-		injectedWalletFlag: 'isTally',
+		injectedEip1193ProviderGlobal: 'tally',
+		injectedEip1193ProviderFlag: 'isTally',
 		walletConnectMobileLinks: ['tally'],
 	},
 	{
@@ -70,13 +74,13 @@ export const wallets: WalletConfig[] = [
 		icon: (await import('../assets/wallets/coinbase-wallet.png')).default,
 
 		connectionTypes: [
-			WalletConnectionType.InjectedWeb3,
 			WalletConnectionType.InjectedEthereum,
+			WalletConnectionType.InjectedWeb3,
 			WalletConnectionType.WalletConnect,
 			WalletConnectionType.WalletLink,
 		],
 
-		injectedWalletFlag: 'isCoinbaseWallet',
+		injectedEip1193ProviderFlag: 'isCoinbaseWallet',
 	},
 	{
 		type: WalletType.MEW,
@@ -84,12 +88,12 @@ export const wallets: WalletConfig[] = [
 		icon: (await import('../assets/wallets/mew.svg')).default,
 
 		connectionTypes: [
-			WalletConnectionType.InjectedWeb3,
 			WalletConnectionType.InjectedEthereum,
+			WalletConnectionType.InjectedWeb3,
 			WalletConnectionType.WalletConnect,
 		],
 
-		injectedWalletFlag: 'isMew',
+		injectedEip1193ProviderFlag: 'isMew',
 		walletConnectMobileLinks: ['mew'],
 	},
 
@@ -108,8 +112,8 @@ export const wallets: WalletConfig[] = [
 		icon: (await import('../assets/wallets/wallet.svg')).default,
 
 		connectionTypes: [
-			WalletConnectionType.InjectedWeb3,
 			WalletConnectionType.InjectedEthereum,
+			WalletConnectionType.InjectedWeb3,
 			WalletConnectionType.WalletConnect,
 		],
 	},
@@ -128,7 +132,6 @@ import { _ } from 'svelte-i18n'
 
 import type WalletConnectProvider from '@walletconnect/web3-provider'
 
-// import { providers } from 'ethers'
 import { JsonRpcSigner, Web3Provider, type ExternalProvider } from '@ethersproject/providers'
 
 const getProvider = async ({
@@ -144,12 +147,25 @@ const getProvider = async ({
 	const walletConfig = walletsByType[walletType]
 
 	if(
-		walletConfig.connectionTypes.includes(WalletConnectionType.InjectedEthereum) && (
-			!walletConfig.injectedWalletFlag
-			|| globalThis.ethereum?.[walletConfig.injectedWalletFlag]
+		walletConfig.connectionTypes.includes(WalletConnectionType.InjectedEip1193)
+		&& globalThis[walletConfig.injectedEip1193ProviderGlobal]?.[walletConfig.injectedEip1193ProviderFlag]
+	){
+		return {
+			connectionType: WalletConnectionType.InjectedEip1193,
+			provider: globalThis[walletConfig.injectedEip1193ProviderGlobal],
+		}
+	}
+
+	if(
+		walletConfig.connectionTypes.includes(WalletConnectionType.InjectedEthereum)
+		&& (
+			!walletConfig.injectedEip1193ProviderFlag
+			|| globalThis.ethereum?.[walletConfig.injectedEip1193ProviderFlag]
 		)
 	){
+		// https://docs.metamask.io/guide/provider-migration.html#migrating-to-the-new-provider-api
 		globalThis.ethereum.autoRefreshOnNetworkChange = false
+
 		return {
 			connectionType: WalletConnectionType.InjectedEthereum,
 			provider: globalThis.ethereum,
@@ -157,9 +173,9 @@ const getProvider = async ({
 	}
 
 	if(
-		walletConfig.connectionTypes.includes(WalletConnectionType.InjectedEthereum) && (
-			!walletConfig.injectedWalletFlag
-			|| globalThis.web3?.currentProvider?.[walletConfig.injectedWalletFlag]
+		walletConfig.connectionTypes.includes(WalletConnectionType.InjectedWeb3) && (
+			!walletConfig.injectedEip1193ProviderFlag
+			|| globalThis.web3?.currentProvider?.[walletConfig.injectedEip1193ProviderFlag]
 		)
 	){
 		return {
@@ -211,6 +227,12 @@ const getProvider = async ({
 }
 
 
+window.addEventListener(
+	'ethereum#initialized',
+	(e) => console.log('ethereum#initialized', e),
+	{ once: true },
+);
+
 export const connectWallet = async ({
 	walletType,
 	autoReconnect = false
@@ -247,7 +269,34 @@ export const connectWallet = async ({
 	
 	else if (!autoReconnect) {
 		try {
+			if(!provider.request){
+				// provider.request = (request) => provider.sendPromise(request.method, request.params)
+				provider.request = async (request) => await new Promise((resolve, reject) => {
+					provider.sendAsync(request, (error, result) => {
+						console.log('sendAsync', error, result)
+						error ? reject(error) : resolve(result)
+					})
+				})
+			}
+
+			console.log('provider.request...')
 			await provider.request({ method: 'eth_requestAccounts' })
+			console.log('provider.request done')
+
+			// provider.request = async (request) => await new Promise((resolve, reject) => provider.sendAsync(request, reject))
+			// if(provider.request)
+			// 	await provider.request({ method: 'eth_requestAccounts' })
+			// else{
+			// 	console.log('env.ETHEREUM_NODE_URI', ETHEREUM_NODE_URI)
+			// 	let _provider = new provider.requestManager.providers.HttpProvider(ETHEREUM_NODE_URI)
+			// 	console.log('_provider', _provider, _provider)
+			// 	console.log('9')
+			// 	await _provider.sendAsync({ method: 'eth_requestAccounts' })
+			// 	console.log('dohne')
+			// 	await new Promise((resolve, reject) =>
+			// 		provider.sendAsync({ method: 'eth_requestAccounts' }, reject)
+			// 	)
+			// }
 		}catch(e){
 			if(e.message.includes('User rejected the request'))
 				throw e
