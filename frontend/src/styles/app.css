@@ -477,3 +477,13 @@ details summary {
 details summary:hover, details[open] summary {
 	color: var(--color-text-light);
 }
+
+
+:disabled, .placeholder {
+	filter: grayscale();
+	opacity: 0.8;
+	touch-action: none;
+}
+:disabled {
+	cursor: not-allowed !important;
+}
