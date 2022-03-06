@@ -132,7 +132,7 @@ import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 						{:else}
 							<span>{formatAddress($account.address)}</span>
 						{/if}
-						<span>{walletsByType[$connectedWalletType].name($_)}</span> -->
+						<span>{walletsByType[$connectedWalletType].name}</span> -->
 
 						{#if $account.ensName}
 							<span class="ens">{$account.ensName}</span>
@@ -143,7 +143,7 @@ import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 							<span class="locked">{$_('[Locked]')}</span>
 						{/if}
 						{#if !$account.ensName}
-							<span>{walletsByType[$connectedWalletType].name($_)}</span>
+							<span>{walletsByType[$connectedWalletType].name}</span>
 						{/if}
 					</span>
 				</button>
@@ -174,8 +174,8 @@ import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 				{#each wallets as {type, name, icon}}
 					<button class="wallet large" on:click={() => onConnectWallet(type)}>
 					<!-- <button class="wallet column centered" on:click={() => onConnectWallet(type)}> -->
-						<img src={icon} alt={name($_)} />
-						{name($_)}
+						<img src={icon} alt={name} />
+						{name}
 					</button>
 				{/each}
 			</div>
@@ -204,7 +204,7 @@ import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 		background-color: var(--background-color-4);
 	}
 	.avatar .wallet-icon {
-		margin: 0.55rem;
+		margin: 0.33rem;
 	}
 
 	.connnected-account {

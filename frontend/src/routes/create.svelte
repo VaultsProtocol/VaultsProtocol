@@ -55,12 +55,10 @@
 	const { AbiCoder } = utils
 	import { getContract, getContractBytecode } from '$lib/contracts'
 
-	$: if(currentStep === Steps.TransactionSigning)(async () => {
+	$: if($account && currentStep === Steps.TransactionSigning)(async () => {
 		const network = networksByChainID[vaultConfig.chainId]
 
-		// const { address, signer } = $account
-		const { address } = $account
-		const signer = globalThis.ethereum
+		const { address, signer } = $account
 
 		console.log('signer', signer)
 

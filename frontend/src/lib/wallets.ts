@@ -7,48 +7,111 @@ export enum WalletType {
 	MEW = 'MEW',
 }
 
+export enum WalletConnectionType {
+	InjectedWeb3 = 'InjectedWeb3',
+	InjectedEthereum = 'InjectedEthereum',
+	WalletConnect = 'WalletConnect',
+	WalletLink = 'WalletLink',
+}
+
+
+const ETHEREUM_NODE_URI = env.ETHEREUM_NODE_URI || `https://eth-rinkeby.alchemyapi.io/v2/${env.ALCHEMY_API_KEY_MAINNET}`
+
 
 import type { MessageFormatter } from 'svelte-i18n/types/runtime/types'
 
 type WalletConfig = {
 	type: WalletType,
-	name: ((_: MessageFormatter) => string),
-	icon: string,
-}
+	name: string,
+	icon: typeof import("*.svg").default,
 
-import iconCoinbaseWallet from '../assets/wallets/coinbase-wallet.png'
-import iconMetaMask from '../assets/wallets/metamask.svg'
-import iconTally from '../assets/wallets/tally.svg'
-import iconWalletConnect from '../assets/wallets/walletconnect.svg'
-import iconMEW from '../assets/wallets/mew.svg'
-// import iconSpruce from '../assets/wallets/spruce.svg'
+	connectionTypes: WalletConnectionType[],
+
+	// connectionType === WalletConnectionType.InjectedWeb3 || connectionType === WalletConnectionType.InjectedEthereum
+	injectedWalletFlag?: string,
+	
+	// connectionType === WalletConnectionType.WalletConnect 
+	walletConnectMobileLinks?: string[],
+}
 
 
 export const wallets: WalletConfig[] = [
 	{
 		type: WalletType.MetaMask,
-		name: _ => _('Wallets.MetaMask'),
-		icon: iconMetaMask,
-	},
-	{
-		type: WalletType.WalletConnect,
-		name: _ => _('Wallets.WalletConnect'),
-		icon: iconWalletConnect,
+		name: 'MetaMask',
+		icon: (await import('../assets/wallets/metamask.svg')).default,
+
+		connectionTypes: [
+			WalletConnectionType.InjectedWeb3,
+			WalletConnectionType.InjectedEthereum,
+			WalletConnectionType.WalletConnect,
+		],
+
+		injectedWalletFlag: 'isMetaMask',
+		walletConnectMobileLinks: ['metamask'],
 	},
 	{
 		type: WalletType.Tally,
-		name: _ => _('Wallets.Tally'),
-		icon: iconTally,
+		name: 'Tally',
+		icon: (await import('../assets/wallets/tally.svg')).default,
+
+		connectionTypes: [
+			WalletConnectionType.InjectedWeb3,
+			WalletConnectionType.InjectedEthereum,
+			WalletConnectionType.WalletConnect,
+		],
+
+		injectedWalletFlag: 'isTally',
+		walletConnectMobileLinks: ['tally'],
 	},
 	{
 		type: WalletType.CoinbaseWallet,
-		name: _ => _('Wallets.Coinbase Wallet'),
-		icon: iconCoinbaseWallet,
+		name: 'Coinbase Wallet',
+		icon: (await import('../assets/wallets/coinbase-wallet.png')).default,
+
+		connectionTypes: [
+			WalletConnectionType.InjectedWeb3,
+			WalletConnectionType.InjectedEthereum,
+			WalletConnectionType.WalletConnect,
+			WalletConnectionType.WalletLink,
+		],
+
+		injectedWalletFlag: 'isCoinbaseWallet',
 	},
 	{
 		type: WalletType.MEW,
-		name: _ => _('My Ether Wallet'),
-		icon: iconMEW,
+		name: 'MyEtherWallet',
+		icon: (await import('../assets/wallets/mew.svg')).default,
+
+		connectionTypes: [
+			WalletConnectionType.InjectedWeb3,
+			WalletConnectionType.InjectedEthereum,
+			WalletConnectionType.WalletConnect,
+		],
+
+		injectedWalletFlag: 'isMew',
+		walletConnectMobileLinks: ['mew'],
+	},
+
+	{
+		type: WalletType.WalletConnect,
+		name: 'WalletConnect',
+		icon: (await import('../assets/wallets/walletconnect.svg')).default,
+
+		connectionTypes: [
+			WalletConnectionType.WalletConnect,
+		],
+	},
+	{
+		type: WalletType.OtherWallet,
+		name: 'Other Wallet',
+		icon: (await import('../assets/wallets/wallet.svg')).default,
+
+		connectionTypes: [
+			WalletConnectionType.InjectedWeb3,
+			WalletConnectionType.InjectedEthereum,
+			WalletConnectionType.WalletConnect,
+		],
 	},
 ]
 
@@ -57,193 +120,109 @@ export const walletsByType = Object.fromEntries(wallets.map(wallet => [wallet.ty
 
 import { env } from './env'
 
-const chainId = Number(env.NETWORK_ID)
-
-const walletConnectBaseOptions: IWalletConnectProviderOptions = {
-	rpc: {
-		[chainId]: env.ETHEREUM_NODE_URI || '',
-	},
-	bridge: env.WALLET_CONNECT_BRIDGE_URI,
-}
-
 let walletConnectProvider
 
 
 import { importExternalPackage } from './loadExternalPackages'
 import { _ } from 'svelte-i18n'
 
-import './walletlink'
-const WalletLink = globalThis.WalletLink
+import type WalletConnectProvider from '@walletconnect/web3-provider'
 
+// import { providers } from 'ethers'
+import { JsonRpcSigner, Web3Provider, type ExternalProvider } from '@ethersproject/providers'
 
 const getProvider = async ({
 	walletType,
-	options = {},
+	chainId = env.NETWORK_ID
 }: {
-	walletType: WalletType
-	options?: {
-		derivationPath?: string
-		walletAddress?: string
-	}
+	walletType: WalletType,
+	chainId?: number
 }): Promise<{
-	provider: any
-	isWalletConnect?: boolean
-	isWalletLink?: boolean
+	connectionType: WalletConnectionType
+	provider: ExternalProvider | WalletConnectProvider,
 }> => {
-	switch (walletType) {
-		case WalletType.CoinbaseWallet: {
-			let provider
-			if(globalThis.ethereum){
-				globalThis.ethereum.autoRefreshOnNetworkChange = false
-				provider = globalThis.ethereum
-			} else if (globalThis.web3?.currentProvider) {
-				provider = globalThis.web3.currentProvider
-			}
+	const walletConfig = walletsByType[walletType]
 
-			// If the user is in the Coinbase Wallet app
-			if(provider?.isCoinbaseWallet)
-				return { provider }
-		
-			provider = new WalletLink({
+	if(
+		walletConfig.connectionTypes.includes(WalletConnectionType.InjectedEthereum) && (
+			!walletConfig.injectedWalletFlag
+			|| globalThis.ethereum?.[walletConfig.injectedWalletFlag]
+		)
+	){
+		globalThis.ethereum.autoRefreshOnNetworkChange = false
+		return {
+			connectionType: WalletConnectionType.InjectedEthereum,
+			provider: globalThis.ethereum,
+		}
+	}
+
+	if(
+		walletConfig.connectionTypes.includes(WalletConnectionType.InjectedEthereum) && (
+			!walletConfig.injectedWalletFlag
+			|| globalThis.web3?.currentProvider?.[walletConfig.injectedWalletFlag]
+		)
+	){
+		return {
+			connectionType: WalletConnectionType.InjectedEthereum,
+			provider: globalThis.web3.currentProvider,
+		}
+	}
+
+	if(walletConfig.connectionTypes.includes(WalletConnectionType.WalletLink)){
+		await import('./walletlink')
+
+		const WalletLink = globalThis.WalletLink
+
+		return {
+			connectionType: WalletConnectionType.WalletLink,
+			provider: new WalletLink({
 				appName: 'DAO Creator',
 				appLogoUrl: ''
 			}).makeWeb3Provider(
-				env.ETHEREUM_NODE_URI,
+				ETHEREUM_NODE_URI,
 				chainId
 			)
-
-			return { provider: provider, isWalletLink: true }
 		}
-		case WalletType.ImToken: {
-			if(globalThis.ethereum?.isImToken)
-				return { provider: globalThis.ethereum }
-
-			if(globalThis.web3?.currentProvider?.isImToken)
-				return { provider: globalThis.web3.currentProvider }
-
-			const WalletConnectProvider = await importExternalPackage('@walletconnect/web3-provider')
-
-			walletConnectProvider = new WalletConnectProvider({
-				...walletConnectBaseOptions,
-				qrcodeModalOptions: {
-					mobileLinks: ['imtoken'],
-				},
-			})
-
-			return { provider: walletConnectProvider, isWalletConnect: true }
-		}
-		case WalletType.MetaMask: {
-			if(globalThis.ethereum?.isMetaMask){
-				globalThis.ethereum.autoRefreshOnNetworkChange = false
-				return { provider: globalThis.ethereum }
-			}
-
-			if(globalThis.web3?.currentProvider?.isMetaMask)
-				return { provider: globalThis.web3.currentProvider }
-
-			// Restrict WalletConnect options to MetaMask
-			const WalletConnectProvider = await importExternalPackage('@walletconnect/web3-provider')
-
-			walletConnectProvider = new WalletConnectProvider({
-				...walletConnectBaseOptions,
-				qrcodeModalOptions: {
-					mobileLinks: ['metamask'],
-				},
-			})
-
-			return { provider: walletConnectProvider, isWalletConnect: true }
-		}
-		case WalletType.OtherWallet: {
-			if(globalThis.ethereum){
-				globalThis.ethereum.autoRefreshOnNetworkChange = false
-				return { provider: globalThis.ethereum }
-			}
-
-			if(globalThis.web3?.currentProvider){
-				return { provider: globalThis.web3.currentProvider }
-			}
-
-			const WalletConnectProvider = await importExternalPackage('@walletconnect/web3-provider')
-			walletConnectProvider = new WalletConnectProvider(walletConnectBaseOptions)
-
-			return { provider: walletConnectProvider, isWalletConnect: true }
-		}
-		case WalletType.Rainbow: {
-			const WalletConnectProvider = await importExternalPackage('@walletconnect/web3-provider')
-			walletConnectProvider = new WalletConnectProvider({
-				...walletConnectBaseOptions,
-				qrcodeModalOptions: {
-					mobileLinks: ['rainbow'],
-				},
-			})
-
-			return { provider: walletConnectProvider, isWalletConnect: true }
-		}
-		case WalletType.TokenPocket: {
-			if(globalThis.ethereum?.isTokenPocket)
-				return { provider: globalThis.ethereum }
-
-			if(globalThis.web3?.currentProvider?.isTokenPocket)
-				return { provider: globalThis.web3.currentProvider }
-
-			const WalletConnectProvider = await importExternalPackage('@walletconnect/web3-provider')
-			walletConnectProvider = new WalletConnectProvider({
-				...walletConnectBaseOptions,
-				qrcodeModalOptions: {
-					mobileLinks: ['tokenpocket'],
-				},
-			})
-
-			return { provider: walletConnectProvider, isWalletConnect: true }
-		}
-		case WalletType.TrustWallet: {
-			if(globalThis.ethereum?.isTrustWallet)
-				return { provider: globalThis.ethereum }
-
-			if(globalThis.web3?.currentProvider?.isTrustWallet)
-				return { provider: globalThis.web3.currentProvider }
-
-			const WalletConnectProvider = await importExternalPackage('@walletconnect/web3-provider')
-			walletConnectProvider = new WalletConnectProvider({
-				...walletConnectBaseOptions,
-				qrcodeModalOptions: {
-					mobileLinks: ['trust'],
-				},
-			})
-
-			return { provider: walletConnectProvider, isWalletConnect: true }
-		}
-		case WalletType.WalletConnect: {
-			const WalletConnectProvider = await importExternalPackage('@walletconnect/web3-provider')
-			walletConnectProvider = new WalletConnectProvider(walletConnectBaseOptions)
-
-			return { provider: walletConnectProvider, isWalletConnect: true }
-		}
-		default:
-			break
 	}
 
-	return { provider: null }
+	if(walletConfig.connectionTypes.includes(WalletConnectionType.WalletConnect)){
+		const WalletConnectProvider: WalletConnectProvider = await importExternalPackage('@walletconnect/web3-provider')
+
+		return {
+			connectionType: WalletConnectionType.WalletConnect,
+			provider: new WalletConnectProvider({
+				rpc: {
+					[chainId]: ETHEREUM_NODE_URI || '',
+				},
+				bridge: env.WALLET_CONNECT_BRIDGE_URI,
+
+				// Restrict WalletConnect options to the selected wallet
+				... walletConfig.walletConnectMobileLinks
+					? { qrcodeModalOptions: { mobileLinks: walletConfig.walletConnectMobileLinks } }
+					: {},
+			})
+		}
+	}
+
+	return {
+		connectionType: undefined,
+		provider: undefined
+	}
 }
 
 
-// import { providers } from 'ethers'
-import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
-
 export const connectWallet = async ({
 	walletType,
-	options = {},
 	autoReconnect = false
 }) => {
-	const { provider, isWalletConnect, isWalletLink } = await getProvider({
-		walletType,
-		options,
-	})
+	const { connectionType, provider } = await getProvider({ walletType })
+
+	console.log('provider', connectionType, provider, provider.__proto__)
 
 	if(!provider)
 		throw new Error('No provider found')
 
-	if(isWalletConnect){
+	if(connectionType === WalletConnectionType.WalletConnect){
 		try {
 			await provider.enable()
 		}catch(e){
@@ -255,14 +234,18 @@ export const connectWallet = async ({
 
 			return
 		}
-	} else if (walletType === WalletType.CoinbaseWallet) {
+	}
+	
+	else if(connectionType === WalletConnectionType.WalletLink){
 		try {
 			await provider.request({ method: 'eth_requestAccounts' })
 		}catch(e){
 			if(e.message.includes('User denied account authorization'))
 				throw e
 		}
-	} else if (!autoReconnect) {
+	}
+	
+	else if (!autoReconnect) {
 		try {
 			await provider.request({ method: 'eth_requestAccounts' })
 		}catch(e){
@@ -274,7 +257,8 @@ export const connectWallet = async ({
 	const chainId = parseInt(await provider.request({ method: 'eth_chainId' }), 16)
 	const accounts = await provider.request({ method: 'eth_accounts' })
 
-	const signer = new Web3Provider(globalThis.ethereum).getSigner()
+	const signer = new Web3Provider(provider).getSigner()
+	
 
 	return {
 		signer: Object.assign(signer, { address: accounts[0] }),
