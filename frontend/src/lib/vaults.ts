@@ -39,7 +39,7 @@ export const vaultTypeInfo = {
 	[VaultType.DAO]: {
 		label: '🗳\tDAO',
 		// description: 'The vault parameters can be changed upon the approval of multiple designated signers or by a token-weighted vote by all holdersapproval.'
-		description: 'Democratized captial control via delegatable weighted voting or multi-sig',
+		description: 'Democratized capital control via delegatable weighted voting or multi-sig',
 		color: 'var(--background-color-DAO)'
 	}
 }
