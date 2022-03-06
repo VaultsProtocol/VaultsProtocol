@@ -155,7 +155,7 @@ textarea {
 	padding: 1em;
 }
 
-button:hover, .button:hover, [role='button']:hover,
+button:hover:not(:disabled), .button:hover:not(:disabled), [role='button']:hover:not(:disabled),
 button:focus, .button:focus, [role='button']:focus,
 button:focus-within, .button:focus-within, [role='button']:focus-within
 /* ,
