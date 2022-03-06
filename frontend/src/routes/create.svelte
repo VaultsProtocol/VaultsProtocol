@@ -456,13 +456,15 @@ import { formatAddress } from '$lib/formatAddress'
 					on:submit|preventDefault={() => currentStep++}
 					transition:fly={{ x: -100 }}
 				>
-					<h2>{$_('Your {vaultType} vault "{vaultName}" is ready to be deployed to {networkName}!', {
+					<h2>{$_('Ready to deploy')}</h2>
+
+					<p>{$_('Your {vaultType} vault "{vaultName}" is ready to be deployed to {networkName}!', {
 						values: {
 							vaultType: vaultTypeInfo[vaultConfig.type].label,
 							vaultName: vaultConfig.about.name,
 							networkName: networksByChainID[vaultConfig.chainId].name
 						}
-					})}</h2>
+					})}</p>
 
 					<div class="column centered">
 						<button type="submit" class="extra-large round primary" disabled={!isValid || !$account}>{$_('Sign Transaction')}</button>
