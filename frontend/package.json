@@ -38,6 +38,7 @@
 		"@walletconnect/web3-provider": "^1.7.3",
 		"buffer": "^6.0.3",
 		"ethers": "^5.5.4",
-		"svelte-i18n": "^3.3.13"
+		"svelte-i18n": "^3.3.13",
+		"walletlink": "^2.5.0"
 	}
 }
