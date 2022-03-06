@@ -66,7 +66,7 @@ export const wallets: WalletConfig[] = [
 	{
 		type: WalletType.CoinbaseWallet,
 		name: 'Coinbase Wallet',
-		icon: (await import('../assets/wallets/coinbase-wallet.png')).default,
+		icon: (await import('../assets/wallets/coinbase-wallet.svg')).default,
 
 		connectionTypes: [
 			WalletConnectionType.InjectedEthereum,
