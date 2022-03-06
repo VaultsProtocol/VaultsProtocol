@@ -122,28 +122,32 @@ export const wallets: WalletConfig[] = [
 export const walletsByType = Object.fromEntries(wallets.map(wallet => [wallet.type, wallet]))
 
 
-import { env } from './env'
+type WalletConnection = {
+	connectionType: WalletConnectionType
+	provider: ExternalProvider | WalletConnectProvider,
+}
+
+
 
 let walletConnectProvider
 
 
-import { importExternalPackage } from './loadExternalPackages'
 import { _ } from 'svelte-i18n'
+import { env } from './env'
+
+import { importExternalPackage } from './loadExternalPackages'
 
 import type WalletConnectProvider from '@walletconnect/web3-provider'
 
 import { JsonRpcSigner, Web3Provider, type ExternalProvider } from '@ethersproject/providers'
 
-const getProvider = async ({
+const getWalletConnection = async ({
 	walletType,
 	chainId = env.NETWORK_ID
 }: {
 	walletType: WalletType,
 	chainId?: number
-}): Promise<{
-	connectionType: WalletConnectionType
-	provider: ExternalProvider | WalletConnectProvider,
-}> => {
+}): Promise<WalletConnection> => {
 	const walletConfig = walletsByType[walletType]
 
 	for (const connectionType of walletConfig.connectionTypes) {
@@ -237,9 +241,17 @@ window.addEventListener(
 
 export const connectWallet = async ({
 	walletType,
+	chainId,
 	autoReconnect = false
+}: {
+	walletType: WalletType,
+	chainId: number,
+	autoReconnect: boolean
 }) => {
-	const { connectionType, provider } = await getProvider({ walletType })
+	const { connectionType, provider } = await getWalletConnection({
+		chainId,
+		walletType
+	})
 
 	if(!provider)
 		throw new Error('No provider found')
@@ -303,14 +315,13 @@ export const connectWallet = async ({
 		}
 	}
 
-	const chainId = parseInt(await provider.request({ method: 'eth_chainId' }), 16)
 	const accounts = await provider.request({ method: 'eth_accounts' })
 
 	const signer = new Web3Provider(provider).getSigner()
 
 	return {
 		signer: Object.assign(signer, { address: accounts[0] }),
-		chainId,
+		chainId: Number(await provider.request({ method: 'eth_chainId' })),
 		accounts,
 		onAccountChanged: (callback?: (accounts: string[]) => void) => {
 			provider.on?.('accountsChanged', callback)
