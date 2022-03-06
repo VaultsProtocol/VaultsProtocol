@@ -59,6 +59,10 @@
 
 
 :root {
+	--header-height: 6rem;
+	--header-padding: 1.5rem;
+	--content-max-width: 80rem;
+
 	--accent-color: hsl(200deg, 80%, 60%);
 	--overlay-backdrop-filter: blur(2px);
 
@@ -486,4 +490,17 @@ details summary:hover, details[open] summary {
 }
 :disabled {
 	cursor: not-allowed !important;
+}
+
+
+/* Coinbase Wallet */
+:root .-walletlink-css-reset .-walletlink-snackbar {
+	top: var(--header-height);
+	/* overflow-y: auto;
+	max-height: 100vh;
+	display: grid;
+	gap: 0.5rem; */
+}
+.-walletlink-css-reset .-walletlink-snackbar .-walletlink-snackbar-instance {
+	margin: 1rem var(--header-padding)
 }

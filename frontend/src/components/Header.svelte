@@ -83,8 +83,6 @@
 
 <style>
 	header {
-		--header-padding: 1.5rem;
-
 		font-size: 1.125em;
 		padding: 0 var(--header-padding);
 

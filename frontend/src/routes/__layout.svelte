@@ -61,9 +61,6 @@
 
 <style>
 	.top {
-		--header-height: 6rem;
-		--content-max-width: 80rem;
-
 		display: grid;
 		min-height: 100vh;
 		grid-template:
