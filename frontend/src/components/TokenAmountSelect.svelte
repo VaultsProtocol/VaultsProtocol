@@ -17,15 +17,24 @@
 
 
 	const onInput = (value: number) => {
-		if(value != undefined && value !== '')
-			amount = parseUnits(String(value), token?.decimals || 18)
+		try {
+			if(value != undefined && value !== '')
+				amount = parseUnits(String(value), token?.decimals || 18)
+		}catch(e){
+			console.error(e)
+		}
 	}
 
 	const onBlur = () => {
-		if(amount.gt(max))
+		if(max !== undefined && amount.gt(max))
 			amount = max
-		else if(amount.lt(min))
+		else if(min !== undefined && amount.lt(min))
 			amount = min
+	}
+
+	const setMax = () => {
+		if(max !== undefined)
+			amount = max
 	}
 
 	
@@ -45,7 +54,9 @@
 			{max}
 		/>
 
-		<button type="button" class="max small" on:click={() => amount = max}>{$_('max')}</button>
+		{#if max !== undefined}
+			<button type="button" class="max small" on:click={setMax}>{$_('max')}</button>
+		{/if}
 	</div>
 
 	<TokenSelect {availableTokens} bind:token />

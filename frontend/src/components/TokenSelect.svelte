@@ -17,7 +17,7 @@
 
 <Select
 	bind:value={token}
-	values={availableTokens}
+	values={availableTokens ?? []}
 
 	let:value
 >
