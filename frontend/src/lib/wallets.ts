@@ -56,7 +56,6 @@ export const wallets: WalletConfig[] = [
 			WalletConnectionType.InjectedEip1193,
 			WalletConnectionType.InjectedEthereum,
 			WalletConnectionType.InjectedWeb3,
-			WalletConnectionType.WalletConnect,
 		],
 
 		injectedEip1193ProviderGlobal: 'tally',
