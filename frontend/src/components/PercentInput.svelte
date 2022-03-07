@@ -3,16 +3,18 @@
 	export let min = 0
 	export let max = 100
 	export let maxDecimals = 2
+	export let required = false
 </script>
 
 
 <span class="row">
 	<input
 		type="number"
+		{required}
+		bind:value
 		{min}
 		{max}
 		step={10 ** -maxDecimals}
-		bind:value
 		on:blur={() => value = Number(Math.max(Math.min(value, max), min).toFixed(maxDecimals))}
 	/>
 	<!-- on:blur={() => value = Math.floor(Math.max(Math.min(value, max), min) / step) * step} -->

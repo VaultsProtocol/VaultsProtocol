@@ -1,3 +1,8 @@
+<script context="module">
+	let id = 0
+</script>
+
+
 <script lang="ts">
 	// Constants/types
 	type Value = $$Generic<string>
@@ -8,13 +13,18 @@
 	export let values: Value[]
 	export let labels: Record<Value, string>
 	export let colors: Record<Value, string> = {}
+	export let required = false
+
+
+	// Internal state
+	const groupName = String(id++)
 </script>
 
 
 <div class="row tabs-row equal">
 	{#each values as optionValue (optionValue)}
 		<label class="select-option">
-			<input type="radio" bind:group={value} value={optionValue} />
+			<input type="radio" bind:group={value} value={optionValue} {required} name={groupName} />
 			<span class="button" style={colors[optionValue] ? `--active-background-color: ${colors[optionValue]}` : ''}>{labels[optionValue]}</span>
 		</label>
 	{/each}
@@ -48,7 +58,8 @@
 
 	span {
 		background-color: var(--background-color-2);
-		background-color: var(--background-color-white);
+		background-color: var(--background-color-0);
+		/* background-color: var(--background-color-white); */
 		transition: 0.3s;
 		cursor: pointer;
 	}

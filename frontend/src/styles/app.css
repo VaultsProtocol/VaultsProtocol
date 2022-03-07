@@ -238,6 +238,22 @@ input[type='number'], input[type='text'] {
 	width: 6rem;
 } */
 
+input:invalid {
+	border: red solid 2px;
+}
+
+:disabled,
+form:invalid input[type=submit],
+form:invalid button[type=submit],
+.placeholder {
+	filter: grayscale();
+	opacity: 0.8;
+	touch-action: none;
+}
+:disabled {
+	cursor: not-allowed !important;
+}
+
 ::-webkit-input-placeholder {
 	color: inherit;
 	font: inherit;
@@ -312,7 +328,7 @@ hr {
 	padding: calc(var(--card-scale-factor) * var(--card-padding));
 
 	/* background: linear-gradient(var(--background-color-2), var(--background-color-3)); */
-    box-shadow: var(--background-color-3) 0 0 1px 2px;
+	box-shadow: var(--background-color-3) 0 0 1px 2px;
 
 	display: flex;
 	flex-direction: column;
@@ -480,16 +496,6 @@ details summary {
 }
 details summary:hover, details[open] summary {
 	color: var(--color-text-light);
-}
-
-
-:disabled, .placeholder {
-	filter: grayscale();
-	opacity: 0.8;
-	touch-action: none;
-}
-:disabled {
-	cursor: not-allowed !important;
 }
 
 

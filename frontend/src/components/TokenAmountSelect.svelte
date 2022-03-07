@@ -15,6 +15,8 @@
 
 	export let stepDecimals = 3
 
+	export let required = false
+
 
 	const onInput = (value: number) => {
 		try {
@@ -46,12 +48,13 @@
 	<div class="stack">
 		<input
 			type="number"
-			step={10 ** -stepDecimals}
 			value={formatUnits(amount, token?.decimals || 18)}
-			on:input={e => onInput(e.target.value)}
-			on:blur={onBlur}
+			step={10 ** -stepDecimals}
 			{min}
 			{max}
+			{required}
+			on:input={e => onInput(e.target.value)}
+			on:blur={onBlur}
 		/>
 
 		{#if max !== undefined}

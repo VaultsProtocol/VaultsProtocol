@@ -46,10 +46,13 @@
 
 	let vaultConfig: VaultConfig = getDefaultVaultConfig()
 
+	let formElement: HTMLFormElement
+
 	$: isValid =
-		true
-		// !!vaultConfig.about.name &&
-		// !!vaultConfig.about.name && vaultConfig.about.name && vaultConfig.about.name
+		!!vaultConfig.about.name &&
+		!!vaultConfig.type &&
+		formElement.valid
+		// formElement && [...formElement.elements].every(fieldElement => !fieldElement.required || !fieldElement.isEmpty)
 	
 	let tx
 	let errorMessage
@@ -79,7 +82,21 @@
 
 			console.log("Deploying sample vault")
 
-			const tx = await VaultFactory.createVault(
+			console.log(
+				// getContractBytecode({ network, name: 'BaseVault' }),
+				// getContractBytecode({ network, name: 'YearnStrategy' }),
+				vaultConfig.tokens[0].address,
+				address,
+				new AbiCoder().encode(
+					["address", "string", "string"],
+					[vaultConfig.tokens[0].address, vaultConfig.about.name, vaultConfig.about.tickerSymbol ?? 'TEST'],
+				),
+				{
+					gasLimit: '3500000'
+				}
+			)
+
+			tx = await VaultFactory.createVault(
 				getContractBytecode({ network, name: 'BaseVault' }),
 				getContractBytecode({ network, name: 'YearnStrategy' }),
 				vaultConfig.tokens[0].address,
@@ -99,7 +116,7 @@
 	})()
 
 	$: if(tx)(async () => {
-			console.log('tx', tx)
+		console.log('tx', tx)
 
 		currentStep = Steps.TransactionPending
 
@@ -115,13 +132,17 @@
 
 		currentStep = Steps.TransactionSuccess
 
-			// const sampleVault = await VaultFactory.vaults("0")
+		// const sampleVault = await VaultFactory.vaults("0")
 
-			// console.log("sample vault is", sampleVault)
+		// console.log("sample vault is", sampleVault)
 	})()
 
 	$: if(errorMessage)
 		console.error(errorMessage)
+
+
+	// Formatting
+	import { formatAddress } from '$lib/formatAddress'
 
 
 	// Components
@@ -135,12 +156,12 @@
 	import MultipleAddressInput from '../components/MultipleAddressInput.svelte'
 	import PercentInput from '../components/PercentInput.svelte'
 	import TimeSelect from '../components/TimeSelect.svelte'
-
-
-	import { fade, fly, scale } from 'svelte/transition'
 	import Portal from '../components/Portal.svelte'
 	import Modal from '../components/Modal.svelte'
-import { formatAddress } from '$lib/formatAddress'
+
+
+	// Styles/animation
+	import { fade, fly, scale } from 'svelte/transition'
 </script>
 
 
@@ -156,300 +177,335 @@ import { formatAddress } from '$lib/formatAddress'
 
 		<div class="stack align-top">
 			{#if currentStep === Steps.Idle}
-		<!-- svelte-ignore a11y-label-has-associated-control -->
-		<form
-			class="column"
+				<!-- svelte-ignore a11y-label-has-associated-control -->
+				<form
+					bind:this={formElement}
+					class="column"
 					on:submit|preventDefault={() => currentStep++}
-			disabled={currentStep !== Steps.Idle}
+					disabled={currentStep !== Steps.Idle}
 					transition:fly={{ x: -100 }}
-		>
-			<section class="card vault-content column">
-				<div class="row">
-					<!-- <img src="/" alt=""> -->
-					<h2>{$_('Vault Information')}</h2>
-
-
-				</div>
-
-				<hr>
-
-				<label class="column">
-					<h3>{$_('Vault Name')}</h3>
-					<p>{$_('The project, cause, or investment you\'re fundraising for.')}</p>
-					<input
-						type="text"
-						bind:value={vaultConfig.about.name}
-						placeholder={$_('Your Vault')}
-						required
-					/>
-				</label>
-
-				<label class="column">
-					<h3>{$_('Description')}</h3>
-					<p>{$_('Tell your community what your goals are.')}</p>
-					<textarea
-						bind:value={vaultConfig.about.description}
-						placeholder={$_('Describe {name}...', { values: { name: vaultConfig.about.name || 'your Vault' }})}
-						rows={8}
-					/>
-				</label>
-
-				<label class="column">
-					<h3>{$_('Website')}</h3>
-					<input
-						type="text"
-						bind:value={vaultConfig.about.website}
-						placeholder={$_('all-your-vault.example.com')}
-					/>
-				</label>
-
-				<div class="grid">
-					<label class="column">
-						<h3>{$_('Twitter')}</h3>
-						<input
-							type="text"
-							bind:value={vaultConfig.about.twitter}
-							placeholder={$_('twitter.com/ETHDenver')}
-						/>
-					</label>
-
-					<label class="column">
-						<h3>{$_('Discord')}</h3>
-						<input
-							type="text"
-							bind:value={vaultConfig.about.discord}
-							placeholder={$_('discord.gg/xyz')}
-						/>
-					</label>
-				</div>
-			</section>
-
-			<section class="card column">
-				<h2>{$_('Vault Configuration')}</h2>
-
-				<hr>
-
-				<div class="column vault-row">
-					<label class="card row equal">
-						<h3>{$_('Network / Chain')}</h3>
-						<Select
-							bind:value={vaultConfig.chainId}
-							values={availableNetworks.map(({ chainId }) => String(chainId))}
-							labels={Object.fromEntries(networks.map(({ chainId, name }) => [chainId, name]))}
-							icons={networkIcons}
-						/>
-					</label>
-
-					<label class="card row equal">
-						<h3>{$_('Vault Asset')}</h3>
-
-						<TokenSelect availableTokens={vaultAssetsByNetwork[networksByChainID[vaultConfig.chainId]?.slug] ?? []} bind:token={vaultConfig.tokens[0]} />
-						<!-- {#each vaultConfig.config.tokens as token, i}}
-							<TokenAmountSelect
-								bind:token={vaultConfig.config.initialLiquidity.tokens[i]}
-								bind:amount={vaultConfig.config.initialLiquidity.amount}
-							/>
-						{/each} -->
-					</label>
-
-					<label class="card column">
-						<div class="row equal">
-							<h3>{$_('Yield Strategy')}</h3>
-							<Select
-								bind:value={vaultConfig.yieldStrategy}
-								values={Object.keys(YieldStrategy)}
-								labels={Object.fromEntries(Object.entries(yieldStrategyInfo).map(([key, {label}]) => [key, label]))}
-								icons={Object.fromEntries(Object.entries(yieldStrategyInfo).map(([key, {icon}]) => [key, icon]))}
-							/>
-						</div>
+				>
+					<section class="card vault-content column">
 						<div class="row">
-							<p class="row">{$_(yieldStrategyInfo[vaultConfig.yieldStrategy].description)}</p>
+							<!-- <img src="/" alt=""> -->
+							<h2>{$_('Vault Information')}</h2>
+
+
 						</div>
-					</label>
-					
 
-				</div>
-			</section>
+						<hr>
 
-			<section class="card column vault-behavior">
-				<h2>{$_('Vault Behavior')}</h2>
+						<label class="column">
+							<h3>{$_('Vault Name')}</h3>
+							<p>{$_('The project, cause, or investment you\'re fundraising for.')}</p>
+							<input
+								type="text"
+								required
+								bind:value={vaultConfig.about.name}
+								placeholder={$_('Your Vault')}
+							/>
+						</label>
 
-				<hr>
+						<label class="column">
+							<h3>{$_('Description')}</h3>
+							<p>{$_('Tell your community what your goals are.')}</p>
+							<textarea
+								bind:value={vaultConfig.about.description}
+								placeholder={$_('Describe {name}...', { values: { name: vaultConfig.about.name || 'your Vault' }})}
+								rows={8}
+							/>
+						</label>
 
-				<div class="column">
-					<Tabs
-						bind:value={vaultConfig.type}
-						values={Object.keys(VaultType)}
-						labels={Object.fromEntries(Object.entries(vaultTypeInfo).map(([key, {label}]) => [key, label]))}
-						colors={Object.fromEntries(Object.entries(vaultTypeInfo).map(([key, {color}]) => [key, color]))}
-					/>
+						<label class="column">
+							<h3>{$_('Website')}</h3>
+							<input
+								type="text"
+								bind:value={vaultConfig.about.website}
+								placeholder={$_('all-your-vault.example.com')}
+							/>
+						</label>
 
-					<div class="stack">
-						{#key vaultTypeInfo[vaultConfig.type]}
-							<p class="card" transition:scale={{ start: 0.9 }}>
-								{$_(vaultTypeInfo[vaultConfig.type]?.description ?? 'Choose a vault behavior.')}
-							</p>
-						{/key}
-					</div>
-				</div>
-
-				<HeightContainer class="stack align-top">
-					{#if vaultConfig.type === VaultType.Standard}
-						<div class="grid" in:fly={{ x: 20 }} out:fly={{ x: -20 }}>
-						</div>
-					{:else if vaultConfig.type === VaultType.Degen}
-						<div class="grid" in:fly={{ x: 20 }} out:fly={{ x: -20 }}>
-							<label class="card column">
-								<h4>{$_('Jackpot')}</h4>
-								<PercentInput bind:value={vaultConfig.config.jackpot} />
-								<p>{$_('This portion is paid out to the last contributor when the game ends.')}</p>
-							</label>
-
-							<label class="card column">
-								<h4>{$_('Dividend')}</h4>
-								<PercentInput bind:value={vaultConfig.config.dividend} />
-								<p>{$_('This amount is distributed to all past contributors every time a new contribution is made.')}</p>
-							</label>
-
-							<label class="card column">
-								<h4>{$_('Treasury')}</h4>
-								<PercentInput bind:value={vaultConfig.config.treasury} />
-								<p>{$_('After the jackpot winner and the dividends are paid out, the remaining funds go to the DAO treasury.')}</p>
-							</label>
-
-							<label class="card column">
-								<h4>{$_('Initial Minimum Amount')}</h4>
-								<TokenAmountSelect
-									availableTokens={vaultConfig.tokens}
-									bind:token={vaultConfig.config.initialLiquidity.token}
-									bind:amount={vaultConfig.config.initialLiquidity.amount}
+						<div class="grid">
+							<label class="column">
+								<h3>{$_('Twitter')}</h3>
+								<input
+									type="text"
+									bind:value={vaultConfig.about.twitter}
+									placeholder={$_('twitter.com/ETHDenver')}
 								/>
-								<p>{$_('The initial amount of tokens to supply.')}</p>
 							</label>
 
-							<label class="card column">
-								<h4>{$_('Deadline')}</h4>
-								<TimeSelect bind:value={vaultConfig.config.deadline} />
-								<p>{$_('The window of time starting from the time of the last contribution for another contribution to be made.')}</p>
+							<label class="column">
+								<h3>{$_('Discord')}</h3>
+								<input
+									type="text"
+									bind:value={vaultConfig.about.discord}
+									placeholder={$_('discord.gg/xyz')}
+								/>
 							</label>
 						</div>
+					</section>
 
-					{:else if vaultConfig.type === VaultType.DAO}
-						<div class="grid" in:fly={{ x: 20 }} out:fly={{ x: -20 }}>
-							<div class="card column">
-								<div class="column">
-									<h3>{$_('Governance Type')}</h3>
-									<Tabs
-										bind:value={vaultConfig.config.governanceType}
-										values={Object.values(GovernanceType)}
-										labels={Object.fromEntries(Object.entries(governanceTypeInfo).map(([key, {label}]) => [key, label]))}
+					<section class="card column">
+						<h2>{$_('Vault Configuration')}</h2>
+
+						<hr>
+
+						<div class="column vault-row">
+							<label class="card row equal">
+								<h3>{$_('Network / Chain')}</h3>
+								<Select
+									bind:value={vaultConfig.chainId}
+									values={availableNetworks.map(({ chainId }) => String(chainId))}
+									labels={Object.fromEntries(networks.map(({ chainId, name }) => [chainId, name]))}
+									icons={networkIcons}
+								/>
+							</label>
+
+							<label class="card row equal">
+								<h3>{$_('Vault Asset')}</h3>
+
+								<TokenSelect availableTokens={vaultAssetsByNetwork[networksByChainID[vaultConfig.chainId]?.slug] ?? []} bind:token={vaultConfig.tokens[0]} />
+								<!-- {#each vaultConfig.config.tokens as token, i}}
+									<TokenAmountSelect
+										bind:token={vaultConfig.config.initialLiquidity.tokens[i]}
+										bind:amount={vaultConfig.config.initialLiquidity.amount}
 									/>
-									<p>{$_(governanceTypeInfo[vaultConfig.config.governanceType]?.description)}</p>
-								</div>
-
-								<div class="stack">
-									{#if vaultConfig.config.governanceType === GovernanceType.MultiSignature}
-										<div class="grid">
-											<label class="card column" transition:scale>
-												<h3>{$_('Minimum Signatures')}</h3>
-												<input type="number" bind:value={vaultConfig.config.minimumSignatures} />
-												<p>{$_('The number of signers needed to approve changes to the vault.')}</p>
-											</label>
-
-											<label class="card column" transition:scale>
-												<h3>{$_('Signers')}</h3>
-												<p>{$_('The addresses of the signers participating in the multi-signature vault.')}</p>
-												<MultipleAddressInput bind:values={vaultConfig.config.signers} />
-											</label>
-										</div>
-									{:else if vaultConfig.config.governanceType === GovernanceType.TokenVoting}
-										<label class="card column" transition:scale>
-											<h3>{$_('Quorum')}</h3>
-											<PercentInput bind:value={vaultConfig.config.quorum} />
-											<p>{$_('The minimum amount of voting power participating in the vote for a proposal to be decided.')}</p>
-										</label>
-									{/if}
-								</div>
-							</div>
-
-							<!-- Quadratic
-							Proportional -->
-						</div>
-
-					{:else if vaultConfig.type === VaultType.Charity}
-						<div class="grid" in:fly={{ x: 20 }} out:fly={{ x: -20 }}>
-							<label class="card column">
-								<h3>{$_('Recipient')}</h3>
-								<AddressInput bind:address={vaultConfig.config.recipientAddress} />
-								<p>{$_('The recipient to whom a specified portion of the yield will be sent.')}</p>
+								{/each} -->
 							</label>
 
 							<label class="card column">
-								<h3>{$_('Yield to Recipient')}</h3>
-								<PercentInput bind:value={vaultConfig.config.recipientYieldPercent} />
-								<p>{$_('The portion of the yield to set aside for the recipient. Remaining yield is distributed proportionally to holders.')}</p>
-							</label>
-
-							<label class="card column">
-								<h3>{$_('Payout Type')}</h3>
-								<div>
+								<div class="row equal">
+									<h3>{$_('Yield Strategy')}</h3>
 									<Select
-										bind:value={vaultConfig.config.payoutType}
-										values={Object.keys(PayoutType)}
-										labels={Object.fromEntries(Object.entries(payoutTypeInfo).map(([key, {label}]) => [key, label]))}
+										bind:value={vaultConfig.yieldStrategy}
+										values={Object.keys(YieldStrategy)}
+										labels={Object.fromEntries(Object.entries(yieldStrategyInfo).map(([key, {label}]) => [key, label]))}
+										icons={Object.fromEntries(Object.entries(yieldStrategyInfo).map(([key, {icon}]) => [key, icon]))}
 									/>
 								</div>
-								{#if vaultConfig.config.payoutType}
-									<p>{$_(payoutTypeInfo[vaultConfig.config.payoutType].description)}</p>
-								{/if}
+								<div class="row">
+									<p class="row">{$_(yieldStrategyInfo[vaultConfig.yieldStrategy].description)}</p>
+								</div>
 							</label>
+							
+
 						</div>
-						
-					<!-- {:else if vaultConfig.type === VaultType.Superfluid} -->
-					{/if}
-				</HeightContainer>
-			</section>
+					</section>
 
-			<!-- <section class="card column">
-				<h2>{$_('Treasury')}</h2>
+					<section class="card column vault-behavior">
+						<h2>{$_('Vault Behavior')}</h2>
 
-				<hr>
+						<hr>
 
-				<label class="column">
-					<h3>{$_('Yield Strategy')}</h3>
-					<div>
-						<Select
-							bind:value={vaultConfig.yieldStrategy}
-							values={Object.keys(YieldStrategy)}
-							labels={Object.fromEntries(Object.entries(yieldStrategyInfo).map(([key, {label}]) => [key, label]))}
-						/>
-					</div>
-					<p>{$_(yieldStrategyInfo[vaultConfig.yieldStrategy].description)}</p>
-				</label>
-			</section> -->
+						<div class="column">
+							<Tabs
+								required
+								bind:value={vaultConfig.type}
+								values={Object.keys(VaultType)}
+								labels={Object.fromEntries(Object.entries(vaultTypeInfo).map(([key, {label}]) => [key, label]))}
+								colors={Object.fromEntries(Object.entries(vaultTypeInfo).map(([key, {color}]) => [key, color]))}
+							/>
 
-			<!-- <section class="card column">
-				<h2>{$_('Governance')}</h2>
+							<div class="stack">
+								{#key vaultTypeInfo[vaultConfig.type]}
+									<p class="card" transition:scale={{ start: 0.9 }}>
+										{$_(vaultTypeInfo[vaultConfig.type]?.description ?? 'Choose a vault behavior.')}
+									</p>
+								{/key}
+							</div>
+						</div>
 
-				<hr>
+						<HeightContainer class="stack align-top">
+							{#if vaultConfig.type === VaultType.Standard}
+								<div class="grid" in:fly={{ x: 20 }} out:fly={{ x: -20 }}>
+								</div>
+							{:else if vaultConfig.type === VaultType.Degen}
+								<div class="grid" in:fly={{ x: 20 }} out:fly={{ x: -20 }}>
+									<label class="card column">
+										<h4>{$_('Jackpot')}</h4>
+										<PercentInput
+											required
+											bind:value={vaultConfig.config.jackpot}
+										/>
+										<p>{$_('This portion is paid out to the last contributor when the game ends.')}</p>
+									</label>
 
-				<label class="column">
-					<h3>{$_('Governance Strategy')}</h3>
-					<div>
-						<Select
-							bind:value={vaultConfig.governanceStrategy}
-							values={Object.keys(GovernanceStrategy)}
-							labels={Object.fromEntries(Object.entries(governanceStrategyInfo).map(([key, {label}]) => [key, label]))}
-						/>
-					</div>
-					<p>{$_(governanceStrategyInfo[vaultConfig.governanceStrategy].description)}</p>
-				</label>
-			</section> -->
+									<label class="card column">
+										<h4>{$_('Dividend')}</h4>
+										<PercentInput
+											required
+											bind:value={vaultConfig.config.dividend}
+										/>
+										<p>{$_('This amount is distributed to all past contributors every time a new contribution is made.')}</p>
+									</label>
 
-			<div class="row centered">
-				<button type="submit" class="extra-large round primary" disabled={!isValid || !$account}>{$_('Create Vault')}</button>
-			</div>
-		</form>
+									<label class="card column">
+										<h4>{$_('Treasury')}</h4>
+										<PercentInput
+											required
+											bind:value={vaultConfig.config.treasury}
+										/>
+										<p>{$_('After the jackpot winner and the dividends are paid out, the remaining funds go to the DAO treasury.')}</p>
+									</label>
+
+									<label class="card column">
+										<h4>{$_('Initial Minimum Amount')}</h4>
+										<TokenAmountSelect
+											required
+											availableTokens={vaultConfig.tokens}
+											bind:token={vaultConfig.config.initialLiquidity.token}
+											bind:amount={vaultConfig.config.initialLiquidity.amount}
+										/>
+										<p>{$_('The initial amount of tokens to supply.')}</p>
+									</label>
+
+									<label class="card column">
+										<h4>{$_('Deadline')}</h4>
+										<TimeSelect
+											required
+											bind:value={vaultConfig.config.deadline}
+										/>
+										<p>{$_('The window of time starting from the time of the last contribution for another contribution to be made.')}</p>
+									</label>
+								</div>
+
+							{:else if vaultConfig.type === VaultType.DAO}
+								<div class="grid" in:fly={{ x: 20 }} out:fly={{ x: -20 }}>
+									<div class="card column">
+										<div class="column">
+											<h3>{$_('Governance Type')}</h3>
+											<Tabs
+												required
+												bind:value={vaultConfig.config.governanceType}
+												values={Object.values(GovernanceType)}
+												labels={Object.fromEntries(Object.entries(governanceTypeInfo).map(([key, {label}]) => [key, label]))}
+											/>
+											<p>{$_(governanceTypeInfo[vaultConfig.config.governanceType]?.description)}</p>
+										</div>
+
+										<div class="stack">
+											{#if vaultConfig.config.governanceType === GovernanceType.MultiSignature}
+												<div class="grid">
+													<label class="card column" transition:scale>
+														<h3>{$_('Minimum Signatures')}</h3>
+														<input
+															type="number"
+															required
+															min={1}
+															bind:value={vaultConfig.config.minimumSignatures}
+														/>
+														<p>{$_('The number of signers needed to approve changes to the vault.')}</p>
+													</label>
+
+													<label class="card column" transition:scale>
+														<h3>{$_('Signers')}</h3>
+														<p>{$_('The addresses of the signers participating in the multi-signature vault.')}</p>
+														<MultipleAddressInput
+															bind:values={vaultConfig.config.signers}
+														/>
+													</label>
+												</div>
+											{:else if vaultConfig.config.governanceType === GovernanceType.TokenVoting}
+												<label class="card column" transition:scale>
+													<h3>{$_('Quorum')}</h3>
+													<PercentInput
+														required
+														bind:value={vaultConfig.config.quorum}
+													/>
+													<p>{$_('The minimum amount of voting power participating in the vote for a proposal to be decided.')}</p>
+												</label>
+											{/if}
+										</div>
+									</div>
+
+									<!-- Quadratic
+									Proportional -->
+								</div>
+
+							{:else if vaultConfig.type === VaultType.Charity}
+								<div class="grid" in:fly={{ x: 20 }} out:fly={{ x: -20 }}>
+									<label class="card column">
+										<h3>{$_('Recipient')}</h3>
+										<AddressInput
+											required
+											bind:address={vaultConfig.config.recipientAddress}
+										/>
+										<p>{$_('The recipient to whom a specified portion of the yield will be sent.')}</p>
+									</label>
+
+									<label class="card column">
+										<h3>{$_('Yield to Recipient')}</h3>
+										<PercentInput
+											required
+											bind:value={vaultConfig.config.recipientYieldPercent}
+										/>
+										<p>{$_('The portion of the yield to set aside for the recipient. Remaining yield is distributed proportionally to holders.')}</p>
+									</label>
+
+									<label class="card column">
+										<h3>{$_('Payout Type')}</h3>
+										<div>
+											<Select
+												bind:value={vaultConfig.config.payoutType}
+												values={Object.keys(PayoutType)}
+												labels={Object.fromEntries(Object.entries(payoutTypeInfo).map(([key, {label}]) => [key, label]))}
+											/>
+										</div>
+										{#if vaultConfig.config.payoutType}
+											<p>{$_(payoutTypeInfo[vaultConfig.config.payoutType].description)}</p>
+										{/if}
+									</label>
+								</div>
+								
+							<!-- {:else if vaultConfig.type === VaultType.Superfluid} -->
+							{/if}
+						</HeightContainer>
+					</section>
+
+					<!-- <section class="card column">
+						<h2>{$_('Treasury')}</h2>
+
+						<hr>
+
+						<label class="column">
+							<h3>{$_('Yield Strategy')}</h3>
+							<div>
+								<Select
+									bind:value={vaultConfig.yieldStrategy}
+									values={Object.keys(YieldStrategy)}
+									labels={Object.fromEntries(Object.entries(yieldStrategyInfo).map(([key, {label}]) => [key, label]))}
+								/>
+							</div>
+							<p>{$_(yieldStrategyInfo[vaultConfig.yieldStrategy].description)}</p>
+						</label>
+					</section> -->
+
+					<!-- <section class="card column">
+						<h2>{$_('Governance')}</h2>
+
+						<hr>
+
+						<label class="column">
+							<h3>{$_('Governance Strategy')}</h3>
+							<div>
+								<Select
+									bind:value={vaultConfig.governanceStrategy}
+									values={Object.keys(GovernanceStrategy)}
+									labels={Object.fromEntries(Object.entries(governanceStrategyInfo).map(([key, {label}]) => [key, label]))}
+								/>
+							</div>
+							<p>{$_(governanceStrategyInfo[vaultConfig.governanceStrategy].description)}</p>
+						</label>
+					</section> -->
+
+					<div class="row centered">
+						<!-- <button type="submit" class="extra-large round primary" disabled={!isValid || !$account}>{$_('Create Vault')}</button>					</div> -->
+						<button
+							type="submit"
+							class="extra-large round primary"
+						>{$_('Create Vault')}</button>
+				</form>
 			{:else if currentStep === Steps.Confirming}
 				<form
 					class="card column centered"
@@ -466,8 +522,8 @@ import { formatAddress } from '$lib/formatAddress'
 						}
 					})}</p>
 
-					<div class="column centered">
-						<button type="submit" class="extra-large round primary" disabled={!isValid || !$account}>{$_('Sign Transaction')}</button>
+					<div class="row centered">
+						<button type="submit" class="large round primary" disabled={!isValid || !$account}>{$_('Sign Transaction')}</button>
 						<button type="button" class="large round" on:click={() => currentStep--}>{$_('Go Back')}</button>
 					</div>
 				</form>
@@ -607,7 +663,6 @@ import { formatAddress } from '$lib/formatAddress'
 	.vault-behavior :global(input),
 	.vault-behavior :global(summary) {
 		background: var(--background-color-f3);
-		padding: 5px inherit;
 	}
 
 

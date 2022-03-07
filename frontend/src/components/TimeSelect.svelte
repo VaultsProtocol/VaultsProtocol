@@ -1,6 +1,4 @@
 <script lang="ts">
-	export let value
-
 	enum TimeUnit {
 		Second = 'seconds',
 		Minute = 'minutes',
@@ -15,6 +13,12 @@
 		[TimeUnit.Second]: 1,
 	}
 
+
+	export let value: number
+
+	export let required = false
+
+
 	let timeUnit = Object.entries(timeUnitAmounts).find(([timeUnit, timeUnitAmount]) => value % timeUnitAmount === 0)?.[0] || TimeUnit.Second
 	let timeValue = value / timeUnitAmounts[timeUnit]
 
@@ -28,6 +32,7 @@
 <div class="row">
 	<input
 		type="number"
+		{required}
 		min="1"
 		bind:value={timeValue}
 	/>
