@@ -7,6 +7,7 @@ export const account = writable<{
 	walletConnection: WalletConnection
 	signer: Signer
 	address: string
+	chainId: number
 	ensName?: string
 	ensAvatarUri?: string
 } | undefined>(undefined)

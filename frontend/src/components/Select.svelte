@@ -1,3 +1,8 @@
+<script context="module">
+	let x = 0
+</script>
+
+
 <script lang="ts">
 	// Constants/types
 	type Value = $$Generic<string | any>
@@ -8,18 +13,20 @@
 	// External state
 	export let value: Value
 	export let values: Value[]
+	export let getLabel: (Value) => string
 	export let labels: Record<Value, string>
+	export let getIcon: (Value) => string
 	export let icons: Record<Value, string>
 
 	export let placeholderLabel: string = 'Choose...'
 
 	export let placement: Placement
 
-	export let id = `select-${Math.random() * 1e18}`
-
 
 	// Internal state
 	export let isOpen: boolean
+
+	const id = `select-${x++}`
 
 
 	// Methods/hooks/lifecycle
@@ -47,12 +54,13 @@
 		aria-expanded={isOpen}
 		tabindex="-1"
 	>
-		<slot {value} label={labels?.[value] ?? value}>
-			{#if icons?.[value]}
-				<img src={icons[value]} />
+		<slot {value} label={getLabel?.(value) ?? labels?.[value] ?? value}>
+			{#if getIcon?.(value) ?? icons?.[value]}
+				<img src={getIcon?.(value) ?? icons?.[value]} />
 			{/if}
+
 			{value
-				? labels?.[value] ?? value
+				? getLabel?.(value) ?? labels?.[value] ?? value
 				: placeholderLabel}
 		</slot>
 	</button>
@@ -69,11 +77,11 @@
 					isOpen = false
 				}}
 			>
-				<slot value={optionValue} label={labels?.[optionValue]}>
-					{#if icons?.[optionValue]}
-						<img src={icons[optionValue]} />
+				<slot value={optionValue} label={getLabel?.(optionValue) ?? labels?.[optionValue] ?? optionValue}>
+					{#if getIcon?.(optionValue) ?? icons?.[optionValue]}
+						<img src={getIcon?.(optionValue) ?? icons?.[optionValue]} />
 					{/if}
-					{labels?.[optionValue] || optionValue}
+					{getLabel?.(optionValue) ?? labels?.[optionValue] ?? optionValue}
 				</slot>
 			</button>
 		{/each}

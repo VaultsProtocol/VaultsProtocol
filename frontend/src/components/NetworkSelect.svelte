@@ -1,30 +1,79 @@
 <script lang="ts">
-	import type { Network } from '@ethersproject/providers'
-	import { availableNetworks as _availableNetworks, networkIcons, networks, networksBySlug, rpcProviders } from '$lib/networks'
+	// Constants/types
+	import { type Network, availableNetworks as _availableNetworks, networkIcons, networks, networksBySlug, rpcProviders, networksByChainID } from '$lib/networks'
+	import { account } from '../stores/account'
 
 
+	// External state
 	export let availableNetworks: Network[] = _availableNetworks
 
-	export let network: Network = networksBySlug['ethereum-rinkeby']
+	export let rpcProvider
+	export let network: Network // networksBySlug['ethereum-rinkeby']
+
+
+	// Formatting
+	import { hexValue } from 'ethers/lib/utils'
+
+
+	// Methods/hooks/lifecycle
+	// $: network = networksByChainID[$account?.chainId]
+	network = networksByChainID[$account?.chainId]
+
+	$: if(network && $account)(async () => {
+		const provider = $account.walletConnection.provider
+
+		console.log({network, provider, account: $account})
+
+		try {
+			await provider.request({
+				method: 'wallet_switchEthereumChain',
+				params: [{
+					chainId: hexValue(network.chainId)
+				}],
+			})
+		} catch (e) {
+			// This error code indicates that the chain has not been added to MetaMask.
+			if (e.code === 4902) {
+				try {
+					await provider.request({
+						method: 'wallet_addEthereumChain',
+						params: [
+							{
+								chainId: hexValue(network.chainId),
+								chainName: network.name,
+								rpcUrls: network.rpc
+							},
+						],
+					})
+				} catch (e) {
+					console.error(e)
+				}
+			}else{
+				console.error(e)
+			}
+		}
+	})()
 	
-	
+
+	// Components
 	import Select from '../components/Select.svelte'
 
 
-
+	// Styles/animation
 	import { scale } from 'svelte/transition'
 </script>
 
 
 <Select
-	bind:value={network}
-	values={rpcProviders.map(rpcProvider => rpcProvider.name)}
-	icons={Object.fromEntries(rpcProviders.map(({ name, icon }) => [name, icon]))}
+	bind:value={rpcProvider}
+	values={rpcProviders}
+	getLabel={rpcProvider => rpcProvider.name}
+	getIcon={rpcProvider => rpcProvider.icon}
 />
 
 <Select
 	bind:value={network}
-	values={availableNetworks.map(({ chainId }) => String(chainId))}
-	labels={Object.fromEntries(networks.map(({ chainId, name }) => [chainId, name]))}
-	icons={networkIcons}
+	values={availableNetworks}
+	getLabel={network => network.name}
+	getIcon={network => networkIcons[network.chainId]}
 />
