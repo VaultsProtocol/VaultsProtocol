@@ -10,6 +10,12 @@ const config = {
 
 	kit: {
 		adapter: adapter()
+	},
+
+	vite: {
+		build: {
+			target: 'esnext'
+		}
 	}
 };
 
