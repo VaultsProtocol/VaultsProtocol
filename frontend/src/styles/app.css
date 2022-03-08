@@ -118,7 +118,7 @@ a:hover, a:focus {
 	color: var(--color-text-light);
 }
 
-button, .button, [role='button'] {
+:is(button, .button, [role='button']) {
 	transition: 0.2s;
 	will-change: transform;
 
@@ -155,42 +155,42 @@ textarea {
 	padding: 1em;
 }
 
-button:hover:not(:disabled), .button:hover:not(:disabled), [role='button']:hover:not(:disabled),
-button:focus, .button:focus, [role='button']:focus,
-button:focus-within, .button:focus-within, [role='button']:focus-within
+:is(button, .button, [role='button']):hover:not(:disabled),
+:is(button, .button, [role='button']):focus,
+:is(button, .button, [role='button']):focus-within
 /* ,
-label:focus-within button, label:focus-within  .button, label:focus-within [role='button'] */
+label:focus-within :is(button, .button, [role='button']) */
 {
 	cursor: pointer;
 	filter: brightness(1.111);
 	transform: scale(1.02) translateZ(1px);
 }
 
-button:active, .button:active, [role='button']:active {
+:is(button, .button, [role='button']):active {
 	filter: brightness(0.9);
 	transform: scale(0.98);
 	transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-button.primary {
+:is(button, .button, [role='button']).primary {
 	--button-color: var(--background-color-degen);
 	color: white;
 }
-button.round {
+:is(button, .button, [role='button']).round {
 	border-radius: 100vmax;
 }
-button.extra-large {
+:is(button, .button, [role='button']).extra-large {
 	font-size: 1.3em;
 }
-button.large {
+:is(button, .button, [role='button']).large {
 	font-size: 1.05em;
 }
-button.small {
+:is(button, .button, [role='button']).small {
 	font-size: 0.8em;
 }
 
 
-button.dropdown:after {
+:is(button, .button, [role='button']).dropdown:after {
 	content: '▾';
 	color: var(--text-color);
 	transform: scaleX(1.75);
@@ -198,31 +198,31 @@ button.dropdown:after {
 	text-align: center;
 	transition: 0.25s;
 }
-button.dropdown.active:after {
+:is(button, .button, [role='button']).dropdown.active:after {
 	transform: scaleX(1.75) rotateX(0.5turn);
 }
 
-button.transparent {
+:is(button, .button, [role='button']).transparent {
 	/* --button-color: transparent; */
 	--button-active-background-color: var(--background-color-3);
 }
-button.transparent:hover {
+:is(button, .button, [role='button']).transparent:hover {
 	--button-color: var(--background-color-3er);
 }
-button.transparent:active {
+:is(button, .button, [role='button']).transparent:active {
 	--button-color: var(--background-color-2);
 }
 
-button.destructive {
+:is(button, .button, [role='button']).destructive {
 	color: var(--color-red);
 }
 
-button.active, .button.active {
+:is(button, .button, [role='button']).active {
 	background-color: var(--button-active-background-color);
 	transition: 0.2s, background-color 0.1s;
 }
 
-button > img {
+:is(button, .button) > img {
 	margin: -0.25em;
 	width: 1.5em;
 	height: 1.5em;
@@ -245,6 +245,7 @@ input:invalid {
 :disabled,
 form:invalid input[type=submit],
 form:invalid button[type=submit],
+form:invalid button[type=submit]:hover,
 .placeholder {
 	filter: grayscale();
 	opacity: 0.8;
