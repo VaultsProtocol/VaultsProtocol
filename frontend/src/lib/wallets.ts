@@ -68,9 +68,9 @@ export const wallets: WalletConfig[] = [
 		icon: (await import('../assets/wallets/coinbase-wallet.svg')).default,
 
 		connectionTypes: [
-			WalletConnectionType.WalletLink,
 			WalletConnectionType.InjectedEthereum,
 			WalletConnectionType.InjectedWeb3,
+			WalletConnectionType.WalletLink,
 			WalletConnectionType.WalletConnect,
 		],
 
@@ -212,6 +212,11 @@ const getWalletConnection = async ({
 					// https://docs.metamask.io/guide/provider-migration.html#migrating-to-the-new-provider-api
 					provider.autoRefreshOnNetworkChange = false
 
+					// Coinbase Wallet browser extension disguised as MetaMask
+					if(provider.selectedProvider?.isCoinbaseWallet)
+						break
+						// walletType = WalletType.CoinbaseWallet
+
 					return {
 						walletType,
 						connectionType: WalletConnectionType.InjectedEthereum,
@@ -251,7 +256,10 @@ const getWalletConnection = async ({
 
 				const provider: CoinbaseWalletProvider = new CoinbaseWalletSDK({
 					appName: 'DAO Creator',
-					appLogoUrl: ''
+					appLogoUrl: '',
+					darkMode: true,
+					overrideIsMetaMask: false,
+					overrideIsCoinbaseWallet: true,
 				}).makeWeb3Provider(
 					ETHEREUM_NODE_URI,
 					chainId

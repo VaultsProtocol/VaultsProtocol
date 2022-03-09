@@ -501,13 +501,32 @@ details summary:hover, details[open] summary {
 
 
 /* Coinbase Wallet */
-:root .-walletlink-css-reset .-walletlink-snackbar {
+:root .-cbwsdk-css-reset .-cbwsdk-snackbar {
 	top: var(--header-height);
-	/* overflow-y: auto;
-	max-height: 100vh;
+	overflow-y: auto;
+	max-height: calc(100vh - var(--header-height));
 	display: grid;
-	gap: 0.5rem; */
+	gap: 0.5rem;
 }
-.-walletlink-css-reset .-walletlink-snackbar .-walletlink-snackbar-instance {
-	margin: 1rem var(--header-padding)
+:root .-cbwsdk-css-reset .-cbwsdk-snackbar:not(:empty) {
+	padding: 1rem var(--header-padding);
+}
+
+.-cbwsdk-css-reset .-cbwsdk-snackbar .-cbwsdk-snackbar-instance {
+	margin: 0;
+	/* display: grid;
+	gap: 0.25rem; */
+}
+
+
+.-cbwsdk-css-reset .-cbwsdk-snackbar-instance .-cbwsdk-snackbar-instance-menu {
+	transition: 0.2s;
+}
+.-cbwsdk-css-reset .-cbwsdk-snackbar-instance.-cbwsdk-snackbar-instance-expanded .-cbwsdk-snackbar-instance-menu {
+	transform: none;
+	max-height: 10rem;
+	margin-top: 0.25em;
+}
+.-cbwsdk-css-reset .-cbwsdk-snackbar-instance:not(.-cbwsdk-snackbar-instance-expanded) .-cbwsdk-snackbar-instance-menu {
+	max-height: 0;
 }
