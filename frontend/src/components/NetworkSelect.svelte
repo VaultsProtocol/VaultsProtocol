@@ -41,7 +41,9 @@
 							{
 								chainId: hexValue(network.chainId),
 								chainName: network.name,
-								rpcUrls: network.rpc
+								rpcUrls: network.rpc,
+								nativeCurrency: network.nativeCurrency,
+								blockExplorerUrls: network.explorers.map(explorer => explorer.url)
 							},
 						],
 					})
