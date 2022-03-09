@@ -523,7 +523,13 @@
 					})}</p>
 
 					<div class="row centered">
-						<button type="submit" class="large round primary" disabled={!isValid || !$account}>{$_('Sign Transaction')}</button>
+						<div class="stack">
+							{#if !$account}
+								<button class="large round primary" disabled>{$_('Connect Wallet')}</button>
+							{:else}
+								<button type="submit" class="large round primary">{$_('Sign Transaction')}</button>
+							{/if}
+						</div>
 						<button type="button" class="large round" on:click={() => currentStep--}>{$_('Go Back')}</button>
 					</div>
 				</form>
