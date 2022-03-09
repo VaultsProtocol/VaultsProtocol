@@ -196,6 +196,8 @@ const getWalletConnection = async ({
 						connect: async () => await connectEip1193(provider),
 					}
 				}
+
+				break
 			}
 
 			case WalletConnectionType.InjectedEthereum: {
@@ -218,6 +220,8 @@ const getWalletConnection = async ({
 						connect: async () => await connectEip1193(provider),
 					}
 				}
+
+				break
 			}
 
 			case WalletConnectionType.InjectedWeb3: {
@@ -237,6 +241,8 @@ const getWalletConnection = async ({
 						connect: async () => await connectEip1193(provider),
 					}
 				}
+
+				break
 			}
 
 			case WalletConnectionType.WalletLink: {

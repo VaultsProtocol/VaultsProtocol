@@ -61,7 +61,7 @@
 	}
 
 	const onDisconnectWallet = async () => {
-		await $account.walletConnection.disconnect?.()
+		await $account?.walletConnection.disconnect?.()
 
 		walletConnectionAndDetails = undefined
 	}
