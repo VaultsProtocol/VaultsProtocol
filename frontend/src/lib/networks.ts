@@ -710,7 +710,7 @@ const networkSlugToIcon: Record<string, string> = {
 	'reef': reefIcon,
 	'skale-testnet': skaleIcon,
 }
-export const networkIcons: Record<string, string> = Object.fromEntries(availableNetworks.map(({ slug, chainId }) => [chainId, networkSlugToIcon[slug] ?? networkSlugToIcon[mainnetForTestnet[slug]?.slug]]))
+export const networkIcons: Record<string, string> = Object.fromEntries(networks.map(({ slug, chainId }) => [chainId, networkSlugToIcon[slug] ?? networkSlugToIcon[mainnetForTestnet[slug]?.slug]]))
 
 export const vaultAssetsByNetwork: Record<string, ERC20Token[]> = {
 	"ethereum": [],

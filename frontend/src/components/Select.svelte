@@ -22,6 +22,8 @@
 
 	export let placement: Placement
 
+	export let autoFallback = false
+
 
 	// Internal state
 	export let isOpen: boolean
@@ -30,7 +32,7 @@
 
 
 	// Methods/hooks/lifecycle
-	$: if(values && !values?.includes(value))
+	$: if(autoFallback && values && !values?.includes(value))
 		value = values[0]
 		// value = undefined
 
@@ -54,8 +56,8 @@
 		aria-expanded={isOpen}
 		tabindex="-1"
 	>
-		<slot {value} label={getLabel?.(value) ?? labels?.[value] ?? value}>
-			{#if getIcon?.(value) ?? icons?.[value]}
+		<slot {value} label={(value && getLabel?.(value)) ?? labels?.[value] ?? value}>
+			{#if (value && getIcon?.(value)) ?? icons?.[value]}
 				<img src={getIcon?.(value) ?? icons?.[value]} />
 			{/if}
 

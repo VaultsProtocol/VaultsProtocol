@@ -16,10 +16,10 @@
 
 
 	// Methods/hooks/lifecycle
-	// $: network = networksByChainID[$account?.chainId]
-	network = networksByChainID[$account?.chainId]
+	$: network = networksByChainID[$account?.chainId]
+	// network = networksByChainID[$account?.chainId]
 
-	$: if(network && $account)(async () => {
+	$: if(network && $account && $account.chainId !== network.chainId)(async () => {
 		const provider = $account.walletConnection.provider
 
 		console.log({network, provider, account: $account})
