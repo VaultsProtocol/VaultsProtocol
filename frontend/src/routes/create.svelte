@@ -51,7 +51,7 @@
 	$: isValid =
 		!!vaultConfig.about.name &&
 		!!vaultConfig.type &&
-		formElement.valid
+		formElement?.valid
 		// formElement && [...formElement.elements].every(fieldElement => !fieldElement.required || !fieldElement.isEmpty)
 	
 	let tx
