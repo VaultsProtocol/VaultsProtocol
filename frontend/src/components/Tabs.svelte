@@ -1,5 +1,5 @@
 <script context="module">
-	let id = 0
+	let x = 0
 </script>
 
 
@@ -17,7 +17,7 @@
 
 
 	// Internal state
-	const groupName = String(id++)
+	const groupName = `tabs-${x++}`
 </script>
 
 
@@ -25,7 +25,7 @@
 	{#each values as optionValue (optionValue)}
 		<label class="select-option">
 			<input type="radio" bind:group={value} value={optionValue} {required} name={groupName} />
-			<span class="button" style={colors[optionValue] ? `--active-background-color: ${colors[optionValue]}` : ''}>{labels[optionValue]}</span>
+			<span class="button round" style={colors[optionValue] ? `--active-background-color: ${colors[optionValue]}` : ''}>{labels[optionValue]}</span>
 		</label>
 	{/each}
 </div>
@@ -46,7 +46,7 @@
 		opacity: 0;
 	}
 
-	.tabs-row .button{
+	.button {
 		border: 2px solid #343434;
 		padding: 5px 10px;
 		min-height: 40px;
