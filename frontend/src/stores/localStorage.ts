@@ -7,6 +7,8 @@ export const localStorageWritable = <T>(localStorageKey: string, value: T): Writ
 	const store = writable(json ? JSON.parse(json) : value)
 
 	const set = (value) => {
+		if(!globalThis.localStorage) return
+
 		if(value === undefined)
 			globalThis.localStorage.removeItem(localStorageKey)
 		else
