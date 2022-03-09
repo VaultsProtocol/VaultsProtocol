@@ -3,7 +3,8 @@
 	"version": "0.0.1",
 	"scripts": {
 		"dev": "svelte-kit dev",
-		"build": "svelte-kit build",
+		"build": "npm run build:@coinbase/wallet-sdk && svelte-kit build",
+		"build:@coinbase/wallet-sdk": "npx esbuild ./node_modules/@coinbase/wallet-sdk --bundle --format=esm --sourcemap --main-fields=browser,module,main --inject:./src/modules/node-globals.js --define:process.env.NODE_ENV='\"production\"' --splitting --outdir=./src/modules/@coinbase/",
 		"package": "svelte-kit package",
 		"preview": "svelte-kit preview",
 		"check": "svelte-check --tsconfig ./tsconfig.json",
@@ -31,6 +32,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@coinbase/wallet-sdk": "^3.0.3",
 		"@ethersproject/address": "^5.5.0",
 		"@ethersproject/providers": "^5.5.3",
 		"@floating-ui/core": "^0.4.0",
@@ -40,6 +42,6 @@
 		"buffer": "^6.0.3",
 		"ethers": "^5.5.4",
 		"svelte-i18n": "^3.3.13",
-		"walletlink": "^2.5.0"
+		"util": "^0.12.4"
 	}
 }

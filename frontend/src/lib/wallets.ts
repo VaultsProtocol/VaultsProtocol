@@ -68,10 +68,10 @@ export const wallets: WalletConfig[] = [
 		icon: (await import('../assets/wallets/coinbase-wallet.svg')).default,
 
 		connectionTypes: [
+			WalletConnectionType.WalletLink,
 			WalletConnectionType.InjectedEthereum,
 			WalletConnectionType.InjectedWeb3,
 			WalletConnectionType.WalletConnect,
-			WalletConnectionType.WalletLink,
 		],
 
 		injectedEip1193ProviderFlag: 'isCoinbaseWallet',
@@ -117,13 +117,13 @@ export const walletsByType = Object.fromEntries(wallets.map(wallet => [wallet.ty
 
 
 import type { ExternalProvider } from '@ethersproject/providers'
-import type WalletLink from 'walletlink'
+import type { CoinbaseWalletProvider, CoinbaseWalletSDK } from '@coinbase/wallet-sdk'
 import type WalletConnectProvider from '@walletconnect/web3-provider'
 
 export type WalletConnection = {
 	walletType: WalletType,
 	connectionType: WalletConnectionType,
-	provider: ExternalProvider | WalletConnectProvider | WalletLink,
+	provider: ExternalProvider | WalletConnectProvider | CoinbaseWalletProvider,
 	connect?: () => void,
 	disconnect?: () => void,
 }
@@ -246,11 +246,10 @@ const getWalletConnection = async ({
 			}
 
 			case WalletConnectionType.WalletLink: {
-				await import('./walletlink')
+				// const { CoinbaseWalletSDK } = await import('@coinbase/wallet-sdk')
+				const { CoinbaseWalletSDK } = (await import('../modules/@coinbase/wallet-sdk')).default
 
-				const WalletLink = globalThis.WalletLink
-
-				const provider: WalletLink = new WalletLink({
+				const provider: CoinbaseWalletProvider = new CoinbaseWalletSDK({
 					appName: 'DAO Creator',
 					appLogoUrl: ''
 				}).makeWeb3Provider(
