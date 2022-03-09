@@ -1855,10 +1855,11 @@ var require_buffer = __commonJS({
 });
 
 // src/modules/node-globals.js
-var global, Buffer;
+var global, process, Buffer;
 var init_node_globals = __esm({
   "src/modules/node-globals.js"() {
     global = typeof global !== "undefined" ? global : typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {};
+    process = { env: {} };
     ({ Buffer } = require_buffer());
   }
 });

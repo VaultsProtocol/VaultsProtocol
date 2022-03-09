@@ -5,4 +5,6 @@ export const global =
 	typeof window !== 'undefined' ? window :
 	{}
 
+export const process = { env: {} }
+
 export const { Buffer } = require('buffer')
