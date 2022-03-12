@@ -32,11 +32,19 @@ type WalletConfig = {
 }
 
 
+import MetaMaskIcon from '../assets/wallets/metamask.svg'
+import TallyIcon from '../assets/wallets/tally.svg'
+import CoinbaseWalletIcon from '../assets/wallets/coinbase-wallet.svg'
+import MyEtherWalletIcon from '../assets/wallets/mew.svg'
+import WalletConnectIcon from '../assets/wallets/walletconnect.svg'
+import WalletIcon from '../assets/wallets/wallet.svg'
+
 export const wallets: WalletConfig[] = [
 	{
 		type: WalletType.MetaMask,
 		name: 'MetaMask',
-		icon: (await import('../assets/wallets/metamask.svg')).default,
+		// icon: (await import('../assets/wallets/metamask.svg')).default,
+		icon: MetaMaskIcon,
 
 		connectionTypes: [
 			WalletConnectionType.InjectedEthereum,
@@ -50,7 +58,8 @@ export const wallets: WalletConfig[] = [
 	{
 		type: WalletType.Tally,
 		name: 'Tally',
-		icon: (await import('../assets/wallets/tally.svg')).default,
+		// icon: (await import('../assets/wallets/tally.svg')).default,
+		icon: TallyIcon,
 
 		connectionTypes: [
 			WalletConnectionType.InjectedEip1193,
@@ -65,7 +74,8 @@ export const wallets: WalletConfig[] = [
 	{
 		type: WalletType.CoinbaseWallet,
 		name: 'Coinbase Wallet',
-		icon: (await import('../assets/wallets/coinbase-wallet.svg')).default,
+		// icon: (await import('../assets/wallets/coinbase-wallet.svg')).default,
+		icon: CoinbaseWalletIcon,
 
 		connectionTypes: [
 			WalletConnectionType.InjectedEthereum,
@@ -79,7 +89,8 @@ export const wallets: WalletConfig[] = [
 	{
 		type: WalletType.MEW,
 		name: 'MyEtherWallet',
-		icon: (await import('../assets/wallets/mew.svg')).default,
+		// icon: (await import('../assets/wallets/mew.svg')).default,
+		icon: MyEtherWalletIcon,
 
 		connectionTypes: [
 			WalletConnectionType.InjectedEthereum,
@@ -94,7 +105,8 @@ export const wallets: WalletConfig[] = [
 	{
 		type: WalletType.WalletConnect,
 		name: 'WalletConnect',
-		icon: (await import('../assets/wallets/walletconnect.svg')).default,
+		// icon: (await import('../assets/wallets/walletconnect.svg')).default,
+		icon: WalletConnectIcon,
 
 		connectionTypes: [
 			WalletConnectionType.WalletConnect,
@@ -103,7 +115,8 @@ export const wallets: WalletConfig[] = [
 	{
 		type: WalletType.OtherWallet,
 		name: 'Other Wallet',
-		icon: (await import('../assets/wallets/wallet.svg')).default,
+		// icon: (await import('../assets/wallets/wallet.svg')).default,
+		icon: WalletIcon,
 
 		connectionTypes: [
 			WalletConnectionType.InjectedEthereum,
