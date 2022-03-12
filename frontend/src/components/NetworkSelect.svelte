@@ -12,7 +12,8 @@
 
 
 	// Formatting
-	import { hexValue } from 'ethers/lib/utils'
+	import { utils } from 'ethers'
+	const { hexValue } = utils
 
 
 	// Methods/hooks/lifecycle
@@ -71,6 +72,7 @@
 	values={rpcProviders}
 	getLabel={rpcProvider => rpcProvider.name}
 	getIcon={rpcProvider => rpcProvider.icon}
+	placeholderLabel="Choose RPC Network..."
 />
 
 <Select
@@ -78,4 +80,5 @@
 	values={availableNetworks}
 	getLabel={network => network.name}
 	getIcon={network => networkIcons[network.chainId]}
+	placeholderLabel="Choose EVM Network..."
 />
