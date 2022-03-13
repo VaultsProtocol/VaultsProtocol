@@ -124,6 +124,123 @@ export const wallets: WalletConfig[] = [
 			WalletConnectionType.WalletConnect,
 		],
 	},
+
+	// {
+	// 	name: 'MathWallet',
+	// 	injectedEip1193ProviderFlag: 'isMathWallet',
+	// },
+	// {
+	// 	name: 'DIDWallet',
+	// 	injectedEip1193ProviderFlag: 'isDIDWallet',
+	// },
+	// {
+	// 	name: 'wallet.io',
+	// 	injectedEip1193ProviderFlag: 'isWalletIO',
+	// },
+	// {
+	// 	name: "D'CENT",
+	// 	injectedEip1193ProviderFlag: 'isDcentWallet',
+	// },
+	// {
+	// 	name: 'TokenPocket',
+	// 	injectedEip1193ProviderFlag: 'isTokenPocket',
+	// },
+	// {
+	// 	name: 'Ownbit',
+	// 	injectedEip1193ProviderFlag: 'isOwnbit',
+	// },
+	// {
+	// 	name: 'MEETONE',
+	// 	injectedEip1193ProviderFlag: 'wallet',
+	// },
+	// {
+	// 	name: 'Torus',
+	// 	injectedEip1193ProviderFlag: 'isTorus',
+	// },
+	// {
+	// 	name: 'imToken',
+	// 	injectedEip1193ProviderFlag: 'isImToken',
+	// },
+	// {
+	// 	name: 'Dapper',
+	// 	injectedEip1193ProviderFlag: 'isDapper',
+	// },
+	// {
+	// 	name: 'WalletConnect',
+	// 	injectedEip1193ProviderFlag: 'isWalletConnect',
+	// },
+	// {
+	// 	name: 'Trust',
+	// 	injectedEip1193ProviderFlag: 'isTrust',
+	// },
+	// {
+	// 	name: 'Coinbase',
+	// 	injectedEip1193ProviderFlag: 'isCoinbaseWallet',
+	// },
+	// {
+	// 	name: 'Opera',
+	// 	injectedEip1193ProviderFlag: 'isOpera',
+	// },
+	// {
+	// 	name: 'Status',
+	// 	injectedEip1193ProviderFlag: 'isStatus',
+	// },
+	// {
+	// 	name: 'XDEFI',
+	// 	injectedEip1193ProviderFlag: 'isXDEFI',
+	// },
+	// {
+	// 	name: 'Tally',
+	// 	injectedEip1193ProviderFlag: 'isTally',
+	// },
+	// {
+	// 	name: 'Tokenary',
+	// 	injectedEip1193ProviderFlag: 'isTokenary',
+	// },
+	// {
+	// 	name: 'Frame',
+	// 	injectedEip1193ProviderFlag: 'isFrame',
+	// },
+	// {
+	// 	name: 'MYKEY',
+	// 	injectedEip1193ProviderFlag: 'isMYKEY',
+	// },
+	// {
+	// 	name: 'huobiwallet',
+	// 	injectedEip1193ProviderFlag: 'isHbWallet',
+	// },
+	// {
+	// 	name: 'HyperPay',
+	// 	injectedEip1193ProviderFlag: 'isHyperPay',
+	// },
+	// {
+	// 	name: 'AToken',
+	// 	injectedEip1193ProviderFlag: 'isAToken',
+	// },
+	// {
+	// 	name: 'Liquality',
+	// 	injectedEip1193ProviderFlag: 'isLiquality',
+	// },
+	// {
+	// 	name: 'AlphaWallet',
+	// 	injectedEip1193ProviderFlag: 'isAlphaWallet',
+	// },
+	// {
+	// 	name: 'Bitpie',
+	// 	injectedEip1193ProviderFlag: 'isBitpie',
+	// },
+	// {
+	// 	name: 'tp',
+	// 	injectedEip1193ProviderFlag: 'isTp',
+	// },
+	// {
+	// 	name: 'BlockWallet',
+	// 	injectedEip1193ProviderFlag: 'isBlockWallet',
+	// },
+	// {
+	// 	name: '1inch',
+	// 	injectedEip1193ProviderFlag: 'isOneInchIOSWallet',
+	// },
 ]
 
 export const walletsByType = Object.fromEntries(wallets.map(wallet => [wallet.type, wallet]))
@@ -392,143 +509,5 @@ export const connectWallet = async ({
 
 			return () => provider.off?.('chainChanged', onChainIdChanged)
 		}),
-	}
-}
-
-
-
-export function getProviderName(provider: any): string | undefined {
-	if (!provider) return
-
-	if (provider.isMathWallet) {
-		return 'MathWallet'
-	}
-
-	if (provider.isDIDWallet) {
-		return 'DIDWallet'
-	}
-
-	if (provider.isWalletIO) {
-		return 'wallet.io'
-	}
-
-	if (provider.isDcentWallet) {
-		return "D'CENT"
-	}
-
-	if (provider.isTokenPocket) {
-		return 'TokenPocket'
-	}
-
-	if (provider.isOwnbit) {
-		return 'Ownbit'
-	}
-
-	if (provider.wallet === 'MEETONE') {
-		return 'MEETONE'
-	}
-
-	if (provider.isTorus) {
-		return 'Torus'
-	}
-
-	if (provider.isImToken) {
-		return 'imToken'
-	}
-
-	if (provider.isDapper) {
-		return 'Dapper'
-	}
-
-	if (provider.isWalletConnect) {
-		return 'WalletConnect'
-	}
-
-	if (provider.isTrust) {
-		return 'Trust'
-	}
-
-	if (provider.isCoinbaseWallet) {
-		return 'Coinbase'
-	}
-
-	if (provider.isOpera) {
-		return 'Opera'
-	}
-
-	if (provider.isStatus) {
-		return 'Status'
-	}
-
-	if (provider.isXDEFI) {
-		return 'XDEFI'
-	}
-
-	if (provider.isTally) {
-		return 'Tally'
-	}
-
-	if (provider.isTokenary) {
-		return 'Tokenary'
-	}
-
-	if (provider.isFrame) {
-		return 'Frame'
-	}
-
-	if (provider.isMYKEY) {
-		return 'MYKEY'
-	}
-
-	if (provider.isHbWallet) {
-		return 'huobiwallet'
-	}
-
-	if (provider.isHyperPay) {
-		return 'HyperPay'
-	}
-
-	if (provider.isAToken) {
-		return 'AToken'
-	}
-
-	if (provider.isLiquality) {
-		return 'Liquality'
-	}
-
-	if (provider.isAlphaWallet) {
-		return 'AlphaWallet'
-	}
-
-	if (provider.isBitpie) {
-		return 'Bitpie'
-	}
-
-	if (provider.isTp) {
-		return 'tp'
-	}
-
-	if (provider.isBlockWallet) {
-		return 'BlockWallet'
-	}
-
-	if (provider.isOneInchIOSWallet) {
-		return '1inch'
-	}
-
-	if (provider.isOneInchIOSWallet) {
-		return '1inch'
-	}
-
-	// =====================================
-	// When adding new wallet place above this metamask check as some providers
-	// have an isMetaMask property in addition to the wallet's own `is[WalletName]`
-
-	if (provider.isMetaMask && provider._metamask) {
-		return 'MetaMask'
-	}
-
-	if (provider.host && provider.host.indexOf('localhost') !== -1) {
-		return 'localhost'
 	}
 }
