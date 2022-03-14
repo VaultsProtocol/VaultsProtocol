@@ -20,20 +20,6 @@
 	import { erc20Tokens } from '$lib/tokens'
 	import { availableNetworks, networkIcons, mainnetForTestnet, networks, networksByChainID, networksBySlug, vaultAssetsByNetwork } from '$lib/networks'
 
-	import { walletsByType } from '$lib/wallets'
-
-
-
-	enum Steps {
-		Idle,
-		Confirming,
-		TransactionSigning,
-		TransactionPending,
-		TransactionFailed,
-		TransactionReverted,
-		TransactionSuccess
-	}
-
 
 	// Stores
 	import { provider } from '../stores/provider'
@@ -46,13 +32,9 @@
 	
 	// Methods/hooks/lifecycle
 
-	import { ContractFactory, ethers, utils } from 'ethers'
+	import { utils } from 'ethers'
 	const { AbiCoder } = utils
 	import { getContract, getContractBytecode } from '$lib/contracts'
-
-
-	// Formatting
-	import { formatAddress } from '$lib/formatAddress'
 
 
 	// Components
@@ -66,13 +48,11 @@
 	import MultipleAddressInput from '../components/MultipleAddressInput.svelte'
 	import PercentInput from '../components/PercentInput.svelte'
 	import TimeSelect from '../components/TimeSelect.svelte'
-	import Portal from '../components/Portal.svelte'
-	import Modal from '../components/Modal.svelte'
 	import TransactionFlow from '../components/TransactionFlow.svelte'
 
 
 	// Styles/animation
-	import { fade, fly, scale } from 'svelte/transition'
+	import { fly, scale } from 'svelte/transition'
 </script>
 
 
@@ -97,11 +77,11 @@
 					network,
 					name: 'VaultFactory'
 				})
-	
+
 				console.log('VaultFactory', VaultFactory)
-	
+
 				console.log("Deploying sample vault")
-	
+
 				console.log(
 					// getContractBytecode({ network, name: 'BaseVault' }),
 					// getContractBytecode({ network, name: 'YearnStrategy' }),
@@ -115,7 +95,7 @@
 						gasLimit: '3500000'
 					}
 				)
-	
+
 				return await VaultFactory.createVault(
 					getContractBytecode({ network, name: 'BaseVault' }),
 					getContractBytecode({ network, name: 'YearnStrategy' }),
@@ -238,8 +218,6 @@
 								<p class="row">{$_(yieldStrategyInfo[vaultConfig.yieldStrategy].description)}</p>
 							</div>
 						</label>
-						
-
 					</div>
 				</section>
 

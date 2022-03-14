@@ -41,8 +41,6 @@
 	
 	// Methods/hooks/lifecycle
 
-	import { utils } from 'ethers'
-
 	const actions = {
 		back: () => currentStep--,
 		next: () => currentStep++,
@@ -94,7 +92,7 @@
 
 
 	// Styles/animation
-	import { fade, fly, scale } from 'svelte/transition'
+	import { fly, scale } from 'svelte/transition'
 </script>
 
 
