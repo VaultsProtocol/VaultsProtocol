@@ -1,5 +1,9 @@
 <script lang="ts">
 	// Constants/types
+	import type { Network } from '@ethersproject/providers'
+	import type { ConnectedAccount } from '../stores/account'
+	import type { Transaction } from 'ethers'
+
 	import { _ } from 'svelte-i18n'
 
 	import { walletsByType } from '$lib/wallets'
@@ -16,11 +20,17 @@
 
 
 	// External state
-	export let network
+	export let network: Network
 	export let account: ConnectedAccount
 
-	export let createTransaction
-	export let confirmationMessage
+	export let createTransaction: ({
+		network: Network,
+		address: string,
+		signer: Signer
+	}) => Promise<Transaction>
+
+	// export let confirmationMessage
+	export let onTransactionSuccess
 
 
 	// Internal state
@@ -35,8 +45,8 @@
 		formElement?.valid
 		// formElement && [...formElement.elements].every(fieldElement => !fieldElement.required || !fieldElement.isEmpty)
 
-	let tx
-	let errorMessage
+	let tx: Transaction
+	let errorMessage: string
 
 	
 	// Methods/hooks/lifecycle
@@ -122,7 +132,8 @@
 			>
 				<h2>{$_('Ready to deploy')}</h2>
 
-				<p><slot name="confirming-message" {network}>{confirmationMessage({ network })}</slot></p>
+				<!-- <p><slot name="confirming-message" {network}>{confirmationMessage({ network })}</slot></p> -->
+				<p><slot name="confirming-message" {network} /></p>
 
 				<div class="row centered">
 					<div class="stack">
