@@ -10,9 +10,9 @@ export const localStorageWritable = <T>(localStorageKey: string, value: T): Writ
 		if(!globalThis.localStorage) return
 
 		if(value === undefined)
-			globalThis.localStorage.removeItem(localStorageKey)
+			globalThis.localStorage?.removeItem(localStorageKey)
 		else
-			globalThis.localStorage.setItem(localStorageKey, JSON.stringify(value))
+			globalThis.localStorage?.setItem(localStorageKey, JSON.stringify(value))
 		store.set(value)
 	}
 
