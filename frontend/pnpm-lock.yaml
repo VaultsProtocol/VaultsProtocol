@@ -9,7 +9,7 @@ specifiers:
   '@sveltejs/adapter-auto': next
   '@sveltejs/adapter-static': next
   '@sveltejs/kit': next
-  '@textile/tableland': ^0.0.8-dev8
+  '@tableland/sdk': ^0.0.1
   '@typescript-eslint/eslint-plugin': ^5.10.1
   '@typescript-eslint/parser': ^5.10.1
   '@walletconnect/web3-provider': ^1.7.3
@@ -35,7 +35,7 @@ dependencies:
   '@ethersproject/providers': 5.5.3
   '@floating-ui/core': 0.4.0
   '@floating-ui/dom': 0.2.0
-  '@textile/tableland': 0.0.8-dev8
+  '@tableland/sdk': 0.0.1
   '@walletconnect/web3-provider': 1.7.3
   buffer: 6.0.3
   ethers: 5.5.4
@@ -45,7 +45,7 @@ dependencies:
 devDependencies:
   '@sveltejs/adapter-auto': 1.0.0-next.31
   '@sveltejs/adapter-static': 1.0.0-next.29
-  '@sveltejs/kit': 1.0.0-next.294_svelte@3.46.4
+  '@sveltejs/kit': 1.0.0-next.295_svelte@3.46.4
   '@typescript-eslint/eslint-plugin': 5.12.0_39008ab451aed7e12174fadc21405fee
   '@typescript-eslint/parser': 5.12.0_eslint@7.32.0+typescript@4.5.5
   eslint: 7.32.0
@@ -1626,8 +1626,8 @@ packages:
       esbuild: 0.14.23
     dev: true
 
-  /@sveltejs/kit/1.0.0-next.294_svelte@3.46.4:
-    resolution: {integrity: sha512-whTYeri/oaV672KErlhCAvAawlsnd8iu/MQmjdu85TApDYolLe8FDTg6GQ55+0IJbx1N7dOer/HopWzKudPgFA==}
+  /@sveltejs/kit/1.0.0-next.295_svelte@3.46.4:
+    resolution: {integrity: sha512-4pO/swXByhU+7bhNikTjh1d4QxAMP9TZ74p7sdPuyJf5cg7Zrfk1nBtaMt0R+8+5j1xfC/XWRcxa3WnhT9bQMA==}
     engines: {node: '>=14.13'}
     hasBin: true
     peerDependencies:
@@ -1804,8 +1804,8 @@ packages:
       '@swc/core-win32-x64-msvc': 1.2.150
     dev: true
 
-  /@textile/eth-tableland/0.0.2:
-    resolution: {integrity: sha512-Q2uS1MLkLn5Bg5MuN1g90kdt0X2Gpr4JQw73PaZcIuE27Wtegw5yeBWQPaBQw7GUe/dzM2TxrnVymM6p87b1+g==}
+  /@tableland/eth/0.0.2:
+    resolution: {integrity: sha512-XhFUxA/ggV0kI/eG04vW2tEgfcK2h9xdSe5tUE0LKu4NNlMCG/QXi1dhTXKGpICjwN8e52ctT6cyHuU5lOMoNw==}
     dependencies:
       '@ethersproject/providers': 5.5.3
       ethers: 5.5.4
@@ -1814,14 +1814,14 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@textile/tableland/0.0.8-dev8:
-    resolution: {integrity: sha512-der2cm9zTVA1YDmwWRw9wbLQN9kYwyNNlNlYlcPph8TR+BGZ9UJuYS9YWWYOO8JPvFbakIHPKVrAAH2Rvh04dw==}
+  /@tableland/sdk/0.0.1:
+    resolution: {integrity: sha512-hH2odcjPFU3q8O4DiqSimlbd7m7iofmBuGv/J2pQWgxHzUBQE1UBfVL3EbmZZrm79LUYCgr0x6qbh7kq0WvE7g==}
     engines: {node: '>=12.0.0'}
     dependencies:
       '@babel/preset-env': 7.16.11
       '@babel/preset-typescript': 7.16.7
       '@stablelib/base64': 1.0.1
-      '@textile/eth-tableland': 0.0.2
+      '@tableland/eth': 0.0.2
       add-js-extension: 1.0.4
       ethers: 5.5.4
     transitivePeerDependencies:

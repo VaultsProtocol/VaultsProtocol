@@ -85,12 +85,20 @@
 		}catch(e){
 			errorMessage = e.message
 			currentStep = Steps.TransactionReverted
-			// currentStep = Steps.TransactionFailed
-
 			return
 		}
 
 		currentStep = Steps.TransactionSuccess
+
+		onTransactionSuccess?.(tx)
+		// if(onTransactionSuccess)
+		// 	try {
+		// 		await onTransactionSuccess(tx)
+		// 	}catch(e){
+		// 		errorMessage = e.message
+		// 		currentStep = Steps.TransactionFailed
+		// 		return
+		// 	}
 	})()
 
 	$: if(errorMessage)

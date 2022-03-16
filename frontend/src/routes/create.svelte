@@ -36,6 +36,8 @@
 	const { AbiCoder } = utils
 	import { getContract, getContractBytecode } from '$lib/contracts'
 
+	import { getVaultsTable } from '$lib/tableland'
+
 
 	// Components
 	import Vault from '../components/Vault.svelte'
@@ -112,6 +114,27 @@
 
 				// const sampleVault = await VaultFactory.vaults("0")
 				// console.log("sample vault is", sampleVault)
+			}}
+
+			onTransactionSuccess={async tx => {
+				console.log('getVaultsTable')
+
+				const result = await (await getVaultsTable({
+					// signer: $account.signer
+				})).create({
+					vaultConfig,
+					contractAddress: 'test',
+					transactionHash: tx.hash,
+				})
+				console.log('getVaultsTable', result)
+
+				(await getVaultsTable({
+					// signer: $account.signer
+				})).create({
+					vaultConfig,
+					contractAddress: '',
+					transactionHash: tx.hash,
+				})
 			}}
 		>
 			<svelte:fragment slot="idle" let:actions={{ next }}>

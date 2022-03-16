@@ -37,7 +37,7 @@
 		"@ethersproject/providers": "^5.5.3",
 		"@floating-ui/core": "^0.4.0",
 		"@floating-ui/dom": "^0.2.0",
-		"@textile/tableland": "^0.0.8-dev8",
+		"@tableland/sdk": "^0.0.1",
 		"@walletconnect/web3-provider": "^1.7.3",
 		"buffer": "^6.0.3",
 		"ethers": "^5.5.4",
