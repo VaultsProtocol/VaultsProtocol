@@ -1,10 +1,8 @@
 // import adapter from '@sveltejs/adapter-auto'
 import adapter from '@sveltejs/adapter-static'
 import preprocess from 'svelte-preprocess'
-import topLevelAwait_ from 'vite-plugin-top-level-await'
+// import topLevelAwait from 'vite-plugin-top-level-await'
 
-const topLevelAwait = topLevelAwait_.default
-console.log('topLevelAwait', topLevelAwait)
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	// Consult https://github.com/sveltejs/svelte-preprocess
@@ -16,9 +14,12 @@ const config = {
 	},
 
 	vite: {
-		plugins: [
-			topLevelAwait()
-		]
+		// plugins: [
+		// 	topLevelAwait.default({
+		// 		promiseExportName: "__tla",
+		// 		promiseImportName: i => `__tla_${i}`
+		// 	})
+		// ],
 		// build: {
 		// 	target: 'esnext'
 		// }
