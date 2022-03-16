@@ -153,6 +153,5 @@ import { networksByChainID, vaultAssetsByNetwork } from '$lib/networks';
 		border-bottom-left-radius: 0;
 		text-align: center;
 		font-size: 2em;
-		background: var(--background-color-f3)
 	}
 </style>

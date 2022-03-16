@@ -71,6 +71,9 @@
 	--card-padding: 1.5rem;
 	--card-radius: calc(0.85 * var(--card-padding));
 
+	--button-color: var(--background-color-0);
+	--radius: 0.5em;
+
 	color: var(--text-color);
 
 	font-family: var(--font);
@@ -126,9 +129,6 @@ a:hover, a:focus {
 	tab-size: 6;
 }
 button, .button, input[type='number'], input[type='text'], textarea {
-	--button-color: var(--background-color-0);
-	--radius: 0.5em;
-
 	display: inline-grid;
 	grid-auto-flow: column;
 	justify-content: center;
@@ -155,7 +155,7 @@ textarea {
 	padding: 1em;
 }
 
-:is(button, .button, [role='button']):hover:not(:disabled),
+:is(button, .button, [role='button']):hover:where(:not(:disabled)),
 :is(button, .button, [role='button']):focus,
 :is(button, .button, [role='button']):focus-within
 /* ,
@@ -207,7 +207,7 @@ label:focus-within :is(button, .button, [role='button']) */
 	--button-active-background-color: var(--background-color-3);
 }
 :is(button, .button, [role='button']).transparent:hover {
-	--button-color: var(--background-color-3er);
+	--button-color: var(--background-color-3);
 }
 :is(button, .button, [role='button']).transparent:active {
 	--button-color: var(--background-color-2);
@@ -375,12 +375,15 @@ hr {
 	color: var(--background-color-black);
 }
 
-.transparent {
-	color: var(--font-color-black)
+section.card {
+	--button-color: var(--background-color-f3);
 }
 
+/* .transparent {
+	
+} */
 .transparent.destructive {
-	color: var(--font-color-black)
+	color: red;
 }
 
 

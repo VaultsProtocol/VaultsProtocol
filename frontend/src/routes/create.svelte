@@ -484,17 +484,6 @@
 		grid-template-columns: auto 1fr;
 	}
 
-	.vault-content input,
-	.vault-content summary, 
-	.vault-content textarea {
-		background: var(--background-color-f3);
-	}
-
-	.vault-row summary,
-	.vault-row summary button {
-		background: green;
-	}
-
 	.vault-preview {
 		width: 25rem;
 		--grid-gap: 1rem;
@@ -505,13 +494,6 @@
 	.vault-behavior .card,
 	.vault-behavior p {
 		border-color: #f3f3f3;
-	}
-
-	.vault-behavior input,
-	.vault-behavior input[type='number'], 
-	.vault-behavior :global(input),
-	.vault-behavior :global(summary) {
-		background: var(--background-color-f3);
 	}
 
 	/* .card.row .equal {
@@ -530,11 +512,6 @@
 
 	.vault-row label {
 		border-color: #f3f3f3;
-	}
-
-	.vault-row :global(button),
-	.vault-row :global(input) {
-		background: var(--background-color-f3);
 	}
 	
 
