@@ -1,6 +1,10 @@
 <script lang="ts">
 	// Constants/types
-	import { type Network, availableNetworks as _availableNetworks, networkIcons, networks, networksBySlug, rpcProviders, networksByChainID } from '$lib/networks'
+	import { type Network, availableNetworks as _availableNetworks, networkIcons, networks, networksBySlug, networksByChainID } from '$lib/networks'
+	import { rpcProviders } from '$lib/providers'
+
+
+	// Stores
 	import { account } from '../stores/account'
 
 
@@ -56,14 +60,14 @@
 			}
 		}
 	})()
+
+	$: if(network && $account && $account.chainId === network.chainId)(async () => {
+		await $account.signer.connect(rpcProvider)
+	})
 	
 
 	// Components
 	import Select from '../components/Select.svelte'
-
-
-	// Styles/animation
-	import { scale } from 'svelte/transition'
 </script>
 
 
