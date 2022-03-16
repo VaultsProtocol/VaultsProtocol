@@ -111,7 +111,8 @@ p {
 }
 
 pre, code, output, kbd, samp {
-	font-family: var(--font-mono);
+	font-family: monospace;
+	user-select: all;
 }
 
 a {
