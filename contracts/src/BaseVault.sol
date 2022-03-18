@@ -5,205 +5,283 @@ import "./tokens/ERC721.sol";
 import "./tokens/ERC20.sol";
 import "./interfaces/IStrategy.sol";
 
-contract BaseVault {
+import { console } from "./test/Console.sol";
 
-    // #########################
-    // ##                     ##
-    // ##      Structs        ##
-    // ##                     ##
-    // #########################
+///======================================================================================================================================
+// Vaults are designed to be human readeable and as minimal as possible
+// 
+// 1e4 = basis points calculation && 1e10 = floating point scalar
+///======================================================================================================================================
+
+contract BaseVault is ERC721 {
+
+///======================================================================================================================================
+/// Data Struct
+///======================================================================================================================================
 
     struct Deposits {
-        uint256 amount;
-        uint256 tracker; //sum of delta(deposit) * yeildPerDeposit
+        uint256 amount; 
+        uint256 tracker; //sum of delta(deposit) * yeildPerDeposit || SCALED
     }
 
-    // #########################
-    // ##                     ##
-    // ##       State         ##
-    // ##                     ##
-    // #########################
+    struct MetaData {
+        string name;
+        address vaultAddress;
+        uint256 withdrawable;
+        uint256 id;
+        uint256 vaultType;
+    }
+
+///======================================================================================================================================
+/// Accounting State
+///======================================================================================================================================
 
     // tokenID => Deposits
     mapping(uint256 => Deposits) public deposits;
 
-    //sum of yeild/totalDeposits
+    //sum of yeild/totalDeposits scaled by 1e10
     uint256 public yeildPerDeposit;
+
     uint256 public totalDeposits;
-    uint256 SCALAR = 1e10;
 
-    uint256 public depositedToStrat;
+    // used to account for random deposits
+    uint256 internal lastKnownContractBalance;
+    
+    // used when calculating rewards and yield Strategy deposits
+    uint256 internal lastKnownStrategyTotal;
 
-    ERC721 public NFT;
-    ERC20 immutable vaultToken;
+    uint256 internal depositedToStrat;
 
-    //strategy and fund manager
-    address immutable controller;
+///======================================================================================================================================
+/// Everything Else
+///======================================================================================================================================
 
-    // strategy to earn yeild on vault reserves
-    // strats are hardcoded at 50% of totalDeposits
-    IStrategy strat;
+    ERC20 public vaultToken;
 
-    // #########################
-    // ##                     ##
-    // ##     Constructor     ##
-    // ##                     ##
-    // #########################
+    uint256 internal isInitialized;
 
-    constructor(
-        address _controller,
-        ERC721 _NFT,
-        ERC20 _vaultToken
-    ) {
-        controller = _controller;
-        NFT = _NFT;
-        vaultToken = _vaultToken;
+    IStrategy public strat;
 
-        NFT.initVault();
+///======================================================================================================================================
+/// Init
+///======================================================================================================================================
+
+    // constructor() {
+    //     // call init on impl on deployment
+    //     baseInit("Init", "Init", address(0), address(0));
+    // }
+
+    function baseInit(string memory _name, string memory _symbol, address _token, address strategy) public {
+        require(isInitialized == 0, "Already Initialized");
+
+        _nftInit(_name, _symbol);
+
+        strat = IStrategy(strategy);
+
+        vaultToken = ERC20(_token);
+
+        currentId = 1;
+
+        isInitialized = 1;
+
     }
 
-    // #########################
-    // ##                     ##
-    // ##     User Facing     ##
-    // ##                     ##
-    // #########################
 
-    function mintNewNFT(uint256 amount) external virtual returns (uint256) {
+///======================================================================================================================================
+/// Overrideable Public Functions
+///
+/// Individual use case logic can done here 
+///======================================================================================================================================
 
-        uint256 id = NFT.currentId();
+    function mintNewNft(uint256 amount) public virtual returns (uint256) {
+        return _mintNewNFT(amount);
+    }
+
+    function depositToId(uint256 amount, uint256 id) public virtual {
+        _depositToId(amount, id);
+    }
+
+    function withdrawFromId(uint256 id, uint256 amount) public virtual {
+        _withdrawFromId(amount, id);
+    }
+
+    function burnNFTAndWithdrawl(uint256 id) public virtual {
+
+        uint256 claimable = withdrawableById(id);
+        _withdrawFromId(claimable, id);
+
+        // erc721
+        _burn(id);
+
+    }
+
+    function withdrawableById(uint256 id)
+        public view
+        virtual returns (uint256 claimId) 
+    {
+
+        return deposits[id].amount + yieldPerId(id);
+
+    }
+
+///======================================================================================================================================
+/// Internal Logic
+///
+/// distributeYield() must always be done before
+/// deposits to get accurate yield calculations
+///======================================================================================================================================
+
+    function _mintNewNFT(uint256 amount) internal returns (uint256) {
+
+        uint256 id = _mint(msg.sender, currentId);
+
+        if (totalDeposits > 0) {
+            distributeYeild();
+        }
 
         deposits[id].amount = amount;
         deposits[id].tracker += amount * yeildPerDeposit;
+
         totalDeposits += amount;
+        lastKnownContractBalance += amount;
 
         //ensure token reverts on failed
         vaultToken.transferFrom(msg.sender, address(this), amount);
 
-        require(id == NFT.mint(msg.sender));
         return id;
 
     }
 
-    function depositToId(uint256 amount, uint256 id) external virtual {
+    function _depositToId(uint256 amount, uint256 id) internal {
 
         // trusted contract
-        require(msg.sender == NFT.ownerOf(id));
+        require(msg.sender == ownerOf[id]); 
+
+        if (totalDeposits > 0) {
+            distributeYeild();
+        }
 
         deposits[id].amount += amount;
         deposits[id].tracker += amount * yeildPerDeposit;
+        
         totalDeposits += amount;
+        lastKnownContractBalance += amount;
 
         //ensure token reverts on failed
-        vaultToken.transferFrom(msg.sender, address(this), amount);
-        
-    }
-
-    // Burns NFT and withdraws all claimable token + yeild
-    function burn(uint256 id) external virtual  {
-
-        uint256 claimable = withdrawableById(id);
-        withdrawFromId(claimable, id);
-
-        NFT.burn(id);
+        vaultToken.transferFrom(msg.sender, address(this), amount); 
 
     }
 
-    // TODO: potentially remove this?
-    function withdrawFromId(uint256 amount, uint256 id) public virtual  {
+    function _withdrawFromId(uint256 amount, uint256 id) internal {
 
-        require(msg.sender == NFT.ownerOf(id));
-        require(amount <= withdrawableById(id));
+        // Alaways distribute yield 
+        distributeYeild();
 
-        //trusted contract
+        require(
+            msg.sender == ownerOf[id] && 
+            amount <= withdrawableById(id)
+        ); 
+
         uint256 balanceCheck = vaultToken.balanceOf(address(this));
+        uint256 principalWithdrawn;
+        uint256 userYield = yieldPerId(id);
 
-        // trusted contract
-        if (amount > balanceCheck) {
-            withdrawFromStrat(amount - balanceCheck, id);
+        if (amount > userYield) {
+
+            principalWithdrawn = amount - userYield;
+            deposits[id].amount -= principalWithdrawn;
+            totalDeposits -= principalWithdrawn;
+            
+            // all user Yield is harvested therefore at the current
+            // point in time the user is not entitled to any yield
+            deposits[id].tracker = deposits[id].amount * yeildPerDeposit;
+
+        } else {
+            
+            // user yield still remains therefore principal not affected
+            // just add nonclaimable to current tracker
+            deposits[id].tracker += amount * 1e10;
+    
+        }
+        
+        uint256 short = amount > balanceCheck ? amount - balanceCheck : 0;
+        if (short > 0) {
+
+            withdrawFromStrat(short);
+            depositedToStrat -= principalWithdrawn;
+
         }
 
-        deposits[id].amount -= amount;
-        deposits[id].tracker -= amount * yeildPerDeposit;
-
-        vaultToken.transfer(msg.sender, amount);
-
+        vaultToken.transfer(msg.sender, amount); 
     }
 
-    function withdrawableById(uint256 id) public view virtual returns (uint256) {
-
-        uint256 yield = yeildPerId(id);
-
-        // claimable may be larger than total deposits but never smaller
-        uint256 claimable = vaultToken.balanceOf(address(this)) + depositedToStrat;
-            
-        uint256 claimId = (claimable * deposits[id].amount) / totalDeposits;
-
-        return claimId + yield;
-
-    }
-
-    // #########################
-    // ##                     ##
-    // ##      Strategy       ##
-    // ##                     ##
-    // #########################
-
-    function setStrategy(address addr) external {
-
-        require(msg.sender == controller);
-
-        strat = IStrategy(addr);
-
-    }
+///======================================================================================================================================
+/// Strategy
+///======================================================================================================================================
 
     //total possible deposited to strat is currently set at 50%
     function initStrat() public {
 
+        require(address(strat) != address(0), "No Strategy");
+
         // 50% of total deposits
         uint256 half = (totalDeposits * 5000) / 10000;
         uint256 depositable = half - depositedToStrat;
-        
+
+        depositedToStrat += depositable;
+        lastKnownStrategyTotal += depositable;
+        lastKnownContractBalance -= depositable;
+
         vaultToken.approve(address(strat), depositable);
         strat.deposit(depositable);
 
     }
 
     //internal, only called when balanceOf(address(this)) < withdraw requested
-    // depositedToStrat = total withdrawn - yeild of msg.sender
-    function withdrawFromStrat(uint256 amountNeeded, uint256 forID) internal {
-
-        uint256 userYield = yeildPerId(forID);
-
-        // needed for OoP
-        uint256 toSubtract = amountNeeded - userYield;
-        depositedToStrat -= toSubtract;
+    function withdrawFromStrat(uint256 amountNeeded) internal {
 
         strat.withdrawl(amountNeeded);
-
+        lastKnownStrategyTotal -= amountNeeded;
+        
     }
 
-    // #########################
-    // ##                     ##
-    // ##       Yeild         ##
-    // ##                     ##
-    // #########################
+///======================================================================================================================================
+/// Yield
+///======================================================================================================================================
 
     // gets yeild from strategy contract
-    //possbily call this before new mints?
-    function adjustYeild() public {
+    // called before deposits and withdrawls
+    function distributeYeild() public virtual {
 
-        uint256 totalInStrat = strat.withdrawlableVaultToken();
-        uint256 totalYield = totalInStrat - depositedToStrat;
+        uint256 unclaimedYield = 
+            vaultToken.balanceOf(address(this)) - lastKnownContractBalance;
+        lastKnownContractBalance += unclaimedYield;
+        
+        uint256 strategyYield = address(strat) != address(0) ? 
+            strat.withdrawlableVaultToken() - lastKnownStrategyTotal : 0;
+        lastKnownStrategyTotal += strategyYield;
 
-        yeildPerDeposit += (totalYield * SCALAR) / totalDeposits;
+        yeildPerDeposit += ((unclaimedYield + strategyYield) * 1e10) / totalDeposits;
+        
+    }
+
+    function yieldPerId(uint256 id) public view returns (uint256) {
+
+        
+        uint256 pre = (deposits[id].amount * yeildPerDeposit) / 1e10;
+        return pre - (deposits[id].tracker / 1e10);
 
     }
 
-    function yeildPerId(uint256 id) internal view returns (uint256) {
+///======================================================================================================================================
+/// Token metadata
+///======================================================================================================================================
 
-        uint256 pre = deposits[id].amount * yeildPerDeposit / SCALAR;
-        return pre - deposits[id].tracker / SCALAR;
+    function tokenURI(uint256 id) 
+        public view virtual
+        returns (MetaData memory) {
+
+        return MetaData(name, address(this), withdrawableById(id), id, 0);
 
     }
-
 }

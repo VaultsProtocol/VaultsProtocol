@@ -7,6 +7,8 @@ interface IStrategy {
 
     function withdrawl(uint256 amount) external;
 
+    function initVault(address vault) external;
+
     function withdrawlableVaultToken() external view returns (uint256);
     
 }

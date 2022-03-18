@@ -12,33 +12,39 @@ contract YearnStrategy {
     // ##                     ##
     // #########################
 
-    yVault yvault;
-    ERC20 token;
+    yVault public yvault;
 
-    address immutable vault;
+    ERC20 public token;
 
+    uint256 internal isInit;
+
+    address public vault;
+    
     // #########################
     // ##                     ##
-    // ##     Constructor     ##
+    // ##       Init          ##
     // ##                     ##
     // #########################
 
-    constructor(yVault _yvault, ERC20 _token, address _vault) {
+    function init(address _yVault, address _token, address _vault) public {
 
-        yvault = _yvault;
-        token = _token;
+        require (isInit == 0);
+
+        yvault = yVault(_yVault);
+
+        token = ERC20(_token);
 
         vault = _vault;
     }
 
     // #########################
     // ##                     ##
-    // ##     Constructor     ##
+    // ##      Modifier       ##
     // ##                     ##
     // #########################
 
     modifier onlyVault() {
-        require (msg.sender == vault);
+        require (msg.sender == vault, "Unauthorized");
         _;
     }
 
@@ -50,7 +56,7 @@ contract YearnStrategy {
 
     function deposit(uint amount) external onlyVault() {
         
-        token.transferFrom(msg.sender, address(this), amount);
+        token.transferFrom(vault, address(this), amount);
 
         yvault.deposit(amount);
 
@@ -64,7 +70,7 @@ contract YearnStrategy {
         yvault.withdraw(needed);
         uint256 withdrawn = token.balanceOf(address(this));
 
-        token.transfer(msg.sender, withdrawn);
+        token.transfer(vault, withdrawn);
 
     }
     
@@ -74,4 +80,5 @@ contract YearnStrategy {
         return yvault.balanceOf(address(this)) * price;
 
     }
+
 }
