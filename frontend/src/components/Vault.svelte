@@ -26,7 +26,7 @@
 	// Internal state
 
 	let isPosition = false // Vault vs individual position
-	$: isPosition = !!vaultPosition
+	// $: isPosition = !!vaultPosition
 
 	let network: Network
 	$: network = networksByChainID[vaultConfig.chainId]
@@ -119,7 +119,7 @@
 				</div>
 
 				{#if isPosition ? vaultStatus.totalBalance : vaultConfig.config.initialLiquidity}
-					<TokenBalance balance={isPosition ? vaultStatus.totalBalance : vaultConfig.config.initialLiquidity} erc20Token={vaultConfig.tokens[0]} />
+					<TokenBalance balance={isPosition ? vaultStatus.totalBalance : vaultConfig.config.initialLiquidity.amount} erc20Token={vaultConfig.tokens[0]} />
 				{/if}
 			</header>
 
@@ -303,7 +303,7 @@
 		transition: 1s;
 	}
 	.vault:is(:hover, :focus) > .card.front {
-		overflow: auto;
+		overflow-y: auto;
 		max-height: calc(100vh - var(--header-height) - 4rem);
 
 		/* z-index: -1; */
@@ -413,17 +413,21 @@
 	}
 
 	.metadata {
-		--grid-gap: 0.5em;
+		--grid-gap: 0.5rem;
 		align-content: center;
 
-		height: 200px;
+		overflow-y: auto;
+		max-height: 200px;
 		font-size: clamp(0.85em, 3em / var(--l), 1em);
 	}
 	.metadata > * {
-		padding: 0.85em;
+		/* padding: 0.85em; */
+		padding: 0.66em;
+		border: none;
+		background-color: rgba(0, 0, 0, 0.05);
 	}
 	.metadata > * > .row {
-		--grid-gap: 0.5em;
+		--grid-gap: 0.5rem;
 	}
 	.metadata .label {
 		font-weight: 500;
