@@ -106,6 +106,7 @@
 		top: 0;
 		z-index: 1;
 		transform: translateZ(1px);
+		width: max-content;
 	}
 
 	summary {

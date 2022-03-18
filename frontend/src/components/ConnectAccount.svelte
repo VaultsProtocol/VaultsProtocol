@@ -112,7 +112,14 @@
 			<button class="primary" on:click={() => modalIsOpen = !modalIsOpen} transition:scale={{opacity: 0}}>{$_('Connect')}</button>
 		{:else}
 			<Tooltip let:isOpen placement="bottom-end">
-				<button class="connnected-account dropdown" class:active={isOpen} tabindex="-1" transition:scale={{opacity: 0}}>
+				<button
+					class="connnected-account round dropdown"
+					class:active={isOpen}
+					aria-haspopup="menu"
+					aria-expanded={isOpen}
+					tabindex="-1"
+					transition:scale={{opacity: 0}}
+				>
 					<picture class="avatar">
 						{#if $account.ensAvatarUri}
 							<img src={$account.ensAvatarUri} />
@@ -195,7 +202,6 @@
 		aspect-ratio: 1;
 
 		border-radius: calc(var(--radius) * 0.85);
-		border-radius: 120px;
 		border: 1px solid #ccc;
 		overflow: hidden;
 
@@ -209,11 +215,9 @@
 		--button-color: var(--background-color-3);
 		--button-color: white;
 		border: 1px solid #ccc;
-		padding: 0.5em;
-		padding: 5px 20px;
-		padding-left: 5px;
+		padding: 0.33em;
+		padding-right: 0.5em;
 		text-align: left;
-		border-radius: 120px;
 
 		max-width: calc(100vw - 19.5rem);
 	}
