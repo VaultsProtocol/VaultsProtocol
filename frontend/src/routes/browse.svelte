@@ -54,6 +54,7 @@
 		--grid-size: 400px;
 		grid-auto-rows: 540px;
 		grid-auto-rows: 800px;
+		grid-auto-rows: 666.666px;
 		/* --grid-gap: 2rem; */
 	}
 </style>

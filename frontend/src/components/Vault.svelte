@@ -1,8 +1,8 @@
 <script lang="ts">
 	// Constants/types
 	import { _ } from 'svelte-i18n'
-	import { MetadataType, VaultType, vaultTypeInfo, type VaultConfig, type VaultStatus, type VaultPosition, yieldStrategyInfo, GovernanceType, YieldStrategy } from '../lib/vaults'
-	import { networkIcons, networksByChainID, type Network } from '$lib/networks'
+	import { type VaultConfig, type VaultStatus, type VaultPosition, MetadataType, VaultType, vaultTypeInfo, yieldStrategyInfo, GovernanceType, YieldStrategy } from '../lib/vaults'
+	import { type Network, networkIcons, networksByChainID } from '$lib/networks'
 	import { BigNumber } from 'ethers'
 	
 	
@@ -31,11 +31,46 @@
 	let network: Network
 	$: network = networksByChainID[vaultConfig.chainId]
 
+	let metadata
+	$: metadata =
+		/* isPosition ?
+			[
+				{ icon: '', label: 'Balance', displayType: MetadataType.TokenBalance, value: vaultPosition.withdrawableBalance },
+				{ icon: '', label: 'Earned', displayType: MetadataType.TokenBalance, value: vaultPosition.yieldEarned },
+			]
+		: */ vaultConfig.type === VaultType.Degen ?
+			[
+				{ icon: '🎰', label: 'Jackpot', displayType: MetadataType.Percent, value: vaultConfig.config.jackpot },
+				{ icon: '💸', label: 'Dividend', displayType: MetadataType.Percent, value: vaultConfig.config.dividend },
+				{ icon: '💸', label: 'Treasury', displayType: MetadataType.Percent, value: vaultConfig.config.treasury },
+				{ icon: '🛑', label: 'Deadline', displayType: MetadataType.Date, value: vaultConfig.config.deadline },
+			]
+		: vaultConfig.type === VaultType.DAO && vaultConfig.config.governanceType === GovernanceType.MultiSignature ?
+			[
+				{ icon: '🗳', label: 'Governance Type', displayType: MetadataType.String, value: vaultConfig.config.governanceType },
+				{ icon: '📝', label: 'Minimum Signatures', displayType: MetadataType.String, value: vaultConfig.config.minimumSignatures },
+				{ icon: '✍️', label: 'Signers', displayType: MetadataType.String, value: vaultConfig.config.signers.filter(Boolean).length },
+			]
+		: vaultConfig.type === VaultType.DAO && vaultConfig.config.governanceType === GovernanceType.TokenVoting ?
+			[
+				{ icon: '🗳', label: 'Governance Type', displayType: MetadataType.String, value: vaultConfig.config.governanceType },
+				{ icon: '👋', label: 'Quorum', displayType: MetadataType.Percent, value: vaultConfig.config.quorum },
+			]
+		: vaultConfig.type === VaultType.Charity ?
+			[
+				{ icon: '🤲', label: 'Recipient', displayType: MetadataType.Address, value: vaultConfig.config.recipientAddress },
+				{ icon: '🍰', label: 'Yield to Recipient', displayType: MetadataType.Percent, value: vaultConfig.config.recipientYieldPercent },
+				{ icon: '💰', label: 'Payout Type', displayType: MetadataType.String, value: vaultConfig.config.payoutType },
+			]
+		: []
+
 
 	// Components
+	import Address from './Address.svelte'
 	import Countdown from './Countdown.svelte'
 	import Container from './Container.svelte'
 	import PieChart from './PieChart.svelte'
+	import Tabs from './Tabs.svelte'
 	import TokenBalance from './TokenBalance.svelte'
 	import Icon from './Icon.svelte'
 
@@ -58,13 +93,11 @@
 	// Styles/animations
 	import { fade, scale } from 'svelte/transition'
 	import { flip } from 'svelte/animate'
-	import Tabs from './Tabs.svelte'
-import { formatAddress } from '$lib/formatAddress';
 </script>
 
 
-<svg class="vault-container" viewBox="0 0 400 800" xmlns="http://www.w3.org/2000/svg">
-	<foreignObject x="0" y="0" width="400" height="800">
+<svg class="vault-container" viewBox="0 0 400 666.666" xmlns="http://www.w3.org/2000/svg">
+	<foreignObject x="0" y="0" width="400" height="666.666">
 		<div xmlns="http://www.w3.org/1999/xhtml">
 
 		<article class="vault stack" style="--background: url({cardBack})">
@@ -177,41 +210,8 @@ import { formatAddress } from '$lib/formatAddress';
 				</Container>
 			{/if}
 
-			<div class="metadata column">
-				{#each
-					/* isPosition ?
-						[
-							{ icon: '', label: 'Balance', displayType: MetadataType.TokenBalance, value: vaultPosition.withdrawableBalance },
-							{ icon: '', label: 'Earned', displayType: MetadataType.TokenBalance, value: vaultPosition.yieldEarned },
-						]
-					: */ vaultConfig.type === VaultType.Degen ?
-						[
-							{ icon: '🎰', label: 'Jackpot', displayType: MetadataType.Percent, value: vaultConfig.config.jackpot },
-							{ icon: '💸', label: 'Dividend', displayType: MetadataType.Percent, value: vaultConfig.config.dividend },
-							{ icon: '💸', label: 'Treasury', displayType: MetadataType.Percent, value: vaultConfig.config.treasury },
-							{ icon: '🛑', label: 'Deadline', displayType: MetadataType.Date, value: vaultConfig.config.deadline },
-						]
-					: vaultConfig.type === VaultType.DAO && vaultConfig.config.governanceType === GovernanceType.MultiSignature ?
-						[
-							{ icon: '🗳', label: 'Governance Type', displayType: MetadataType.String, value: vaultConfig.config.governanceType },
-							{ icon: '📝', label: 'Minimum Signatures', displayType: MetadataType.String, value: vaultConfig.config.minimumSignatures },
-							{ icon: '✍️', label: 'Signers', displayType: MetadataType.String, value: vaultConfig.config.signers.filter(Boolean).length },
-						]
-					: vaultConfig.type === VaultType.DAO && vaultConfig.config.governanceType === GovernanceType.TokenVoting ?
-						[
-							{ icon: '🗳', label: 'Governance Type', displayType: MetadataType.String, value: vaultConfig.config.governanceType },
-							{ icon: '👋', label: 'Quorum', displayType: MetadataType.Percent, value: vaultConfig.config.quorum },
-						]
-					: vaultConfig.type === VaultType.Charity ?
-						[
-							{ icon: '🤲', label: 'Recipient', displayType: MetadataType.Address, value: vaultConfig.config.recipientAddress },
-							{ icon: '🍰', label: 'Yield to Recipient', displayType: MetadataType.Percent, value: vaultConfig.config.recipientYieldPercent },
-							{ icon: '💰', label: 'Payout Type', displayType: MetadataType.String, value: vaultConfig.config.payoutType },
-						]
-					: []
-					as
-					{ icon, label, displayType, value }, i (label)
-				}
+			<div class="metadata column" style="--l: {metadata.length}">
+				{#each metadata as { icon, label, displayType, value }, i (label)}
 					<div class="card row" in:scale={{ delay: i * 100 }} out:scale animate:flip>
 						<div class="row">
 							<!-- <img src={icon} width="20" height="20" /> -->
@@ -230,7 +230,7 @@ import { formatAddress } from '$lib/formatAddress';
 									{:else if displayType === MetadataType.Percent}
 										<span>{value}%</span>
 									{:else if displayType === MetadataType.Address}
-										<span>{formatAddress(value)}</span>
+										<Address network={networksByChainID[vaultConfig.chainId]} address={value} linked={false} />
 									{:else if displayType === MetadataType.String}
 										<!-- <span>{$_(value)}</span> -->
 										{value ?? ''}
@@ -271,9 +271,16 @@ import { formatAddress } from '$lib/formatAddress';
 
 
 <style>
+	.card {
+		background-color: var(--background-color-white);
+		border: 2px solid var(--border-color-cc);
+		box-shadow: none;
+	}
+
+
 	.vault-container {
 		width: 400px;
-		height: 800px;
+		height: 666.666px;
 		filter: drop-shadow(0 1px 0.5em var(--background-color-0));
 		transition: 1s;
 		transform-style: preserve-3d;
@@ -284,8 +291,6 @@ import { formatAddress } from '$lib/formatAddress';
 	}
 	
 	.vault {
-		overflow: auto;
-		max-height: calc(100vh - var(--header-height) - 4rem);
 		font-size: 16px;
 		/* position: absolute; */
 		--grid-gap: 1em;
@@ -293,44 +298,31 @@ import { formatAddress } from '$lib/formatAddress';
 		perspective: 1000px;
 	}
 
-	.vault:hover .card.front, .vault:focus .card.front {
+	.vault > .card {
+		backface-visibility: hidden;
+		transition: 1s;
+	}
+	.vault:is(:hover, :focus) > .card.front {
+		overflow: auto;
+		max-height: calc(100vh - var(--header-height) - 4rem);
+
 		/* z-index: -1; */
 		/* opacity: 0; */
 	}
 
-	.card.back {
+	.vault > .card.back {
+		/* display: none; */
 		opacity: 0;
 		/* transition: z-index 0.4s linear; */
-	}
-	.vault:hover .card.back, .vault:focus .card.back {
-		z-index: 1;
-		opacity: 1;
-	}
-
-	.card {
-		backface-visibility: hidden;
-		transition: 1s;
-
-		background-color: var(--background-color-white);
-		border: 2px solid var(--border-color-cc);
-		box-shadow: none;
-	}
-	.card.front {
-		/* background: blue; */
-	}
-	
-	.card.back {
-		/* display: none; */
-		background: black;
 		transform: rotateY(0.5turn);
 		transform: translateZ(-1px);
 		z-index: -1;
 		
-		background-image: var(--background);
-		background-repeat: no-repeat;
-		background-position: center;
-		background-size: cover;
-		
+		background: black var(--background) center / cover no-repeat;
+	}
+	.vault:is(:hover, :focus) > .card.back {
+		z-index: 1;
+		opacity: 1;
 	}
 
 	header {
@@ -377,9 +369,9 @@ import { formatAddress } from '$lib/formatAddress';
 		50% { transform: translateY(-3px) rotate(0.5deg) }
 	}
 
-	.silhouette {
+	/* .silhouette {
 		fill: black;
-	}
+	} */
 
 	.yield-strategy {
 		/* display: flex; */
@@ -389,19 +381,6 @@ import { formatAddress } from '$lib/formatAddress';
 	.description {
 		font-size: 0.8em;
 		word-break: break-word;
-	}
-
-	.icon {
-		border-radius: 100vmax;
-		height: 40px;
-		width: 40px;
-		position: relative;
-		border: 2px solid var(--background-color-charity);
-		padding: 0;
-	}
-
-	.button.round img {
-		margin: auto;
 	}
 
 	.vault-type-info {
@@ -418,6 +397,12 @@ import { formatAddress } from '$lib/formatAddress';
 		height: 1.66em;
 		color: #fff;
 	}
+	.vault-type-info .text-path {
+		animation: Spin 10s linear infinite;
+	}
+	@keyframes Spin {
+		to { transform: rotate(1turn) }
+	}
 
 	.vault-type-info .vault-type {
 		padding: 0.5em;
@@ -427,21 +412,12 @@ import { formatAddress } from '$lib/formatAddress';
 		font-weight: 800;
 	}
 
-	.vault-type .card .row {
-		background: radial-gradient(50% 50% at 50% 50%, #D2C26E 0%, #DEB60D 100%);
-		border: 30px solid red;
-
-	}
-
-	.text-path {
-		animation: Spin 10s linear infinite;
-	}
-	@keyframes Spin {
-		to { transform: rotate(1turn) }
-	}
-
 	.metadata {
 		--grid-gap: 0.5em;
+		align-content: center;
+
+		height: 200px;
+		font-size: clamp(0.85em, 3em / var(--l), 1em);
 	}
 	.metadata > * {
 		padding: 0.85em;
@@ -462,11 +438,32 @@ import { formatAddress } from '$lib/formatAddress';
 		transform-origin: right;
 	}
 
-	.icons-row {
-		margin-top: 10px;
-	}
+	/* .metadata > * { transition: zoom 0.3s; } */
+	/* .metadata > * { transition: font-size 0.3s; } */
+	/* .metadata > :first-child:nth-last-child(1), .metadata > :first-child:nth-last-child(1) ~ * { --l: 1; }
+	.metadata > :first-child:nth-last-child(2), .metadata > :first-child:nth-last-child(2) ~ * { --l: 2; }
+	.metadata > :first-child:nth-last-child(3), .metadata > :first-child:nth-last-child(3) ~ * { --l: 3; }
+	.metadata > :first-child:nth-last-child(4), .metadata > :first-child:nth-last-child(4) ~ * { --l: 4; }
+	.metadata > :first-child:nth-last-child(5), .metadata > :first-child:nth-last-child(5) ~ * { --l: 5; }
+	.metadata > :first-child:nth-last-child(6), .metadata > :first-child:nth-last-child(6) ~ * { --l: 6; }
+	.metadata > :first-child:nth-last-child(7), .metadata > :first-child:nth-last-child(7) ~ * { --l: 7; }
+	.metadata > :first-child:nth-last-child(8), .metadata > :first-child:nth-last-child(8) ~ * { --l: 8; } */
+	/* .metadata > * {
+		zoom: clamp(0.85, 3 / var(--l), 1);
+		font-size: calc(1em * clamp(0.85, 3 / var(--l), 1));
+	} */
 
-	.icons-row .icon {
-		margin: 0 10px;
+	.icons-row {
+		--grid-gap: 2.5em;
+	}
+	.icon {
+		border-radius: 50%;
+		width: 40px;
+		height: 40px;
+		border: 2px solid var(--background-color-charity);
+		padding: 0;
+	}
+	.icon img {
+		margin: auto;
 	}
 </style>

@@ -15,11 +15,12 @@
 
 
 	// Formatting
+	import { isAddress } from '@ethersproject/address'
 	import { formatAddress } from '$lib/formatAddress'
 
 
 	// Internal state
-	$: formattedAddress = formatAddress(address)
+	$: formattedAddress = isAddress(address) ? formatAddress(address) : address
 </script>
 
 
