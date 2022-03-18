@@ -34,13 +34,17 @@
 		connect()
 
 
+	// Components
+	import HeightContainer from './HeightContainer.svelte'
+
+
 	// Styles/transitions
-	import { scale } from 'svelte/transition'
+	import { fly, scale } from 'svelte/transition'
 </script>
 
 
-<div class="card column">
-	<div class="row">
+<article class="card column">
+	<header class="row">
 		<h2>{$_('Tableland › Saved Vaults')}</h2>
 
 		<div class="stack align-end">
@@ -52,32 +56,34 @@
 				<button transition:scale>{$_('Disconnect')}</button>
 			{/if}
 		</div>
-	</div>
+	</header>
 
 	{#if connection}
-		<div class="stack" transition:scale>
-			{#await getTables(connection)}
-				<div transition:scale>
-					{$_('Fetching your tables from Tableland...')}
-				</div>
-			{:then tables}
-				<div class="column" transition:scale>
-					{#each tables as table, i (table.name)}
-						<slot {table}>
-							<div class="row" transition:scale={{ delay: i * 100 }}>
-								<h3>{table.name}</h3>
-								<p>{table.description}</p>
-								{new Date(table.created_at).toLocaleString()}
-								<p>{formatAddress(table.controller)}</p>
-								<output>{formatAddress(table.structure)}</output>
-							</div>
-						</slot>
-					{/each}
-				</div>
-			{/await}
-		</div>
+		<main transition:scale>
+			<HeightContainer class="stack">
+				{#await getTables(connection)}
+					<div class="card" transition:fly={{ x: 100 }}>
+						{$_('Fetching your tables from Tableland...')}
+					</div>
+				{:then tables}
+					<div class="column" transition:scale>
+						{#each tables as table, i (table.name)}
+							<slot {table}>
+								<div class="card row" transition:fly={{ x: 100, delay: i * 200 }}>
+									<h3>{table.name}</h3>
+									<p>{table.description}</p>
+									{new Date(table.created_at).toLocaleString()}
+									<output>{formatAddress(table.controller)}</output>
+									<output>{formatAddress(table.structure)}</output>
+								</div>
+							</slot>
+						{/each}
+					</div>
+				{/await}
+			</HeightContainer>
+		</main>
 	{/if}
-</div>
+</article>
 
 
 <style>
