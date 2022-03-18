@@ -3,7 +3,7 @@
 	export let date: string | Date
 
 	export let format: 'absolute' | 'relative' | 'both' = 'relative'
-	export let layout: 'horizontal' | 'vertical' = 'vertical'
+	export let layout: 'horizontal' | 'vertical' = 'horizontal'
 	export let showTime = true
 	export let updateInterval = 1000
 
