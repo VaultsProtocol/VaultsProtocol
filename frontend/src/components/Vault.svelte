@@ -288,6 +288,7 @@ import { formatAddress } from '$lib/formatAddress';
 		max-height: calc(100vh - var(--header-height) - 4rem);
 		font-size: 16px;
 		/* position: absolute; */
+		--grid-gap: 1em;
 
 		perspective: 1000px;
 	}
@@ -405,7 +406,8 @@ import { formatAddress } from '$lib/formatAddress';
 
 	.vault-type-info {
 		grid-template-columns: auto 1fr auto;
-		margin: 0 -1em;
+		margin-left: -1em;
+		margin-right: -1em;
 	}
 
 	.vault-type-info .token-id {
@@ -439,13 +441,13 @@ import { formatAddress } from '$lib/formatAddress';
 	}
 
 	.metadata {
-		gap: 0.5em;
+		--grid-gap: 0.5em;
 	}
 	.metadata > * {
 		padding: 0.85em;
 	}
 	.metadata > * > .row {
-		gap: 0.5em;
+		--grid-gap: 0.5em;
 	}
 	.metadata .label {
 		font-weight: 500;
