@@ -66,6 +66,8 @@
 				})
 			)
 	}
+	$: if(!isOpen && containerElement?.matches(':focus-within'))
+		referenceElement?.focus()
 </script>
 
 
@@ -113,7 +115,7 @@
 		cursor: pointer;
 	}
 
-	summary :global(button) {
+	summary :global(button:active) {
 		pointer-events: none;
 	}
 </style>

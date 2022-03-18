@@ -142,7 +142,7 @@ button, .button, input[type='number'], input[type='text'], textarea {
 	font-weight: 600;
 	border-radius: var(--radius);
 
-	--button-active-background-color: var(--background-color-0);
+	--button-active-background-color: var(--background-color-2);
 
 	background-color: var(--button-color);
 	color: var(--color-text-light);
@@ -204,14 +204,8 @@ summary:active > :is(button, .button, [role='button']) {
 	transform: scaleX(1.75) rotateX(0.5turn);
 }
 
-:is(button, .button, [role='button']).transparent {
-	/* --button-color: transparent; */
-	--button-active-background-color: var(--background-color-3);
-}
-:is(button, .button, [role='button']).transparent:hover {
-	--button-color: var(--background-color-3);
-}
-:is(button, .button, [role='button']).transparent:active {
+:is(button, .button, [role='button']).transparent:hover,
+:is(button, .button, [role='button']).transparent:focus {
 	--button-color: var(--background-color-2);
 }
 

@@ -73,6 +73,7 @@
 				type="button"
 				class="transparent"
 				class:active={value === optionValue}
+				autofocus={value === optionValue}
 				on:click={() => {
 					value = optionValue
 					console.log(isOpen)
@@ -111,9 +112,6 @@
 	}
 
 	.menu button {
-		--button-active-background-color: var(--color-layer-base);
-
-		--button-active-background-color: var(--background-color-white);
 		text-align: left;
 		justify-content: start;
 	}
