@@ -3,6 +3,7 @@
 	export let duration: string = ''
 	export let clip = false
 	export let isOpen = true
+	export let transitionHeight = true
 
 
 	// Internal state
@@ -23,12 +24,6 @@
 		resizeObserver.observe(content)
 		return () => resizeObserver.disconnect()
 	})
-
-
-	// Methods/hooks/lifecycle
-
-	$: if(container && contentRect)
-		container.style.height = isOpen ? `${Math.max($contentRect.height, 0)}px` : '0'
 </script>
 
 
@@ -44,7 +39,16 @@
 </style>
 
 
-<div class="container" bind:this={container} style={duration ? `--duration: ${duration}` : ''} class:clip>
+<div
+	bind:this={container}
+	class="container"
+	class:clip={clip}
+	style={[
+		!isOpen && `margin-top: 0;`,
+		transitionHeight && `height: ${contentRect && isOpen ? `${Math.max($contentRect.height, 0)}px` : '0'};`,
+		duration && `--duration: ${duration};`
+	].filter(Boolean).join(' ')}
+>
 	<div bind:this={content} {...$$props}>
 		<slot />
 	</div>
