@@ -138,7 +138,10 @@
 							<span class="locked">{$_('[Locked]')}</span>
 						{/if}
 						{#if !$account.ensName}
-							<span>{walletsByType[$connectedWalletType].name}</span>
+							<span title="{$account.walletConnection.walletType} via {$account.walletConnection.connectionType}">
+								{$account.walletConnection.walletType}
+								<!-- {walletsByType[$connectedWalletType].name} -->
+							</span>
 						{/if}
 					</span>
 				</button>

@@ -8,11 +8,11 @@ export enum WalletType {
 }
 
 export enum WalletConnectionType {
-	InjectedEip1193 = 'InjectedEip1193',
-	InjectedEthereum = 'InjectedEthereum',
-	InjectedWeb3 = 'InjectedWeb3',
+	InjectedEip1193 = 'Injected EIP-1193 Provider',
+	InjectedEthereum = 'Injected ethereum Provider',
+	InjectedWeb3 = 'Injected web3 Provider',
 	WalletConnect = 'WalletConnect',
-	WalletLink = 'WalletLink',
+	WalletLink = 'Coinbase Wallet SDK',
 }
 
 
