@@ -243,7 +243,6 @@
 		margin-bottom: 10vh;
 	}
 	form > :global(section) {
-		margin: auto;
 		/* min-width: min(30rem, 90vw); */
 		width: 100%;
 		/* max-height: calc(100vh - var(--header-height) - 2rem); */

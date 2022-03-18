@@ -205,7 +205,7 @@
 					<hr>
 
 					<div class="column vault-row">
-						<label class="card row equal">
+						<label class="card row">
 							<h3>{$_('Network / Chain')}</h3>
 							<Select
 								bind:value={vaultConfig.chainId}
@@ -215,7 +215,7 @@
 							/>
 						</label>
 
-						<label class="card row equal">
+						<label class="card row">
 							<h3>{$_('Vault Asset')}</h3>
 
 							<TokenSelect availableTokens={vaultAssetsByNetwork[networksByChainID[vaultConfig.chainId]?.slug] ?? []} bind:token={vaultConfig.tokens[0]} />
@@ -228,7 +228,7 @@
 						</label>
 
 						<label class="card column">
-							<div class="row equal">
+							<div class="row">
 								<h3>{$_('Yield Strategy')}</h3>
 								<Select
 									bind:value={vaultConfig.yieldStrategy}
@@ -499,12 +499,10 @@
 
 
 <style>
-	main {
-		--grid-gap: 2rem;
-	}
-
 	section.row {
+		--grid-gap: 2rem;
 		grid-template-columns: auto 1fr;
+		align-items: start;
 	}
 
 	.vault-preview {
@@ -516,20 +514,6 @@
 
 	.vault-behavior .card,
 	.vault-behavior p {
-		border-color: #f3f3f3;
-	}
-
-	/* .card.row .equal {
-		width: 100%;
-	} */
-
-	
-	/* .card {
-		place-content: start;
-		place-items: start;
-	} */
-
-	.vault-row label {
 		border-color: #f3f3f3;
 	}
 	
