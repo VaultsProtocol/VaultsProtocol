@@ -361,7 +361,7 @@ hr {
 .card.menu {
 	--card-radius: 0.75rem;
 	--card-padding: 0.4rem;
-	gap: 0;
+	--grid-gap: 0.2em;
 
 	--button-transform-origin: center;
 
@@ -404,8 +404,13 @@ section.card {
 	justify-items: stretch;
 
 	display: grid;
-	gap: var(--grid-gap);
+	/* gap: var(--grid-gap); */
+	gap: 0;
+	--column-gap: var(--grid-gap);
 	align-content: start;
+}
+.column > * + * {
+	margin-top: var(--column-gap);
 }
 .column.centered {
 	justify-items: center;
@@ -443,6 +448,8 @@ section.card {
 		gap: var(--grid-gap);
 		align-items: center;
 		justify-content: space-between;
+
+		--column-gap: 0;
 	}
 	.column > .row-tablet {
 		gap: var(--grid-gap) calc(0.5 * var(--grid-gap));
@@ -460,6 +467,8 @@ section.card {
 		gap: var(--grid-gap);
 		align-items: center;
 		justify-content: space-between;
+
+		--column-gap: 0;
 	}
 	.column > .row-desktop {
 		gap: var(--grid-gap) calc(0.5 * var(--grid-gap));

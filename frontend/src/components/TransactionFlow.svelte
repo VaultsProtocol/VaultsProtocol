@@ -250,10 +250,6 @@
 
 		--grid-gap: 1rem;
 	}
-	
-	.row {
-		align-items: start;
-	}
 
 	
 	/* .card {

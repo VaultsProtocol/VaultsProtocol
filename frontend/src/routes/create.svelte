@@ -522,10 +522,6 @@
 	/* .card.row .equal {
 		width: 100%;
 	} */
-	
-	.row {
-		align-items: start;
-	}
 
 	
 	/* .card {

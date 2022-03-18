@@ -222,7 +222,7 @@
 		max-width: calc(100vw - 19.5rem);
 	}
 	.connnected-account > .column {
-		gap: 0.33em;
+		--grid-gap: 0.33em;
 	}
 	.connnected-account > .column > * {
 		overflow: hidden;
