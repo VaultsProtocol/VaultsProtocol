@@ -3,6 +3,7 @@
 	export let duration: string = ''
 	export let clip = false
 	export let isOpen = true
+	export let renderOnlyWhenOpen = false
 	export let transitionHeight = true
 
 
@@ -50,6 +51,8 @@
 	].filter(Boolean).join(' ')}
 >
 	<div bind:this={content} {...$$props}>
-		<slot />
+		{#if renderOnlyWhenOpen ? isOpen : true}
+			<slot />
+		{/if}
 	</div>
 </div>
