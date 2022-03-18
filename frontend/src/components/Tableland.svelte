@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Constants/types
-	import type { Connection } from '@tableland/sdk'
+	import type { Connection, TableMetadata } from '@tableland/sdk'
 
 	import { _ } from 'svelte-i18n'
 
@@ -11,6 +11,8 @@
 
 	// External state
 	export let autoConnect = false
+
+	export let selectedTable: TableMetadata
 
 
 	// Internal state
@@ -45,7 +47,15 @@
 
 <article class="card column">
 	<header class="row">
-		<h2>{$_('Tableland › Saved Vaults')}</h2>
+		<h2>
+			{$_('Tableland')}
+			 › 
+			 {#if $account}
+				{formatAddress($account.address)}
+				› 
+			{/if}
+			{$_('Saved Vaults')}
+		</h2>
 
 		<div class="stack align-end">
 			{#if !$account}
@@ -69,13 +79,13 @@
 					<div class="column" transition:scale>
 						{#each tables as table, i (table.name)}
 							<slot {table}>
-								<div class="card row" transition:fly={{ x: 100, delay: i * 200 }}>
+								<label class="card row" transition:fly={{ x: 100, delay: i * 200 }}>
 									<h3>{table.name}</h3>
 									<p>{table.description}</p>
-									{new Date(table.created_at).toLocaleString()}
 									<output>{formatAddress(table.controller)}</output>
-									<output>{formatAddress(table.structure)}</output>
-								</div>
+									<output>{(table.structure)}</output>
+									<time>{new Date(table.created_at).toLocaleString()}</time>
+								</label>
 							</slot>
 						{/each}
 					</div>
