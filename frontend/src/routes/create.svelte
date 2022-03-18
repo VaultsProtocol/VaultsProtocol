@@ -41,7 +41,7 @@
 
 	// Components
 	import Vault from '../components/Vault.svelte'
-	import HeightContainer from '../components/HeightContainer.svelte'
+	import Container from '../components/Container.svelte'
 	import AddressInput from '../components/AddressInput.svelte'
 	import Select from '../components/Select.svelte'
 	import Tabs from '../components/Tabs.svelte'
@@ -267,7 +267,7 @@
 						</div>
 					</div>
 
-					<HeightContainer class="stack align-top">
+					<Container class="stack align-top">
 						{#if vaultConfig.type === VaultType.Standard}
 							<div class="grid" in:fly={{ x: 20 }} out:fly={{ x: -20 }}>
 							</div>
@@ -411,7 +411,7 @@
 							
 						<!-- {:else if vaultConfig.type === VaultType.Superfluid} -->
 						{/if}
-					</HeightContainer>
+					</Container>
 				</section>
 
 				<!-- <section class="card column">

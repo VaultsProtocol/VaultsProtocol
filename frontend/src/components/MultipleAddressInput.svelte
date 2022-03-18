@@ -50,7 +50,7 @@
 
 	// Components
 	import AddressInput from './AddressInput.svelte'
-	import HeightContainer from './HeightContainer.svelte'
+	import Container from './Container.svelte'
 
 
 	// Styles/animations
@@ -61,14 +61,14 @@
 
 
 <div class="column">
-	<HeightContainer class="column">
+	<Container class="column">
 		{#each values as value, i (keys[i])}
 			<div class="row" transition:scale|local animate:flip={{ duration: 300, easing: backOut }}>
 				<AddressInput bind:address={value} />
 				<button type="button" class="round" on:click={() => remove(i)}>–</button>
 			</div>
 		{/each}
-	</HeightContainer>
+	</Container>
 
 	<!-- {#if values[values.length - 1]} -->
 		<button type="button" class="round" on:click={() => add()} transition:scale|local={{ duration: 200 }}>{$_('+ Add Address')}</button>

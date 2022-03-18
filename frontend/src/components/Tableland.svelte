@@ -34,7 +34,7 @@
 
 
 	// Components
-	import HeightContainer from './HeightContainer.svelte'
+	import Container from './Container.svelte'
 
 
 	// Styles/transitions
@@ -60,7 +60,7 @@
 		</div>
 	</header>
 
-	<HeightContainer isOpen={!!connection} renderOnlyWhenOpen>
+	<Container isOpen={!!connection} renderOnlyWhenOpen>
 		<main class="stack">
 			{#await getTables(connection)}
 				<div class="card column centered" transition:scale>
@@ -80,5 +80,5 @@
 				</div>
 			{/await}
 		</main>
-	</HeightContainer>
+	</Container>
 </article>

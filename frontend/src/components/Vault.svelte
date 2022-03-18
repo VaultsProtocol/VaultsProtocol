@@ -34,7 +34,7 @@
 
 	// Components
 	import Countdown from './Countdown.svelte'
-	import HeightContainer from './HeightContainer.svelte'
+	import Container from './Container.svelte'
 	import PieChart from './PieChart.svelte'
 	import TokenBalance from './TokenBalance.svelte'
 	import Icon from './Icon.svelte'
@@ -73,7 +73,7 @@ import { formatAddress } from '$lib/formatAddress';
 	</div>
 
 	<div class="front card">
-		<HeightContainer class="column">
+		<Container class="column">
 			<header class="row">
 				<div class="row">
 					<span class="chain stack">
@@ -172,9 +172,9 @@ import { formatAddress } from '$lib/formatAddress';
 			</div>
 
 			{#if vaultConfig.about.description}
-				<HeightContainer>
+				<Container>
 					<p class="description align-start" transition:scale>{vaultConfig.about.description}</p>
-				</HeightContainer>
+				</Container>
 			{/if}
 
 			<div class="metadata column">
@@ -261,7 +261,7 @@ import { formatAddress } from '$lib/formatAddress';
 					{/each}
 				</div>
 			{/if}
-		</HeightContainer>
+		</Container>
 	</div>
 </article>
 

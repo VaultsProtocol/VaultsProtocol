@@ -41,7 +41,7 @@
 
 
 	// Components
-	import HeightContainer from './HeightContainer.svelte'
+	import Container from './Container.svelte'
 	import Tooltip from './Tooltip.svelte'
 	
 
@@ -65,11 +65,11 @@
 				<img src={getIcon?.(value) ?? icons?.[value]} />
 			{/if}
 
-			<HeightContainer transitionWidth>
+			<Container transitionWidth>
 				{value
 					? getLabel?.(value) ?? labels?.[value] ?? value
 					: placeholderLabel}
-			</HeightContainer>
+			</Container>
 		</slot>
 	</button>
 
