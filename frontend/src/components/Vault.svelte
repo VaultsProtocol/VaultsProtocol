@@ -98,9 +98,11 @@
 
 <svg class="vault-container" viewBox="0 0 400 666.666" xmlns="http://www.w3.org/2000/svg">
 	<foreignObject x="0" y="0" width="400" height="666.666">
+<!-- <svg class="vault-container" viewBox="-100 -100 600 866.666" xmlns="http://www.w3.org/2000/svg">
+	<foreignObject x="-100" y="-100" width="600" height="866.666"> -->
 		<div xmlns="http://www.w3.org/1999/xhtml">
 
-		<article class="vault stack" style="--background: url({cardBack})">
+		<article class="vault stack" style="--card-background: url({cardBack})">
 	<div class="back card">
 		
 	</div>
@@ -285,13 +287,10 @@
 	.vault-container {
 		width: 400px;
 		height: 666.666px;
-		filter: drop-shadow(0 1px 0.5em var(--background-color-0));
 		transition: 1s;
+		perspective: 1000px;
 		transform-style: preserve-3d;
-	}
-
-	.vault-container:hover, .vault-container:focus {
-		transform: perspective(1200px) rotateY(0.5turn);
+		filter: drop-shadow(0 1px 0.5em var(--background-color-4));
 	}
 	
 	.vault {
@@ -299,34 +298,27 @@
 		/* position: absolute; */
 		--grid-gap: 1em;
 
-		perspective: 1000px;
+		transition: 1s;
+		/* transform-origin: left; */
+	}
+	.vault-container:is(:hover, :focus) .vault {
+		transform: rotateY(0.5turn);
+		/* transform: translateZ(-200px) rotateY(0.5turn) translateZ(-200px); */
+		/* transform-origin: center; */
 	}
 
 	.vault > .card {
 		backface-visibility: hidden;
 		transition: 1s;
 	}
-	.vault:is(:hover, :focus) > .card.front {
+	.vault > .card.front {
 		overflow-y: auto;
 		max-height: calc(100vh - var(--header-height) - 4rem);
-
-		/* z-index: -1; */
-		/* opacity: 0; */
+		/* transform: translateZ(1px); */
 	}
-
 	.vault > .card.back {
-		/* display: none; */
-		opacity: 0;
-		/* transition: z-index 0.4s linear; */
+		background: black var(--card-background) center / cover no-repeat;
 		transform: rotateY(0.5turn);
-		transform: translateZ(-1px);
-		z-index: -1;
-		
-		background: black var(--background) center / cover no-repeat;
-	}
-	.vault:is(:hover, :focus) > .card.back {
-		z-index: 1;
-		opacity: 1;
 	}
 
 	header {
