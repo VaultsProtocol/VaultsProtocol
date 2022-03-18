@@ -109,9 +109,13 @@
 		<Container class="column">
 			<header class="row">
 				<div class="row">
-					<span class="chain stack">
-						<img src={networkIcons[vaultConfig.chainId]} width="14" transition:scale />
-					</span>
+					<div class="stack">
+						{#key vaultConfig.chainId}
+							<div class="chain" transition:scale>
+								<img src={networkIcons[vaultConfig.chainId]} width="14"/>
+							</div>
+						{/key}
+					</div>
 
 					{#if vaultConfig.about.name}
 						<h2 class="align-start" transition:scale>{vaultConfig.about.name}</h2>
