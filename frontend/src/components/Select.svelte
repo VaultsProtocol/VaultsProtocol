@@ -23,6 +23,7 @@
 	export let placement: Placement
 
 	export let autoFallback = false
+	export let required = false
 
 
 	// Internal state
@@ -34,10 +35,13 @@
 	// Methods/hooks/lifecycle
 	$: if(autoFallback && values && !values?.includes(value))
 		value = values[0]
+	// $: if(values && !values?.includes(value))
+	// 	value = values[0]
 		// value = undefined
 
 
 	// Components
+	import HeightContainer from './HeightContainer.svelte'
 	import Tooltip from './Tooltip.svelte'
 	
 
@@ -61,9 +65,11 @@
 				<img src={getIcon?.(value) ?? icons?.[value]} />
 			{/if}
 
-			{value
-				? getLabel?.(value) ?? labels?.[value] ?? value
-				: placeholderLabel}
+			<HeightContainer transitionWidth>
+				{value
+					? getLabel?.(value) ?? labels?.[value] ?? value
+					: placeholderLabel}
+			</HeightContainer>
 		</slot>
 	</button>
 

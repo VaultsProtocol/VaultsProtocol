@@ -4,6 +4,7 @@
 	export let clip = false
 	export let isOpen = true
 	export let renderOnlyWhenOpen = false
+	export let transitionWidth = false
 	export let transitionHeight = true
 
 
@@ -25,6 +26,12 @@
 		resizeObserver.observe(content)
 		return () => resizeObserver.disconnect()
 	})
+
+	let previousContentRect, currentContentRect
+	$: [previousContentRect, currentContentRect] = [currentContentRect, $contentRect]
+	$: if(previousContentRect)
+		// content?.animate({fontSize: [`${previousContentRect.width / currentContentRect.width}em`, '1em']}, {duration: 600, easing: 'cubic-bezier(0.16, 1, 0.3, 1)'})
+		content?.animate({transform: [`scaleX(${previousContentRect.width / currentContentRect.width})`, 'none']}, {duration: 600, easing: 'cubic-bezier(0.16, 1, 0.3, 1)'})
 </script>
 
 
@@ -46,11 +53,16 @@
 	class:clip={clip}
 	style={[
 		!isOpen && `margin-top: 0;`,
-		transitionHeight && `height: ${contentRect && isOpen ? `${Math.max($contentRect.height, 0)}px` : '0'};`,
+		transitionWidth && contentRect && `width: ${isOpen ? `${Math.max($contentRect.width, 0)}px` : '0'};`,
+		transitionHeight && contentRect && `height: ${isOpen ? `${Math.max($contentRect.height, 0)}px` : '0'};`,
 		duration && `--duration: ${duration};`
 	].filter(Boolean).join(' ')}
 >
-	<div bind:this={content} {...$$props}>
+	<div
+		bind:this={content}
+		{...$$props}
+		style={transitionWidth ? `display: inline-block` : ''}
+	>
 		{#if renderOnlyWhenOpen ? isOpen : true}
 			<slot />
 		{/if}
