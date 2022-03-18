@@ -3,15 +3,29 @@ import type { Connection } from '@tableland/sdk'
 import { connect } from '@tableland/sdk'
 
 
-export const mintTable = async (tableConnection, query, options) => {
-	const dryRunReceipt = await tableConnection.create(query, options)
+const connections: Record<string, Connection> = {}
+
+export const getTablelandConnection = async ({ signer }: { signer: Signer }): Promise<Connection> =>
+	connections[await signer.getAddress()] ||= await connect({
+		signer,
+		network: 'testnet',
+		host: 'https://testnet.tableland.network'
+	})
+
+
+export const getTables = async (connection: Connection) =>
+	await connection.list()
+
+
+export const mintTable = async (connection: Connection, query: string, options) => {
+	const dryRunReceipt = await connection.create(query, options)
 	console.log('dryRunReceipt', dryRunReceipt)
-	return await tableConnection.create(query, options)
+	return await connection.create(query, options)
 }
 
-export const queryTable = async (tableConnection, query) => {
-	console.log(query)
-	return await tableConnection.query(query)
+export const queryTable = async (connection: Connection, query) => {
+	console.log('queryTable', query)
+	return await connection.query(query)
 }
 
 export const getVaultsTable = async ({
@@ -19,17 +33,13 @@ export const getVaultsTable = async ({
 }: {
 	signer?: Signer,
 }) => {
-	const tableConnection: Connection = await connect({
-		signer,
-		network: 'testnet',
-		host: 'https://testnet.tableland.network'
-	})
+	const connection: Connection = await getTablelandConnection({ signer })
 
-	console.log('tableConnection', tableConnection)
+	console.log('connection', connection)
 
 	let tableQueryName
 
-	const tables = await tableConnection.list()
+	const tables = await connection.list()
 	const table = tables[0]
 	console.log('tables', tables)
 	
@@ -37,7 +47,7 @@ export const getVaultsTable = async ({
 		tableQueryName = table.name
 	}else{
 		const receipt = await mintTable(
-			tableConnection,
+			connection,
 			`
 				CREATE TABLE Vaults (
 					id					VARCHAR(255) PRIMARY KEY,
@@ -57,7 +67,7 @@ export const getVaultsTable = async ({
 
 	return {
 		getAll: async () => await queryTable(
-			tableConnection,
+			connection,
 			`
 				SELECT * FROM ${tableQueryName};		
 			`
@@ -68,7 +78,7 @@ export const getVaultsTable = async ({
 			contractAddress,
 			transactionHash,
 		}) => await queryTable(
-			tableConnection,
+			connection,
 			`
 				INSERT INTO ${tableQueryName} (
 					id,

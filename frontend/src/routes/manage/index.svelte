@@ -7,6 +7,7 @@
 	import { BigNumber, utils } from 'ethers'
 	const { parseUnits } = utils
 
+	import { random } from '../../lib/random'
 
 	const getPlaceholderVault = () => {
 		const vaultConfig = getDefaultVaultConfig(random(Object.values(VaultType)))
@@ -42,9 +43,9 @@
 	]
 
 
+	import Tableland from '../../components/Tableland.svelte'
 	import Vault from '../../components/Vault.svelte'
 	import VaultManager from '../../components/VaultManager.svelte'
-import { random } from '../../lib/random';
 </script>
 
 
@@ -53,24 +54,24 @@ import { random } from '../../lib/random';
 		<h1>{$_('My Vaults')}</h1>
 	</section>
 
-	<section id="top">
-		<div class="column">
-			{#each vaults as { vaultConfig, vaultStatus, vaultPosition }}
-				<div class="row">
-					<Vault
-						{vaultConfig}
-						{vaultStatus}
-						{vaultPosition}
-					/>
+	<section id="top" class="column">
+		<Tableland />
 
-					<VaultManager
-						{vaultConfig}
-						{vaultStatus}
-						{vaultPosition}
-					/>
-				</div>
-			{/each}
-		</div>
+		{#each vaults as { vaultConfig, vaultStatus, vaultPosition }}
+			<div class="row">
+				<Vault
+					{vaultConfig}
+					{vaultStatus}
+					{vaultPosition}
+				/>
+
+				<VaultManager
+					{vaultConfig}
+					{vaultStatus}
+					{vaultPosition}
+				/>
+			</div>
+		{/each}
 	</section>
 </main>
 
