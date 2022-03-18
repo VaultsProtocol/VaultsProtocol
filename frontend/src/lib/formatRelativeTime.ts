@@ -20,14 +20,15 @@ export const formatRelativeTime = (
 		locale?: string
 	} = {}
 ): string => {
-	let elapsed = Math.max(d1 - d2, 0)
+	let elapsed = Math.abs(d1 - d2)
 	const sign = Math.sign(d1 - d2)
 
 	const result = []
 	for (const [unit, amount] of units)
-		if (Math.abs(elapsed) >= amount || (!result.length && unit === 'second')){
+		if (elapsed >= amount || (!result.length && unit === 'second')){
 			result.push(
-				new Intl.RelativeTimeFormat(locale, { style }).format(sign * Math.floor(elapsed / amount), unit)
+				new Intl.RelativeTimeFormat(locale, { style })
+					.format(sign * Math.floor(elapsed / amount), unit)
 			)
 
 			if(--resolution === 0)
@@ -36,8 +37,15 @@ export const formatRelativeTime = (
 			elapsed %= amount
 		}
 	
-	return result
-		.map(string => string.replace(/^in | ago$/, ''))
-		.join(' ')
+	// return result
+	// 	.map(string => string.replace(/^in | ago$/, ''))
+	// 	.join(' ')
+	// 	// .replace(/(?:[a-z]*)\./g, '')
+
+	return [
+		...result.slice(0, -1).map(string => string.replace(/ [^ ]+?$/, '')),
+		result[result.length - 1]
+	]
+		.join(', ')
 		.replace(/\./g, '')
 }
