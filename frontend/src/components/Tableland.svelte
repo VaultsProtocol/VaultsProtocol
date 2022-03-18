@@ -60,32 +60,25 @@
 		</div>
 	</header>
 
-	{#if connection}
-		<main transition:scale>
-			<HeightContainer>
-				{#await getTables(connection)}
-					<div class="card" transition:fly={{ x: 100 }}>
-						{$_('Fetching your tables from Tableland...')}
-					</div>
-				{:then tables}
-					<div class="column list" transition:scale>
-						{#each tables as table, i (table.name)}
-							<article class="card row" transition:fly={{ x: 100, delay: i * 200 }}>
-								<slot name="table"
-									{table}
-									{connection}
-									{network} {account}
-								/>
-							</article>
-						{/each}
-					</div>
-				{/await}
-			</HeightContainer>
+	<HeightContainer isOpen={!!connection} renderOnlyWhenOpen>
+		<main class="stack">
+			{#await getTables(connection)}
+				<div class="card column centered" transition:scale>
+					{$_('Fetching your tables from Tableland...')}
+				</div>
+			{:then tables}
+				<div class="column list" transition:scale>
+					{#each tables as table, i (table.name)}
+						<article class="card row" transition:fly={{ x: 100, delay: i * 200 }}>
+							<slot name="table"
+								{table}
+								{connection}
+								{network} {account}
+							/>
+						</article>
+					{/each}
+				</div>
+			{/await}
 		</main>
-	{/if}
+	</HeightContainer>
 </article>
-
-
-<style>
-
-</style>
