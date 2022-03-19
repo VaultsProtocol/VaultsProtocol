@@ -321,6 +321,13 @@
 
 		transition: 1s;
 		/* transform-origin: left; */
+
+		animation: FlipIn 1.25s ease-out;
+	}
+	@keyframes FlipIn {
+		from {
+			transform: scale(0.5) rotateY(0.5turn);
+		}
 	}
 	.vault-container:is(:hover, :focus) .vault.isRotatable {
 		transform: rotateY(0.5turn);
