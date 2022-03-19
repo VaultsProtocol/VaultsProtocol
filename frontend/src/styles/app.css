@@ -522,6 +522,12 @@ details summary:hover, details[open] summary {
 }
 
 
+/* Prevent glitched Svelte-transitioned elements from blocking pointer events */
+[style~="animation"][style~="__svelte_"] {
+	pointer-events: none !important;
+}
+
+
 /* Coinbase Wallet */
 :root .-cbwsdk-css-reset .-cbwsdk-snackbar {
 	top: var(--header-height);
