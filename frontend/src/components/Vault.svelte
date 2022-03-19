@@ -67,12 +67,10 @@
 
 	// Components
 	import Address from './Address.svelte'
-	import Countdown from './Countdown.svelte'
 	import Container from './Container.svelte'
-	import PieChart from './PieChart.svelte'
-	import Tabs from './Tabs.svelte'
 	import TokenBalance from './TokenBalance.svelte'
-	import Icon from './Icon.svelte'
+	// import PieChart from './PieChart.svelte'
+	// import Icon from './Icon.svelte'
 
 
 	// Images
