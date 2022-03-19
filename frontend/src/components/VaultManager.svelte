@@ -1,13 +1,18 @@
 <script lang="ts">
 	// Constants/types
 	import { _ } from 'svelte-i18n'
-	import { VaultType, type VaultConfig, type VaultStatus, type VaultPosition } from '../lib/vaults'
+	import { type VaultType, type VaultConfig, type VaultStatus, type VaultPosition, vaultTypeInfo } from '../lib/vaults'
 	import { BigNumber } from 'ethers'
+	import { networksByChainID, vaultAssetsByNetwork } from '$lib/networks'
 
 	enum ManagePositionMode {
 		Add = 'Add',
 		Remove = 'Remove'
 	}
+
+
+	// Stores
+	import { account } from '../stores/account'
 
 
 	// External state
@@ -21,18 +26,19 @@
 
 
 	// Internal state
-	let managePositionMode = ManagePositionMode.Add
-
-	let balanceDelta = BigNumber.from(0)
+	const params = {
+		managePositionMode: ManagePositionMode.Add,
+		balanceDelta: BigNumber.from(0)
+	}
 
 	$: action =
-		managePositionMode === ManagePositionMode.Add ?
+		params.managePositionMode === ManagePositionMode.Add ?
 			vaultPosition.balance.eq(0) ?
 				'Deposit and Mint'
 			:
 				'Deposit'
 		:
-			vaultPosition.balance.sub(balanceDelta).eq(0) ?
+			vaultPosition.balance.sub(params.balanceDelta).eq(0) ?
 				'Withdraw and Burn'
 			:
 				'Withdraw'
@@ -48,73 +54,145 @@
 	import Tabs from '../components/Tabs.svelte'
 	import TokenAmountSelect from './TokenAmountSelect.svelte'
 	import TokenBalance from './TokenBalance.svelte'
-	
+	import TransactionFlow from './TransactionFlow.svelte'
+
 	
 	// Styles/animations
 	import { scale } from 'svelte/transition'
-import { networksByChainID, vaultAssetsByNetwork } from '$lib/networks';
 </script>
 
 
-<form class="card column manage-positions" on:submit={onSubmit}>
-	<h2>Manage Position</h2>
+<section class="card column manage-positions" on:submit={onSubmit}>
+	<TransactionFlow
+		account={$account}
+		network={networksByChainID[vaultConfig.chainId]}
 
-	<hr>
-
-	<Tabs
-		bind:value={managePositionMode}
-		values={Object.values(ManagePositionMode)}
-		labels={{
-			[ManagePositionMode.Add]: 'Add Position',
-			[ManagePositionMode.Remove]: 'Remove Position',
+		createTransaction={async ({network, address, signer}) => {
+			
 		}}
-	/>
 
-	<div class="card column">
-		<div class="token-amount">
-			<TokenAmountSelect
-				availableTokens={vaultConfig.tokens.length ? vaultConfig.tokens : vaultAssetsByNetwork[networksByChainID[vaultConfig.chainId]?.slug][0] ?? []}
-				bind:token={vaultConfig.tokens[0]}
-				bind:amount={balanceDelta}
-				min={0}
-				max={managePositionMode === ManagePositionMode.Remove ? vaultPosition.balance : undefined}
+		onTransactionSuccess={async tx => {
+		
+		}}
+	>
+		<svelte:fragment slot="idle" let:actions={{ next }}>
+			<h2>Manage Position</h2>
+
+			<hr>
+
+			<Tabs
+				bind:value={params.managePositionMode}
+				values={Object.values(ManagePositionMode)}
+				labels={{
+					[ManagePositionMode.Add]: 'Add Position',
+					[ManagePositionMode.Remove]: 'Remove Position',
+				}}
 			/>
-		</div>
 
-		<div class="balance-row row">
-			<strong>Your Balance</strong>
+			<div class="card column">
+				<div class="token-amount">
+					<TokenAmountSelect
+						availableTokens={vaultConfig.tokens.length ? vaultConfig.tokens : vaultAssetsByNetwork[networksByChainID[vaultConfig.chainId]?.slug][0] ?? []}
+						bind:token={vaultConfig.tokens[0]}
+						bind:amount={params.balanceDelta}
+						max={params.managePositionMode === ManagePositionMode.Remove ? vaultPosition.balance : undefined}
+					/>
+				</div>
 
-			<div class="row">
-				<output>
-					<TokenBalance
-						erc20Token={vaultConfig.tokens[0]}
-						balance={vaultPosition.balance}
-					/>
-				</output>
-				➔
-				<output>
-					<TokenBalance
-						erc20Token={vaultConfig.tokens[0]}
-						balance={
-							managePositionMode === ManagePositionMode.Add ?
-								vaultPosition.balance.add(balanceDelta)
-							:
-								vaultPosition.balance.sub(balanceDelta)
-						}
-					/>
-				</output>
+				<div class="balance-row row">
+					<strong>Your Balance</strong>
+
+					<div class="row">
+						<output>
+							<TokenBalance
+								erc20Token={vaultConfig.tokens[0]}
+								balance={vaultPosition.balance}
+							/>
+						</output>
+						➔
+						<output>
+							<TokenBalance
+								erc20Token={vaultConfig.tokens[0]}
+								balance={
+									params.managePositionMode === ManagePositionMode.Add ?
+										vaultPosition.balance.add(params.balanceDelta)
+									:
+										vaultPosition.balance.sub(params.balanceDelta)
+								}
+							/>
+						</output>
+					</div>
+				</div>
 			</div>
-		</div>
-	</div>
 
-	<div class="row centered">
-		<div class="stack">
-			{#key action}
-				<button class="primary large" transition:scale>{$_(action)}</button>
-			{/key}
-		</div>
-	</div>
-</form>
+			<div class="row centered">
+				<div class="stack">
+					{#key action}
+						<button class="primary large" transition:scale>{$_(action)}</button>
+					{/key}
+				</div>
+			</div>
+		</svelte:fragment>
+
+		<!-- <svelte:fragment slot="confirming" let:actions={{ back }}> -->
+		<svelte:fragment slot="confirming-message" let:network>
+			<div>
+				{action}
+
+				<TokenBalance
+					erc20Token={vaultConfig.tokens[0]}
+					balance={params.balanceDelta}
+				/>
+
+				{$_('to/from {vaultType} vault "{vaultName}" on {networkName}}!', {
+					values: {
+						vaultType: vaultTypeInfo[vaultConfig.type].label,
+						vaultName: vaultConfig.about.name,
+						networkName: network.name
+					}
+				})}
+			</div>
+		</svelte:fragment>
+
+		<svelte:fragment slot="pending-message" let:network>
+			<div>
+				{action}
+
+				<TokenBalance
+					erc20Token={vaultConfig.tokens[0]}
+					balance={params.balanceDelta}
+				/>
+
+				{$_('to/from {vaultType} vault "{vaultName}" on {networkName}}!', {
+					values: {
+						vaultType: vaultTypeInfo[vaultConfig.type].label,
+						vaultName: vaultConfig.about.name,
+						networkName: network.name
+					}
+				})}
+			</div>
+		</svelte:fragment>
+
+		<svelte:fragment slot="success-message" let:network>
+			<div>
+				{action}
+
+				<TokenBalance
+					erc20Token={vaultConfig.tokens[0]}
+					balance={params.balanceDelta}
+				/>
+
+				{$_('to/from {vaultType} vault "{vaultName}" on {networkName}}!', {
+					values: {
+						vaultType: vaultTypeInfo[vaultConfig.type].label,
+						vaultName: vaultConfig.about.name,
+						networkName: network.name
+					}
+				})}
+			</div>
+		</svelte:fragment>
+	</TransactionFlow>
+</section>
 
 
 <style>
