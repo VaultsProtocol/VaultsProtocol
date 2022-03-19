@@ -77,7 +77,9 @@
 	import websiteIcon from '../assets/icons/website.svg'
 	import twitterIcon from '../assets/icons/twitter.svg'
 	import discordIcon from '../assets/icons/discord.svg'
+
 	import cardBack from '../assets/card-faces/card-back.svg'
+
 	import cardFaceFrog from '../assets/card-faces/frog.svg'
 	import cardFaceGift from '../assets/card-faces/gift.svg'
 	import cardFaceVote from '../assets/card-faces/voting-box.svg'
@@ -128,35 +130,28 @@
 			</header>
 
 			<div class="stack">
-				<figure class="illustration-wrapper card stack" style="background-color: {vaultTypeInfo[vaultConfig.type]?.color}">
+				<figure class="illustration-wrapper card stack centered" style="background-color: {vaultTypeInfo[vaultConfig.type]?.color}">
 					{#key vaultConfig.type}
-						<div class="illustration row centered" transition:scale>
-							{#if vaultConfig.type === VaultType.Standard}
-								{#if isPosition}
-									<img src="{cardFaceShark}" />
-								{:else}
-									<img src="{cardFaceSharkShadow}" />
-								{/if}
-							{:else if vaultConfig.type === VaultType.Degen}
-								{#if isPosition}
-									<img src="{cardFaceFrog}" />
-								{:else}
-									<img src="{cardFaceFrogShadow}" />
-								{/if}
-							{:else if vaultConfig.type === VaultType.DAO}
-								{#if isPosition}
-									<img src="{cardFaceVote}" />
-								{:else}
-									<img src="{cardFaceVoteShadow}" />
-								{/if}
-							{:else if vaultConfig.type === VaultType.Charity}
-								{#if isPosition}
-									<img src="{cardFaceGift}" />
-								{:else}
-									<img src="{cardFaceGiftShadow}" />
-								{/if}
-							{/if}
-						</div>
+						<!-- svelte-ignore a11y-missing-attribute -->
+						<img
+							class="illustration"
+							src={
+								isPosition
+									? {
+										[VaultType.Standard]: cardFaceShark,
+										[VaultType.Degen]: cardFaceFrog,
+										[VaultType.DAO]: cardFaceVote,
+										[VaultType.Charity]: cardFaceGift,
+									}[vaultConfig.type]
+									: {
+										[VaultType.Standard]: cardFaceSharkShadow,
+										[VaultType.Degen]: cardFaceFrogShadow,
+										[VaultType.DAO]: cardFaceVoteShadow,
+										[VaultType.Charity]: cardFaceGiftShadow,
+									}[vaultConfig.type]
+							}
+							transition:scale
+						/>
 					{/key}
 				</figure>
 			</div>
@@ -355,8 +350,6 @@
 	.illustration {
 		aspect-ratio: 1.5;
 		animation: Float 6s infinite ease-in-out;
-	}
-	.illustration img {
 		height: 12em;
 	}
 	@keyframes Float {
