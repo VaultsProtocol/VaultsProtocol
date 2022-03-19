@@ -254,8 +254,8 @@
 							required
 							bind:value={vaultConfig.type}
 							values={Object.keys(VaultType)}
-							labels={Object.fromEntries(Object.entries(vaultTypeInfo).map(([key, {label}]) => [key, label]))}
-							colors={Object.fromEntries(Object.entries(vaultTypeInfo).map(([key, {color}]) => [key, color]))}
+							getLabel={vaultType => vaultTypeInfo[vaultType]?.label}
+							getColor={vaultType => vaultTypeInfo[vaultType]?.color}
 						/>
 
 						<div class="stack">

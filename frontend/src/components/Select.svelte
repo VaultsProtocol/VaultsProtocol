@@ -13,10 +13,13 @@
 	// External state
 	export let value: Value
 	export let values: Value[]
-	export let getLabel: (Value) => string
+
 	export let labels: Record<Value, string>
-	export let getIcon: (Value) => string
+	export let getLabel: (Value) => string = value => labels?.[value] ?? value
 	export let icons: Record<Value, string>
+	export let getIcon: (Value) => string = value => icons?.[value]
+	export let colors: Record<Value, string>
+	export let getColor: (Value) => string = value => colors?.[value]
 
 	export let placeholderLabel: string = 'Choose...'
 
@@ -60,14 +63,14 @@
 		aria-expanded={isOpen}
 		tabindex="-1"
 	>
-		<slot {value} label={(value && getLabel?.(value)) ?? labels?.[value] ?? value}>
-			{#if (value && getIcon?.(value)) ?? icons?.[value]}
-				<img src={getIcon?.(value) ?? icons?.[value]} />
+		<slot {value} label={getLabel(value) ?? value}>
+			{#if value && getIcon(value)}
+				<img src={getIcon(value)} />
 			{/if}
 
 			<Container transitionWidth>
 				{value
-					? getLabel?.(value) ?? labels?.[value] ?? value
+					? getLabel(value)
 					: placeholderLabel}
 			</Container>
 		</slot>
@@ -100,6 +103,7 @@
 
 <style>
 	button {
+		--button-active-background-color: var(--background-color-2);
 		width: 100%;
 	}
 

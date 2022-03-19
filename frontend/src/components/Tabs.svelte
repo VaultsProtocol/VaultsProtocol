@@ -11,9 +11,14 @@
 	// External state
 	export let value: Value
 	export let values: Value[]
+
 	export let labels: Record<Value, string>
+	export let getLabel: (Value) => string = value => labels?.[value] ?? value
 	export let icons: Record<Value, string>
-	export let colors: Record<Value, string> = {}
+	export let getIcon: (Value) => string = value => icons?.[value]
+	export let colors: Record<Value, string>
+	export let getColor: (Value) => string = value => colors?.[value]
+
 	export let required = false
 
 	export let layoutClasses: 'row equal' | 'flex' = 'row equal'
@@ -30,18 +35,18 @@
 		<label class="select-option">
 			<input type="radio" bind:group={value} value={optionValue} {required} name={groupName} />
 
-			<slot {value} label={labels?.[optionValue] ?? optionValue}>
+			<slot {value} label={getLabel(optionValue) ?? optionValue}>
 				<span
 					class="button {buttonClasses}"
 					style="
-						{colors[optionValue] ? `--button-active-background-color: ${colors[optionValue]};` : ''}
+						{getColor(optionValue) ? `--accent-color: ${getColor(optionValue)};` : ''}
 					"
 				>
-					{#if value && icons?.[optionValue]}
-						<img src={icons?.[optionValue]} />
+					{#if optionValue && getIcon(optionValue)}
+						<img src={getIcon(optionValue)} />
 					{/if}
 
-					{labels[optionValue]}
+					{getLabel(optionValue)}
 				</span>
 			</slot>
 		</label>

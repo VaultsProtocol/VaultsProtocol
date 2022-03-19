@@ -360,7 +360,6 @@ hr {
 	--grid-gap: 0.2em;
 
 	--button-transform-origin: center;
-	--button-active-background-color: var(--background-color-2);
 
 	/* background: var(--background-color-white); */
 	border: 1px solid var(--background-color-4);
