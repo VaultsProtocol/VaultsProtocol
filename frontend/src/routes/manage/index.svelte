@@ -26,8 +26,9 @@
 			vaultConfig,
 
 			vaultStatus: {
+				contractAddress: '0x0000000000000000000000000000000000000000',
 				tokenId: 0,
-				totalBalance: parseUnits('12345678', decimals),
+				totalBalance: parseUnits((Math.random() * 12345678 | 0).toString(), decimals),
 				endTimestamp: Date.now() + 120000
 			},
 

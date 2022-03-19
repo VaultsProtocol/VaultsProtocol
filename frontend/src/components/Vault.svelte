@@ -11,31 +11,29 @@
 	
 	export let vaultConfig: VaultConfig<T>
 
-	export let vaultStatus: VaultStatus = {
-		tokenId: 0,
-		totalBalance: BigNumber.from(10000),
-		endTimestamp: Date.now() + 120000
-	}
+	export let vaultStatus: VaultStatus
 
-	export let vaultPosition: VaultPosition = {
-		balance: BigNumber.from(0),
-		yieldEarned: BigNumber.from(0)
-	}
+	export let vaultPosition: VaultPosition
 
 	export let isRotatable = false
 
 
 	// Internal state
 
-	let isVaultPosition = false // Vault vs individual position
-	// $: isVaultPosition = !!vaultPosition
+	let isDeployed: boolean
+	$: isDeployed = !!vaultStatus
+
+
+	let isShowingIndividualPosition: boolean
+	$: isShowingIndividualPosition = !!vaultPosition
+
 
 	let network: Network
 	$: network = networksByChainID[vaultConfig.chainId]
 
 	let metadata
 	$: metadata =
-		/* isVaultPosition ?
+		/* isShowingIndividualPosition ?
 			[
 				{ icon: '', label: 'Balance', displayType: MetadataType.TokenBalance, value: vaultPosition.withdrawableBalance },
 				{ icon: '', label: 'Earned', displayType: MetadataType.TokenBalance, value: vaultPosition.yieldEarned },
@@ -104,7 +102,7 @@
 	<foreignObject x="0" y="0" width="400" height="666.666">
 		<article
 			class="vault stack"
-			class:isVaultPosition
+			class:isShowingIndividualPosition
 			class:isRotatable
 			style="
 				--card-back-image: url({cardBack});
@@ -152,8 +150,25 @@
 							{/if}
 						</div>
 
-						{#if isVaultPosition ? vaultStatus.totalBalance : vaultConfig.config.initialLiquidity}
-							<TokenBalance balance={isVaultPosition ? vaultStatus.totalBalance : vaultConfig.config.initialLiquidity.amount} erc20Token={vaultConfig.tokens[0]} />
+						{#if !isDeployed}
+							<TokenBalance
+								balance={vaultConfig.config.initialLiquidity.amount}
+								erc20Token={vaultConfig.tokens[0]}
+							/>
+						{:else}
+							<span>
+								{#if isShowingIndividualPosition}
+									<TokenBalance
+										balance={vaultPosition.balance}
+										erc20Token={vaultConfig.tokens[0]}
+									/>
+									/
+								{/if}
+								<TokenBalance
+									balance={vaultStatus.totalBalance}
+									erc20Token={vaultConfig.tokens[0]}
+								/>
+							</span>
 						{/if}
 					</header>
 
@@ -165,7 +180,7 @@
 									<img
 										class="illustration"
 										src={
-											isVaultPosition
+											isShowingIndividualPosition
 												? {
 													[VaultType.Standard]: cardFaceShark,
 													[VaultType.Degen]: cardFaceFrog,

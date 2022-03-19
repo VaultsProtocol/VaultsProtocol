@@ -250,6 +250,7 @@ export const getRandomVaultConfig = () => {
 
 
 export type VaultStatus = {
+	contractAddress: string
 	tokenId: number
 	totalBalance: BigNumber
 	endTimestamp: number
