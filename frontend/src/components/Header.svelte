@@ -128,7 +128,7 @@
 	}
 
 	.logo img {
-		width: 400px;
+		height: 60%;
 	}
 	.logo > :global(*) {
 		/* border-radius: 50%; */
