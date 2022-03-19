@@ -28,11 +28,16 @@
 
 
 	import Vault from '../components/Vault.svelte'
+
+	// Images
+	import browseIcon from '../assets/icons/browse-icon.svg'
 </script>
 
 
 <main>
 	<section>
+		<!-- temp -->
+		<img src={browseIcon} width="30" />
 		<h1>{$_('Browse Vaults')}</h1>
 	</section>
 

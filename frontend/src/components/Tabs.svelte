@@ -47,7 +47,7 @@
 	}
 
 	.button {
-		border: 2px solid #343434;
+		border: 1px solid #343434;
 		padding: 5px 10px;
 		min-height: 40px;
 		height: 100%;

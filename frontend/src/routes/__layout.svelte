@@ -46,7 +46,7 @@
 <div class="top">
 	{#if $isLoading}
 		<div class="loading column centered" transition:scale>
-			<img src={networkIcons[1]} width="200" />
+			<img src={projectLogo} alt={$_('PROJECT_NAME')}/>
 			<h3>Loading...</h3>
 		</div>
 	{:else}

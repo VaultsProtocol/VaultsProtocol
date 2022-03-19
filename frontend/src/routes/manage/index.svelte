@@ -64,12 +64,18 @@
 	import Tableland from '../../components/Tableland.svelte'
 	import Vault from '../../components/Vault.svelte'
 	import VaultManager from '../../components/VaultManager.svelte'
-</script>
 
+	// Images
+	import manageIcon from '../../assets/icons/manage-icon.svg'
+
+</script>
 
 <main>
 	<section>
-		<h1>{$_('My Vaults')}</h1>
+		<h1>
+			<!-- temp -->
+			<img src={manageIcon} width="30" />
+			{$_('Manage Vaults')}</h1>
 	</section>
 
 	<section id="top" class="column">

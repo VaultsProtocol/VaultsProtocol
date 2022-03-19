@@ -227,7 +227,8 @@ summary:active > :is(button, .button, [role='button']) {
 input[type='number'], input[type='text'] {
 	font-size: 1.2em;
 	font-size: 1.0em;
-	padding: 0.4em 0.75em;
+	/* padding: 0.4em 0.75em; */
+	padding: .75em 0.75em;
 }
 
 /* input[type='number'] {
@@ -310,8 +311,8 @@ source {
 hr {
 	background: none;
 	border: none;
-	/* border-bottom: var(--background-color-4) 10px solid; */
-	border-bottom: var(--background-color-4) 2px solid;
+	border-bottom: var(--background-color-f3) 10px solid;
+	/* border-bottom: var(--background-color-4) 2px solid; */
 	justify-self: stretch;
 	grid-column: 1 / -1;
 }
