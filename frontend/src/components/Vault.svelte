@@ -130,7 +130,7 @@
 					'metis': '#00dacd',
 					'skale': '#000',
 					'celo': '#fbcc5c',
-				}[mainnetForTestnet[networksByChainID[vaultConfig.chainId].slug].slug] ?? ''};
+				}[mainnetForTestnet[networksByChainID[vaultConfig.chainId]?.slug]?.slug] ?? ''};
 			"
 		>
 			<div class="back card"></div>
