@@ -2,7 +2,7 @@
 	// Constants/types
 	import { _ } from 'svelte-i18n'
 	import { type VaultConfig, type VaultStatus, type VaultPosition, MetadataType, VaultType, vaultTypeInfo, yieldStrategyInfo, GovernanceType, YieldStrategy } from '../lib/vaults'
-	import { type Network, networkIcons, networksByChainID } from '$lib/networks'
+	import { type Network, networkIcons, networksByChainID, mainnetForTestnet } from '$lib/networks'
 	import { BigNumber } from 'ethers'
 	
 	
@@ -22,18 +22,20 @@
 		yieldEarned: BigNumber.from(0)
 	}
 
+	export let isRotatable = false
+
 
 	// Internal state
 
-	let isPosition = false // Vault vs individual position
-	// $: isPosition = !!vaultPosition
+	let isVaultPosition = false // Vault vs individual position
+	// $: isVaultPosition = !!vaultPosition
 
 	let network: Network
 	$: network = networksByChainID[vaultConfig.chainId]
 
 	let metadata
 	$: metadata =
-		/* isPosition ?
+		/* isVaultPosition ?
 			[
 				{ icon: '', label: 'Balance', displayType: MetadataType.TokenBalance, value: vaultPosition.withdrawableBalance },
 				{ icon: '', label: 'Earned', displayType: MetadataType.TokenBalance, value: vaultPosition.yieldEarned },
@@ -100,10 +102,38 @@
 	<foreignObject x="-100" y="-100" width="600" height="866.666"> -->
 <svg class="vault-container" viewBox="0 0 400 666.666" xmlns="http://www.w3.org/2000/svg">
 	<foreignObject x="0" y="0" width="400" height="666.666">
-		<article class="vault stack" style="--card-background: url({cardBack})">
-			<div class="back card">
-				
-			</div>
+		<article
+			class="vault stack"
+			class:isVaultPosition
+			class:isRotatable
+			style="
+				--card-back-image: url({cardBack});
+
+				--vault-type-color: {vaultTypeInfo[vaultConfig.type]?.color ?? ''};
+
+				--vault-token-color: {{
+					'ETH': '#627eea',
+					'DAI': '#faba34',
+					'USDC': '#2775c9',
+					'USDT': '#26a17b',
+					'MATIC': '#8248e5',
+					'AVAX': '#f9273c',
+					'SKALE ETH': '#000',
+					'CELO': '#fbcc5c',
+				}[vaultConfig.tokens[0]?.symbol] ?? ''};
+
+				--vault-network-color: {{
+					'ethereum': '#627eea',
+					'polygon': '#8248e5',
+					'avalanche': '#f9273c',
+					'arbitrum': '#28a0f0',
+					'metis': '#00dacd',
+					'skale': '#000',
+					'celo': '#fbcc5c',
+				}[mainnetForTestnet[networksByChainID[vaultConfig.chainId].slug].slug] ?? ''};
+			"
+		>
+			<div class="back card"></div>
 
 			<div class="front card">
 				<Container class="column">
@@ -111,7 +141,7 @@
 						<div class="row">
 							<div class="stack">
 								{#key vaultConfig.chainId}
-									<div class="chain" transition:scale>
+									<div class="network" transition:scale>
 										<img src={networkIcons[vaultConfig.chainId]} width="14"/>
 									</div>
 								{/key}
@@ -122,34 +152,36 @@
 							{/if}
 						</div>
 
-						{#if isPosition ? vaultStatus.totalBalance : vaultConfig.config.initialLiquidity}
-							<TokenBalance balance={isPosition ? vaultStatus.totalBalance : vaultConfig.config.initialLiquidity.amount} erc20Token={vaultConfig.tokens[0]} />
+						{#if isVaultPosition ? vaultStatus.totalBalance : vaultConfig.config.initialLiquidity}
+							<TokenBalance balance={isVaultPosition ? vaultStatus.totalBalance : vaultConfig.config.initialLiquidity.amount} erc20Token={vaultConfig.tokens[0]} />
 						{/if}
 					</header>
 
 					<div class="stack">
-						<figure class="illustration-wrapper card stack centered" style="background-color: {vaultTypeInfo[vaultConfig.type]?.color}">
+						<figure class="illustration-wrapper card stack centered">
 							{#key vaultConfig.type}
-								<!-- svelte-ignore a11y-missing-attribute -->
-								<img
-									class="illustration"
-									src={
-										isPosition
-											? {
-												[VaultType.Standard]: cardFaceShark,
-												[VaultType.Degen]: cardFaceFrog,
-												[VaultType.DAO]: cardFaceVote,
-												[VaultType.Charity]: cardFaceGift,
-											}[vaultConfig.type]
-											: {
-												[VaultType.Standard]: cardFaceSharkShadow,
-												[VaultType.Degen]: cardFaceFrogShadow,
-												[VaultType.DAO]: cardFaceVoteShadow,
-												[VaultType.Charity]: cardFaceGiftShadow,
-											}[vaultConfig.type]
-									}
-									transition:scale
-								/>
+								{#if vaultConfig.type}
+									<!-- svelte-ignore a11y-missing-attribute -->
+									<img
+										class="illustration"
+										src={
+											isVaultPosition
+												? {
+													[VaultType.Standard]: cardFaceShark,
+													[VaultType.Degen]: cardFaceFrog,
+													[VaultType.DAO]: cardFaceVote,
+													[VaultType.Charity]: cardFaceGift,
+												}[vaultConfig.type]
+												: {
+													[VaultType.Standard]: cardFaceSharkShadow,
+													[VaultType.Degen]: cardFaceFrogShadow,
+													[VaultType.DAO]: cardFaceVoteShadow,
+													[VaultType.Charity]: cardFaceGiftShadow,
+												}[vaultConfig.type]
+										}
+										transition:scale
+									/>
+								{/if}
 							{/key}
 						</figure>
 					</div>
@@ -266,13 +298,6 @@
 
 
 <style>
-	.card {
-		background-color: var(--background-color-white);
-		border: 2px solid var(--border-color-cc);
-		box-shadow: none;
-	}
-
-
 	.vault-container {
 		width: 400px;
 		height: 666.666px;
@@ -283,6 +308,13 @@
 	}
 	
 	.vault {
+		/* DYNAMICALLY OVERRIDABLE */
+		--card-back-image: url();
+		--vault-type-color: var(--background-color-2);
+		--vault-token-color: var(--background-color-2);
+		--vault-network-color: var(--background-color-2);
+		--vault-card-border-width: 0.5em;
+
 		font-size: 16px;
 		/* position: absolute; */
 		--grid-gap: 1em;
@@ -290,10 +322,8 @@
 		transition: 1s;
 		/* transform-origin: left; */
 	}
-	.vault-container:is(:hover, :focus) .vault {
-		/* transform: rotateY(0.5turn); */
-
-
+	.vault-container:is(:hover, :focus) .vault.isRotatable {
+		transform: rotateY(0.5turn);
 		/* transform: translateZ(-200px) rotateY(0.5turn) translateZ(-200px); */
 		/* transform-origin: center; */
 	}
@@ -302,21 +332,36 @@
 		backface-visibility: hidden;
 		transition: 1s;
 	}
+	.vault > .card.back {
+		background: black var(--card-back-image) center / cover no-repeat;
+		transform: rotateY(0.5turn);
+	}
 	.vault > .card.front {
+		background:
+			var(--background-color-white)
+			linear-gradient(
+				135deg,
+				var(--vault-network-color, var(--vault-type-color)) -20%,
+				var(--vault-type-color) 40%,
+				var(--vault-type-color)
+			);
 		overflow-y: auto;
 		max-height: calc(100vh - var(--header-height) - 4rem);
 		/* transform: translateZ(1px); */
 	}
-	.vault > .card.back {
-		background: black var(--card-background) center / cover no-repeat;
-		transform: rotateY(0.5turn);
+	.vault > .card.front::before {
+		content: '';
+		position: absolute;
+		inset: var(--vault-card-border-width);
+		background-color: rgba(255, 255, 255, 0.94);
+		border-radius: calc(var(--card-radius) - var(--vault-card-border-width));
 	}
 
 	header {
 		--grid-gap: 2em;
 		/* align-items: start; */
 	}
-	.chain {
+	.network {
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -327,7 +372,7 @@
 		transform: scale(3) translateZ(1px);
 		z-index: 1;
 		border: 0.1px solid var(--background-color-4);
-		filter: drop-shadow(0 0 1px var(--background-color-3));
+		filter: drop-shadow(0 0 1px var(--vault-network-color, var(--background-color-3)));
 		align-self: start;
 	}
 	h2 {
@@ -338,10 +383,11 @@
 	}
 
 	.illustration-wrapper {
-		background-color: var(--background-color-2);
+		background-color: var(--vault-type-color);
 		border: rgba(0, 0, 0, 0.3) 0.25em solid;
 		transition: 0.3s;
 		border-radius: 5px;
+		height: 15em;
 	}
 	.illustration {
 		aspect-ratio: 1.5;
