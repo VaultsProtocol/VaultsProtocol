@@ -472,6 +472,14 @@ section.card {
 	}
 }
 
+.row-inline {
+	display: inline-grid;
+	grid-auto-flow: column;
+	gap: 1ch;
+	justify-content: space-between;
+	align-items: center;
+}
+
 
 .grid {
 	display: grid;
