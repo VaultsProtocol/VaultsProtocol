@@ -204,7 +204,16 @@
 				<hr>
 
 				<div class="column vault-row">
-					<label class="card column">
+					<label class="card row">
+						<h3>{$_('Network / Chain')}</h3>
+						<Select
+							bind:value={vaultConfig.chainId}
+							values={availableNetworks.map(({ chainId }) => String(chainId))}
+							getLabel={chainId => networksByChainID[chainId].name}
+							icons={networkIcons}
+						/>
+					</label>
+					<!-- <label class="card column">
 						<h3>{$_('Network / Chain')}</h3>
 						<Tabs
 							bind:value={vaultConfig.chainId}
@@ -212,7 +221,7 @@
 							getLabel={chainId => networksByChainID[chainId].name}
 							icons={networkIcons}
 						/>
-					</label>
+					</label> -->
 
 					<label class="card row">
 						<h3>{$_('Vault Asset')}</h3>
@@ -229,7 +238,7 @@
 					<label class="card column">
 						<div class="row">
 							<h3>{$_('Yield Strategy')}</h3>
-							<Select
+							<Tabs
 								bind:value={vaultConfig.yieldStrategy}
 								values={Object.keys(YieldStrategy)}
 								labels={Object.fromEntries(Object.entries(yieldStrategyInfo).map(([key, {label}]) => [key, label]))}
