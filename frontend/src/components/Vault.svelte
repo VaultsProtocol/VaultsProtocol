@@ -96,175 +96,171 @@
 </script>
 
 
-<svg class="vault-container" viewBox="0 0 400 666.666" xmlns="http://www.w3.org/2000/svg">
-	<foreignObject x="0" y="0" width="400" height="666.666">
 <!-- <svg class="vault-container" viewBox="-100 -100 600 866.666" xmlns="http://www.w3.org/2000/svg">
 	<foreignObject x="-100" y="-100" width="600" height="866.666"> -->
-		<div xmlns="http://www.w3.org/1999/xhtml">
-
+<svg class="vault-container" viewBox="0 0 400 666.666" xmlns="http://www.w3.org/2000/svg">
+	<foreignObject x="0" y="0" width="400" height="666.666">
 		<article class="vault stack" style="--card-background: url({cardBack})">
-	<div class="back card">
-		
-	</div>
+			<div class="back card">
+				
+			</div>
 
-	<div class="front card">
-		<Container class="column">
-			<header class="row">
-				<div class="row">
-					<div class="stack">
-						{#key vaultConfig.chainId}
-							<div class="chain" transition:scale>
-								<img src={networkIcons[vaultConfig.chainId]} width="14"/>
+			<div class="front card">
+				<Container class="column">
+					<header class="row">
+						<div class="row">
+							<div class="stack">
+								{#key vaultConfig.chainId}
+									<div class="chain" transition:scale>
+										<img src={networkIcons[vaultConfig.chainId]} width="14"/>
+									</div>
+								{/key}
 							</div>
-						{/key}
+
+							{#if vaultConfig.about.name}
+								<h2 class="align-start" transition:scale>{vaultConfig.about.name}</h2>
+							{/if}
+						</div>
+
+						{#if isPosition ? vaultStatus.totalBalance : vaultConfig.config.initialLiquidity}
+							<TokenBalance balance={isPosition ? vaultStatus.totalBalance : vaultConfig.config.initialLiquidity.amount} erc20Token={vaultConfig.tokens[0]} />
+						{/if}
+					</header>
+
+					<div class="stack">
+						<figure class="illustration-wrapper card stack centered" style="background-color: {vaultTypeInfo[vaultConfig.type]?.color}">
+							{#key vaultConfig.type}
+								<!-- svelte-ignore a11y-missing-attribute -->
+								<img
+									class="illustration"
+									src={
+										isPosition
+											? {
+												[VaultType.Standard]: cardFaceShark,
+												[VaultType.Degen]: cardFaceFrog,
+												[VaultType.DAO]: cardFaceVote,
+												[VaultType.Charity]: cardFaceGift,
+											}[vaultConfig.type]
+											: {
+												[VaultType.Standard]: cardFaceSharkShadow,
+												[VaultType.Degen]: cardFaceFrogShadow,
+												[VaultType.DAO]: cardFaceVoteShadow,
+												[VaultType.Charity]: cardFaceGiftShadow,
+											}[vaultConfig.type]
+									}
+									transition:scale
+								/>
+							{/key}
+						</figure>
 					</div>
 
-					{#if vaultConfig.about.name}
-						<h2 class="align-start" transition:scale>{vaultConfig.about.name}</h2>
-					{/if}
-				</div>
-
-				{#if isPosition ? vaultStatus.totalBalance : vaultConfig.config.initialLiquidity}
-					<TokenBalance balance={isPosition ? vaultStatus.totalBalance : vaultConfig.config.initialLiquidity.amount} erc20Token={vaultConfig.tokens[0]} />
-				{/if}
-			</header>
-
-			<div class="stack">
-				<figure class="illustration-wrapper card stack centered" style="background-color: {vaultTypeInfo[vaultConfig.type]?.color}">
-					{#key vaultConfig.type}
-						<!-- svelte-ignore a11y-missing-attribute -->
-						<img
-							class="illustration"
-							src={
-								isPosition
-									? {
-										[VaultType.Standard]: cardFaceShark,
-										[VaultType.Degen]: cardFaceFrog,
-										[VaultType.DAO]: cardFaceVote,
-										[VaultType.Charity]: cardFaceGift,
-									}[vaultConfig.type]
-									: {
-										[VaultType.Standard]: cardFaceSharkShadow,
-										[VaultType.Degen]: cardFaceFrogShadow,
-										[VaultType.DAO]: cardFaceVoteShadow,
-										[VaultType.Charity]: cardFaceGiftShadow,
-									}[vaultConfig.type]
-							}
-							transition:scale
-						/>
-					{/key}
-				</figure>
-			</div>
-
-			<div class="vault-type-info row">
-				<div class="stack centered">
-					<span class="token-id row centered">{vaultStatus.tokenId}</span>
-					<svg class="text-path" width="50" height="50" viewBox="-1.5 -1.5 3 3">
-						<defs>
-							<!-- <path id="c" d="m -1, 0 a 1,1 0 0,1 2,0 a 1,1 0 0,1 -2,0 "/> -->
-							<!-- <path id="c" d="m -1,0 a 1,1 0 0,1 2,0 a 1,1 0 0,1 -2,0 "/> -->
-							<path id="c" d="
-								M-1,0
-								A1,1,0,1,1,1,0 A1,1,0,1,1,-1,0
-								A1,1,0,1,1,1,0 A1,1,0,1,1,-1,0
-							"/>
-						</defs>
-						<text fill="currentColor" style="font-size: 0.66px; letter-spacing: 0.15px">
-							<textPath xlink:href="#c">
-								EDITION
-								<!-- <animate additive="sum" attributeName="startOffset" from="0%" to="100%" begin="0s" dur="30s" repeatCount="indefinite" /> -->
-							</textPath>
-						</text>
-					</svg>
-				</div>
-				
-				<div class="stack">
-					{#key vaultConfig.type}
-						<div class="vault-type card row centered" transition:scale={{ start: 0.33 }}>
-							{$_(vaultTypeInfo[vaultConfig.type]?.label) ?? $_('???')}
+					<div class="vault-type-info row">
+						<div class="stack centered">
+							<span class="token-id row centered">{vaultStatus.tokenId}</span>
+							<svg class="text-path" width="50" height="50" viewBox="-1.5 -1.5 3 3">
+								<defs>
+									<!-- <path id="c" d="m -1, 0 a 1,1 0 0,1 2,0 a 1,1 0 0,1 -2,0 "/> -->
+									<!-- <path id="c" d="m -1,0 a 1,1 0 0,1 2,0 a 1,1 0 0,1 -2,0 "/> -->
+									<path id="c" d="
+										M-1,0
+										A1,1,0,1,1,1,0 A1,1,0,1,1,-1,0
+										A1,1,0,1,1,1,0 A1,1,0,1,1,-1,0
+									"/>
+								</defs>
+								<text fill="currentColor" style="font-size: 0.66px; letter-spacing: 0.15px">
+									<textPath xlink:href="#c">
+										EDITION
+										<!-- <animate additive="sum" attributeName="startOffset" from="0%" to="100%" begin="0s" dur="30s" repeatCount="indefinite" /> -->
+									</textPath>
+								</text>
+							</svg>
 						</div>
-					{/key}
-				</div>
-
-				<div class="yield-strategy stack">
-					{#key vaultConfig.yieldStrategy}
-						{#if vaultConfig.yieldStrategy !== YieldStrategy.None}
-							<img src={yieldStrategyInfo[vaultConfig.yieldStrategy]?.icon} width="32" height="32" transition:scale />
-						{/if}
-					{/key}
-				</div>
-
-				<!-- {#if vaultConfig.type === VaultType.Degen}
-					<PieChart data={[
-						{ amount: vaultConfig.config.jackpot, label: 'Jackpot' },
-						{ amount: vaultConfig.config.dividend, label: 'Dividend' },
-						{ amount: vaultConfig.config.treasury, label: 'Treasury' },
-					]} />
-				{/if} -->
-			</div>
-
-			{#if vaultConfig.about.description}
-				<Container>
-					<p class="description align-start" transition:scale>{vaultConfig.about.description}</p>
-				</Container>
-			{/if}
-
-			<div class="metadata column" style="--l: {metadata.length}">
-				{#each metadata as { icon, label, displayType, value }, i (label)}
-					<div class="card row" in:scale={{ delay: i * 100 }} out:scale animate:flip>
-						<div class="row">
-							<!-- <img src={icon} width="20" height="20" /> -->
-							<span>{$_(icon)}</span>
-							<span class="label">{$_(label)}</span>
-						</div>
-
-						<div class="stack align-end">
-							{#key value}
-								<span class="value" transition:scale={{ start: 0.3 }}>
-									{#if displayType === MetadataType.TokenBalance}
-										<TokenBalance {value} erc20Token={vaultConfig.tokens[0]} />
-									{:else if displayType === MetadataType.Date}
-										<span>{value} seconds</span>
-										<!-- <Countdown toTimestamp={value} /> -->
-									{:else if displayType === MetadataType.Percent}
-										<span>{value}%</span>
-									{:else if displayType === MetadataType.Address}
-										<Address network={networksByChainID[vaultConfig.chainId]} address={value} linked={false} />
-									{:else if displayType === MetadataType.String}
-										<!-- <span>{$_(value)}</span> -->
-										{value ?? ''}
-									{/if}
-								</span>
+						
+						<div class="stack">
+							{#key vaultConfig.type}
+								<div class="vault-type card row centered" transition:scale={{ start: 0.33 }}>
+									{$_(vaultTypeInfo[vaultConfig.type]?.label) ?? $_('???')}
+								</div>
 							{/key}
 						</div>
+
+						<div class="yield-strategy stack">
+							{#key vaultConfig.yieldStrategy}
+								{#if vaultConfig.yieldStrategy !== YieldStrategy.None}
+									<img src={yieldStrategyInfo[vaultConfig.yieldStrategy]?.icon} width="32" height="32" transition:scale />
+								{/if}
+							{/key}
+						</div>
+
+						<!-- {#if vaultConfig.type === VaultType.Degen}
+							<PieChart data={[
+								{ amount: vaultConfig.config.jackpot, label: 'Jackpot' },
+								{ amount: vaultConfig.config.dividend, label: 'Dividend' },
+								{ amount: vaultConfig.config.treasury, label: 'Treasury' },
+							]} />
+						{/if} -->
 					</div>
-				{/each}
+
+					{#if vaultConfig.about.description}
+						<Container>
+							<p class="description align-start" transition:scale>{vaultConfig.about.description}</p>
+						</Container>
+					{/if}
+
+					<div class="metadata column" style="--l: {metadata.length}">
+						{#each metadata as { icon, label, displayType, value }, i (label)}
+							<div class="card row" in:scale={{ delay: i * 100 }} out:scale animate:flip>
+								<div class="row">
+									<!-- <img src={icon} width="20" height="20" /> -->
+									<span>{$_(icon)}</span>
+									<span class="label">{$_(label)}</span>
+								</div>
+
+								<div class="stack align-end">
+									{#key value}
+										<span class="value" transition:scale={{ start: 0.3 }}>
+											{#if displayType === MetadataType.TokenBalance}
+												<TokenBalance {value} erc20Token={vaultConfig.tokens[0]} />
+											{:else if displayType === MetadataType.Date}
+												<span>{value} seconds</span>
+												<!-- <Countdown toTimestamp={value} /> -->
+											{:else if displayType === MetadataType.Percent}
+												<span>{value}%</span>
+											{:else if displayType === MetadataType.Address}
+												<Address network={networksByChainID[vaultConfig.chainId]} address={value} linked={false} />
+											{:else if displayType === MetadataType.String}
+												<!-- <span>{$_(value)}</span> -->
+												{value ?? ''}
+											{/if}
+										</span>
+									{/key}
+								</div>
+							</div>
+						{/each}
+					</div>
+
+					{#if vaultConfig.about.website || vaultConfig.about.twitter || vaultConfig.about.discord}
+						<div class="row centered icons-row" transition:scale>
+							
+							{#each
+								[
+									{ label: 'Website', link: vaultConfig.about.website, icon: websiteIcon },
+									{ label: 'Twitter', link: vaultConfig.about.twitter, icon: twitterIcon },
+									{ label: 'Discord', link: vaultConfig.about.discord, icon: discordIcon }
+								].filter(({ link }) => link)
+								as
+								{ label, link, icon } (label)
+							}
+								<a class="icon button round" href={link.includes('://') ? link : 'https://' + link} target="_blank" rel="nofollow" transition:scale animate:flip>
+									<!-- {$_(label)} -->
+									<img src={icon} alt={label} width="22" />
+								</a>
+							{/each}
+						</div>
+					{/if}
+				</Container>
 			</div>
-
-			{#if vaultConfig.about.website || vaultConfig.about.twitter || vaultConfig.about.discord}
-				<div class="row centered icons-row" transition:scale>
-					
-					{#each
-						[
-							{ label: 'Website', link: vaultConfig.about.website, icon: websiteIcon },
-							{ label: 'Twitter', link: vaultConfig.about.twitter, icon: twitterIcon },
-							{ label: 'Discord', link: vaultConfig.about.discord, icon: discordIcon }
-						].filter(({ link }) => link)
-						as
-						{ label, link, icon } (label)
-					}
-						<a class="icon button round" href={link.includes('://') ? link : 'https://' + link} target="_blank" rel="nofollow" transition:scale animate:flip>
-							<!-- {$_(label)} -->
-							<img src={icon} alt={label} width="22" />
-						</a>
-					{/each}
-				</div>
-			{/if}
-		</Container>
-	</div>
-</article>
-
-		</div>
+		</article>
 	</foreignObject>
 </svg>
 
