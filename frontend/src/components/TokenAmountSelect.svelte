@@ -1,45 +1,80 @@
 <script lang="ts">
+	// Types
 	import type { ERC20Token } from '$lib/tokens'
-	import { BigNumber, utils } from 'ethers'
-	const { formatUnits, parseUnits } = utils
 	import { _ } from 'svelte-i18n'
 
 
+	// Formatting
+	import { BigNumber, utils } from 'ethers'
+
+	const { formatUnits, parseUnits } = utils
+
+	const truncate = (n: string, decimals = token?.decimals || 18) =>
+		n.match(/^\d*(\.\d{0,18})?/)[0]
+		// Intl.NumberFormat('en', {
+		// 	notation: 'standard',
+		// 	maximumFractionDigits: decimals,
+		// 	useGrouping: false,
+		// 	roundingMode: 'trunc'
+		// }).format(n)
+
+	const format = (n: BigNumber, decimals = token?.decimals || 18) =>
+		truncate(formatUnits(n, decimals))
+
+	const parse = (n: string | number, decimals = token?.decimals || 18) =>
+		parseUnits(truncate(String(n)), decimals)
+		// parseUnits(
+		// 	Intl.NumberFormat('en', {
+		// 		notation: 'compact',
+		// 		maximumFractionDigits: decimals
+		// 	}).format(n),
+		// 	decimals
+		// )
+
+
+	// External state
 	export let availableTokens: ERC20Token[]
 
 	export let token: ERC20Token
 	export let amount: BigNumber
 
-	export let min: BigNumber = BigNumber.from(0)
+	export let min: BigNumber
 	export let max: BigNumber
-
-	export let stepDecimals = 3
+	export let stepDecimals = token?.decimals // 3
 
 	export let required = false
 
 
-	const onInput = (value: number) => {
+	// Internal state
+	let inputValue: string
+
+
+	// Methods/hooks/lifecycle
+	const onInput = (inputValue: string) => {console.log('onInput', inputValue)
 		try {
-			if(value != undefined && value !== '')
-				amount = parseUnits(String(value), token?.decimals || 18)
+			if(inputValue != undefined && inputValue !== '')
+				amount = parse(inputValue)
 		}catch(e){
 			console.error(e)
 		}
 	}
 
 	const onBlur = () => {
-		if(max !== undefined && amount.gt(max))
+		if(max && amount.gt(max))
 			amount = max
-		else if(min !== undefined && amount.lt(min))
+		else if(min && amount.lt(min))
 			amount = min
+		
+		inputValue = amount ? format(amount) : ''
 	}
 
 	const setMax = () => {
-		if(max !== undefined)
+		if(max)
 			amount = max
 	}
 
-	
+
+	// Components
 	import TokenSelect from './TokenSelect.svelte'
 </script>
 
@@ -48,13 +83,14 @@
 	<div class="stack">
 		<input
 			type="number"
-			value={formatUnits(amount, token?.decimals || 18)}
+			bind:value={inputValue}
 			step={10 ** -stepDecimals}
-			{min}
-			{max}
+			min="{format(min ?? BigNumber.from(1))}"
+			max="{max && format(max)}"
 			{required}
-			on:input={e => onInput(e.target.value)}
 			on:blur={onBlur}
+			on:input={e => onInput(e.target.value)}
+			placeholder="0"
 		/>
 
 		{#if max !== undefined}
