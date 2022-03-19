@@ -203,7 +203,7 @@
 
 					<div class="vault-type-info row">
 						<div class="stack centered">
-							<span class="token-id row centered">{vaultStatus.tokenId}</span>
+							<span class="token-id row centered">{isShowingIndividualPosition ? vaultStatus.tokenId : 'V'}</span>
 							<svg class="text-path" width="50" height="50" viewBox="-1.5 -1.5 3 3">
 								<defs>
 									<!-- <path id="c" d="m -1, 0 a 1,1 0 0,1 2,0 a 1,1 0 0,1 -2,0 "/> -->
@@ -216,7 +216,8 @@
 								</defs>
 								<text fill="currentColor" style="font-size: 0.66px; letter-spacing: 0.15px">
 									<textPath xlink:href="#c">
-										EDITION
+										<!-- EDITION -->
+										{$_(isShowingIndividualPosition ? 'POSITION' : 'VAULT')}
 										<!-- <animate additive="sum" attributeName="startOffset" from="0%" to="100%" begin="0s" dur="30s" repeatCount="indefinite" /> -->
 									</textPath>
 								</text>
