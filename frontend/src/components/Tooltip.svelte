@@ -111,6 +111,9 @@
 		width: max-content;
 	}
 
+	.tooltip  {
+		font-size: 18px;
+	}
 	summary {
 		cursor: pointer;
 	}

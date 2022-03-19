@@ -302,7 +302,9 @@
 		/* transform-origin: left; */
 	}
 	.vault-container:is(:hover, :focus) .vault {
-		transform: rotateY(0.5turn);
+		/* transform: rotateY(0.5turn); */
+
+
 		/* transform: translateZ(-200px) rotateY(0.5turn) translateZ(-200px); */
 		/* transform-origin: center; */
 	}

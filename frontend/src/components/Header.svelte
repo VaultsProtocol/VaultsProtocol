@@ -14,15 +14,15 @@
 
 	const navLinks = [
 		{
-			title: $_('Create Vault'),
+			title: $_('Create'),
 			link: '/create',
 		},
 		{
-			title: $_('Browse Vaults'),
+			title: $_('Browse'),
 			link: '/browse',
 		},
 		{
-			title: $_('Manage Vaults'),
+			title: $_('Manage'),
 			link: '/manage',
 		},
 	] as Link[]
@@ -104,15 +104,23 @@
 	ul.nav-links a {
 		font-size: 16px;
 		font-weight: 600;
-		/* text-decoration: underline; */
+		text-decoration: underline;
+		color: #FF8A01;
 		text-align: center;
 		line-height: 1.5;
+	}
 
+	ul.nav-links {
+		margin: 0 15px;
 	}
 
 	.header-left {
 		justify-content: start;
 		gap: 1.25rem;
+	}
+
+	.header-right {
+		font-size: 15px;
 	}
 
 	.logo {
@@ -151,7 +159,7 @@
 		color: rgba(227, 197, 255, 0.4); */
 	}
 	nav ul a {
-		padding: 0 0.85rem;
+		padding: 0 1.3rem;
 	}
 	nav a svg {
 		margin-left: 0.5ch;
