@@ -23,24 +23,44 @@
 	let canTransition = true
 
 
-	// Methods/hooks/lifecycle
+	// Stores
 
-	import { onMount } from 'svelte'
+	import { readable } from 'svelte/store'
 
-	onMount(() => {
-		contentRect = content.getBoundingClientRect()
+	export let contentRectStore: SvelteStore<DOMRectReadOnly>
 
-		const resizeObserver = new ResizeObserver(([observerEntry]) =>
-			contentRect = observerEntry.contentRect
-		)
+	$: contentRectStore = content && readable<DOMRectReadOnly>(content.getBoundingClientRect(), set => {
+		const resizeObserver = new ResizeObserver(([observerEntry]) => {
+			set(observerEntry.contentRect)
+		})
 		resizeObserver.observe(content)
-
 		return () => {
 			resizeObserver.unobserve(content)
 			resizeObserver.disconnect()
 			canTransition = false
 		}
 	})
+	$: contentRect = contentRectStore && $contentRectStore
+
+
+	// Methods/hooks/lifecycle
+
+	// import { onMount } from 'svelte'
+
+	// onMount(() => {
+	// 	contentRect = content.getBoundingClientRect()
+
+	// 	const resizeObserver = new ResizeObserver(([observerEntry]) =>
+	// 		contentRect = observerEntry.contentRect
+	// 	)
+	// 	resizeObserver.observe(content)
+
+	// 	return () => {
+	// 		resizeObserver.unobserve(content)
+	// 		resizeObserver.disconnect()
+	// 		canTransition = false
+	// 	}
+	// })
 
 	$: if(canTransition)
 		[previousRect, currentRect] = [currentRect, isOpen && contentRect || { width: 0, height: 0 }]
@@ -83,6 +103,7 @@
 	bind:this={container}
 	class="container"
 	class:isOpen
+	aria-expanded={isOpen}
 	class:transitionWidth
 	class:transitionHeight
 	class:clip
