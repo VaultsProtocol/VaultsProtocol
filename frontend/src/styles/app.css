@@ -327,7 +327,7 @@ hr {
 	padding: calc(var(--card-scale-factor) * var(--card-padding));
 
 	/* background: linear-gradient(var(--background-color-2), var(--background-color-3)); */
-	box-shadow: var(--background-color-3) 0 0 1px 2px;
+	box-shadow: var(--background-color-3) 0 0 1px 2px inset;
 
 	display: flex;
 	flex-direction: column;
@@ -338,11 +338,9 @@ hr {
 
 	/* overflow: hidden; */
 }
-
-.card figure { 
-	border-radius: 0;
+.card.clip {
+	overflow: hidden;
 }
-
 
 .card .card {
 	background-color: var(--background-color-1);
@@ -375,6 +373,19 @@ hr {
 
 section.card {
 	--button-color: var(--background-color-f3);
+}
+
+
+
+article > header > span:last-child {
+	opacity: 0.5;
+	letter-spacing: 0.2ch;
+	font-size: 0.8em;
+	text-transform: uppercase;
+}
+article > footer {
+	opacity: 0.8;
+	font-size: 0.75em;
 }
 
 

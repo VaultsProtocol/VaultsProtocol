@@ -46,22 +46,22 @@
 </script>
 
 
-<article class="card column">
+<article class="card column clip">
 	<header class="row">
-		<div class="row-inline">
+		<span class="row-inline">
 			<img src={tablelandIcon} width="30" />
 
 			<slot name="title"
 				{connection}
 				{network} {account}
 			/>
-		</div>
+		</span>
 
 		<div class="stack align-end">
 			{#if !account}
 				{$_('Connect wallet')}
 			{:else if !connection}
-				<button class="primary large" on:click={connect} transition:scale>{$_('Sign in to Tableland')}</button>
+				<button class="primary large" on:click={connect} transition:scale>{$_('Sign in')}</button>
 			{:else}
 				<button class="destructive large" on:click={disconnect} transition:scale>{$_('Disconnect')}</button>
 			{/if}
@@ -71,21 +71,23 @@
 	<Container isOpen={!!connection} renderOnlyWhenOpen>
 		<main class="stack">
 			{#await getTables(connection)}
-				<div class="card row centered" transition:scale>
-					<img src={tablelandIcon} width="30" />
-					{$_('Fetching your tables from Tableland...')}
+				<div class="card column centered" transition:scale>
+					<span class="row-inline">
+						<img src={tablelandIcon} width="30" />
+						{$_('Fetching your tables from Tableland...')}
+					</span>
 				</div>
 			{:then tables}
 				<div class="column list">
 					<hr transition:scale />
 					{#each tables as table, i (table.name)}
-						<article class="card row" transition:fly={{ x: 100, delay: i * 200 }}>
+						<div in:fly={{ x: 100, delay: i * 200 }} out:fly={{ x: -100, delay: (tables.length - i - 1) * 20 }}>
 							<slot name="table"
 								{table}
 								{connection}
 								{network} {account}
 							/>
-						</article>
+						</div>
 					{/each}
 				</div>
 			{/await}

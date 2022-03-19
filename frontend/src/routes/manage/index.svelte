@@ -80,33 +80,36 @@
 		<svelte:fragment slot="title">
 			<h2>
 				{$_('Tableland')}
-				› 
 				{#if connection}
+					› 
 					<Address {network} address={account.address} />
 					› 
+					{$_('Tables')}
 				{/if}
-				{$_('Tables')}
 				<!-- {$_('Saved Vaults')} -->
 			</h2>
 		</svelte:fragment>
 
-		<svelte:fragment slot="table"
+		<article class="card column" slot="table"
 			let:table
 		>
-			<header class="column">
+			<header class="row">
 				<h3>{table.name}</h3>
-				{#if table.description}<p>{table.description}</p>{/if}
+				<span>{$_('Tableland Table')}</span>
 			</header>
-			<footer class="column align-end">
+
+			{#if table.description}<p>{table.description}</p>{/if}
+
+			<footer class="row align-end">
 				<span>managed by <Address {network} address={table.controller} /></span>
 				<!-- <output>{(table.structure)}</output> -->
 				<span>created <Date_ date={table.created_at} /></span>
 			</footer>
-		</svelte:fragment>
+		</article>
 	</Tableland>
 
 	{#each vaults as { vaultConfig, vaultStatus, vaultPosition }}
-		<div class="row">
+		<div class="vault-manager row">
 			<Vault
 				{vaultConfig}
 				{vaultStatus}
@@ -124,7 +127,7 @@
 
 
 <style>
-	.row {
+	.vault-manager {
 		align-items: start;
 		grid-template-columns: auto 1fr;
 	}
