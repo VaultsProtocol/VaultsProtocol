@@ -62,7 +62,8 @@
 	--header-padding: 1.5rem;
 	--content-max-width: 80rem;
 
-	--accent-color: hsl(200deg, 80%, 60%);
+	/* --accent-color: hsl(200deg, 80%, 60%); */
+	--accent-color: var(--background-color-degen);
 	--overlay-backdrop-filter: blur(2px);
 
 	--grid-gap: 1em;
@@ -71,6 +72,7 @@
 	--card-radius: calc(0.85 * var(--card-padding));
 
 	--button-color: var(--background-color-0);
+	/* --button-active-background-color: var(--accent-color); */
 	--radius: 0.5em;
 
 	color: var(--text-color);
@@ -142,8 +144,6 @@ button, .button, input[type='number'], input[type='text'], textarea {
 	font-weight: 600;
 	border-radius: var(--radius);
 
-	--button-active-background-color: var(--background-color-2);
-
 	background-color: var(--button-color);
 	color: var(--color-text-light);
 
@@ -158,7 +158,8 @@ textarea {
 :is(button, .button, [role='button']):hover:where(:not(:disabled)),
 :is(button, .button, [role='button']):focus,
 :is(button, .button, [role='button']):focus-within,
-summary:hover > :is(button, .button, [role='button'])
+summary:hover > :is(button, .button, [role='button']),
+label > input:focus ~ :is(button, .button, [role='button'])
 /* ,
 label:focus-within :is(button, .button, [role='button']) */
 {
@@ -175,7 +176,7 @@ summary:active > :is(button, .button, [role='button']) {
 }
 
 :is(button, .button, [role='button']).primary {
-	--button-color: var(--background-color-degen);
+	--button-color: var(--accent-color);
 	color: white;
 }
 :is(button, .button, [role='button']).round {
@@ -188,7 +189,7 @@ summary:active > :is(button, .button, [role='button']) {
 	font-size: 1.05em;
 }
 :is(button, .button, [role='button']).small {
-	font-size: 0.8em;
+	font-size: 0.7em;
 }
 
 
@@ -213,8 +214,9 @@ summary:active > :is(button, .button, [role='button']) {
 	color: var(--font-color-red);
 }
 
-:is(button, .button, [role='button']).active {
-	background-color: var(--button-active-background-color);
+:is(button, .button, [role='button']).active,
+label > :checked ~ :is(button, .button, [role='button']) {
+	background-color: var(--button-active-background-color, var(--accent-color));
 	transition: 0.2s, background-color 0.1s;
 }
 
@@ -358,6 +360,7 @@ hr {
 	--grid-gap: 0.2em;
 
 	--button-transform-origin: center;
+	--button-active-background-color: var(--background-color-2);
 
 	/* background: var(--background-color-white); */
 	border: 1px solid var(--background-color-4);
@@ -485,6 +488,17 @@ section.card {
 	display: grid;
 	gap: var(--grid-gap);
 	grid-template-columns: repeat(auto-fit, minmax(min(var(--grid-size, 16rem), 50vw), 1fr));
+}
+
+
+.flex {
+	display: flex;
+	flex-wrap: wrap;
+	margin: calc(-0.5 * var(--grid-gap));
+}
+.flex > * {
+	flex: 1 auto;
+	margin: calc(0.5 * var(--grid-gap));
 }
 
 

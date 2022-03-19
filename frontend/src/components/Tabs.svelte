@@ -12,8 +12,12 @@
 	export let value: Value
 	export let values: Value[]
 	export let labels: Record<Value, string>
+	export let icons: Record<Value, string>
 	export let colors: Record<Value, string> = {}
 	export let required = false
+
+	export let layoutClasses: 'row equal' | 'flex' = 'row equal'
+	export let buttonClasses = "small round"
 
 
 	// Internal state
@@ -21,18 +25,32 @@
 </script>
 
 
-<div class="row tabs-row equal">
+<div class="tabs {layoutClasses}">
 	{#each values as optionValue (optionValue)}
 		<label class="select-option">
 			<input type="radio" bind:group={value} value={optionValue} {required} name={groupName} />
-			<span class="button round" style={colors[optionValue] ? `--active-background-color: ${colors[optionValue]}` : ''}>{labels[optionValue]}</span>
+
+			<slot {value} label={labels?.[optionValue] ?? optionValue}>
+				<span
+					class="button {buttonClasses}"
+					style="
+						{colors[optionValue] ? `--button-active-background-color: ${colors[optionValue]};` : ''}
+					"
+				>
+					{#if value && icons?.[optionValue]}
+						<img src={icons?.[optionValue]} />
+					{/if}
+
+					{labels[optionValue]}
+				</span>
+			</slot>
 		</label>
 	{/each}
 </div>
 
 
 <style>
-	div {
+	.tabs {
 		font-size: 1.3em;
 	}
 
@@ -48,12 +66,6 @@
 
 	.button {
 		border: 2px solid #343434;
-		padding: 5px 10px;
-		min-height: 40px;
-		height: 100%;
-		border-radius: 120px;
-		text-align: center;
-		font-size: 0.75em;
 	}
 
 	span {
@@ -67,7 +79,6 @@
 		opacity: 0.9;
 	}
 	input[type="radio"]:checked ~ span {
-		background-color: var(--active-background-color, var(--background-color-DAO));
 		font-weight: bold;
 		opacity: 1;
 	}

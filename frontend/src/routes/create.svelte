@@ -244,7 +244,7 @@
 					</div>
 				</section>
 
-				<section class="card column vault-behavior">
+				<section class="card column vault-behavior" style="--accent-color: {vaultTypeInfo[vaultConfig.type]?.color}">
 					<h2>{$_('Vault Behavior')}</h2>
 
 					<hr>
