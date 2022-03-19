@@ -416,8 +416,8 @@
 
 	.vault-type-info {
 		grid-template-columns: auto 1fr auto;
-		margin-left: -1em;
-		margin-right: -1em;
+		margin-left: -0.5em;
+		margin-right: -0.5em;
 	}
 
 	.vault-type-info .token-id {
