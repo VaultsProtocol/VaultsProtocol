@@ -67,62 +67,60 @@
 </script>
 
 
-<main>
-	<section>
-		<h1>{$_('My Vaults')}</h1>
-	</section>
+<section>
+	<h1>{$_('My Vaults')}</h1>
+</section>
 
-	<section id="top" class="column">
-		<Tableland
-			account={$account}
-			let:connection
-			let:network let:account
-		>
-			<svelte:fragment slot="title">
-				<h2>
-					{$_('Tableland')}
+<section id="top" class="column">
+	<Tableland
+		account={$account}
+		let:connection
+		let:network let:account
+	>
+		<svelte:fragment slot="title">
+			<h2>
+				{$_('Tableland')}
+				› 
+				{#if connection}
+					<Address {network} address={account.address} />
 					› 
-					{#if connection}
-						<Address {network} address={account.address} />
-						› 
-					{/if}
-					{$_('Tables')}
-					<!-- {$_('Saved Vaults')} -->
-				</h2>
-			</svelte:fragment>
+				{/if}
+				{$_('Tables')}
+				<!-- {$_('Saved Vaults')} -->
+			</h2>
+		</svelte:fragment>
 
-			<svelte:fragment slot="table"
-				let:table
-			>
-				<header class="column">
-					<h3>{table.name}</h3>
-					{#if table.description}<p>{table.description}</p>{/if}
-				</header>
-				<footer class="column align-end">
-					<span>managed by <Address {network} address={table.controller} /></span>
-					<!-- <output>{(table.structure)}</output> -->
-					<span>created <Date_ date={table.created_at} /></span>
-				</footer>
-			</svelte:fragment>
-		</Tableland>
+		<svelte:fragment slot="table"
+			let:table
+		>
+			<header class="column">
+				<h3>{table.name}</h3>
+				{#if table.description}<p>{table.description}</p>{/if}
+			</header>
+			<footer class="column align-end">
+				<span>managed by <Address {network} address={table.controller} /></span>
+				<!-- <output>{(table.structure)}</output> -->
+				<span>created <Date_ date={table.created_at} /></span>
+			</footer>
+		</svelte:fragment>
+	</Tableland>
 
-		{#each vaults as { vaultConfig, vaultStatus, vaultPosition }}
-			<div class="row">
-				<Vault
-					{vaultConfig}
-					{vaultStatus}
-					{vaultPosition}
-				/>
+	{#each vaults as { vaultConfig, vaultStatus, vaultPosition }}
+		<div class="row">
+			<Vault
+				{vaultConfig}
+				{vaultStatus}
+				{vaultPosition}
+			/>
 
-				<VaultManager
-					{vaultConfig}
-					{vaultStatus}
-					{vaultPosition}
-				/>
-			</div>
-		{/each}
-	</section>
-</main>
+			<VaultManager
+				{vaultConfig}
+				{vaultStatus}
+				{vaultPosition}
+			/>
+		</div>
+	{/each}
+</section>
 
 
 <style>

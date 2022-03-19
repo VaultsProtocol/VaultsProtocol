@@ -31,22 +31,20 @@
 </script>
 
 
-<main>
-	<section>
-		<h1>{$_('Browse Vaults')}</h1>
-	</section>
+<section>
+	<h1>{$_('Browse Vaults')}</h1>
+</section>
 
-	<section id="top">
-		<div class="grid">
-			{#each vaults as { vaultConfig, vaultStatus }}
-				<Vault
-					{vaultConfig}
-					{vaultStatus}
-				/>
-			{/each}
-		</div>
-	</section>
-</main>
+<section id="top">
+	<div class="grid">
+		{#each vaults as { vaultConfig, vaultStatus }}
+			<Vault
+				{vaultConfig}
+				{vaultStatus}
+			/>
+		{/each}
+	</div>
+</section>
 
 
 <style>

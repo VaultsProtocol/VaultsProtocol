@@ -15,6 +15,7 @@
 
 
 	// Stores
+	import { page } from '$app/stores'
 	import { isLoading, _ } from 'svelte-i18n'
 
 
@@ -26,7 +27,7 @@
 
 	// Components
 	import Header from '../components/Header.svelte'
-	import { scale } from 'svelte/transition'
+	import { scale, fly } from 'svelte/transition'
 </script>
 
 
@@ -53,7 +54,11 @@
 		<Header />
 
 		<div class="page stack">
-			<slot />
+			{#key $page}
+				<main in:fly={{ x: 100 }} out:fly={{ x: -100 }}>
+					<slot />
+				</main>
+			{/key}
 		</div>
 	{/if}
 </div>
