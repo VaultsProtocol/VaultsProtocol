@@ -20,6 +20,8 @@
 	let previousRect: { width: number, height: number }
 	let currentRect: { width: number, height: number }
 
+	let canTransition = true
+
 
 	// Methods/hooks/lifecycle
 
@@ -33,12 +35,17 @@
 		)
 		resizeObserver.observe(content)
 
-		return () => resizeObserver.disconnect()
+		return () => {
+			resizeObserver.unobserve(content)
+			resizeObserver.disconnect()
+			canTransition = false
+		}
 	})
 
-	$: [previousRect, currentRect] = [currentRect, isOpen && contentRect || { width: 0, height: 0 }]
+	$: if(canTransition)
+		[previousRect, currentRect] = [currentRect, isOpen && contentRect || { width: 0, height: 0 }]
 
-	$: if(transitionWidth)
+	$: if(canTransition && transitionWidth)
 		container?.animate(
 			{
 				transform: [
