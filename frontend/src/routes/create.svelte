@@ -52,6 +52,8 @@
 	import TimeSelect from '../components/TimeSelect.svelte'
 	import TransactionFlow from '../components/TransactionFlow.svelte'
 
+	// Images
+	import createIcon from '../assets/icons/create-icon.svg'
 
 	// Styles/animation
 	import { fly, scale } from 'svelte/transition'
@@ -59,7 +61,10 @@
 
 
 <section>
-	<h1>{$_('Create a Vault')}</h1>
+	<h1>
+		<!-- temp -->
+		<img src={createIcon} width="30" />
+		{$_('Create a Vault')}</h1>
 </section>
 
 <section class="row">
@@ -518,6 +523,11 @@
 		--grid-gap: 1rem;
 
 		transform: rotateY(10deg);
+	}
+
+	.vault-row .card,
+	.vault-behavior .card {
+		background: white;
 	}
 
 	.vault-behavior .card,

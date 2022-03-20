@@ -448,6 +448,7 @@
 
 	.vault-type-info .token-id {
 		font-size: 0.85em;
+		font-weight: 600;
 		background-color: black;
 		border-radius: 50%;
 		width: 1.66em;

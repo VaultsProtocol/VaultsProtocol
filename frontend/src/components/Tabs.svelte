@@ -70,7 +70,7 @@
 	}
 
 	.button {
-		border: 2px solid #343434;
+		border: 1px solid #343434;
 	}
 
 	span {
