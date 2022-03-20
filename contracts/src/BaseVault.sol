@@ -169,11 +169,7 @@ contract BaseVault is ERC721, BasicMetaTransaction {
         lastKnownContractBalance += amount;
 
         //ensure token reverts on failed
-        vaultToken.transferFrom(msgSender(), address(this), amount); 
-
-        }
-
-        vaultToken.transfer(msgSender(), amount); // Use Biconomy;
+        vaultToken.transferFrom(msgSender(), address(this), amount);
     }
 
     function _withdrawFromId(uint256 amount, uint256 id) internal {

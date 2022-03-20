@@ -20,6 +20,8 @@ contract YearnStrategy {
 
     address public vault;
     
+    address deployer;
+    
     // #########################
     // ##                     ##
     // ##       Init          ##
