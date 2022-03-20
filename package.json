@@ -1,5 +1,5 @@
 {
-  "name": "Something",
+  "name": "@vaults-protocol/contracts",
   "license": "",
   "scripts": {
     "test": "npx hardhat test",
