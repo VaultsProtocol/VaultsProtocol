@@ -34,10 +34,11 @@
 </script>
 
 
-<section>
-	<!-- temp -->
-	<img src={browseIcon} width="30" />
-	<h1>{$_('Browse Vaults')}</h1>
+<section class="column centered">
+	<h1 class="row-inline">
+		<img src={browseIcon} width="50" />
+		{$_('Browse Vaults')}
+	</h1>
 </section>
 
 <section id="top">

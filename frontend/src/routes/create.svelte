@@ -58,11 +58,11 @@
 </script>
 
 
-<section>
-	<h1>
-		<!-- temp -->
-		<img src={createIcon} width="30" />
-		{$_('Create a Vault')}</h1>
+<section class="column centered">
+	<h1 class="row-inline">
+		<img src={createIcon} width="50" />
+		{$_('Create a Vault')}
+	</h1>
 </section>
 
 <section class="row">
