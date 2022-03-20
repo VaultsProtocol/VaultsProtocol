@@ -131,6 +131,8 @@
 									{vaultPosition}
 								/>
 							</div>
+						{:else}
+							{$_('You don\'t have any vaults!')}
 						{/each}
 					</div>
 				{:catch e}
