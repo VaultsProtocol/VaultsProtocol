@@ -113,6 +113,8 @@
 
 	// Styles/animation
 	import { fly, scale } from 'svelte/transition'
+	let steps: Steps[] = [-1]
+	$: steps.unshift(currentStep)
 </script>
 
 
@@ -125,7 +127,7 @@
 			class="column"
 			on:submit|preventDefault={actions.next}
 			disabled={currentStep !== Steps.Idle}
-			transition:fly={{ x: -100 }}
+			transition:fly={{ x: 100 * Math.sign(steps[0] - steps[1]) }}
 		>
 			<slot
 				name="idle"
@@ -136,7 +138,7 @@
 		<form
 			class="card column centered"
 			on:submit|preventDefault={actions.next}
-			transition:fly={{ x: -100 }}
+			transition:fly={{ x: 100 * Math.sign(steps[0] - steps[1]) }}
 		>
 			<slot
 				name="confirming"
@@ -159,7 +161,7 @@
 	{:else if currentStep === Steps.TransactionSigning}
 		<div
 			class="card column centered"
-			transition:scale
+			transition:fly={{ x: 100 * Math.sign(steps[0] - steps[1]) }}
 		>
 			<img src={walletsByType[account.walletConnection.walletType].icon} width="100" />
 
@@ -182,7 +184,8 @@
 	{:else if currentStep === Steps.TransactionPending}
 		<div
 			class="card column centered"
-			transition:scale
+			in:fly={{ x: 100 * Math.sign(steps[0] - steps[1]) }}
+			out:scale
 		>
 			<slot
 				name="pending"
