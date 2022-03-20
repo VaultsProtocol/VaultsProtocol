@@ -5,7 +5,8 @@ import type { Provider } from '@ethersproject/providers'
 
 
 import { getContract, getContractBytecode } from './contracts'
-import { AbiCoder } from 'ethers/lib/utils'
+import { utils } from 'ethers'
+const { AbiCoder } = utils
 
 
 export const createVault = async ({
