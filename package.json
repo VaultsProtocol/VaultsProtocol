@@ -3,8 +3,7 @@
   "license": "",
   "scripts": {
     "test": "npx hardhat test",
-    "deploy-genesis-nft-eth-main": "npx hardhat deploy-genesis-nft --network ethMain",
-    "deploy-supply-boxes-nft-eth-main": "npx hardhat deploy-suply-boxes-nft --network ethMain",
+    "deploy-all-eth-main": "npx hardhat full-deploy --network ethMain",
     "sign-whitelists": "node scripts/sign-whitelist.ts"
   },
   "devDependencies": {

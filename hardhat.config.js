@@ -20,8 +20,8 @@ const ethscan_api_key = process.env.ETHSCAN_API_KEY;
 const bscscan_api_key = process.env.BSCSCAN_API_KEY;
 
 // Deploy NFT Contract...
-// npx hardhat full-deploy --network ethMain
-task("full-deploy", "Deploy All Contracts")
+// npx hardhat deploy-all --network ethMain
+task("deploy-all", "Deploy All Contracts")
   // .addParam("yearnAddress", "0x00...")
   // .addParam("aaveAddress", "0x00...")
   // .addParam("elementAddress", "0x00...")
