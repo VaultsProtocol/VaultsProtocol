@@ -20,31 +20,46 @@ export const contracts = {
 
 
 import type { Network } from './networks'
-import { Contract, ContractFactory, getDefaultProvider, Signer } from 'ethers'
+import type { Provider } from '@ethersproject/providers'
+import { Contract, ContractFactory, getDefaultProvider, type Signer } from 'ethers'
 
 import contractDeployments from './contracts.json'
 
 export const getContract = ({
-	signer,
+	name,
+	contractAddress,
 	network,
-	name
+	signer,
+	provider,
 }: {
-	signer: Signer,
+	name: keyof typeof contracts,
+	contractAddress?: string,
 	network: Network,
-	name: keyof typeof contracts
+	signer?: Signer,
+	provider?: Provider,
 }) => {
-	const contractsForNetwork = contractDeployments[network.slug]
+	if(!contractAddress){
+		const contractsForNetwork = contractDeployments[network.slug]
 
-	if(!contractsForNetwork)
-		throw new Error(`All-Your-Vault isn't yet deployed to ${network.name}.`)
+		if(!contractsForNetwork)
+			throw new Error(`Vaults Protocol isn't yet deployed to ${network.name}.`)
+		
+		contractAddress = contractsForNetwork[name]
+	}
 
-	console.log('getContract signer', signer)
+	// if(!contractAddress)
+	// 	throw new Error(`Invalid contract address: ${contractAddress}`)
 
-	return new Contract(
-		contractsForNetwork[name],
-		contracts[name].abi,
-		signer
-	)
+	try {
+		return new Contract(
+			contractAddress,
+			contracts[name].abi,
+			signer || provider
+		)
+	}catch(e){
+		console.error(e)
+	}
+
 	// return new ContractFactory(
 	// 	contracts[name].abi,
 	// 	contracts[name].bytecode,
@@ -62,7 +77,7 @@ export const getContractBytecode = ({
 	const contractsForNetwork = contractDeployments[network.slug]
 
 	if(!contractsForNetwork)
-		throw new Error(`All-Your-Vault isn't yet deployed to ${network.name}.`)
+		throw new Error(`Vaults Protocol isn't yet deployed to ${network.name}.`)
 
 	return contracts[name].bytecode
 }
