@@ -42,6 +42,8 @@ import {
 	BasicMetaTransaction__factory,
 } from '$lib/contracts/index'
 
+export * from '$lib/contracts/index'
+
 const contractsFactories = {
 	'VaultFactory': VaultFactory__factory,
 
@@ -61,19 +63,22 @@ const contractsFactories = {
 import type { Network } from './networks'
 import type { Provider } from '@ethersproject/providers'
 // import { Contract, ContractFactory, getDefaultProvider, type Signer } from 'ethers' // Using Hardhat artifacts
-import type { Signer } from 'ethers' // Using Typechain
+import type { ContractFactory, Signer } from 'ethers' // Using Typechain
 
 import contractDeployments from './contracts.json'
 
-export const getContract = <T extends keyof typeof contractsFactories>({
+// export const getDeployedContract = <T extends keyof typeof contractsFactories, U extends { new(): ContractFactory }>({
+export const getDeployedContract = <T extends keyof typeof contractsFactories>({
 	name,
+	// contractFactory,
 	contractAddress,
 	network,
 	signer,
 	provider,
 }: {
 	// name: keyof typeof contractArtifacts, // Using Hardhat artifacts
-	name: T, // Using Typechain
+	name?: T, // Using Typechain
+	// contractFactory?: U,
 	contractAddress?: string,
 	network: Network,
 	signer?: Signer,
@@ -100,10 +105,12 @@ export const getContract = <T extends keyof typeof contractsFactories>({
 		// )
 
 		// Using Typechain
-		return contractsFactories[name].connect(
-			contractAddress,
-			signer || provider
-		)
+		// return (contractFactory || contractsFactories[name])
+		return contractsFactories[name]
+			.connect(
+				contractAddress,
+				signer || provider
+			)
 	}catch(e){
 		console.error(e)
 	}
