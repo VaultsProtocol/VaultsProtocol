@@ -1,7 +1,7 @@
 <script lang="ts">
 	// Constants/types
 	import { _ } from 'svelte-i18n'
-	import { type VaultConfig, type VaultStatus, type VaultPosition, MetadataType, VaultType, vaultTypeInfo, yieldStrategyInfo, GovernanceType, YieldStrategy } from '../lib/vaults'
+	import { type VaultConfig, type VaultStatus, type VaultPosition, MetadataType, VaultType, vaultTypeInfo, yieldStrategyInfo, GovernanceType, YieldStrategy } from '../lib/vaultConfig'
 	import { type Network, networkIcons, networksByChainID, mainnetForTestnet } from '$lib/networks'
 	import { BigNumber } from 'ethers'
 	

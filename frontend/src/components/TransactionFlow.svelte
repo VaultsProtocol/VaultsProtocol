@@ -13,7 +13,7 @@
 
 <script lang="ts">
 	// Constants/types
-	import type { Network } from '@ethersproject/providers'
+	import type { Network } from '$lib/networks'
 	import type { ConnectedAccount } from '../stores/account'
 	import type { Transaction } from 'ethers'
 
@@ -75,9 +75,9 @@
 			errorMessage = e.message
 			currentStep = Steps.TransactionFailed
 		}
-	})()
+	// })()
 
-	$: if(tx)(async () => {
+	// $: if(tx)(async () => {
 		console.log('tx', tx)
 
 		currentStep = Steps.TransactionPending

@@ -2,7 +2,7 @@
 	import { _ } from 'svelte-i18n'
 
 
-	import { getRandomVaultConfig } from '../lib/vaults'
+	import { getRandomVaultConfig } from '../lib/vaultConfig'
 
 	import { BigNumber } from 'ethers'
 

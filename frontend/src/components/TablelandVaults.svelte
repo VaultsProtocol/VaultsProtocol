@@ -163,7 +163,6 @@
 				</svelte:fragment>
 
 				<svelte:fragment slot="idle">
-
 					<label class="column">
 						<h4>{$_('Description')}</h4>
 						<textarea bind:value={newTableOptions.description} />

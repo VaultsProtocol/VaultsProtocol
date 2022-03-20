@@ -15,28 +15,24 @@
 		payoutTypeInfo,
 		// GovernanceStrategy,
 		// governanceStrategyInfo,
-	} from '$lib/vaults'
+	} from '$lib/vaultConfig'
 
-	import { erc20Tokens } from '$lib/tokens'
 	import { availableNetworks, networkIcons, mainnetForTestnet, networks, networksByChainID, networksBySlug, vaultAssetsByNetwork } from '$lib/networks'
 
 
 	// Stores
-	import { provider } from '../stores/provider'
 	import { account } from '../stores/account'
+	import { deployedVaults } from '../stores/deployedVaults'
 
 
 	// Internal state
-	let vaultConfig: VaultConfig = getDefaultVaultConfig()
+	let vaultConfig: VaultConfig<any> = getDefaultVaultConfig()
 
 	
 	// Methods/hooks/lifecycle
+	import { createVault } from '$lib/vaultsProtocol'
 
-	import { utils } from 'ethers'
-	const { AbiCoder } = utils
-	import { getContract, getContractBytecode } from '$lib/contracts'
-
-	import { getVaultsTable } from '$lib/tableland'
+	// import { getVaultsTable } from '$lib/tableland'
 
 
 	// Components
@@ -52,8 +48,10 @@
 	import TimeSelect from '../components/TimeSelect.svelte'
 	import TransactionFlow from '../components/TransactionFlow.svelte'
 
+
 	// Images
 	import createIcon from '../assets/icons/create-icon.svg'
+
 
 	// Styles/animation
 	import { fly, scale } from 'svelte/transition'
@@ -77,68 +75,47 @@
 		account={$account}
 		network={networksByChainID[vaultConfig.chainId]}
 
-		createTransaction={async ({network, address, signer}) => {
-			const VaultFactory = getContract({
-				signer,
+		createTransaction={async ({ network, address, signer }) =>
+			await createVault({
+				vaultConfig,
 				network,
-				name: 'VaultFactory'
+				address,
+				signer
 			})
-
-			console.log('VaultFactory', VaultFactory)
-
-			console.log("Deploying sample vault")
-
-			console.log(
-				// getContractBytecode({ network, name: 'BaseVault' }),
-				// getContractBytecode({ network, name: 'YearnStrategy' }),
-				vaultConfig.tokens[0].address,
-				address,
-				new AbiCoder().encode(
-					["address", "string", "string"],
-					[vaultConfig.tokens[0].address, vaultConfig.about.name, vaultConfig.about.tickerSymbol ?? 'TEST'],
-				),
-				{
-					gasLimit: '3500000'
-				}
-			)
-
-			return await VaultFactory.createVault(
-				getContractBytecode({ network, name: 'BaseVault' }),
-				getContractBytecode({ network, name: 'YearnStrategy' }),
-				vaultConfig.tokens[0].address,
-				address,
-				new AbiCoder().encode(
-					["address", "string", "string"],
-					[vaultConfig.tokens[0].address, vaultConfig.about.name, vaultConfig.about.tickerSymbol ?? 'TEST'],
-				),
-				{
-					gasLimit: '3500000'
-				}
-			)
-
-			// const sampleVault = await VaultFactory.vaults("0")
-			// console.log("sample vault is", sampleVault)
-		}}
+		}
 
 		onTransactionSuccess={async tx => {
-			console.log('getVaultsTable')
-
-			const result = await (await getVaultsTable({
-				// signer: $account.signer
-			})).create({
-				vaultConfig,
-				contractAddress: 'test',
-				transactionHash: tx.hash,
-			})
-			console.log('getVaultsTable', result)
-
-			(await getVaultsTable({
-				// signer: $account.signer
-			})).create({
+			const deployedVault = {
 				vaultConfig,
 				contractAddress: '',
 				transactionHash: tx.hash,
-			})
+			}
+
+			console.log('deployedVault', deployedVault, tx)
+
+			$deployedVaults = [
+				...$deployedVaults,
+				deployedVault
+			]
+
+			// console.log('getVaultsTable')
+
+			// const result = await (await getVaultsTable({
+			// 	// signer: $account.signer
+			// })).create({
+			// 	vaultConfig,
+			// 	contractAddress: 'test',
+			// 	transactionHash: tx.hash,
+			// })
+			// console.log('getVaultsTable', result)
+
+			// (await getVaultsTable({
+			// 	// signer: $account.signer
+			// })).create({
+			// 	vaultConfig,
+			// 	contractAddress: '',
+			// 	transactionHash: tx.hash,
+			// })
 		}}
 	>
 		<svelte:fragment slot="idle" let:actions={{ next }}>

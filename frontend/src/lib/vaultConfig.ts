@@ -245,7 +245,7 @@ export const getRandomVaultConfig = () => {
 		},
 		yieldStrategy: YieldStrategy.None,
 		// governanceStrategy: GovernanceStrategy.None,
-	} as VaultConfig
+	} as VaultConfig<any>
 }
 
 
@@ -256,12 +256,16 @@ export type VaultStatus = {
 	endTimestamp: number
 }
 
-
 export type VaultPosition = {
 	balance: BigNumber
 	yieldEarned: BigNumber
 }
 
+export type DeployedVault<T extends VaultType> = {
+	vaultConfig: VaultConfig<T>,
+	contractAddress: string,
+	transactionHash: string,
+}
 
 export enum MetadataType {
 	TokenBalance = 'TokenBalance',
