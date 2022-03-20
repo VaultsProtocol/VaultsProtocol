@@ -113,6 +113,10 @@
 	import { formatAddress } from '$lib/formatAddress'
 
 
+	// Images
+	import metamaskIcon from '../assets/icons/metamask.svg'
+
+
 	// Styles/animation
 	import { fly, scale } from 'svelte/transition'
 	let steps: Steps[] = [-1]
@@ -153,7 +157,7 @@
 						{#if !account}
 							<button class="large round primary" disabled>{$_('Connect Wallet')}</button>
 						{:else}
-							<button type="submit" class="large round primary">{$_('Sign Transaction')}</button>
+							<button type="submit" class="large round primary metamask">{$_('Sign Transaction')} <img src="{metamaskIcon}" alt="metamask icon" class="metamask-icon"></button>
 						{/if}
 					</div>
 					<button type="button" class="large round" on:click={actions.back}>{$_('Go Back')}</button>
@@ -274,7 +278,16 @@
 		--grid-gap: 1rem;
 	}
 
-	
+	/* .metamask {
+		padding: 0;
+	} */
+
+	.metamask-icon {
+		width: 40px;
+		height: 100%;
+	}
+
+
 	/* .card {
 		place-content: start;
 		place-items: start;
