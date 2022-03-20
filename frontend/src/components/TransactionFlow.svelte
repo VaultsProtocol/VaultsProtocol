@@ -15,7 +15,7 @@
 	// Constants/types
 	import type { Network } from '$lib/networks'
 	import type { ConnectedAccount } from '../stores/account'
-	import type { Transaction } from 'ethers'
+	import type { Transaction, ContractReceipt } from 'ethers'
 
 	import { _ } from 'svelte-i18n'
 
@@ -48,6 +48,7 @@
 		// formElement && [...formElement.elements].every(fieldElement => !fieldElement.required || !fieldElement.isEmpty)
 
 	let tx: Transaction
+	let txReceipt: ContractReceipt
 	let errorMessage: string
 
 	
@@ -83,7 +84,8 @@
 		currentStep = Steps.TransactionPending
 
 		try {
-			await tx.wait?.(1)
+			txReceipt = await tx.wait?.(1)
+			console.log('txReceipt', txReceipt)
 		}catch(e){
 			errorMessage = e.message
 			currentStep = Steps.TransactionReverted
@@ -92,7 +94,7 @@
 
 		currentStep = Steps.TransactionSuccess
 
-		onTransactionSuccess?.(tx)
+		onTransactionSuccess?.(tx, txReceipt)
 		// if(onTransactionSuccess)
 		// 	try {
 		// 		await onTransactionSuccess(tx)
