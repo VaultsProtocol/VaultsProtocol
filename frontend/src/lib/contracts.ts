@@ -1,15 +1,15 @@
-import VaultFactory from '$lib/contracts/VaultFactory.json'
+import VaultFactory from '$lib/contracts/artifacts/VaultFactory.json'
 
-import BaseVault from '$lib/contracts/BaseVault.json'
-import CharityVault from '$lib/contracts/CharityVault.json'
-import DaoVault from '$lib/contracts/DaoVault.json'
-import DegenVault from '$lib/contracts/DegenVault.json'
-// import SuperFluidVault from '$lib/contracts/SuperFluidVault.json'
+import BaseVault from '$lib/contracts/artifacts/BaseVault.json'
+import CharityVault from '$lib/contracts/artifacts/CharityVault.json'
+import DaoVault from '$lib/contracts/artifacts/DaoVault.json'
+import DegenVault from '$lib/contracts/artifacts/DegenVault.json'
+// import SuperFluidVault from '$lib/contracts/artifacts/SuperFluidVault.json'
 
-import AaveStrategy from '$lib/contracts/AaveStrategy.json'
-import YearnStrategy from '$lib/contracts/YearnStrategy.json'
+import AaveStrategy from '$lib/contracts/artifacts/AaveStrategy.json'
+import YearnStrategy from '$lib/contracts/artifacts/YearnStrategy.json'
 
-import BasicMetaTransaction from '$lib/contracts/BasicMetaTransaction.json'
+import BasicMetaTransaction from '$lib/contracts/artifacts/BasicMetaTransaction.json'
 
 
 export const contractArtifacts = {
