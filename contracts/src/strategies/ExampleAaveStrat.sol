@@ -42,12 +42,12 @@ contract AaveStrategy {
 		pool.supply(address(token), amount, address(this), 0);
 	}
 
-	function withdrawl(uint256 amount) external {
+	function withdraw(uint256 amount) external {
 		require(msg.sender == vault);
 		pool.withdraw(address(token), amount, vault);
 	}
 
-	function withdrawlableVaultToken() external view returns (uint256) {
+	function withdrawableVaultToken() external view returns (uint256) {
 		return aToken.balanceOf(address(this));
 	}
 

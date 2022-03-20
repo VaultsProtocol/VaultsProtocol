@@ -66,7 +66,7 @@ contract YearnStrategy {
 		yvault.deposit(amount);
 	}
 
-	function withdrawl(uint256 tokenAmount) external onlyVault {
+	function withdraw(uint256 tokenAmount) external onlyVault {
 		uint256 pricePerShare = yvault.getPricePerFullShare();
 		uint256 needed = tokenAmount / pricePerShare;
 
@@ -76,7 +76,7 @@ contract YearnStrategy {
 		token.transfer(vault, withdrawn);
 	}
 
-	function withdrawlableVaultToken() external view returns (uint256) {
+	function withdrawableVaultToken() external view returns (uint256) {
 		uint256 price = yvault.getPricePerFullShare();
 		return yvault.balanceOf(address(this)) * price;
 	}

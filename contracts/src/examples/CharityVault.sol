@@ -41,7 +41,7 @@ contract CharityVault is BaseVault {
 	///  User Facing
 	///======================================================================================================================================
 
-	function withdrawlToRecipient() external {
+	function withdrawToRecipient() external {
 		vaultToken.transfer(ctx.recipient, yieldForRecipient);
 	}
 
@@ -55,7 +55,7 @@ contract CharityVault is BaseVault {
 		lastKnownContractBalance += unclaimedYield;
 
 		uint256 strategyYield = address(strat) != address(0)
-			? strat.withdrawlableVaultToken() - lastKnownStrategyTotal
+			? strat.withdrawableVaultToken() - lastKnownStrategyTotal
 			: 0;
 		lastKnownStrategyTotal += strategyYield;
 

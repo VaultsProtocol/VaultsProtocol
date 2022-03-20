@@ -108,7 +108,7 @@ contract BaseVault is ERC721, BasicMetaTransaction {
 		_withdrawFromId(amount, id);
 	}
 
-	function burnNFTAndWithdrawl(uint256 id) public virtual {
+	function burnNFTAndWithdraw(uint256 id) public virtual {
 		uint256 claimable = withdrawableById(id);
 		_withdrawFromId(claimable, id);
 
@@ -224,7 +224,7 @@ contract BaseVault is ERC721, BasicMetaTransaction {
 
 	//internal, only called when balanceOf(address(this)) < withdraw requested
 	function withdrawFromStrat(uint256 amountNeeded) internal {
-		strat.withdrawl(amountNeeded);
+		strat.withdraw(amountNeeded);
 		lastKnownStrategyTotal -= amountNeeded;
 	}
 
@@ -233,14 +233,14 @@ contract BaseVault is ERC721, BasicMetaTransaction {
 	///======================================================================================================================================
 
 	// gets yield from strategy contract
-	// called before deposits and withdrawls
+	// called before deposits and withdraws
 	function distributeYield() public virtual {
 		uint256 unclaimedYield = vaultToken.balanceOf(address(this)) -
 			lastKnownContractBalance;
 		lastKnownContractBalance += unclaimedYield;
 
 		uint256 strategyYield = address(strat) != address(0)
-			? strat.withdrawlableVaultToken() - lastKnownStrategyTotal
+			? strat.withdrawableVaultToken() - lastKnownStrategyTotal
 			: 0;
 		lastKnownStrategyTotal += strategyYield;
 

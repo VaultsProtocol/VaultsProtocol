@@ -61,8 +61,8 @@ contract ContractTest is DSTest {
 		erc20.transfer(address(vault), 1e18);
 
 		// distirbute yield to two holders
-		// called regardless on withdrawl
-		// this is just to set up withdrawl amount for test
+		// called regardless on withdraw
+		// this is just to set up withdraw amount for test
 		vault.distributeYield();
 
 		console.log("Withdrawable [1] ", vault.withdrawableById(1));
@@ -74,7 +74,7 @@ contract ContractTest is DSTest {
 
 		uint256 withdrawable = vault.withdrawableById(2);
 
-		// withdrawl half
+		// withdraw half
 		uint256 expected = withdrawable / 2;
 		vault.withdrawFromId(2, expected);
 

@@ -112,7 +112,7 @@ contract DegenVault is BaseVault {
 	function withdrawFromId(uint256 amount, uint256 id) public override {
 		uint256 claimable = withdrawableById(id);
 		require(amount == claimable, "Use burn");
-		burnNFTAndWithdrawl(id);
+		burnNFTAndWithdraw(id);
 	}
 
 	function claimJackpot() external {

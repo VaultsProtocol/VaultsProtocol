@@ -22,7 +22,7 @@
 //   const bc = {};
 //   describe("NFT functions testing", function (accounts) {
 //     before(async () => {
-    
+
 //       bc.vaultToken = await MockERC20.new("ERC20", "ERC20", 100e18.toString(), {
 //         from: deployer
 //       });
@@ -47,7 +47,7 @@
 //       bc.growth = 5000;
 //       bc.degenVault = await DegenVault.new(
 //         bc.vaultToken.address, // ERC20 Vault Token
-//         bc.jackpotBps, 
+//         bc.jackpotBps,
 //         bc.dividendBps,
 //         bc.minimumPrice,
 //         bc.initialDeadlineSeconds,
@@ -100,8 +100,8 @@
 
 //       // Ensure mint happened
 //       assert.equal(Number(await bc.degenVault.balanceOf(alice)), 1);
-      
-//       // Balance of Alice 
+
+//       // Balance of Alice
 //       let aliceBalance = await bc.degenVault.deposits(1);
 
 //       //4000 = 10000 - sum(dividensBP, jackpotBp)
@@ -122,7 +122,7 @@
 //       //   Number(yieldDistributedSoFar) + Number(aliceBalance.amount),
 //       // );
 
-//       await bc.degenVault.burnNFTAndWithdrawl(1, {
+//       await bc.degenVault.burnNFTAndWithdraw(1, {
 //         from: alice
 //       });
 
