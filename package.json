@@ -28,6 +28,6 @@
     "@openzeppelin/test-helpers": "^0.5.15"
   },
   "engines": {
-    "node": "14.x"
+    "node": ">= 14.x"
   }
 }
