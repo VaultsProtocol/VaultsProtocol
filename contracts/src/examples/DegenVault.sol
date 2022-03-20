@@ -4,169 +4,139 @@ pragma solidity >=0.8.0;
 import "../BaseVault.sol";
 
 contract DegenVault is BaseVault {
+	///======================================================================================================================================
+	///  Data Stuctures
+	///======================================================================================================================================
 
-///======================================================================================================================================
-///  Data Stuctures
-///======================================================================================================================================
+	struct Context {
+		uint16 jackpotBP;
+		uint16 dividendsBP;
+		uint16 timeDecay;
+		uint16 growthFactor;
+		uint16 vaultType;
+	}
 
-    struct Context {
-        uint16 jackpotBP;
-        uint16 dividendsBP;
-        uint16 timeDecay;
-        uint16 growthFactor;
-        uint16 vaultType;
-    }
-    
-///======================================================================================================================================
-///  State Variables
-///======================================================================================================================================
+	///======================================================================================================================================
+	///  State Variables
+	///======================================================================================================================================
 
-    Context public ctx;
+	Context public ctx;
 
-    uint256 public minimumPrice; //wei
-    uint256 public deadline; //seconds
-    uint256 public jackpot; //wei
+	uint256 public minimumPrice; //wei
+	uint256 public deadline; //seconds
+	uint256 public jackpot; //wei
 
-    uint256 timeTracker;
+	uint256 timeTracker;
 
-    address public lastDepositer;
+	address public lastDepositer;
 
-///======================================================================================================================================
-///  Constructor
-///======================================================================================================================================
+	///======================================================================================================================================
+	///  Constructor
+	///======================================================================================================================================
 
-    function init(
-        address _vaultToken,
-        address _strategy,
-        uint16 _jackpotBP,
-        uint16 _dividendsBP,
-        uint256 _minimumPrice,
-        uint256 _intialTimeSeconds,
-        uint16 _timeDecay,
-        uint16 _growthFactor,
-        string memory _name,
-        string memory _symbol
-    ) public {
-        require(_jackpotBP + _dividendsBP <= 10000);
+	function init(
+		address _vaultToken,
+		address _strategy,
+		uint16 _jackpotBP,
+		uint16 _dividendsBP,
+		uint256 _minimumPrice,
+		uint256 _intialTimeSeconds,
+		uint16 _timeDecay,
+		uint16 _growthFactor,
+		string memory _name,
+		string memory _symbol
+	) public {
+		require(_jackpotBP + _dividendsBP <= 10000);
 
-        baseInit(_name, _symbol, _vaultToken, _strategy);
+		baseInit(_name, _symbol, _vaultToken, _strategy);
 
-        ctx = Context(_jackpotBP, _dividendsBP, _timeDecay, _growthFactor, 4);
-        minimumPrice = _minimumPrice;
-        timeTracker = _intialTimeSeconds;
+		ctx = Context(_jackpotBP, _dividendsBP, _timeDecay, _growthFactor, 4);
+		minimumPrice = _minimumPrice;
+		timeTracker = _intialTimeSeconds;
 
-        // 24 hrs
-        deadline = block.timestamp + _intialTimeSeconds;
+		// 24 hrs
+		deadline = block.timestamp + _intialTimeSeconds;
+	}
 
-    }
+	///======================================================================================================================================
+	///  User Facing
+	///======================================================================================================================================
 
-///======================================================================================================================================
-///  User Facing
-///======================================================================================================================================
+	function mintNewNft(uint256 amount) public override returns (uint256) {
+		require(amount >= minimumPrice && block.timestamp <= deadline, "Underpaid, or past deadline");
 
-    function mintNewNft(uint256 amount) public override returns (uint256) {
+		Context memory ctxm = ctx;
+		uint256 totalBP = 10000 - (ctxm.jackpotBP + ctxm.dividendsBP);
+		uint256 amountClaimable = (amount * totalBP) / 10000;
 
-        require(
-            amount >= minimumPrice &&
-            block.timestamp <= deadline,
-            "Underpaid, or past deadline"
-        );
+		if (currentId > 1) {
+			// sorry :( , you dont get your own dividends?!
+			adjustYeild((amount * ctxm.dividendsBP) / 10000);
 
-        Context memory ctxm = ctx;
-        uint256 totalBP = 10000 - (ctxm.jackpotBP + ctxm.dividendsBP);
-        uint256 amountClaimable = amount * totalBP / 10000;
+			jackpot += (amount * ctxm.jackpotBP) / 10000;
+		} else {
+			jackpot = (amount * (ctxm.jackpotBP + ctxm.dividendsBP)) / 10000;
+		}
 
-        if (currentId > 1) {
+		lastDepositer = msg.sender;
+		adjustFactors();
+		return _mintNewNFT(amountClaimable);
+	}
 
-            // sorry :( , you dont get your own dividends?!
-            adjustYeild(
-                amount * ctxm.dividendsBP / 10000
-            );
+	function depositToId(uint256 amount, uint256 id) public override {
+		// trusted contract
+		require(msg.sender == ownerOf[id] && amount >= minimumPrice && block.timestamp <= deadline);
 
-            jackpot += amount * ctxm.jackpotBP / 10000;
+		Context memory ctxm = ctx;
 
-        } else {
+		// sorry :( , you dont get your own dividends?!
+		adjustYeild((amount * ctxm.dividendsBP) / 10000);
 
-            jackpot = amount * (ctxm.jackpotBP + ctxm.dividendsBP) / 10000;
+		jackpot += (amount * ctxm.jackpotBP) / 10000;
 
-        }
+		uint256 totalBP = 10000 - (ctxm.jackpotBP + ctxm.dividendsBP);
+		uint256 newAmount = (amount * totalBP) / 10000;
 
-        lastDepositer = msg.sender;
-        adjustFactors();
-        return _mintNewNFT(amountClaimable);
-        
-    }
+		adjustFactors();
 
-     function depositToId(uint256 amount, uint256 id) public override {
+		_depositToId(newAmount, id);
+	}
 
-        
-        // trusted contract
-        require(
-            msg.sender == ownerOf[id] &&
-            amount >= minimumPrice &&
-            block.timestamp <= deadline
-        );
+	function withdrawFromId(uint256 amount, uint256 id) public override {
+		uint256 claimable = withdrawableById(id);
+		require(amount == claimable, "Use burn");
+		burnNFTAndWithdrawl(id);
+	}
 
-        Context memory ctxm = ctx;
+	function claimJackpot() external {
+		require(block.timestamp > deadline);
 
-        // sorry :( , you dont get your own dividends?!
-        adjustYeild(amount * ctxm.dividendsBP / 10000);
-        
-        jackpot += amount * ctxm.jackpotBP / 10000;
+		vaultToken.transfer(lastDepositer, jackpot);
+	}
 
-        uint256 totalBP = 10000 - (ctxm.jackpotBP + ctxm.dividendsBP);
-        uint256 newAmount = amount * totalBP / 10000;
-        
-        adjustFactors();
+	///======================================================================================================================================
+	///  Yield
+	///======================================================================================================================================
 
-        _depositToId(newAmount, id);
+	// internal adjust yeild function that adjusts dividens from buy ins
+	// adjustYeild() manages startegy yeild
+	function adjustYeild(uint256 amount) internal {
+		yeildPerDeposit += (amount * 1e10) / totalDeposits;
+	}
 
-    }
+	// possible improvemnt is to send unclaimed depostis into the jackpot
+	// currently is distributed to all holders
 
-    function withdrawFromId(uint256 amount, uint256 id) public override {
+	///======================================================================================================================================
+	/// Internal
+	///======================================================================================================================================
 
-        uint256 claimable = withdrawableById(id);
-        require(amount == claimable, "Use burn");
-        burnNFTAndWithdrawl(id);
+	// every deposits shortens the time 33%
+	// every deposit increases the minimum 33%
+	function adjustFactors() internal {
+		timeTracker -= ((timeTracker * ctx.timeDecay) / 10000);
 
-    }
-
-    function claimJackpot() external {
-
-        require (block.timestamp > deadline);
-
-        vaultToken.transfer(lastDepositer, jackpot);
-        
-    }
-
-///======================================================================================================================================
-///  Yield
-///======================================================================================================================================
-
-    // internal adjust yeild function that adjusts dividens from buy ins 
-    // adjustYeild() manages startegy yeild
-    function adjustYeild(uint256 amount) internal {
-
-        yeildPerDeposit += amount * 1e10 / totalDeposits;
-
-    }
-
-    // possible improvemnt is to send unclaimed depostis into the jackpot
-    // currently is distributed to all holders
-
-///======================================================================================================================================
-/// Internal
-///======================================================================================================================================
-
-    // every deposits shortens the time 33%
-    // every deposit increases the minimum 33%
-    function adjustFactors() internal {
-
-        timeTracker -= (timeTracker * ctx.timeDecay / 10000);
-
-        deadline += timeTracker;
-        minimumPrice += (minimumPrice * ctx.growthFactor / 10000);
-
-    }
-
+		deadline += timeTracker;
+		minimumPrice += ((minimumPrice * ctx.growthFactor) / 10000);
+	}
 }
