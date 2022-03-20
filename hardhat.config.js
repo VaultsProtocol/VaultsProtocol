@@ -4,7 +4,6 @@ require("@nomiclabs/hardhat-truffle5");
 require("@nomiclabs/hardhat-web3");
 
 require("dotenv").config();
-const fs = require("fs-extra");
 
 // const { ethers, web3, Web3 } = require("");
 
