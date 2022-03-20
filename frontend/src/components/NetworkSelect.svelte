@@ -1,23 +1,27 @@
 <script lang="ts">
 	// Constants/types
 	import { type Network, availableNetworks as _availableNetworks, networkIcons, networks, networksBySlug, networksByChainID } from '$lib/networks'
-	import { rpcProviders } from '$lib/providers'
+	import { rpcProviders, rpcProvidersForNetwork } from '$lib/providers'
 
 
 	// Stores
 	import { account } from '../stores/account'
+	import { rpcProvider } from '../stores/rpcProvider'
 
 
 	// External state
 	export let availableNetworks: Network[] = _availableNetworks
 
-	export let rpcProvider
 	export let network: Network // networksBySlug['ethereum-rinkeby']
+
+	export let rpcProviderConfig
 
 
 	// Formatting
 	import { utils } from 'ethers'
 	const { hexValue } = utils
+
+	import { random } from '$lib/random'
 
 
 	// Methods/hooks/lifecycle
@@ -62,9 +66,15 @@
 	})()
 
 	$: if(network && $account && $account.chainId === network.chainId)(async () => {
-		await $account.signer.connect(rpcProvider)
+		await $account.signer.connect(rpcProviderConfig)
 	})
-	
+
+	$: if(network)
+		if(rpcProviderConfig)
+			$rpcProvider = rpcProviderConfig.get({ network })
+		else
+			rpcProviderConfig = rpcProviders.find(rpcProvider => rpcProvider.type === random(rpcProvidersForNetwork[network.slug]))
+
 
 	// Components
 	import Select from '../components/Select.svelte'
@@ -72,7 +82,7 @@
 
 
 <Select
-	bind:value={rpcProvider}
+	bind:value={rpcProviderConfig}
 	values={rpcProviders}
 	getLabel={rpcProvider => rpcProvider.name}
 	getIcon={rpcProvider => rpcProvider.icon}

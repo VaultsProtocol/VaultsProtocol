@@ -72,7 +72,7 @@ export const rpcProviders: RpcProviderConfig[] = [
 		name: 'BlockDaemon',
 		icon: blockdaemonIcon,
 
-		get: ({ network }) => undefined
+		get: ({ network }) => getDefaultProvider() // undefined
 	},
 ]
 
