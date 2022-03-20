@@ -1,0 +1,25 @@
+# Node
+node_modules
+
+# Env
+.env
+
+# macOS
+.DS_Store
+
+# Hardhat
+cache/
+artifacts/
+
+# Foundry
+out/
+
+# Typechain
+typechain
+typechain-types
+
+# Other
+.privatekey-bridgeadmin
+.privatekey
+coverage
+coverage.json
