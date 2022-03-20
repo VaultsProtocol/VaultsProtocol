@@ -2,7 +2,7 @@
 	// Constants/types
 	import { _ } from 'svelte-i18n'
 
-	import { getDefaultVaultConfig, VaultType } from '../../lib/vaults'
+	import { getRandomVaultConfig, VaultType } from '../../lib/vaults'
 
 
 	// Stores
@@ -13,12 +13,13 @@
 	import { BigNumber, utils } from 'ethers'
 	const { parseUnits } = utils
 
+
 	// Methods/hooks/lifecycle
 
 	import { random } from '../../lib/random'
 
 	const getPlaceholderVault = () => {
-		const vaultConfig = getDefaultVaultConfig(random(Object.values(VaultType)))
+		const vaultConfig = getRandomVaultConfig()
 
 		const { decimals } = vaultConfig.tokens[0] ?? {}
 
