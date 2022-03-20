@@ -3,8 +3,7 @@
   "license": "",
   "scripts": {
     "test": "npx hardhat test",
-    "deploy-all-eth-main": "npx hardhat full-deploy --network ethMain",
-    "sign-whitelists": "node scripts/sign-whitelist.ts"
+    "deploy-all-eth-main": "npx hardhat full-deploy --network ethMain"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
