@@ -24,7 +24,7 @@ const contractArtifacts = {
 	YearnStrategy,
 
 	BasicMetaTransaction,
-}
+} as const
 
 
 import {
@@ -55,7 +55,7 @@ const contractsFactories = {
 	'YearnStrategy': YearnStrategy__factory,
 
 	'BasicMetaTransaction': BasicMetaTransaction__factory,
-}
+} as const
 
 
 import type { Network } from './networks'
@@ -65,7 +65,7 @@ import type { Signer } from 'ethers' // Using Typechain
 
 import contractDeployments from './contracts.json'
 
-export const getContract = ({
+export const getContract = <T extends keyof typeof contractsFactories>({
 	name,
 	contractAddress,
 	network,
@@ -73,7 +73,7 @@ export const getContract = ({
 	provider,
 }: {
 	// name: keyof typeof contractArtifacts, // Using Hardhat artifacts
-	name: keyof typeof contractsFactories, // Using Typechain
+	name: T, // Using Typechain
 	contractAddress?: string,
 	network: Network,
 	signer?: Signer,
