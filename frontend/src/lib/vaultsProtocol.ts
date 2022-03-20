@@ -1,5 +1,5 @@
 import type { Network } from './networks'
-import type { VaultConfig, VaultStatus } from './vaultConfig'
+import { type VaultConfig, type VaultStatus, YieldStrategy } from './vaultConfig'
 import type { Signer } from 'ethers'
 import type { Provider } from '@ethersproject/providers'
 
@@ -44,12 +44,17 @@ export const createVault = async ({
 		),
 	)
 
+	const strategyContractName = {
+		[YieldStrategy.Aave]: 'AaveStrategy',
+		[YieldStrategy.Yearn]: 'YearnStrategy',
+	}[vaultConfig.yieldStrategy]
+
 	return await VaultFactory.createVault(
 		// bytes calldata vaultCreationCode,
 		getContractBytecode({ network, name: 'BaseVault' }),
 
 		// bytes calldata strategyCreationCode,
-		getContractBytecode({ network, name: 'YearnStrategy' }),
+		strategyContractName && getContractBytecode({ network, name: strategyContractName }),
 
 		// address vaultToken,
 		vaultConfig.tokens[0].address,
