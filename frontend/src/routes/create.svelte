@@ -507,9 +507,7 @@
 
 <style>
 	section.row {
-		--grid-gap: 2rem;
 		grid-template-columns: auto 1fr;
-		align-items: start;
 	}
 
 	.vault-preview {

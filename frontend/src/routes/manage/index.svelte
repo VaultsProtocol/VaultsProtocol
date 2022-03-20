@@ -72,7 +72,7 @@
 	<h1>{$_('My Vaults')}</h1>
 </section>
 
-<section id="top" class="column">
+<section class="column">
 	<Tableland
 		account={$account}
 		let:connection
@@ -108,28 +108,28 @@
 			</footer>
 		</article>
 	</Tableland>
-
-	{#each vaults as { vaultConfig, vaultStatus, vaultPosition }}
-		<div class="vault-manager row">
-			<Vault
-				{vaultConfig}
-				{vaultStatus}
-				{vaultPosition}
-			/>
-
-			<VaultManager
-				{vaultConfig}
-				{vaultStatus}
-				{vaultPosition}
-			/>
-		</div>
-	{/each}
 </section>
+
+{#each vaults as { vaultConfig, vaultStatus, vaultPosition }}
+	<section class="manage-vault row">
+		<Vault
+			{vaultConfig}
+			{vaultStatus}
+			{vaultPosition}
+		/>
+
+		<VaultManager
+			{vaultConfig}
+			{vaultStatus}
+			{vaultPosition}
+		/>
+	</section>
+{/each}
 
 
 <style>
-	.vault-manager {
-		align-items: start;
-		grid-template-columns: auto 1fr;
+	.manage-vault {
+		justify-content: center;
+		margin: auto;
 	}
 </style>

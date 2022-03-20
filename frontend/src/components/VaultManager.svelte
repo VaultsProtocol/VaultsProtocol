@@ -198,15 +198,10 @@
 <style>
 	.manage-positions {
 		max-width: 35rem;
-		margin: 0 auto;
+		/* margin: 0 auto;
 		padding: 30px;
 		border: 20px solid #f3f3f3;
-		box-shadow: 0px 5px 10px #ccc;
-	}
-
-	.manage-positions :global(.button) {
-		/* background: red; */
-		padding: 10px;
+		box-shadow: 0px 5px 10px #ccc; */
 	}
 	
 
@@ -230,6 +225,6 @@
 		border-bottom-right-radius: 0;
 		border-bottom-left-radius: 0;
 		text-align: center;
-		font-size: 2em;
+		font-size: 1.5em;
 	}
 </style>

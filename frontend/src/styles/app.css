@@ -371,6 +371,13 @@ hr {
 	color: var(--background-color-black);
 }
 
+
+
+section.row {
+	align-items: start;
+	gap: 2rem;
+}
+
 section.card {
 	--button-color: var(--background-color-f3);
 }
