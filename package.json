@@ -2,6 +2,7 @@
   "name": "@vaults-protocol/contracts",
   "license": "",
   "scripts": {
+    "compile": "rm -rf artifacts cache; npx hardhat compile",
     "test": "npx hardhat test",
     "deploy-all-eth-main": "npx hardhat full-deploy --network ethMain"
   },
