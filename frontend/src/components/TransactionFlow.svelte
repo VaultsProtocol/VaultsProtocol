@@ -194,6 +194,12 @@
 				<h2>{$_('Waiting...')}</h2>
 
 				<p><slot name="pending-message" {network} /></p>
+
+				{#if tx?.hash}
+					<a class="address" href="{network.explorers?.[0]?.url}/tx/{tx.hash}" target="_blank">
+						<button class="round">{$_('View Transaction')}</button>
+					</a>
+				{/if}
 			</slot>
 		</div>
 	{:else if currentStep === Steps.TransactionFailed || currentStep === Steps.TransactionReverted}
@@ -205,9 +211,16 @@
 
 			<output>{errorMessage}</output>
 
+			<button class="large round primary" on:click={actions.restart}>{$_('Try Again')}</button>
+
 			<div class="row centered">
-				<button class="large round primary" on:click={actions.restart}>{$_('Try Again')}</button>
-				<button class="large round" on:click={actions.cancel}>{$_('Cancel')}</button>
+				{#if tx?.hash}
+					<a class="address" href="{network.explorers?.[0]?.url}/tx/{tx.hash}" target="_blank">
+						<button class="round">{$_('View Transaction')}</button>
+					</a>
+				{/if}
+
+				<button class="round" on:click={actions.cancel}>{$_('Cancel')}</button>
 			</div>
 		</div>
 	{:else if currentStep === Steps.TransactionSuccess}
@@ -224,6 +237,12 @@
 				<h2>{$_('Success!')}</h2>
 
 				<p><slot name="success-message" {network} {tx} /></p>
+
+				{#if tx?.hash}
+					<a class="address" href="{network.explorers?.[0]?.url}/tx/{tx.hash}" target="_blank">
+						<button class="round">{$_('View Transaction')}</button>
+					</a>
+				{/if}
 			</slot>
 		</div>
 	{/if}
