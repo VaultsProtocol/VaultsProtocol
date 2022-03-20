@@ -6,10 +6,10 @@ import {
   utils,
   Contract,
   ContractFactory,
-  Overrides,
-  BigNumberish,
+  type Overrides,
+  type BigNumberish,
 } from "ethers";
-import { Provider, TransactionRequest } from "@ethersproject/providers";
+import type { Provider, TransactionRequest } from "@ethersproject/providers";
 import type { MockERC20, MockERC20Interface } from "../MockERC20";
 
 const _abi = [
