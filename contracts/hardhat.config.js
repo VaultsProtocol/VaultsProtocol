@@ -1,7 +1,9 @@
-require("@nomiclabs/hardhat-waffle");
-require("@nomiclabs/hardhat-etherscan");
-require("@nomiclabs/hardhat-truffle5");
+require('@typechain/hardhat')
+require('@nomiclabs/hardhat-ethers')
 require("@nomiclabs/hardhat-web3");
+require("@nomiclabs/hardhat-waffle");
+require("@nomiclabs/hardhat-truffle5");
+require("@nomiclabs/hardhat-etherscan");
 
 require("dotenv").config();
 
