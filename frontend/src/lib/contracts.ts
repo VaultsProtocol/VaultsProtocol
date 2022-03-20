@@ -1,21 +1,30 @@
-import BaseVault from '$lib/contracts/BaseVault.sol/BaseVault.json'
-import BasicMetaTransaction from '$lib/contracts/BasicMetaTransaction.sol/BasicMetaTransaction.json'
-import CharityVault from '$lib/contracts/CharityVault.sol/CharityVault.json'
-import DaoVault from '$lib/contracts/DaoVault.sol/DaoVault.json'
-import DegenVault from '$lib/contracts/DegenVault.sol/DegenVault.json'
-import SuperFluidVault from '$lib/contracts/SuperFluidVault.sol/SuperFluidVault.json'
-import VaultFactory from '$lib/contracts/VaultFactory.sol/VaultFactory.json'
-import YearnStrategy from '$lib/contracts/strategies/ExampleYearnStrat.sol/YearnStrategy.json'
+import VaultFactory from '$lib/contracts/VaultFactory.json'
 
-export const contracts = {
+import BaseVault from '$lib/contracts/BaseVault.json'
+import CharityVault from '$lib/contracts/CharityVault.json'
+import DaoVault from '$lib/contracts/DaoVault.json'
+import DegenVault from '$lib/contracts/DegenVault.json'
+// import SuperFluidVault from '$lib/contracts/SuperFluidVault.json'
+
+import AaveStrategy from '$lib/contracts/AaveStrategy.json'
+import YearnStrategy from '$lib/contracts/YearnStrategy.json'
+
+import BasicMetaTransaction from '$lib/contracts/BasicMetaTransaction.json'
+
+
+export const contractArtifacts = {
+	VaultFactory,
+
 	BaseVault,
-	BasicMetaTransaction,
 	CharityVault,
 	DaoVault,
 	DegenVault,
-	SuperFluidVault,
-	VaultFactory,
-	YearnStrategy
+	// SuperFluidVault,
+
+	AaveStrategy,
+	YearnStrategy,
+
+	BasicMetaTransaction,
 }
 
 
@@ -32,7 +41,7 @@ export const getContract = ({
 	signer,
 	provider,
 }: {
-	name: keyof typeof contracts,
+	name: keyof typeof contractArtifacts,
 	contractAddress?: string,
 	network: Network,
 	signer?: Signer,
@@ -53,7 +62,7 @@ export const getContract = ({
 	try {
 		return new Contract(
 			contractAddress,
-			contracts[name].abi,
+			contractArtifacts[name].abi,
 			signer || provider
 		)
 	}catch(e){
@@ -72,12 +81,12 @@ export const getContractBytecode = ({
 	name
 }: {
 	network: Network,
-	name: keyof typeof contracts
+	name: keyof typeof contractArtifacts
 }) => {
 	const contractsForNetwork = contractDeployments[network.slug]
 
 	if(!contractsForNetwork)
 		throw new Error(`Vaults Protocol isn't yet deployed to ${network.name}.`)
 
-	return contracts[name].bytecode
+	return contractArtifacts[name].bytecode
 }
