@@ -54,11 +54,11 @@
 		<Header />
 
 		<div class="page stack">
-			{#key $page}
+			<!-- {#key $page} -->
 				<main in:fly={{ x: 100 }} out:fly={{ x: -100 }}>
 					<slot />
 				</main>
-			{/key}
+			<!-- {/key} -->
 		</div>
 	{/if}
 </div>
