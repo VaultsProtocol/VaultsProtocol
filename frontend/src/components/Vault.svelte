@@ -150,13 +150,13 @@
 							{/if}
 						</div>
 
-						{#if !isDeployed}
-							<TokenBalance
-								balance={vaultConfig.config.initialLiquidity.amount}
-								erc20Token={vaultConfig.tokens[0]}
-							/>
-						{:else}
-							<span>
+						<span class="token-balance">
+							{#if !isDeployed}
+								<TokenBalance
+									balance={vaultConfig.config.initialLiquidity.amount}
+									erc20Token={vaultConfig.tokens[0]}
+								/>
+							{:else}
 								{#if isShowingIndividualPosition}
 									<TokenBalance
 										balance={vaultPosition.balance}
@@ -168,8 +168,8 @@
 									balance={vaultStatus.totalBalance}
 									erc20Token={vaultConfig.tokens[0]}
 								/>
-							</span>
-						{/if}
+							{/if}
+						</span>
 					</header>
 
 					<div class="stack">
@@ -403,6 +403,9 @@
 		line-height: 1;
 		overflow: hidden;
 		text-overflow: ellipsis;
+	}
+	.token-balance {
+		text-align: right;
 	}
 
 	.illustration-wrapper {
