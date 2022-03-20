@@ -1,0 +1,17 @@
+
+node_modules
+.env
+.privatekey-bridgeadmin
+.privatekey
+coverage
+coverage.json
+typechain
+*.DS_STORE
+*.env
+
+# Hardhat
+cache/
+artifacts/
+
+# Foundry
+out/
