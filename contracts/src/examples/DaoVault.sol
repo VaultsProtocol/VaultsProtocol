@@ -26,7 +26,7 @@ contract DaoVault is BaseVault {
 
 	// called by executeProposal
 	function _manage(uint256 amount, address who) internal {
-		//cannot manage funds earning yeild
+		//cannot manage funds earning yield
 		require(amount < vaultToken.balanceOf(address(this)));
 
 		managed += amount;
@@ -43,11 +43,17 @@ contract DaoVault is BaseVault {
 		vaultToken.transferFrom(msg.sender, address(this), amount);
 	}
 
-	function withdrawableById(uint256 id) public view override returns (uint256) {
+	function withdrawableById(uint256 id)
+		public
+		view
+		override
+		returns (uint256)
+	{
 		// random deposits are not inculded as they are treated as rewards on distro events
 		//
 		//               expected balance
 		return
-			((((totalDeposits + depositedToStrat) - managed) * deposits[id].amount) / totalDeposits) + yieldPerId(id);
+			((((totalDeposits + depositedToStrat) - managed) *
+				deposits[id].amount) / totalDeposits) + yieldPerId(id);
 	}
 }

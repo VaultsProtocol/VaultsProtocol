@@ -21,7 +21,7 @@ contract BaseVault is ERC721, BasicMetaTransaction {
 
 	struct Deposits {
 		uint256 amount;
-		uint256 tracker; //sum of delta(deposit) * yeildPerDeposit || SCALED
+		uint256 tracker; //sum of delta(deposit) * yieldPerDeposit || SCALED
 	}
 
 	struct MetaData {
@@ -39,8 +39,8 @@ contract BaseVault is ERC721, BasicMetaTransaction {
 	// tokenID => Deposits
 	mapping(uint256 => Deposits) public deposits;
 
-	//sum of yeild/totalDeposits scaled by 1e10
-	uint256 public yeildPerDeposit;
+	//sum of yield/totalDeposits scaled by 1e10
+	uint256 public yieldPerDeposit;
 
 	uint256 public totalDeposits;
 
@@ -116,7 +116,12 @@ contract BaseVault is ERC721, BasicMetaTransaction {
 		_burn(id);
 	}
 
-	function withdrawableById(uint256 id) public view virtual returns (uint256 claimId) {
+	function withdrawableById(uint256 id)
+		public
+		view
+		virtual
+		returns (uint256 claimId)
+	{
 		return deposits[id].amount + yieldPerId(id);
 	}
 
@@ -131,11 +136,11 @@ contract BaseVault is ERC721, BasicMetaTransaction {
 		uint256 id = _mint(msgSender(), currentId);
 
 		if (totalDeposits > 0) {
-			distributeYeild();
+			distributeYield();
 		}
 
 		deposits[id].amount = amount;
-		deposits[id].tracker += amount * yeildPerDeposit;
+		deposits[id].tracker += amount * yieldPerDeposit;
 
 		totalDeposits += amount;
 		lastKnownContractBalance += amount;
@@ -151,11 +156,11 @@ contract BaseVault is ERC721, BasicMetaTransaction {
 		require(msgSender() == ownerOf[id]);
 
 		if (totalDeposits > 0) {
-			distributeYeild();
+			distributeYield();
 		}
 
 		deposits[id].amount += amount;
-		deposits[id].tracker += amount * yeildPerDeposit;
+		deposits[id].tracker += amount * yieldPerDeposit;
 
 		totalDeposits += amount;
 		lastKnownContractBalance += amount;
@@ -166,7 +171,7 @@ contract BaseVault is ERC721, BasicMetaTransaction {
 
 	function _withdrawFromId(uint256 amount, uint256 id) internal {
 		// Alaways distribute yield
-		distributeYeild();
+		distributeYield();
 
 		require(msgSender() == ownerOf[id] && amount <= withdrawableById(id));
 
@@ -181,7 +186,7 @@ contract BaseVault is ERC721, BasicMetaTransaction {
 
 			// all user Yield is harvested therefore at the current
 			// point in time the user is not entitled to any yield
-			deposits[id].tracker = deposits[id].amount * yeildPerDeposit;
+			deposits[id].tracker = deposits[id].amount * yieldPerDeposit;
 		} else {
 			// user yield still remains therefore principal not affected
 			// just add nonclaimable to current tracker
@@ -227,10 +232,11 @@ contract BaseVault is ERC721, BasicMetaTransaction {
 	/// Yield
 	///======================================================================================================================================
 
-	// gets yeild from strategy contract
+	// gets yield from strategy contract
 	// called before deposits and withdrawls
-	function distributeYeild() public virtual {
-		uint256 unclaimedYield = vaultToken.balanceOf(address(this)) - lastKnownContractBalance;
+	function distributeYield() public virtual {
+		uint256 unclaimedYield = vaultToken.balanceOf(address(this)) -
+			lastKnownContractBalance;
 		lastKnownContractBalance += unclaimedYield;
 
 		uint256 strategyYield = address(strat) != address(0)
@@ -238,11 +244,13 @@ contract BaseVault is ERC721, BasicMetaTransaction {
 			: 0;
 		lastKnownStrategyTotal += strategyYield;
 
-		yeildPerDeposit += ((unclaimedYield + strategyYield) * 1e10) / totalDeposits;
+		yieldPerDeposit +=
+			((unclaimedYield + strategyYield) * 1e10) /
+			totalDeposits;
 	}
 
 	function yieldPerId(uint256 id) public view returns (uint256) {
-		uint256 pre = (deposits[id].amount * yeildPerDeposit) / 1e10;
+		uint256 pre = (deposits[id].amount * yieldPerDeposit) / 1e10;
 		return pre - (deposits[id].tracker / 1e10);
 	}
 
@@ -250,7 +258,12 @@ contract BaseVault is ERC721, BasicMetaTransaction {
 	/// Token metadata
 	///======================================================================================================================================
 
-	function tokenURI(uint256 id) public view virtual returns (MetaData memory) {
+	function tokenURI(uint256 id)
+		public
+		view
+		virtual
+		returns (MetaData memory)
+	{
 		return MetaData(name, address(this), withdrawableById(id), id, 0);
 	}
 }

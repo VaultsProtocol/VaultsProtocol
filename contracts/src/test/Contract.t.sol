@@ -63,7 +63,7 @@ contract ContractTest is DSTest {
 		// distirbute yield to two holders
 		// called regardless on withdrawl
 		// this is just to set up withdrawl amount for test
-		vault.distributeYeild();
+		vault.distributeYield();
 
 		console.log("Withdrawable [1] ", vault.withdrawableById(1));
 		console.log("Withdrawable [2] ", vault.withdrawableById(2));
@@ -171,7 +171,9 @@ interface CheatCodes {
 	function record() external;
 
 	// Gets all accessed reads and write slot from a recording session, for a given address
-	function accesses(address) external returns (bytes32[] memory reads, bytes32[] memory writes);
+	function accesses(address)
+		external
+		returns (bytes32[] memory reads, bytes32[] memory writes);
 
 	// Prepare an expected log with (bool checkTopic1, bool checkTopic2, bool checkTopic3, bool checkData).
 	// Call this function, then emit an event, then call a function. Internally after the call, we check if

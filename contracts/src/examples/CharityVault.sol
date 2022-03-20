@@ -49,8 +49,9 @@ contract CharityVault is BaseVault {
 	/// Overrides
 	///======================================================================================================================================
 
-	function distributeYeild() public override {
-		uint256 unclaimedYield = vaultToken.balanceOf(address(this)) - lastKnownContractBalance;
+	function distributeYield() public override {
+		uint256 unclaimedYield = vaultToken.balanceOf(address(this)) -
+			lastKnownContractBalance;
 		lastKnownContractBalance += unclaimedYield;
 
 		uint256 strategyYield = address(strat) != address(0)
@@ -62,6 +63,6 @@ contract CharityVault is BaseVault {
 		uint256 toCharitable = (totalYield * ctx.percentOfYield) / 1e4;
 
 		yieldForRecipient += toCharitable;
-		yeildPerDeposit += ((totalYield - toCharitable) * 1e10) / totalDeposits;
+		yieldPerDeposit += ((totalYield - toCharitable) * 1e10) / totalDeposits;
 	}
 }

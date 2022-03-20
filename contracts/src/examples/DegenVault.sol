@@ -63,7 +63,10 @@ contract DegenVault is BaseVault {
 	///======================================================================================================================================
 
 	function mintNewNft(uint256 amount) public override returns (uint256) {
-		require(amount >= minimumPrice && block.timestamp <= deadline, "Underpaid, or past deadline");
+		require(
+			amount >= minimumPrice && block.timestamp <= deadline,
+			"Underpaid, or past deadline"
+		);
 
 		Context memory ctxm = ctx;
 		uint256 totalBP = 10000 - (ctxm.jackpotBP + ctxm.dividendsBP);
@@ -71,7 +74,7 @@ contract DegenVault is BaseVault {
 
 		if (currentId > 1) {
 			// sorry :( , you dont get your own dividends?!
-			adjustYeild((amount * ctxm.dividendsBP) / 10000);
+			adjustYield((amount * ctxm.dividendsBP) / 10000);
 
 			jackpot += (amount * ctxm.jackpotBP) / 10000;
 		} else {
@@ -85,12 +88,16 @@ contract DegenVault is BaseVault {
 
 	function depositToId(uint256 amount, uint256 id) public override {
 		// trusted contract
-		require(msg.sender == ownerOf[id] && amount >= minimumPrice && block.timestamp <= deadline);
+		require(
+			msg.sender == ownerOf[id] &&
+				amount >= minimumPrice &&
+				block.timestamp <= deadline
+		);
 
 		Context memory ctxm = ctx;
 
 		// sorry :( , you dont get your own dividends?!
-		adjustYeild((amount * ctxm.dividendsBP) / 10000);
+		adjustYield((amount * ctxm.dividendsBP) / 10000);
 
 		jackpot += (amount * ctxm.jackpotBP) / 10000;
 
@@ -118,10 +125,10 @@ contract DegenVault is BaseVault {
 	///  Yield
 	///======================================================================================================================================
 
-	// internal adjust yeild function that adjusts dividens from buy ins
-	// adjustYeild() manages startegy yeild
-	function adjustYeild(uint256 amount) internal {
-		yeildPerDeposit += (amount * 1e10) / totalDeposits;
+	// internal adjust yield function that adjusts dividens from buy ins
+	// adjustYield() manages startegy yield
+	function adjustYield(uint256 amount) internal {
+		yieldPerDeposit += (amount * 1e10) / totalDeposits;
 	}
 
 	// possible improvemnt is to send unclaimed depostis into the jackpot
