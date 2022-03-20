@@ -116,18 +116,28 @@
 					'USDT': '#26a17b',
 					'MATIC': '#8248e5',
 					'AVAX': '#f9273c',
-					'SKALE ETH': '#000',
+					'skETH': 'red',
 					'CELO': '#fbcc5c',
 				}[vaultConfig.tokens[0]?.symbol] ?? ''};
 
 				--vault-network-color: {{
-					'ethereum': '#627eea',
+					'ethereum': '#393939 ',
 					'polygon': '#8248e5',
+					'harmony': '#39D7D1',
+					'harmony-one': '#39D7D1',
+					'harmony-shard0': '#39D7D1',
+					'harmony-shard1': '#39D7D1',
+					'nervos': '#3CC68A',
+					'nervos-godwoken': '#3CC68A',
+					'reef': '#962EE5',
+					'dai': '#faba34',
+					'nahmii': '#E952AC',
+					'covalent': '#FF4C8B',
 					'avalanche': '#f9273c',
+					'truefi': '#1A5AFF',
 					'arbitrum': '#28a0f0',
 					'metis': '#00dacd',
-					'skale': '#000',
-					'celo': '#fbcc5c',
+					'celo': '#35D07F',
 				}[mainnetForTestnet[networksByChainID[vaultConfig.chainId]?.slug]?.slug] ?? ''};
 			"
 		>
