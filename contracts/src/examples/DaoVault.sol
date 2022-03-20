@@ -1,36 +1,29 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0;
 
-import "./BaseVault.sol";
+import "../BaseVault.sol";
 
 //ENSURE vault tokens revert on failed transfer
 contract DaoVault is BaseVault {
 
-    // #########################
-    // ##                     ##
-    // ##     Constructor     ##
-    // ##                     ##
-    // #########################
+///======================================================================================================================================
+/// Consturctor
+///======================================================================================================================================
 
     uint256 managed;
 
-    constructor( 
-        address _vaultToken,
-        string memory name,
-        string memory symbol
-    ) BaseVault( 
-        _vaultToken,
-        name,
-        symbol
-    ) {
-        // Add NAme info
+    function init(
+        string memory _name, 
+        string memory _symbol, 
+        address _token, 
+        address strategy
+    ) public {
+        baseInit(_name, _symbol, _token, strategy);
     }
 
-    // #########################
-    // ##                     ##
-    // ##       Manage        ##
-    // ##                     ##
-    // #########################
+///======================================================================================================================================
+///  Manage Logic
+///======================================================================================================================================
 
     // called by executeProposal
     function _manage(uint256 amount, address who) internal {

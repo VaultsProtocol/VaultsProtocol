@@ -40,12 +40,12 @@ abstract contract ERC721 {
     mapping(address => mapping(address => bool)) public isApprovedForAll;
 
     /*///////////////////////////////////////////////////////////////
-                              CONSTRUCTOR
+                              Initializable
     //////////////////////////////////////////////////////////////*/
 
-    constructor(string memory _name, string memory _symbol) {
-        name = _name;
+    function _nftInit(string memory _name, string memory _symbol) internal {
         symbol = _symbol;
+        name = _name;
     }
 
     /*///////////////////////////////////////////////////////////////

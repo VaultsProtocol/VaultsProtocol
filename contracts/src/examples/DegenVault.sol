@@ -1,19 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0;
 
-import "./tokens/ERC20.sol";
-import "./BaseVault.sol";
+import "../BaseVault.sol";
 
-// Jackpot & Dividend Vault
-// This is the vault that the Jackpot and Degen dividends go.
-// Balances for jackpot vs dividends are tracked with internal vars
 contract DegenVault is BaseVault {
 
-    // #########################
-    // ##                     ##
-    // ##      Structs        ##
-    // ##                     ##
-    // #########################
+///======================================================================================================================================
+///  Data Stuctures
+///======================================================================================================================================
 
     struct Context {
         uint16 jackpotBP;
@@ -23,11 +17,9 @@ contract DegenVault is BaseVault {
         uint16 vaultType;
     }
     
-    // #########################
-    // ##                     ##
-    // ##       State         ##
-    // ##                     ##
-    // #########################
+///======================================================================================================================================
+///  State Variables
+///======================================================================================================================================
 
     Context public ctx;
 
@@ -39,27 +31,25 @@ contract DegenVault is BaseVault {
 
     address public lastDepositer;
 
-    // #########################
-    // ##                     ##
-    // ##     Constructor     ##
-    // ##                     ##
-    // #########################
+///======================================================================================================================================
+///  Constructor
+///======================================================================================================================================
 
-    constructor(
-
+    function init(
         address _vaultToken,
+        address _strategy,
         uint16 _jackpotBP,
         uint16 _dividendsBP,
         uint256 _minimumPrice,
         uint256 _intialTimeSeconds,
         uint16 _timeDecay,
         uint16 _growthFactor,
-        string memory name,
-        string memory symbol
-
-    ) BaseVault(_vaultToken, name, symbol) {
-
+        string memory _name,
+        string memory _symbol
+    ) public {
         require(_jackpotBP + _dividendsBP <= 10000);
+
+        baseInit(_name, _symbol, _vaultToken, _strategy);
 
         ctx = Context(_jackpotBP, _dividendsBP, _timeDecay, _growthFactor, 4);
         minimumPrice = _minimumPrice;
@@ -70,11 +60,9 @@ contract DegenVault is BaseVault {
 
     }
 
-    // #########################
-    // ##                     ##
-    // ##     User Facing     ##
-    // ##                     ##
-    // #########################
+///======================================================================================================================================
+///  User Facing
+///======================================================================================================================================
 
     function mintNewNft(uint256 amount) public override returns (uint256) {
 
@@ -122,16 +110,15 @@ contract DegenVault is BaseVault {
         Context memory ctxm = ctx;
 
         // sorry :( , you dont get your own dividends?!
-        adjustYeild(
-            amount * ctxm.dividendsBP / 10000
-        );
-
+        adjustYeild(amount * ctxm.dividendsBP / 10000);
+        
         jackpot += amount * ctxm.jackpotBP / 10000;
 
         uint256 totalBP = 10000 - (ctxm.jackpotBP + ctxm.dividendsBP);
         uint256 newAmount = amount * totalBP / 10000;
         
         adjustFactors();
+
         _depositToId(newAmount, id);
 
     }
@@ -152,27 +139,24 @@ contract DegenVault is BaseVault {
         
     }
 
-    // #########################
-    // ##                     ##
-    // ##        Yeild        ##
-    // ##                     ##
-    // #########################
+///======================================================================================================================================
+///  Yield
+///======================================================================================================================================
 
     // internal adjust yeild function that adjusts dividens from buy ins 
     // adjustYeild() manages startegy yeild
     function adjustYeild(uint256 amount) internal {
 
-        yeildPerDeposit += amount * SCALAR / totalDeposits;
+        yeildPerDeposit += amount * 1e10 / totalDeposits;
 
     }
 
     // possible improvemnt is to send unclaimed depostis into the jackpot
+    // currently is distributed to all holders
 
-    // #########################
-    // ##                     ##
-    // ##     Internal        ##
-    // ##                     ##
-    // #########################
+///======================================================================================================================================
+/// Internal
+///======================================================================================================================================
 
     // every deposits shortens the time 33%
     // every deposit increases the minimum 33%

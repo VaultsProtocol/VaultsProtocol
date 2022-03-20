@@ -6,17 +6,22 @@ import "./tokens/ERC20.sol";
 import "./interfaces/IStrategy.sol";
 import "./BasicMetaTransaction.sol";
 
+import { console } from "./test/Console.sol";
+
+///======================================================================================================================================
+// Vaults are designed to be human readeable and as minimal as possible
+// 
+// 1e4 = basis points calculation && 1e10 = floating point scalar
+///======================================================================================================================================
 
 contract BaseVault is ERC721, BasicMetaTransaction {
 
-    // #########################
-    // ##                     ##
-    // ##      Structs        ##
-    // ##                     ##
-    // #########################
+///======================================================================================================================================
+/// Data Struct
+///======================================================================================================================================
 
     struct Deposits {
-        uint256 amount;
+        uint256 amount; 
         uint256 tracker; //sum of delta(deposit) * yeildPerDeposit || SCALED
     }
 
@@ -28,51 +33,66 @@ contract BaseVault is ERC721, BasicMetaTransaction {
         uint256 vaultType;
     }
 
-    // #########################
-    // ##                     ##
-    // ##       State         ##
-    // ##                     ##
-    // #########################
+///======================================================================================================================================
+/// Accounting State
+///======================================================================================================================================
 
     // tokenID => Deposits
     mapping(uint256 => Deposits) public deposits;
 
-    //sum of yeild/totalDeposits
-    uint256 public yeildPerDeposit; //SCALED
-    uint256 public totalDeposits;
-    uint256 internal SCALAR = 1e10;
+    //sum of yeild/totalDeposits scaled by 1e10
+    uint256 public yeildPerDeposit;
 
-    // used internally when calculating 
+    uint256 public totalDeposits;
+
+    // used to account for random deposits
     uint256 internal lastKnownContractBalance;
+    
+    // used when calculating rewards and yield Strategy deposits
     uint256 internal lastKnownStrategyTotal;
+
     uint256 internal depositedToStrat;
 
-    ERC20 immutable vaultToken;
-    address immutable deployer; // can only set the strat ONCE
-    IStrategy strat;
+///======================================================================================================================================
+/// Everything Else
+///======================================================================================================================================
 
-    // #########################
-    // ##                     ##
-    // ##     Constructor     ##
-    // ##                     ##
-    // #########################
+    ERC20 public vaultToken;
 
-    constructor(
-        address _vaultToken,
-        string memory name,
-        string memory symbol
+    uint256 internal isInitialized;
 
-    ) ERC721(name, symbol) {
+    IStrategy public strat;
 
-        vaultToken = ERC20(_vaultToken);
-        deployer = msg.sender;
+///======================================================================================================================================
+/// Init
+///======================================================================================================================================
+
+    // constructor() {
+    //     // call init on impl on deployment
+    //     baseInit("Init", "Init", address(0), address(0));
+    // }
+
+    function baseInit(string memory _name, string memory _symbol, address _token, address strategy) public {
+        require(isInitialized == 0, "Already Initialized");
+
+        _nftInit(_name, _symbol);
+
+        strat = IStrategy(strategy);
+
+        vaultToken = ERC20(_token);
+
+        currentId = 1;
+
+        isInitialized = 1;
+
     }
 
-    // #########################
-    // ##                     ##
-    // ##     User Facing     ##
-    // ##                     ##
-    // #########################
+
+///======================================================================================================================================
+/// Overrideable Public Functions
+///
+/// Individual use case logic can done here 
+///======================================================================================================================================
 
     function mintNewNft(uint256 amount) public virtual returns (uint256) {
         return _mintNewNFT(amount);
@@ -87,34 +107,34 @@ contract BaseVault is ERC721, BasicMetaTransaction {
     }
 
     function burnNFTAndWithdrawl(uint256 id) public virtual {
+
         uint256 claimable = withdrawableById(id);
         _withdrawFromId(claimable, id);
 
         // erc721
         _burn(id);
+
     }
 
     function withdrawableById(uint256 id)
-        public 
-        view
-        virtual 
-        returns (uint256 claimId)
+        public view
+        virtual returns (uint256 claimId) 
     {
 
         return deposits[id].amount + yieldPerId(id);
 
     }
 
-    // #########################
-    // ##                     ##
-    // ##  Internal Deposits  ##
-    // ##       Logic         ##
-    // ##                     ##
-    // #########################
+///======================================================================================================================================
+/// Internal Logic
+///
+/// distributeYield() must always be done before
+/// deposits to get accurate yield calculations
+///======================================================================================================================================
 
     function _mintNewNFT(uint256 amount) internal returns (uint256) {
 
-        uint256 id = _mint(msgSender(), currentId); // Use Biconomy here;
+        uint256 id = _mint(msgSender(), currentId);
 
         if (totalDeposits > 0) {
             distributeYeild();
@@ -136,32 +156,38 @@ contract BaseVault is ERC721, BasicMetaTransaction {
     function _depositToId(uint256 amount, uint256 id) internal {
 
         // trusted contract
-        require(msgSender() == ownerOf[id]); // Use Biconomy;
+        require(msgSender() == ownerOf[id]); 
 
-        distributeYeild();
+        if (totalDeposits > 0) {
+            distributeYeild();
+        }
 
         deposits[id].amount += amount;
         deposits[id].tracker += amount * yeildPerDeposit;
-
+        
         totalDeposits += amount;
         lastKnownContractBalance += amount;
 
         //ensure token reverts on failed
-        vaultToken.transferFrom(msgSender(), address(this), amount); // Use Biconomy;
+        vaultToken.transferFrom(msgSender(), address(this), amount); 
 
+        }
+
+        vaultToken.transfer(msgSender(), amount); // Use Biconomy;
     }
 
     function _withdrawFromId(uint256 amount, uint256 id) internal {
 
+        // Alaways distribute yield 
+        distributeYeild();
+
         require(
             msgSender() == ownerOf[id] && 
             amount <= withdrawableById(id)
-        ); // Use Biconomy;
-        
+        ); 
+
         uint256 balanceCheck = vaultToken.balanceOf(address(this));
         uint256 principalWithdrawn;
-
-        distributeYeild();
         uint256 userYield = yieldPerId(id);
 
         if (amount > userYield) {
@@ -178,7 +204,7 @@ contract BaseVault is ERC721, BasicMetaTransaction {
             
             // user yield still remains therefore principal not affected
             // just add nonclaimable to current tracker
-            deposits[id].tracker += amount * SCALAR;
+            deposits[id].tracker += amount * 1e10;
     
         }
         
@@ -190,14 +216,12 @@ contract BaseVault is ERC721, BasicMetaTransaction {
 
         }
 
-        vaultToken.transfer(msgSender(), amount); // Use Biconomy;
+        vaultToken.transfer(msgSender(), amount); 
     }
 
-    // #########################
-    // ##                     ##
-    // ##      Strategy       ##
-    // ##                     ##
-    // #########################
+///======================================================================================================================================
+/// Strategy
+///======================================================================================================================================
 
     //total possible deposited to strat is currently set at 50%
     function initStrat() public {
@@ -216,63 +240,50 @@ contract BaseVault is ERC721, BasicMetaTransaction {
     }
 
     //internal, only called when balanceOf(address(this)) < withdraw requested
-    // depositedToStrat and totalDeposits = total withdrawn - yeild of msg.sender
     function withdrawFromStrat(uint256 amountNeeded) internal {
+
         strat.withdrawl(amountNeeded);
         lastKnownStrategyTotal -= amountNeeded;
+        
     }
 
-    // #########################
-    // ##                     ##
-    // ##       Yeild         ##
-    // ##                     ##
-    // #########################
+///======================================================================================================================================
+/// Yield
+///======================================================================================================================================
 
     // gets yeild from strategy contract
     // called before deposits and withdrawls
     function distributeYeild() public virtual {
 
-        uint256 unclaimedYield = vaultToken.balanceOf(address(this)) - lastKnownContractBalance;
+        uint256 unclaimedYield = 
+            vaultToken.balanceOf(address(this)) - lastKnownContractBalance;
         lastKnownContractBalance += unclaimedYield;
         
         uint256 strategyYield = address(strat) != address(0) ? 
             strat.withdrawlableVaultToken() - lastKnownStrategyTotal : 0;
-
         lastKnownStrategyTotal += strategyYield;
 
-        uint256 totalYield = unclaimedYield + strategyYield;
-
-        yeildPerDeposit += (totalYield * SCALAR) / totalDeposits;
+        yeildPerDeposit += ((unclaimedYield + strategyYield) * 1e10) / totalDeposits;
         
     }
 
     function yieldPerId(uint256 id) public view returns (uint256) {
-        uint256 pre = (deposits[id].amount * yeildPerDeposit) / SCALAR;
-        return pre - (deposits[id].tracker / SCALAR);
+
+        
+        uint256 pre = (deposits[id].amount * yeildPerDeposit) / 1e10;
+        return pre - (deposits[id].tracker / 1e10);
+
     }
 
-    // #########################
-    // ##                     ##
-    // ##  MetaData Override  ##
-    // ##                     ##
-    // #########################
+///======================================================================================================================================
+/// Token metadata
+///======================================================================================================================================
 
-    function tokenURI(uint256 id) public view virtual returns (MetaData memory) {
+    function tokenURI(uint256 id) 
+        public view virtual
+        returns (MetaData memory) {
 
         return MetaData(name, address(this), withdrawableById(id), id, 0);
 
-    }
-
-    // #########################
-    // ##                     ##
-    // ##       INIT          ##
-    // ##                     ##
-    // #########################
-
-    function setStrat(address addr) external {
-
-        require ( msg.sender == deployer && address(strat) == address(0) );
-
-        strat = IStrategy(addr);
     }
 }

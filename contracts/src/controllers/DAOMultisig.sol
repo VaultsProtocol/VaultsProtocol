@@ -1,173 +1,173 @@
-// SPDX-License-Identifier: MIT
-pragma solidity >=0.8.0;
+// // SPDX-License-Identifier: MIT
+// pragma solidity >=0.8.0;
 
-import "../DaoVault.sol";
+// import "../examples/DaoVault.sol";
 
-contract DAOMultsig is DaoVault {
-
-
-    // #########################
-    // ##                     ##
-    // ##       Struct        ##
-    // ##                     ##
-    // #########################
-
-    struct Manage {
-        address to;
-        uint256 amount;
-        uint256 deadline;
-        bool executed;
-    }
-
-    struct AdjustSigner {
-        address signer;
-        uint256 deadline;
-        uint16 sigsNeeded;
-        bool add; // true = add , false = remove
-        bool executed;
-    }
-
-    struct Context {
-        uint16 signersNeeded;
-        uint16 vaultType;
-    }
-
-    // #########################
-    // ##                     ##
-    // ##       State         ##
-    // ##                     ##
-    // #########################
+// contract DAOMultsig is DaoVault {
 
 
-    mapping (address => bool) public isSigner;
-    address[] public signers;
+// ///======================================================================================================================================
+// ///  Data Structures
+// ///======================================================================================================================================
 
-    Context public ctx;
+//     struct Manage {
+//         address to;
+//         uint256 amount;
+//         uint256 deadline;
+//         bool executed;
+//     }
 
-    Manage[] public toManage;
-    mapping (uint256 => uint16) toManageSigs;
-    mapping (uint256 => mapping (address => bool)) signedManage;
+//     struct AdjustSigner {
+//         address signer;
+//         uint256 deadline;
+//         uint16 sigsNeeded;
+//         bool add; // true = add , false = remove
+//         bool executed;
+//     }
 
-    AdjustSigner[] public toAdjust;
-    mapping (uint256 => uint16) toAdjustSigs;
-    mapping (uint256 => mapping (address => bool)) signedAdjust;
+//     struct Context {
+//         uint16 signersNeeded;
+//         uint16 vaultType;
+//     }
 
-
-    // #########################
-    // ##                     ##
-    // ##     Construcor      ##
-    // ##                     ##
-    // #########################
-
-    constructor(
-        address _vaultToken,
-        string memory name,
-        string memory symbol,
-        address[] memory _signer,
-        uint16 _signersNeeded
-    ) DaoVault(
-        _vaultToken,
-        name,
-        symbol
-    ) {
-        ctx = Context(_signersNeeded, 2);
-
-        uint16 length = uint16(_signer.length);
-        for (uint16 i = 0; i < length; i++) {
-            isSigner[_signer[i]] = true;
-        }
-
-        signers = _signer;
-
-    }
+// ///======================================================================================================================================
+// ///  State Variables
+// ///======================================================================================================================================
 
 
+//     mapping (address => bool) public isSigner;
+//     address[] public signers;
 
-    function internalCall(bool manage, uint256 key) external returns (bool) {
-        if (manage) {
+//     Context public ctx;
 
-            require (
-                !toManage[key].executed &&
-                toManageSigs[key] >= ctx.signersNeeded &&
-                toManage[key].deadline <= block.timestamp
-            );
+//     Manage[] public toManage;
+//     mapping (uint256 => uint16) toManageSigs;
+//     mapping (uint256 => mapping (address => bool)) signedManage;
 
-            toManage[key].executed = true;
-            _manage(toManage[key].amount, toManage[key].to);
+//     AdjustSigner[] public toAdjust;
+//     mapping (uint256 => uint16) toAdjustSigs;
+//     mapping (uint256 => mapping (address => bool)) signedAdjust;
 
-        } else {
 
-            require (
-                !toAdjust[key].executed &&
-                toAdjustSigs[key] >= ctx.signersNeeded &&
-                toAdjust[key].deadline <= block.timestamp
-            );
+// ///======================================================================================================================================
+// ///  Constructor
+// ///======================================================================================================================================
 
-            toAdjust[key].executed = true;
-            if (toAdjust[key].add) {
+//     constructor(
+//         address _vaultToken,
+//         string memory name,
+//         string memory symbol,
+//         address[] memory _signer,
+//         uint16 _signersNeeded
+//     ) DaoVault(
+//         _vaultToken,
+//         name,
+//         symbol
+//     ) {
+//         ctx = Context(_signersNeeded, 2);
 
-                isSigner[toAdjust[key].signer] = true;
+//         uint16 length = uint16(_signer.length);
+//         for (uint16 i = 0; i < length; i++) {
+//             isSigner[_signer[i]] = true;
+//         }
 
-            } else {
+//         signers = _signer;
 
-                isSigner[toAdjust[key].signer] = false;
+//     }
 
-            }
+// ///======================================================================================================================================
+// /// Voting and Call logic
+// ///======================================================================================================================================
 
-            ctx.signersNeeded = toAdjust[key].sigsNeeded;
-        }
+//     function internalCall(bool manage, uint256 key) external {
+//         if (manage) {
 
-    }
+//             require (
+//                 !toManage[key].executed &&
+//                 toManageSigs[key] >= ctx.signersNeeded &&
+//                 toManage[key].deadline <= block.timestamp
+//             );
 
-    // true = manage, false = signer
-    function vote(uint256 key, bool flag) external {
+//             toManage[key].executed = true;
+//             _manage(toManage[key].amount, toManage[key].to);
 
-        require(isSigner[msg.sender]);
+//         } else {
 
-        if (flag) {
+//             require (
+//                 !toAdjust[key].executed &&
+//                 toAdjustSigs[key] >= ctx.signersNeeded &&
+//                 toAdjust[key].deadline <= block.timestamp
+//             );
 
-            require(!signedManage[key][msg.sender]);
+//             toAdjust[key].executed = true;
+//             if (toAdjust[key].add) {
 
-            signedManage[key][msg.sender] = true;
-            toManageSigs[key]++;
+//                 isSigner[toAdjust[key].signer] = true;
 
-        } else {
+//             } else {
 
-            require(!signedAdjust[key][msg.sender]);
+//                 isSigner[toAdjust[key].signer] = false;
 
-            signedAdjust[key][msg.sender] = true;
-            toAdjustSigs[key]++;
-        }
+//             }
 
-    }
+//             ctx.signersNeeded = toAdjust[key].sigsNeeded;
+//         }
 
-    function proposeManage(
-        address to,
-        uint256 amount
-    ) external returns (uint256) {
-        require(isSigner[msg.sender]); 
+//     }
+
+//     // true = manage, false = signer
+//     function vote(uint256 key, bool flag) external {
+
+//         require(isSigner[msg.sender]);
+
+//         if (flag) {
+
+//             require(!signedManage[key][msg.sender]);
+
+//             signedManage[key][msg.sender] = true;
+//             toManageSigs[key]++;
+
+//         } else {
+
+//             require(!signedAdjust[key][msg.sender]);
+
+//             signedAdjust[key][msg.sender] = true;
+//             toAdjustSigs[key]++;
+//         }
+
+//     }
+
+// ///======================================================================================================================================
+// ///  Proposal Logic
+// ///======================================================================================================================================
+
+//     function proposeManage(
+//         address to,
+//         uint256 amount
+//     ) external returns (uint256) {
+//         require(isSigner[msg.sender]); 
 
         
-        Manage memory mem = Manage(to, amount, block.timestamp + 259200, false); // -> 3 days 
-        toManage.push(mem);
-        return toManage.length - 1;
+//         Manage memory mem = Manage(to, amount, block.timestamp + 259200, false); // -> 3 days 
+//         toManage.push(mem);
+//         return toManage.length - 1;
 
-    }
+//     }
 
-    function proposeSignerAdjustment(
-        address signer,
-        uint16 sigsNeeded,
-        bool add // true = add , false = remove
-    ) external returns (uint256) {
-        require(
-            isSigner[msg.sender] &&
-            sigsNeeded <= signers.length + 1
-        ); 
+//     function proposeSignerAdjustment(
+//         address signer,
+//         uint16 sigsNeeded,
+//         bool add // true = add , false = remove
+//     ) external returns (uint256) {
+//         require(
+//             isSigner[msg.sender] &&
+//             sigsNeeded <= signers.length + 1
+//         ); 
 
-        AdjustSigner memory mem = AdjustSigner(signer, block.timestamp + 259200, sigsNeeded, add, false);
-        toAdjust.push(mem);
-        return toAdjust.length - 1;
-    }
+//         AdjustSigner memory mem = AdjustSigner(signer, block.timestamp + 259200, sigsNeeded, add, false);
+//         toAdjust.push(mem);
+//         return toAdjust.length - 1;
+//     }
 
 
-}
+// }

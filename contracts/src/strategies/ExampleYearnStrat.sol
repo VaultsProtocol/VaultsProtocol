@@ -12,20 +12,27 @@ contract YearnStrategy {
     // ##                     ##
     // #########################
 
-    yVault yvault;
-    ERC20 token;
+    yVault public yvault;
 
-    address vault;
+    ERC20 public token;
+
+    uint256 internal isInit;
+
+    address public vault;
     
-    address immutable deployer;
-
     // #########################
     // ##                     ##
-    // ##     Constructor     ##
+    // ##       Init          ##
     // ##                     ##
     // #########################
 
-    constructor(address _yVault, address _token) {
+    function init(address _yVault, address _token, address _vault) public {
+
+        require (isInit == 0);
+
+        yvault = yVault(_yVault);
+
+        token = ERC20(_token);
 
         yvault = yVault(_yVault);
         token = ERC20(_token);
@@ -75,16 +82,6 @@ contract YearnStrategy {
         uint256 price = yvault.getPricePerFullShare();
         return yvault.balanceOf(address(this)) * price;
 
-    }
-
-    function initVault(address _vault) external {
-
-        require (
-            msg.sender == deployer &&
-            vault == address(0)
-        );
-
-        vault = _vault;
     }
 
 }
