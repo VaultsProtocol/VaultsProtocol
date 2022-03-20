@@ -1,6 +1,8 @@
 {
     "name": "vaults-protocol",
     "scripts": {
-        "compile": "( cd contracts; npm run compile ) && rm -rf frontend/src/lib/contracts && cp -r contracts/artifacts/contracts/src frontend/src/lib/contracts && rm frontend/src/lib/contracts/**/*.dbg.json; npx typechain --target ethers-v5 frontend/src/lib/contracts/**/*.json"
+        "compile": "npm run compile:contracts && npm run compile:frontend",
+        "compile:contracts": "cd contracts; npm run compile",
+        "compile:frontend": "bash compile-frontend.sh"
     }
 }
