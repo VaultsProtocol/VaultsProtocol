@@ -9,11 +9,9 @@ typechain
 *.DS_STORE
 *.env
 
+# Hardhat
 cache/
+artifacts/
 
+# Foundry
 out/
-
-
-#Hardhat files
-cache
-artifacts
