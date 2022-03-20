@@ -136,22 +136,20 @@
 
 		<!-- <svelte:fragment slot="confirming" let:actions={{ back }}> -->
 		<svelte:fragment slot="confirming-message" let:network>
-			<div>
-				{action}
+			{action}
 
-				<TokenBalance
-					erc20Token={vaultConfig.tokens[0]}
-					balance={params.balanceDelta}
-				/>
+			<TokenBalance
+				erc20Token={vaultConfig.tokens[0]}
+				balance={params.balanceDelta}
+			/>
 
-				{$_('to/from {vaultType} vault "{vaultName}" on {networkName}}!', {
-					values: {
-						vaultType: vaultTypeInfo[vaultConfig.type].label,
-						vaultName: vaultConfig.about.name,
-						networkName: network.name
-					}
-				})}
-			</div>
+			{$_('to/from {vaultType} vault "{vaultName}" on {networkName}}!', {
+				values: {
+					vaultType: vaultTypeInfo[vaultConfig.type].label,
+					vaultName: vaultConfig.about.name,
+					networkName: network.name
+				}
+			})}
 		</svelte:fragment>
 
 		<svelte:fragment slot="pending-message" let:network>

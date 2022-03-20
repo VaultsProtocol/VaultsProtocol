@@ -2,21 +2,19 @@
 	// Constants/types
 	import { _ } from 'svelte-i18n'
 
-	import { getRandomVaultConfig, VaultType } from '../../lib/vaults'
-
 
 	// Stores
 	import { account } from '../../stores/account'
 
 
 	// Formatting
-	import { BigNumber, utils } from 'ethers'
+	import { utils } from 'ethers'
 	const { parseUnits } = utils
 
 
 	// Methods/hooks/lifecycle
 
-	import { random } from '../../lib/random'
+	import { getRandomVaultConfig } from '../../lib/vaults'
 
 	const getPlaceholderVault = () => {
 		const vaultConfig = getRandomVaultConfig()
@@ -53,17 +51,14 @@
 	]
 
 
-
 	// Internal state
-	import type { TableMetadata } from '@tableland/sdk'
+	// import type { TableMetadata } from '@tableland/sdk'
 
-	export let selectedTable: TableMetadata
+	// export let selectedTable: TableMetadata
 
 
 	// Components
-	import Address from '../../components/Address.svelte'
-	import Date_ from '../../components/Date.svelte'
-	import Tableland from '../../components/Tableland.svelte'
+	import TablelandVaults from '../../components/TablelandVaults.svelte'
 	import Vault from '../../components/Vault.svelte'
 	import VaultManager from '../../components/VaultManager.svelte'
 </script>
@@ -74,41 +69,9 @@
 </section>
 
 <section class="column">
-	<Tableland
+	<TablelandVaults
 		account={$account}
-		let:connection
-		let:network let:account
-	>
-		<svelte:fragment slot="title">
-			<h2>
-				{$_('Tableland')}
-				{#if connection}
-					› 
-					<Address {network} address={account.address} />
-					› 
-					{$_('Tables')}
-				{/if}
-				<!-- {$_('Saved Vaults')} -->
-			</h2>
-		</svelte:fragment>
-
-		<article class="card column" slot="table"
-			let:table
-		>
-			<header class="row">
-				<h3>{table.name}</h3>
-				<span>{$_('Tableland Table')}</span>
-			</header>
-
-			{#if table.description}<p>{table.description}</p>{/if}
-
-			<footer class="row align-end">
-				<span>managed by <Address {network} address={table.controller} /></span>
-				<!-- <output>{(table.structure)}</output> -->
-				<span>created <Date_ date={table.created_at} /></span>
-			</footer>
-		</article>
-	</Tableland>
+	/>
 </section>
 
 {#each vaults as { vaultConfig, vaultStatus, vaultPosition }}

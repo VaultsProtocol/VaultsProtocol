@@ -19,6 +19,8 @@
 	// Internal state
 	let connection: Connection
 
+	let promise
+
 
 	// Methods/hooks/lifecycle
 
@@ -30,7 +32,12 @@
 	const disconnect = () =>
 		connection = undefined
 
-	$: account ? connect() : disconnect()
+	// $: account ? connect() : disconnect()
+	$: if(!account)
+		disconnect()
+	
+	const reload = () =>
+		promise = undefined
 
 
 	// Components
@@ -63,34 +70,53 @@
 			{:else if !connection}
 				<button class="primary large" on:click={connect} transition:scale>{$_('Sign in')}</button>
 			{:else}
-				<button class="destructive large" on:click={disconnect} transition:scale>{$_('Disconnect')}</button>
+				<div class="row">
+					<slot name="actions"
+						{connection}
+						{network} {account}
+					/>
+					<button class="destructive large" on:click={disconnect} transition:scale>{$_('Disconnect')}</button>
+				</div>
 			{/if}
 		</div>
 	</header>
 
 	<Container isOpen={!!connection} renderOnlyWhenOpen>
-		<main class="stack">
-			{#await getTables(connection)}
-				<div class="card column centered" transition:scale>
-					<span class="row-inline">
-						<img src={tablelandIcon} width="30" />
-						{$_('Fetching your tables from Tableland...')}
-					</span>
-				</div>
-			{:then tables}
-				<div class="column list">
-					<hr transition:scale />
-					{#each tables as table, i (table.name)}
-						<div in:fly={{ x: 100, delay: i * 200 }} out:fly={{ x: -100, delay: (tables.length - i - 1) * 20 }}>
-							<slot name="table"
-								{table}
-								{connection}
-								{network} {account}
-							/>
-						</div>
-					{/each}
-				</div>
-			{/await}
-		</main>
+		<div class="column">
+			<slot
+				{connection}
+				{network} {account}
+				{reload}
+			/>
+
+			<main class="stack">
+				{#await (promise ||= getTables(connection))}
+					<div class="card column centered" transition:scale>
+						<span class="row-inline">
+							<img src={tablelandIcon} width="30" />
+							{$_('Fetching your tables from Tableland...')}
+						</span>
+					</div>
+				{:then tables}
+					<div class="column list">
+						<hr transition:scale />
+
+						{#each tables as table, i (table.name)}
+							<div in:fly={{ x: 100, delay: i * 200 }} out:fly={{ x: -100, delay: (tables.length - i - 1) * 20 }}>
+								<slot name="table"
+									{table}
+									{connection}
+									{network} {account}
+								/>
+							</div>
+						{:else}
+							<div class="card">
+								{$_('You don\'t control any tables on Tableland.')}
+							</div>
+						{/each}
+					</div>
+				{/await}
+			</main>
+		</div>
 	</Container>
 </article>

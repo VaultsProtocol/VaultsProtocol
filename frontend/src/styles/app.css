@@ -103,7 +103,7 @@ h3 {
 	font-size: 1.13em;
 }
 h4 {
-	font-size: 1.15em;
+	font-size: 1.02em;
 }
 
 p {
@@ -114,6 +114,10 @@ p {
 pre, code, output, kbd, samp {
 	font-family: var(--font-monospace);
 	user-select: all;
+}
+pre {
+	text-align: left;
+	tab-size: 4;
 }
 
 a {
@@ -537,6 +541,26 @@ details summary {
 }
 details summary:hover, details[open] summary {
 	color: var(--color-text-light);
+}
+
+
+table {
+	border-collapse: collapse;
+	font-size: 0.8em;
+}
+table.card {
+	display: table;
+	overflow-x: auto;
+}
+th, td, caption {
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	padding: 0.5em 1em;
+}
+th {
+	background-color: var(--background-color-0);
+}
+caption:not(:first-child) {
+	caption-side: bottom;
 }
 
 

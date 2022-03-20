@@ -1,3 +1,16 @@
+<script context="module" lang="ts">
+	export enum Steps {
+		Idle,
+		Confirming,
+		TransactionSigning,
+		TransactionPending,
+		TransactionFailed,
+		TransactionReverted,
+		TransactionSuccess
+	}
+</script>
+
+
 <script lang="ts">
 	// Constants/types
 	import type { Network } from '@ethersproject/providers'
@@ -7,16 +20,6 @@
 	import { _ } from 'svelte-i18n'
 
 	import { walletsByType } from '$lib/wallets'
-
-	enum Steps {
-		Idle,
-		Confirming,
-		TransactionSigning,
-		TransactionPending,
-		TransactionFailed,
-		TransactionReverted,
-		TransactionSuccess
-	}
 
 
 	// External state
@@ -29,7 +32,6 @@
 		signer: Signer
 	}) => Promise<Transaction>
 
-	// export let confirmationMessage
 	export let onTransactionSuccess
 
 
@@ -81,7 +83,7 @@
 		currentStep = Steps.TransactionPending
 
 		try {
-			await tx.wait(1)
+			await tx.wait?.(1)
 		}catch(e){
 			errorMessage = e.message
 			currentStep = Steps.TransactionReverted
@@ -114,6 +116,8 @@
 </script>
 
 
+<slot name="header" {currentStep} />
+
 <div class="stack align-top">
 	{#if currentStep === Steps.Idle}
 		<form
@@ -138,10 +142,7 @@
 				name="confirming"
 				{actions}
 			>
-				<h2>{$_('Ready to deploy')}</h2>
-
-				<!-- <p><slot name="confirming-message" {network}>{confirmationMessage({ network })}</slot></p> -->
-				<p><slot name="confirming-message" {network} /></p>
+				<slot name="confirming-message" {network} />
 
 				<div class="row centered">
 					<div class="stack">
@@ -214,10 +215,12 @@
 			<slot
 				name="success"
 				{actions}
+				{network}
+				{tx}
 			>
 				<h2>{$_('Success!')}</h2>
 
-				<p><slot name="success-message" {network} /></p>
+				<p><slot name="success-message" {network} {tx} /></p>
 			</slot>
 		</div>
 	{/if}
@@ -238,9 +241,6 @@
 		/* grid-auto-rows: calc(100vh - var(--header-height) - 50vh); */
 
 		scroll-snap-align: center;
-
-		/* margin-bottom: 33vh; */
-		margin-bottom: 10vh;
 	}
 	form > :global(section) {
 		/* min-width: min(30rem, 90vw); */

@@ -469,13 +469,15 @@
 
 		<!-- <svelte:fragment slot="confirming" let:actions={{ back }}> -->
 		<svelte:fragment slot="confirming-message" let:network>
-			{$_('Your {vaultType} vault "{vaultName}" is ready to be deployed to {networkName}!', {
+			<h2>{$_('Ready to deploy')}</h2>
+
+			<p>{$_('Your {vaultType} vault "{vaultName}" is ready to be deployed to {networkName}!', {
 				values: {
 					vaultType: vaultTypeInfo[vaultConfig.type].label,
 					vaultName: vaultConfig.about.name,
 					networkName: network.name
 				}
-			})}
+			})}</p>
 		</svelte:fragment>
 
 		<!-- <svelte:fragment slot="pending"> -->
@@ -508,6 +510,7 @@
 <style>
 	section.row {
 		grid-template-columns: auto 1fr;
+		margin-bottom: 10vh;
 	}
 
 	.vault-preview {
