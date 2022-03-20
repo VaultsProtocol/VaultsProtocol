@@ -11,8 +11,7 @@ import YearnStrategy from '$lib/contracts/artifacts/YearnStrategy.json'
 
 import BasicMetaTransaction from '$lib/contracts/artifacts/BasicMetaTransaction.json'
 
-
-export const contractArtifacts = {
+const contractArtifacts = {
 	VaultFactory,
 
 	BaseVault,
@@ -28,9 +27,41 @@ export const contractArtifacts = {
 }
 
 
+import {
+	VaultFactory__factory,
+
+	BaseVault__factory,
+	CharityVault__factory,
+	DaoVault__factory,
+	DegenVault__factory,
+	// SuperFluidVault__factory,
+
+	AaveStrategy__factory,
+	YearnStrategy__factory,
+
+	BasicMetaTransaction__factory,
+} from '$lib/contracts/index'
+
+const contractsFactories = {
+	'VaultFactory': VaultFactory__factory,
+
+	'BaseVault': BaseVault__factory,
+	'CharityVault': CharityVault__factory,
+	'DaoVault': DaoVault__factory,
+	'DegenVault': DegenVault__factory,
+	// 'SuperFluidVault': SuperFluidVault__factory,
+
+	'AaveStrategy': AaveStrategy__factory,
+	'YearnStrategy': YearnStrategy__factory,
+
+	'BasicMetaTransaction': BasicMetaTransaction__factory,
+}
+
+
 import type { Network } from './networks'
 import type { Provider } from '@ethersproject/providers'
-import { Contract, ContractFactory, getDefaultProvider, type Signer } from 'ethers'
+// import { Contract, ContractFactory, getDefaultProvider, type Signer } from 'ethers' // Using Hardhat artifacts
+import type { Signer } from 'ethers' // Using Typechain
 
 import contractDeployments from './contracts.json'
 
@@ -41,7 +72,8 @@ export const getContract = ({
 	signer,
 	provider,
 }: {
-	name: keyof typeof contractArtifacts,
+	// name: keyof typeof contractArtifacts, // Using Hardhat artifacts
+	name: keyof typeof contractsFactories, // Using Typechain
 	contractAddress?: string,
 	network: Network,
 	signer?: Signer,
@@ -60,9 +92,16 @@ export const getContract = ({
 	// 	throw new Error(`Invalid contract address: ${contractAddress}`)
 
 	try {
-		return new Contract(
+		// Using Hardhat artifacts
+		// return new Contract(
+		// 	contractAddress,
+		// 	contractArtifacts[name].abi,
+		// 	signer || provider
+		// )
+
+		// Using Typechain
+		return contractsFactories[name].connect(
 			contractAddress,
-			contractArtifacts[name].abi,
 			signer || provider
 		)
 	}catch(e){
