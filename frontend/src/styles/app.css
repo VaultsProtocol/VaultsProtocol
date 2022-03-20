@@ -504,6 +504,10 @@ article > footer {
 	justify-content: space-between;
 	align-items: center;
 }
+.row-inline.centered {
+	margin-left: auto;
+	margin-right: auto;
+}
 
 
 .grid {
