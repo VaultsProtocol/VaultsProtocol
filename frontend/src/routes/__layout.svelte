@@ -47,7 +47,7 @@
 <div class="top">
 	{#if $isLoading}
 		<div class="loading column centered" transition:scale>
-			<img src={projectLogo} alt={$_('PROJECT_NAME')}/>
+			<img src={projectLogo} alt="Logo" />
 			<h3>Loading...</h3>
 		</div>
 	{:else}
