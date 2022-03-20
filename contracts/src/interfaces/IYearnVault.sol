@@ -2,7 +2,7 @@
 pragma solidity >=0.8.0;
 
 // yearn vaults act as an ERC20
-interface yVault {
+interface IYearnVault {
 	function deposit(uint256 _amount) external;
 
 	//returns # of tokens per share

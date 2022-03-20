@@ -1,8 +1,8 @@
 pragma solidity ^0.8.4;
 
-import "../interfaces/yearnVault.sol";
+import "../interfaces/IYearnVault.sol";
 
-contract MockYearnVault is yVault {
+contract MockYearnVault is IYearnVault {
 	constructor(address strategy) {}
 
 	function deposit(uint256 _amount) public override {}

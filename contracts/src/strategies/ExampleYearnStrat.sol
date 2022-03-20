@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0;
 
-import "../interfaces/yearnVault.sol";
+import "../interfaces/IYearnVault.sol";
 import "../tokens/ERC20.sol";
 
 contract YearnStrategy {
@@ -11,7 +11,7 @@ contract YearnStrategy {
 	// ##                     ##
 	// #########################
 
-	yVault public yvault;
+	IYearnVault public yvault;
 
 	ERC20 public token;
 
@@ -34,11 +34,11 @@ contract YearnStrategy {
 	) public {
 		require(isInit == 0);
 
-		yvault = yVault(_yVault);
+		yvault = IYearnVault(_yVault);
 
 		token = ERC20(_token);
 
-		yvault = yVault(_yVault);
+		yvault = IYearnVault(_yVault);
 		token = ERC20(_token);
 		deployer = msg.sender;
 	}
