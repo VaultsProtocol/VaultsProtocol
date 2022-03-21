@@ -131,21 +131,24 @@
 
 				<label class="column">
 					<h3>{$_('Vault Name')}</h3>
-					<p>{$_('The project, cause, or investment you\'re fundraising for.')}</p>
+					<!-- <p>{$_('The project, cause, or investment you\'re fundraising for.')}</p> -->
 					<input
 						type="text"
 						required
 						bind:value={vaultConfig.about.name}
-						placeholder={$_('Your Vault')}
+						placeholder={$_('My Yield-Bearing Token Vault')}
 					/>
+					<!-- placeholder={$_('Your Vault')} -->
 				</label>
 
 				<label class="column">
 					<h3>{$_('Description')}</h3>
-					<p>{$_('Tell your community what your goals are.')}</p>
+					<!-- <p>{$_('Tell your community what your goals are or what to expect.')}</p> -->
 					<textarea
 						bind:value={vaultConfig.about.description}
-						placeholder={$_('Describe {name}...', { values: { name: vaultConfig.about.name || 'your Vault' }})}
+						placeholder={$_('Describe {name} to your community of token depositors/NFT holders...', {
+							values: { name: vaultConfig.about.name ? `"${vaultConfig.about.name}"` : 'your Vault' }
+						})}
 						rows={8}
 					/>
 				</label>
