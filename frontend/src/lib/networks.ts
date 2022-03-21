@@ -668,16 +668,16 @@ export const availableNetworks = [
 	"ethereum-rinkeby",
 	"ethereum-goerli",
 	"polygon-mumbai",
+	"arbitrum-rinkeby",
 	"avalanche-fuji",
 	"celo-alfajores",
-	"metis-stardust",
-	"aurora-testnet",
 	"harmony-shard0",
 	"harmony-shard1",
+	"metis-stardust",
+	"aurora-testnet",
 	"skale-testnet",
 	"nahmii-testnet",
 	"nervos-godwoken",
-	"arbitrum-rinkeby",
 	"reef-testnet"
 ].map(slug => networksBySlug[slug])
 
