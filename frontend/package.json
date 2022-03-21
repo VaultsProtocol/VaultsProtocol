@@ -1,5 +1,5 @@
 {
-	"name": "dao-creator",
+	"name": "@vaultsprotocol/frontend",
 	"version": "0.0.1",
 	"scripts": {
 		"dev": "svelte-kit dev",
