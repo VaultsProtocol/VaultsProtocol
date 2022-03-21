@@ -220,7 +220,7 @@
 					<label class="card column">
 						<div class="row">
 							<h3>{$_('Yield Strategy')}</h3>
-							<Tabs
+							<Select
 								bind:value={vaultConfig.yieldStrategy}
 								values={Object.keys(YieldStrategy)}
 								labels={Object.fromEntries(Object.entries(yieldStrategyInfo).map(([key, {label}]) => [key, label]))}

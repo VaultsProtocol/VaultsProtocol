@@ -4,7 +4,13 @@ import { type ERC20Token, erc20TokensBySymbol } from './tokens'
 
 
 import aaveIcon from '../assets/dapps/aave.svg'
+import balancerIcon from '../assets/dapps/balancer.svg'
+import elementfiIcon from '../assets/dapps/elementfi.svg'
+import superfluidIcon from '../assets/dapps/superfluid.svg'
+import truefiIcon from '../assets/dapps/truefi.svg'
 import yearnIcon from '../assets/dapps/yearn.svg'
+
+
 import { random } from './random'
 
 
@@ -47,17 +53,35 @@ export const vaultTypeInfo = {
 export enum YieldStrategy {
 	None = 'None',
 	Aave = 'Aave',
+	Balancer = 'Balancer',
+	ElementFi = 'ElementFi',
+	TrueFi = 'TrueFi',
 	Yearn = 'Yearn',
 }
 export const yieldStrategyInfo = {
 	[YieldStrategy.None]: {
 		label: '🚫\tNone',
-		description: 'The DAO treasury.'
+		description: 'Tokens in the vault are simply stored in the NFTs and don\'t earn any yield.'
 	},
 	[YieldStrategy.Aave]: {
 		icon: aaveIcon,
 		label: 'Aave',
-		description: 'The DAO treasury will be lent to borrowers on Aave. Interest will be paid out to holders.'
+		description: 'Tokens in the vault are lent to borrowers on Aave. Interest will be paid out to holders.'
+	},
+	[YieldStrategy.Balancer]: {
+		icon: balancerIcon,
+		label: 'Balancer',
+		description: 'Tokens in the vault are deposited into a corresponding "boosted" weighted linear pool on Balancer. Yield and trading fees will be paid out to holders.'
+	},
+	[YieldStrategy.ElementFi]: {
+		icon: elementfiIcon,
+		label: 'ElementFi',
+		description: 'Tokens in the vault are locked in a fixed-rate yield generating position on ElementFi. Interest from Yield Tokens will be paid out to holders when the term ends.'
+	},
+	[YieldStrategy.TrueFi]: {
+		icon: truefiIcon,
+		label: 'TrueFi',
+		description: 'The DAO treasury will be lent to borrowers on the TrueFi Lending Marketplace. Yield will be paid out to holders.'
 	},
 	[YieldStrategy.Yearn]: {
 		icon: yearnIcon,
@@ -108,7 +132,8 @@ export const payoutTypeInfo = {
 		description: 'The recipient is paid their accrued yield instantly whenever anyone triggers the claim transaction.'
 	},
 	[PayoutType.Superfluid]: {
-		label: '🌊\tSuperfluid',
+		icon: superfluidIcon,
+		label: 'Superfluid',
 		description: 'The yield is streamed to the recipient in real time in the form of Superfluid Super Tokens. The recipient can redeem the ERC-20 tokens by unwrapping the Super Tokens.'
 	},
 }
