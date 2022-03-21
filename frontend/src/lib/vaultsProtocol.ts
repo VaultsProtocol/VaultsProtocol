@@ -4,8 +4,9 @@ import type { Signer } from 'ethers'
 import type { Provider } from '@ethersproject/providers'
 
 
-import { getContract, getContractBytecode } from './contracts'
+import { getDeployedContract, getContractBytecode, VaultFactory__factory, getDeployedContractAddress } from './contracts'
 import { utils } from 'ethers'
+import { BaseVault__factory } from './contracts'
 const { AbiCoder } = utils
 
 
@@ -20,36 +21,24 @@ export const createVault = async ({
     address: string,
     signer: Signer
 }) => {
-	const VaultFactory = getContract({
-		name: 'VaultFactory',
-		network,
-		signer,
-	})
-
-	console.log('VaultFactory', VaultFactory)
+	// const vaultFactory = getDeployedContract({
+	// 	name: 'VaultFactory',
+	// 	network,
+	// 	signer,
+	// })
+	const vaultFactory = VaultFactory__factory.connect(
+		getDeployedContractAddress({ network, name: 'VaultFactory' }),
+		signer
+	)
 
 	console.log("Deploying sample vault")
-
-	console.log(
-		// address vaultToken,
-		vaultConfig.tokens[0].address,
-
-		// address yieldVault,
-		address,
-
-		// bytes calldata _constructor
-		new AbiCoder().encode(
-			["address", "string", "string"],
-			[vaultConfig.tokens[0].address, vaultConfig.about.name, vaultConfig.about.tickerSymbol ?? 'TEST'],
-		),
-	)
 
 	const strategyContractName = {
 		[YieldStrategy.Aave]: 'AaveStrategy',
 		[YieldStrategy.Yearn]: 'YearnStrategy',
 	}[vaultConfig.yieldStrategy]
 
-	return await VaultFactory.createVault(
+	return await vaultFactory.createVault(
 		// bytes calldata vaultCreationCode,
 		getContractBytecode({ network, name: 'BaseVault' }),
 
@@ -86,14 +75,18 @@ export const getVaultStatus = async ({
 	network: Network,
 	provider: Provider,
 }): Promise<VaultStatus> => {
-	const BaseVault = getContract({
-		name: 'BaseVault',
+	// const baseVault = getDeployedContract({
+	// 	name: 'BaseVault',
+	// 	contractAddress,
+	// 	network,
+	// 	provider,
+	// })
+	const baseVault = BaseVault__factory.connect(
 		contractAddress,
-		network,
 		provider,
-	})
+	)
 
-	const metadata = await BaseVault.tokenURI(0)
+	const metadata = await baseVault.tokenURI(0)
 	console.log('metadata', metadata)
 
 	return {
@@ -110,15 +103,19 @@ export const getVaultPosition = async ({
 	provider,
 	tokenId,
 }) => {
-	const BaseVault = getContract({
-		name: 'BaseVault',
+	// const baseVault = getDeployedContract<BaseVault__factory>({
+	// 	name: 'BaseVault',
+	// 	contractAddress,
+	// 	network,
+	// 	provider,
+	// })
+	const baseVault = BaseVault__factory.connect(
 		contractAddress,
-		network,
 		provider,
-	})
+	)
 
 	return {
-		balance: await BaseVault.withdrawableById(tokenId),
-		yieldEarned: await BaseVault.yieldPerId(tokenId),
+		balance: await baseVault.withdrawableById(tokenId),
+		yieldEarned: await baseVault.yieldPerId(tokenId),
 	}
 }
