@@ -142,17 +142,29 @@ export const getDeployedContract = <T extends keyof typeof contractsFactories>({
 	// ).connect(signer)
 }
 
+
+// Using Hardhat artifacts
+// export const getContractBytecode = ({
+// 	network,
+// 	name
+// }: {
+// 	network: Network,
+// 	name: keyof typeof contractArtifacts
+// }) => {
+// 	const contractsForNetwork = contractDeployments[network.slug]
+
+// 	if(!contractsForNetwork)
+// 		throw new Error(`Vaults Protocol isn't yet deployed to ${network.name}.`)
+
+// 	return contractArtifacts[name].bytecode
+// }
+
+// Using Typechain
 export const getContractBytecode = ({
 	network,
 	name
 }: {
 	network: Network,
-	name: keyof typeof contractArtifacts
-}) => {
-	const contractsForNetwork = contractDeployments[network.slug]
-
-	if(!contractsForNetwork)
-		throw new Error(`Vaults Protocol isn't yet deployed to ${network.name}.`)
-
-	return contractArtifacts[name].bytecode
-}
+	name: keyof typeof contractsFactories
+}) =>
+	contractsFactories[name].bytecode
