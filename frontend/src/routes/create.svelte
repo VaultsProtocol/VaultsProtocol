@@ -517,8 +517,9 @@
 		transition: 0.2s;
 	}
 	label.card:focus-within {
-		box-shadow: 0 1px 0.25rem var(--background-color-0);
-		transition: 0.5s;
+		/* box-shadow: 0 1px 0.25rem var(--background-color-0); */
+		box-shadow: var(--background-color-3) 0 0 1.2px 2.5px inset;
+		/* transition: 0.5s; */
 	}
 
 	label p {
