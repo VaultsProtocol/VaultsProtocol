@@ -6,6 +6,8 @@
 
 	export let token: ERC20Token = erc20TokensBySymbol['DAI']
 
+	export let required = false
+
 
 	import Select from '../components/Select.svelte'
     import Icon from './Icon.svelte'
@@ -18,6 +20,7 @@
 <Select
 	bind:value={token}
 	values={availableTokens ?? []}
+	{required}
 
 	let:value
 >

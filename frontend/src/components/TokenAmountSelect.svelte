@@ -98,7 +98,7 @@
 		{/if}
 	</div>
 
-	<TokenSelect {availableTokens} bind:token />
+	<TokenSelect {availableTokens} {required} bind:token />
 </div>
 
 
