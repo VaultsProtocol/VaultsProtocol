@@ -766,3 +766,10 @@ export const vaultAssetsByNetwork: Record<string, ERC20Token[]> = {
 	'metis': [{"chainId":1088,"address":"0xAF82969ECF299c1f1Bb5e1D12dDAcc9027431160","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
 	'metis-stardust': [{"chainId":588,"address":"0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
 }
+
+for(const slug in vaultAssetsByNetwork){
+	vaultAssetsByNetwork[slug].unshift({
+		icon: networkIcons[networksBySlug[slug].chainId],
+		...networksBySlug[slug].nativeCurrency
+	})
+}
