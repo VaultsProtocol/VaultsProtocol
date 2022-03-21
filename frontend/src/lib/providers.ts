@@ -52,20 +52,26 @@ export const rpcProviders: RpcProviderConfig[] = [
 		name: 'Alchemy',
 		icon: alchemyIcon,
 
-		get: ({ network }) => new providers.AlchemyProvider(network.chainId, {
-			alchemy: env.ALCHEMY_API_KEY_MAINNET
-		})
+		get: ({ network }) =>
+			new providers.AlchemyProvider(
+				network.chainId,
+				{
+					'ethereum': env.ALCHEMY_API_KEY_MAINNET,
+					'ethereum-rinkeby': env.ALCHEMY_API_KEY_RINKEBY
+				}[network.slug]
+			)
 	},
 	{
 		type: RpcProvider.PocketNetwork,
 		name: 'Pocket Network',
 		icon: pocketNetworkIcon,
 
-		get: ({ network }) => new providers.PocketProvider(network.chainId, {
-			applicationId: env.POCKET_GATEWAY_ID,
-			applicationSecretKey: env.POCKET_SECRET_KEY,
-			loadBalancer: true
-		})
+		get: ({ network }) =>
+			new providers.PocketProvider(network.chainId, {
+				applicationId: env.POCKET_NETWORK_PORTAL_ID,
+				applicationSecretKey: env.POCKET_NETWORK_SECRET_KEY,
+				loadBalancer: true
+			})
 	},
 	{
 		type: RpcProvider.BlockDaemon,
@@ -84,7 +90,7 @@ export const rpcProvidersForNetwork = {
 		RpcProvider.BlockDaemon,
 	],
 	"ethereum-ropsten": [
-		RpcProvider.Alchemy,
+		// RpcProvider.Alchemy,
 		RpcProvider.PocketNetwork,
 		RpcProvider.BlockDaemon,
 	],
@@ -94,7 +100,7 @@ export const rpcProvidersForNetwork = {
 		RpcProvider.BlockDaemon,
 	],
 	"ethereum-goerli": [
-		RpcProvider.Alchemy,
+		// RpcProvider.Alchemy,
 		RpcProvider.PocketNetwork,
 		RpcProvider.BlockDaemon,
 	],
