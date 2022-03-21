@@ -3,7 +3,8 @@
 	"version": "0.0.1",
 	"scripts": {
 		"dev": "svelte-kit dev",
-		"build": "npm run build:@coinbase/wallet-sdk && svelte-kit build",
+		"build": "svelte-kit build",
+		"build_": "npm run build:@coinbase/wallet-sdk && svelte-kit build",
 		"build:@coinbase/wallet-sdk": "npx esbuild ./node_modules/@coinbase/wallet-sdk --bundle --format=esm --sourcemap --main-fields=browser,module,main --inject:./src/modules/node-globals.js --define:process.env.NODE_ENV='\"production\"' --splitting --outdir=./src/modules/@coinbase/",
 		"package": "svelte-kit package",
 		"preview": "svelte-kit preview",
