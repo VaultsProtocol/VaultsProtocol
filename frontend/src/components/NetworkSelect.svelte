@@ -89,7 +89,7 @@
 	bind:value={rpcProviderConfig}
 	values={rpcProviders}
 	getLabel={rpcProvider => rpcProvider.name}
-	getIcon={rpcProvider => rpcProvider.icon}
+	getIcon={rpcProvider => rpcProvider.icon ?? networkIcons[network.chainId]}
 	placeholderLabel="Choose RPC Network..."
 />
 

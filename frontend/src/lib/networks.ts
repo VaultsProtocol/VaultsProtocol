@@ -51,8 +51,8 @@ export const networks: Network[] = [
 			"decimals": 18
 		},
 		"rpc": [
-			"https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}",
-			"wss://mainnet.infura.io/ws/v3/${INFURA_PROJECT_ID}",
+			// "https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}",
+			// "wss://mainnet.infura.io/ws/v3/${INFURA_PROJECT_ID}",
 		],
 		"faucets": [],
 		"explorers": [
@@ -82,8 +82,8 @@ export const networks: Network[] = [
 			"decimals": 18
 		},
 		"rpc": [
-			"https://ropsten.infura.io/v3/${INFURA_PROJECT_ID}",
-			"wss://ropsten.infura.io/ws/v3/${INFURA_PROJECT_ID}"
+			// "https://ropsten.infura.io/v3/${INFURA_PROJECT_ID}",
+			// "wss://ropsten.infura.io/ws/v3/${INFURA_PROJECT_ID}"
 		],
 		"faucets": [
 			"https://faucet.ropsten.be?${ADDRESS}"
@@ -108,8 +108,8 @@ export const networks: Network[] = [
 			"decimals": 18
 		},
 		"rpc": [
-			"https://rinkeby.infura.io/v3/${INFURA_PROJECT_ID}",
-			"wss://rinkeby.infura.io/ws/v3/${INFURA_PROJECT_ID}"
+			// "https://rinkeby.infura.io/v3/${INFURA_PROJECT_ID}",
+			// "wss://rinkeby.infura.io/ws/v3/${INFURA_PROJECT_ID}"
 		],
 		"faucets": [
 			"https://faucet.rinkeby.io"
@@ -140,8 +140,8 @@ export const networks: Network[] = [
 			"decimals": 18
 		},
 		"rpc": [
-			"https://goerli.infura.io/v3/${INFURA_PROJECT_ID}",
-			"wss://goerli.infura.io/ws/v3/${INFURA_PROJECT_ID}"
+			// "https://goerli.infura.io/v3/${INFURA_PROJECT_ID}",
+			// "wss://goerli.infura.io/ws/v3/${INFURA_PROJECT_ID}"
 		],
 		"faucets": [
 			"https://faucet.goerli.io"

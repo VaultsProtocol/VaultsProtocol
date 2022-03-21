@@ -1,5 +1,5 @@
 
-import type { Network } from './networks'
+import { networksBySlug, type Network } from './networks'
 import type { Provider } from '@ethersproject/providers'
 
 export enum RpcProvider {
@@ -25,6 +25,11 @@ import pocketNetworkIcon from '../assets/dapps/pocket.svg'
 import alchemyIcon from '../assets/dapps/alchemy.svg'
 
 export const rpcProviders: RpcProviderConfig[] = [
+	{
+		type: RpcProvider.Default,
+		name: 'Default',
+		get: ({ network }) => new providers.JsonRpcProvider(network.providers?.[0], network.chainId)
+	},
 	// {
 	// 	type: RpcProvider.Default,
 	// 	name: 'Default',
@@ -117,4 +122,9 @@ export const rpcProvidersForNetwork = {
 	"nahmii-testnet": [],
 	"nervos-godwoken": [],
 	"reef-testnet": [],
+}
+
+for(const slug in rpcProvidersForNetwork){
+	if(networksBySlug[slug].rpc?.length)
+		rpcProvidersForNetwork[slug].unshift(RpcProvider.Default)
 }
