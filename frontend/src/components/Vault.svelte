@@ -386,7 +386,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		background-color: rgba(255, 255, 255, 0.95);
+		background: radial-gradient(rgba(255, 255, 255, 0.9), var(--vault-network-color) 1200%);
 		width: 1.25em;
 		height: 1.25em;
 		border-radius: 50%;
@@ -399,6 +399,9 @@
 			0 0 0.5px var(--vault-network-color, var(--background-color-3));
 		/* filter: drop-shadow(0 0 1px var(--vault-network-color, var(--background-color-3))); */
 		align-self: start;
+	}
+	.network img {
+		border-radius: 0.1em;
 	}
 	h2 {
 		font-size: 1.1em;
