@@ -4,17 +4,22 @@
 
 	import { getRandomVaultConfig } from '../lib/vaultConfig'
 
-	import { BigNumber } from 'ethers'
+	import { utils } from 'ethers'
+	const { parseUnits } = utils
 
-	const getPlaceholderVault = () => ({
-		vaultConfig: getRandomVaultConfig(),
+	const getPlaceholderVault = () => {
+		const vaultConfig = getRandomVaultConfig()
 
-		vaultStatus: {
-			tokenId: 0,
-			totalBalance: BigNumber.from(10000),
-			endTimestamp: Date.now() + 120000
+		return {
+			vaultConfig,
+
+			vaultStatus: {
+				tokenId: 0,
+				totalBalance: parseUnits(((Math.random() * 1000000 | 0) / 100).toString(), vaultConfig.tokens[0].decimals),
+				endTimestamp: Date.now() + 120000
+			}
 		}
-	})
+	}
 
 	const vaults = []
 	for(let i = 0; i < 50; i++)
