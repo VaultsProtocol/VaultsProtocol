@@ -40,8 +40,8 @@
 			]
 		: */ vaultConfig.type === VaultType.Degen ?
 			[
-				{ icon: '🎰', label: 'Jackpot', displayType: MetadataType.Percent, value: vaultConfig.config.jackpot },
 				{ icon: '💸', label: 'Dividend', displayType: MetadataType.Percent, value: vaultConfig.config.dividend },
+				{ icon: '🎰', label: 'Jackpot', displayType: MetadataType.Percent, value: vaultConfig.config.jackpot },
 				{ icon: '💸', label: 'Treasury', displayType: MetadataType.Percent, value: vaultConfig.config.treasury },
 				{ icon: '🛑', label: 'Deadline', displayType: MetadataType.Date, value: vaultConfig.config.deadline },
 			]

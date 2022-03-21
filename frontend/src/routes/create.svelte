@@ -267,15 +267,6 @@
 					{:else if vaultConfig.type === VaultType.Degen}
 						<div class="grid" in:fly={{ x: 20 }} out:fly={{ x: -20 }}>
 							<label class="card column">
-								<h4>{$_('Jackpot')}</h4>
-								<PercentInput
-									required
-									bind:value={vaultConfig.config.jackpot}
-								/>
-								<p>{$_('This portion is paid out to the last contributor when the game ends.')}</p>
-							</label>
-
-							<label class="card column">
 								<h4>{$_('Dividend')}</h4>
 								<PercentInput
 									required
@@ -285,12 +276,21 @@
 							</label>
 
 							<label class="card column">
+								<h4>{$_('Jackpot')}</h4>
+								<PercentInput
+									required
+									bind:value={vaultConfig.config.jackpot}
+								/>
+								<p>{$_('This portion is paid out to the last contributor when the game ends.')}</p>
+							</label>
+
+							<label class="card column">
 								<h4>{$_('Treasury')}</h4>
 								<PercentInput
 									required
 									bind:value={vaultConfig.config.treasury}
 								/>
-								<p>{$_('After the jackpot winner and the dividends are paid out, the remaining funds go to the DAO treasury.')}</p>
+								<p>{$_('After the dividends and the jackpot winner are paid out, the remaining funds go to the DAO treasury.')}</p>
 							</label>
 
 							<label class="card column">
