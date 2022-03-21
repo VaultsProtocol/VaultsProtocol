@@ -410,7 +410,7 @@
 	}
 	h2 {
 		font-size: 1.1em;
-		line-height: 1;
+		line-height: 1.2;
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
