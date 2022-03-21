@@ -80,7 +80,6 @@
 
 	.top > :global(header) {
 		grid-area: Header;
-		background: var(--background-color-white);
 		
 		position: sticky;
 		top: 0;
