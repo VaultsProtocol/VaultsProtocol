@@ -387,6 +387,7 @@
 		position: absolute;
 		inset: var(--vault-card-border-width);
 		background-color: rgba(255, 255, 255, 0.94);
+		background-color: rgba(255, 255, 255, 0.85);
 		border-radius: calc(var(--card-radius) - var(--vault-card-border-width));
 	}
 
