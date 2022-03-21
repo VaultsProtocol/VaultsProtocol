@@ -6,8 +6,6 @@ import "./tokens/ERC20.sol";
 import "./interfaces/IStrategy.sol";
 import "./BasicMetaTransaction.sol";
 
-import {console} from "./ds-test/src/Console.sol";
-
 ///======================================================================================================================================
 // Vaults are designed to be human readeable and as minimal as possible
 //

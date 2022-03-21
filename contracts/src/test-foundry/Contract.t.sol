@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.0;
 
-import "./test.sol";
-import "../../BaseVault.sol";
-import "../../examples/CharityVault.sol";
-import "../../strategies/ExampleYearnStrat.sol";
-import "../../tokens/MockERC20.sol";
-import "../../VaultFactory.sol";
+import "../../foundry-lib/ds-test/src/test.sol";
+import "../BaseVault.sol";
+import "../examples/CharityVault.sol";
+import "../strategies/ExampleYearnStrat.sol";
+import "../tokens/MockERC20.sol";
+import "../VaultFactory.sol";
 import {console} from "./Console.sol";
 
 struct Deposit {
