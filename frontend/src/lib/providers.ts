@@ -78,8 +78,9 @@ export const rpcProviders: RpcProviderConfig[] = [
 	},
 ]
 
+export const rpcProvidersByType = Object.fromEntries(rpcProviders.map(rpcProvider => [rpcProvider.type, rpcProvider]))
 
-export const rpcProvidersForNetwork = {
+export const rpcProvidersForNetwork = Object.fromEntries(Object.entries({
 	"ethereum": [
 		RpcProvider.Alchemy,
 		RpcProvider.PocketNetwork,
@@ -122,9 +123,35 @@ export const rpcProvidersForNetwork = {
 	"nahmii-testnet": [],
 	"nervos-godwoken": [],
 	"reef-testnet": [],
-}
+})
+	.map(([slug, rpcProviderTypes]) =>
+		[
+			slug,
+			[
+				...(networksBySlug[slug].rpc ?? [])
+					.filter(rpcUrl => rpcUrl.startsWith('https://'))
+					.map(rpcUrl => ({
+						type: RpcProvider.Default,
+						name: new URL(rpcUrl).host,
+						// name: `Default (${new URL(rpcUrl).host})`,
+						get: ({ network }) => new providers.JsonRpcProvider(rpcUrl, networksBySlug[slug].chainId)
+					})),
+				...rpcProviderTypes
+					.map(rpcProviderType => rpcProvidersByType[rpcProviderType])
+			]
+		]
+	)
+)
 
-for(const slug in rpcProvidersForNetwork){
-	if(networksBySlug[slug].rpc?.length)
-		rpcProvidersForNetwork[slug].unshift(RpcProvider.Default)
-}
+// for(const slug in rpcProvidersForNetwork){
+// 	// if(networksBySlug[slug].rpc?.length)
+// 	// 	rpcProvidersForNetwork[slug].unshift(RpcProvider.Default)
+
+// 	const network = networksBySlug[slug]
+// 	if(network.rpc?.length)
+// 		rpcProvidersForNetwork[slug].unshift({
+// 			type: RpcProvider.Default,
+// 			name:  `Default (${new URL(network.rpc[0]).host})`,
+// 			get: ({ network }) => new providers.JsonRpcProvider(network.providers?.[0], network.chainId)
+// 		})
+// }

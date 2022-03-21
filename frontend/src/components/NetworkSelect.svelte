@@ -85,12 +85,23 @@
 </script>
 
 
-<Select
+<!-- <Select
 	bind:value={rpcProviderConfig}
-	values={rpcProviders}
-	getLabel={rpcProvider => rpcProvider.name}
+	values={network ? rpcProvidersForNetwork[network.slug] : rpcProviders}
+	getLabel={rpcProvider =>
+		rpcProvider.type === RpcProvider.Default && network.rpc?.length
+			? `Default (${new URL(network.rpc[0]).host})`
+			: rpcProvider.name}
 	getIcon={rpcProvider => rpcProvider.icon ?? networkIcons[network.chainId]}
 	placeholderLabel="Choose RPC Network..."
+/> -->
+<Select
+	bind:value={rpcProviderConfig}
+	values={network ? rpcProvidersForNetwork[network.slug] : rpcProviders}
+	getLabel={rpcProvider => rpcProvider.name}
+	getIcon={rpcProvider => rpcProvider.icon ?? networkIcons[network?.chainId]}
+	placeholderLabel="Choose RPC Network..."
+	required
 />
 
 <Select
