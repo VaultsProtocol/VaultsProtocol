@@ -61,7 +61,7 @@ export enum YieldStrategy {
 export const yieldStrategyInfo = {
 	[YieldStrategy.None]: {
 		label: '🚫\tNone',
-		description: 'Tokens in the vault are simply stored in the NFTs and don\'t earn any yield.'
+		description: 'Tokens in the vault don\'t earn any yield.'
 	},
 	[YieldStrategy.Aave]: {
 		icon: aaveIcon,
