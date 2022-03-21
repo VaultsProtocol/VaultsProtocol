@@ -8,7 +8,6 @@ export enum RpcProvider {
 	Infura = 'Infura',
 	Alchemy = 'Alchemy',
 	PocketNetwork = 'Pocket Network',
-	BlockDaemon = 'BlockDaemon',
 }
 
 type RpcProviderConfig = {
@@ -24,7 +23,6 @@ import { getDefaultProvider, providers } from 'ethers'
 
 import pocketNetworkIcon from '../assets/dapps/pocket.svg'
 import alchemyIcon from '../assets/dapps/alchemy.svg'
-import blockdaemonIcon from '../assets/dapps/blockdaemon.svg'
 
 export const rpcProviders: RpcProviderConfig[] = [
 	// {
@@ -73,13 +71,6 @@ export const rpcProviders: RpcProviderConfig[] = [
 				loadBalancer: true
 			})
 	},
-	{
-		type: RpcProvider.BlockDaemon,
-		name: 'BlockDaemon',
-		icon: blockdaemonIcon,
-
-		get: ({ network }) => getDefaultProvider() // undefined
-	},
 ]
 
 
@@ -87,22 +78,18 @@ export const rpcProvidersForNetwork = {
 	"ethereum": [
 		RpcProvider.Alchemy,
 		RpcProvider.PocketNetwork,
-		RpcProvider.BlockDaemon,
 	],
 	"ethereum-ropsten": [
 		// RpcProvider.Alchemy,
 		RpcProvider.PocketNetwork,
-		RpcProvider.BlockDaemon,
 	],
 	"ethereum-rinkeby": [
 		RpcProvider.Alchemy,
 		RpcProvider.PocketNetwork,
-		RpcProvider.BlockDaemon,
 	],
 	"ethereum-goerli": [
 		// RpcProvider.Alchemy,
 		RpcProvider.PocketNetwork,
-		RpcProvider.BlockDaemon,
 	],
 	"polygon-mumbai": [],
 	// "avalanche-fuji": [],
