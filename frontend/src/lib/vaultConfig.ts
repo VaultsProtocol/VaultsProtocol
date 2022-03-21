@@ -19,17 +19,12 @@ export enum VaultType {
 export const vaultTypeInfo = {
 	[VaultType.Standard]: {
 		label: '🏦\tStandard',
-		description: 'Contribute to the vault and receive yield simply by holding an NFT. Withdraw anytime.',
+		description: 'Contribute ERC-20 tokens to the vault to mint an NFT that earns you passive yield proportional to the total value locked in the vault. You can adjust your position, send/trade the NFT, or withdraw the original tokens by burning the NFT.',
 		color: 'var(--background-color-standard)'
-	},
-	[VaultType.Degen]: {
-		label: '🐸\tDegen Game',
-		description: 'The game ends if a contribution is not made after a set interval of time. The last person to contribute wins the Jackpot allocation.',
-		color: 'var(--background-color-degen)'
 	},
 	[VaultType.Charity]: {
 		label: '🎁\tNo-Loss Charity',
-		description: 'A portion of the yield is set aside for a designated recipient to be claimed at any time.',
+		description: 'The Standard Vault, except a portion of all the earned yield is set aside for a designated recipient to be claimed at any time.',
 		color: 'var(--background-color-charity)'
 	},
 	// [VaultType.Superfluid]: {
@@ -38,10 +33,15 @@ export const vaultTypeInfo = {
 	// },
 	[VaultType.DAO]: {
 		label: '🗳\tDAO',
-		// description: 'The vault parameters can be changed upon the approval of multiple designated signers or by a token-weighted vote by all holdersapproval.'
-		description: 'Democratized capital control via delegatable weighted voting or multi-sig',
+		description: 'The Standard Vault, except the vault parameters can be changed upon the approval of multiple designated signers or by a delegated token-weighted vote amongst the vault’s position holders.',
+		// description: 'Democratized capital control via delegatable weighted voting or multi-sig',
 		color: 'var(--background-color-DAO)'
-	}
+	},
+	[VaultType.Degen]: {
+		label: '🐸\tDegen Game',
+		description: 'The ultimate ponzi war! When someone makes a contribution, a portion is distributed to all past contributors, and a timer is reset to a pre-defined time interval. When the timer runs out, the vault stops accepting contributions, and the last person to contribute wins the Jackpot allocation instantly.',
+		color: 'var(--background-color-degen)'
+	},
 }
 
 export enum YieldStrategy {
@@ -89,11 +89,11 @@ export enum GovernanceType {
 export const governanceTypeInfo = {
 	[GovernanceType.MultiSignature]: {
 		label: '✍️\tMulti-Signature',
-		description: 'Multiple signatures from a pre-approved list of addresses are required to approve changes to the vault parameters and manage DAO funds'
+		description: 'Multiple signatures from a pre-approved list of addresses are required to manage DAO funds and approve changes to the vault parameters.'
 	},
 	[GovernanceType.TokenVoting]: {
 		label: '🗳\tCommunity Voting',
-		description: 'Stakeholders cast votes weighted proportionally to their vault contribution to approve or deny changes to the vault parameters and manage DAO funds.'
+		description: 'Stakeholders cast or delegate votes weighted proportionally to their vault contribution to manage DAO funds and approve or deny changes to the vault parameters.'
 	},
 }
 
@@ -105,11 +105,11 @@ export enum PayoutType {
 export const payoutTypeInfo = {
 	[PayoutType.Once]: {
 		label: '💸\tOnce',
-		description: 'The recipient\'s payout accrues over time; anyone can trigger the claim transaction.'
+		description: 'The recipient is paid their accrued yield instantly whenever anyone triggers the claim transaction.'
 	},
 	[PayoutType.Superfluid]: {
 		label: '🌊\tSuperfluid',
-		description: 'The payout is autmatically streamed to the recipient as Superfluid super tokens. The recipient can redeem their funds by unwrapping their super tokens.'
+		description: 'The yield is streamed to the recipient in real time in the form of Superfluid Super Tokens. The recipient can redeem the ERC-20 tokens by unwrapping the Super Tokens.'
 	},
 }
 
