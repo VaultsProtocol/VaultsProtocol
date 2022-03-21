@@ -82,6 +82,9 @@
 	user-select: none;
 
 	/* background-color: var(--background-color-1); */
+
+	/* background: linear-gradient(-25deg, var(--accent-color) -2000%, transparent); */
+	background: linear-gradient(transparent, var(--accent-color) 2000%);
 }
 
 h1, h2, h3, h4, h5, h6 {

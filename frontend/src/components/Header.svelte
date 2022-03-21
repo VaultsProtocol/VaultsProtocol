@@ -87,6 +87,8 @@
 		padding: 0 var(--header-padding);
 
 		/* background: linear-gradient(var(--background-color-0), transparent); */
+		background-color: rgba(255, 255, 255, 0.85);
+		backdrop-filter: blur(5px);
 
 		transition: 0.2s;
 	}
@@ -173,14 +175,14 @@
 		transition: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 	.logo:hover, .logo:focus {
-		filter: brightness(1.05) drop-shadow(0 0.1rem 0.15rem var(--accent-color));
-		transform: rotate(-3deg) scale(1.075);
-		transition: 0.2s, transform 0.25s cubic-bezier(0.2, 4, 0.66, 1);
+		filter: brightness(1.05) drop-shadow(0 0.05rem 0.05rem var(--accent-color));
+		transform: rotate(-0.6deg) scale(1.075);
+		transition: 0.2s, transform 0.25s cubic-bezier(0.2, 2, 0.66, 1);
 	}
 	.logo:active {
-		filter: brightness(0.98) drop-shadow(0 0.1rem 0.15rem black);
+		filter: brightness(0.98) drop-shadow(0 0.1rem 0.15rem rgba(0, 0, 0, 0.1));
 		transition: 0.25s cubic-bezier(0.2, 1.25, 0.5, 1);
-		transform: rotate(1deg) scale(0.9);
+		transform: rotate(0.2deg) scale(0.98);
 		cursor: none;
 	}
 
