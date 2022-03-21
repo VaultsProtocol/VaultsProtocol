@@ -45,7 +45,7 @@ export const vaultTypeInfo = {
 	},
 	[VaultType.Degen]: {
 		label: '🐸\tDegen Game',
-		description: 'The ultimate ponzi war! When someone makes a contribution, a portion is distributed to all past contributors, and a timer is reset to a pre-defined time interval. When the timer runs out, the vault stops accepting contributions, and the last person to contribute wins the Jackpot allocation instantly.',
+		description: 'The ultimate ponzi war! When someone makes a contribution, a Dividend is distributed to all past contributors, and a timer is reset to a pre-defined time interval. When the timer runs out, the vault stops accepting contributions, and the last person to contribute wins the Jackpot allocation instantly.',
 		color: 'var(--background-color-degen)'
 	},
 }
