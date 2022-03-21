@@ -190,7 +190,7 @@
 									<img
 										class="illustration"
 										src={
-											isShowingIndividualPosition
+											isDeployed // isShowingIndividualPosition
 												? {
 													[VaultType.Standard]: cardFaceShark,
 													[VaultType.Degen]: cardFaceFrog,
