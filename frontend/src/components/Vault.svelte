@@ -352,8 +352,13 @@
 		transform: rotateY(0.5turn);
 	}
 	.vault > .card.front {
-		background:
-			var(--background-color-white)
+		background-color: var(--background-color-white);
+		background-image:
+			linear-gradient(
+				225deg,
+				var(--vault-token-color) -10%,
+				transparent 30%
+			),
 			linear-gradient(
 				135deg,
 				var(--vault-network-color, var(--vault-type-color)) -20%,
