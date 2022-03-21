@@ -45,6 +45,7 @@ import {
 export * from '$lib/contracts/index'
 
 const contractsFactories = {
+// const contractsFactories: Record<string, { connect(address: string, signerOrProvider: Signer | Provider)}> = {
 	'VaultFactory': VaultFactory__factory,
 
 	'BaseVault': BaseVault__factory,
@@ -67,10 +68,31 @@ import type { ContractFactory, Signer } from 'ethers' // Using Typechain
 
 import contractDeployments from './contracts.json'
 
-// export const getDeployedContract = <T extends keyof typeof contractsFactories, U extends { new(): ContractFactory }>({
+export const getDeployedContractAddress = <T extends keyof typeof contractsFactories>({
+	network,
+	name
+}: {
+	network: Network,
+	name: T
+}) => {
+	const contractsForNetwork = contractDeployments[network.slug]
+
+	if (!contractsForNetwork)
+		throw new Error(`Vaults Protocol isn't yet deployed to ${network.name}.`)
+
+	return contractsForNetwork[name]
+}
+
+
 export const getDeployedContract = <T extends keyof typeof contractsFactories>({
+// export const getDeployedContract = <T extends keyof typeof contractsFactories, U extends { new(): ContractFactory }>({
+// export const getDeployedContract = <
+// 	T extends keyof typeof contractsFactories,
+// 	U extends { connect(address: string, signerOrProvider: Signer | Provider): V },
+// 	V
+// >({
 	name,
-	// contractFactory,
+	contractFactory,
 	contractAddress,
 	network,
 	signer,
@@ -79,19 +101,17 @@ export const getDeployedContract = <T extends keyof typeof contractsFactories>({
 	// name: keyof typeof contractArtifacts, // Using Hardhat artifacts
 	name?: T, // Using Typechain
 	// contractFactory?: U,
+	contractFactory?: typeof contractsFactories[keyof typeof contractsFactories],
 	contractAddress?: string,
 	network: Network,
 	signer?: Signer,
 	provider?: Provider,
+// }): V => {
 }) => {
-	if(!contractAddress){
-		const contractsForNetwork = contractDeployments[network.slug]
-
-		if(!contractsForNetwork)
-			throw new Error(`Vaults Protocol isn't yet deployed to ${network.name}.`)
-		
-		contractAddress = contractsForNetwork[name]
-	}
+	contractAddress ||= getDeployedContractAddress({
+		network,
+		name
+	})
 
 	// if(!contractAddress)
 	// 	throw new Error(`Invalid contract address: ${contractAddress}`)
