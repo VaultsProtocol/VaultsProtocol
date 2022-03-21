@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
   "contractName": "CheatCodes",
-  "sourceName": "contracts/ds-test/src/Contract.t.sol",
+  "sourceName": "src/test-foundry/Contract.t.sol",
   "abi": [
     {
       "inputs": [

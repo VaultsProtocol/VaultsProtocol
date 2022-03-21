@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
   "contractName": "IStrategy",
-  "sourceName": "contracts/interfaces/IStrategy.sol",
+  "sourceName": "src/interfaces/IStrategy.sol",
   "abi": [
     {
       "inputs": [

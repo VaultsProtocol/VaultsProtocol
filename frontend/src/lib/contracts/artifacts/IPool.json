@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
   "contractName": "IPool",
-  "sourceName": "contracts/interfaces/IAavePool.sol",
+  "sourceName": "src/interfaces/IAavePool.sol",
   "abi": [
     {
       "inputs": [

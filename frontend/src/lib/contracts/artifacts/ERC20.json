@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
   "contractName": "ERC20",
-  "sourceName": "contracts/tokens/ERC20.sol",
+  "sourceName": "src/tokens/ERC20.sol",
   "abi": [
     {
       "anonymous": false,

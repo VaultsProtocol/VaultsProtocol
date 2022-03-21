@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
   "contractName": "Vault",
-  "sourceName": "contracts/VaultFactory.sol",
+  "sourceName": "src/VaultFactory.sol",
   "abi": [
     {
       "inputs": [

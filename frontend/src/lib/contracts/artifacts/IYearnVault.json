@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
   "contractName": "IYearnVault",
-  "sourceName": "contracts/interfaces/IYearnVault.sol",
+  "sourceName": "src/interfaces/IYearnVault.sol",
   "abi": [
     {
       "inputs": [

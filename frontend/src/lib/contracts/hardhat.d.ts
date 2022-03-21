@@ -13,6 +13,10 @@ import * as Contracts from ".";
 declare module "hardhat/types/runtime" {
   interface HardhatEthersHelpers extends HardhatEthersHelpersBase {
     getContractFactory(
+      name: "DSTest",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.DSTest__factory>;
+    getContractFactory(
       name: "BaseVault",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.BaseVault__factory>;
@@ -20,18 +24,6 @@ declare module "hardhat/types/runtime" {
       name: "BasicMetaTransaction",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.BasicMetaTransaction__factory>;
-    getContractFactory(
-      name: "CheatCodes",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.CheatCodes__factory>;
-    getContractFactory(
-      name: "ContractTest",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.ContractTest__factory>;
-    getContractFactory(
-      name: "DSTest",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.DSTest__factory>;
     getContractFactory(
       name: "CharityVault",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -65,6 +57,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.YearnStrategy__factory>;
     getContractFactory(
+      name: "CheatCodes",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.CheatCodes__factory>;
+    getContractFactory(
+      name: "ContractTest",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ContractTest__factory>;
+    getContractFactory(
       name: "ERC20",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC20__factory>;
@@ -94,6 +94,11 @@ declare module "hardhat/types/runtime" {
     ): Promise<Contracts.VaultFactory__factory>;
 
     getContractAt(
+      name: "DSTest",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.DSTest>;
+    getContractAt(
       name: "BaseVault",
       address: string,
       signer?: ethers.Signer
@@ -103,21 +108,6 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.BasicMetaTransaction>;
-    getContractAt(
-      name: "CheatCodes",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.CheatCodes>;
-    getContractAt(
-      name: "ContractTest",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.ContractTest>;
-    getContractAt(
-      name: "DSTest",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.DSTest>;
     getContractAt(
       name: "CharityVault",
       address: string,
@@ -158,6 +148,16 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.YearnStrategy>;
+    getContractAt(
+      name: "CheatCodes",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.CheatCodes>;
+    getContractAt(
+      name: "ContractTest",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ContractTest>;
     getContractAt(
       name: "ERC20",
       address: string,
