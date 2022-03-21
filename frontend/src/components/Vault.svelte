@@ -2,7 +2,7 @@
 	// Constants/types
 	import { _ } from 'svelte-i18n'
 	import { type VaultConfig, type VaultStatus, type VaultPosition, MetadataType, VaultType, vaultTypeInfo, yieldStrategyInfo, GovernanceType, YieldStrategy } from '../lib/vaultConfig'
-	import { type Network, networkIcons, networksByChainID, mainnetForTestnet } from '$lib/networks'
+	import { type Network, networkIcons, networksByChainID, mainnetForTestnet, networkColors } from '$lib/networks'
 	import { BigNumber } from 'ethers'
 	
 	
@@ -120,26 +120,7 @@
 					'CELO': '#fbcc5c',
 				}[vaultConfig.tokens[0]?.symbol] ?? ''};
 
-				--vault-network-color: {{
-					// 'ethereum': '#393939',
-					'ethereum': '#627eea',
-					'polygon': '#8248e5',
-					'harmony': '#00AEE9',
-					'harmony-one': '#00AEE9',
-					'harmony-shard0': '#00AEE9',
-					'harmony-shard1': '#00AEE9',
-					'arbitrum': '#28a0f0',
-					'nervos': '#3CC68A',
-					'nervos-godwoken': '#3CC68A',
-					'reef': '#962EE5',
-					'nahmii': '#E952AC',
-					'skale': '#393939',
-					'avalanche': '#f9273c',
-					'truefi': '#1A5AFF',
-					'metis': '#00dacd',
-					'celo': '#35D07F',
-					// 'covalent': '#FF4C8B',
-				}[mainnetForTestnet[networksByChainID[vaultConfig.chainId]?.slug]?.slug] ?? ''};
+				--vault-network-color: {networkColors[networksByChainID[vaultConfig.chainId]?.slug] ?? networkColors[mainnetForTestnet[networksByChainID[vaultConfig.chainId]?.slug]?.slug] ?? ''};
 			"
 		>
 			<div class="back card"></div>
