@@ -92,9 +92,9 @@
 		color: hsl(31deg 93% 54%);
 	}
 
-	.is-zero {
+	/* .is-zero {
 		opacity: 0.55;
-	}
+	} */
 </style>
 
 
