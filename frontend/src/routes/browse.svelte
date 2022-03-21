@@ -47,6 +47,7 @@
 			<Vault
 				{vaultConfig}
 				{vaultStatus}
+				isRotatable
 			/>
 		{/each}
 	</div>
