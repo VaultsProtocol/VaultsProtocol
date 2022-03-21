@@ -91,16 +91,30 @@ export const rpcProvidersForNetwork = {
 		// RpcProvider.Alchemy,
 		RpcProvider.PocketNetwork,
 	],
-	"polygon-mumbai": [],
-	// "avalanche-fuji": [],
+	"polygon": [
+		RpcProvider.PocketNetwork,
+	],
+	"polygon-mumbai": [
+		
+	],
+	"avalanche": [
+		RpcProvider.PocketNetwork
+	],
+	"avalanche-fuji": [
+	],
+	"harmony-shard0": [
+		RpcProvider.PocketNetwork
+	],
+	"harmony-shard1": [],
+	"arbitrum": [
+		RpcProvider.PocketNetwork
+	],
+	"arbitrum-rinkeby": [],
 	"celo-alfajores": [],
 	"metis-stardust": [],
 	"aurora-testnet": [],
-	"harmony-shard0": [],
-	"harmony-shard1": [],
 	"skale-testnet": [],
 	"nahmii-testnet": [],
 	"nervos-godwoken": [],
-	"arbitrum-rinkeby": [],
 	"reef-testnet": [],
 }
