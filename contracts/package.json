@@ -4,7 +4,8 @@
   "scripts": {
     "compile": "npx hardhat clean && npx hardhat compile && npm run compile:typechain",
     "compile:typechain": "npx hardhat typechain",
-    "test": "npx hardhat test",
+    "test:hardhat": "npx hardhat test",
+    "test:forge": "forge test -v",
     "deploy-all-eth-main": "npx hardhat full-deploy --network ethMain"
   },
   "devDependencies": {
