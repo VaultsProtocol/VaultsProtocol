@@ -735,25 +735,25 @@ export const networkColors = {
 	// 'covalent': '#FF4C8B',
 }
 
-const defaultAssets = [{"chainId":1,"address":"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}]
+const USDC = {"chainId":1,"address":"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}
 
 export const vaultAssetsByNetwork: Record<string, ERC20Token[]> = {
-	"ethereum": defaultAssets,
-	"ethereum-ropsten": defaultAssets,
-	"ethereum-rinkeby": defaultAssets,
-	"ethereum-goerli": defaultAssets,
-	"polygon-mumbai": defaultAssets,
-	// "avalanche-fuji": defaultAssets,
-	"celo-alfajores": defaultAssets,
-	"metis-stardust": defaultAssets,
-	"aurora-testnet": defaultAssets,
-	"harmony-shard0": defaultAssets,
-	"harmony-shard1": defaultAssets,
-	"skale-testnet": defaultAssets,
-	"nahmii-testnet": defaultAssets,
-	"nervos-godwoken": defaultAssets,
-	"arbitrum-rinkeby": defaultAssets,
-	"reef-testnet": defaultAssets,
+	"ethereum": [USDC],
+	"ethereum-ropsten": [USDC],
+	"ethereum-rinkeby": [USDC],
+	"ethereum-goerli": [USDC],
+	"polygon-mumbai": [USDC],
+	// "avalanche-fuji": [USDC],
+	"celo-alfajores": [USDC],
+	"metis-stardust": [USDC],
+	"aurora-testnet": [USDC],
+	"harmony-shard0": [USDC],
+	"harmony-shard1": [USDC],
+	"skale-testnet": [USDC],
+	"nahmii-testnet": [USDC],
+	"nervos-godwoken": [USDC],
+	"arbitrum-rinkeby": [USDC],
+	"reef-testnet": [USDC],
 
 	'ethereum': [{"chainId":1,"address":"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
 	'ethereum-rinkeby': [{"chainId":4,"address":"0xeb8f08a975ab53e34d8a0330e0d34de942c95926","name":"USD Coin","symbol":"USDC","decimals":6,"icon":"https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"}],
