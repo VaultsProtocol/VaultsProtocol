@@ -30,7 +30,7 @@ export const vaultTypeInfo = {
 	},
 	[VaultType.Charity]: {
 		label: '🎁\tNo-Loss Charity',
-		description: 'The Standard Vault, except a portion of all the earned yield is set aside for a designated recipient to be claimed at any time.',
+		description: 'An extension of the Standard Vault. A portion of all the earned yield is set aside for a designated recipient to be claimed at any time.',
 		color: 'var(--background-color-charity)'
 	},
 	// [VaultType.Superfluid]: {
@@ -39,7 +39,7 @@ export const vaultTypeInfo = {
 	// },
 	[VaultType.DAO]: {
 		label: '🗳\tDAO',
-		description: 'The Standard Vault, except the vault parameters can be changed upon the approval of multiple designated signers or by a delegated token-weighted vote amongst the vault’s position holders.',
+		description: 'An extension of the Standard Vault. The vault parameters can be changed upon the approval of multiple designated signers or by a delegated token-weighted vote amongst the vault’s position holders.',
 		// description: 'Democratized capital control via delegatable weighted voting or multi-sig',
 		color: 'var(--background-color-DAO)'
 	},
