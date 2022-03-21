@@ -71,7 +71,11 @@
 
 	$: if(network)
 		if(rpcProviderConfig)
-			$rpcProvider = rpcProviderConfig.get({ network })
+			try {
+				$rpcProvider = rpcProviderConfig.get({ network })
+			}catch(e){
+				console.error(e)
+			}
 		else
 			rpcProviderConfig = rpcProviders.find(rpcProvider => rpcProvider.type === random(rpcProvidersForNetwork[network.slug]))
 
