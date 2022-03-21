@@ -7,22 +7,53 @@ require("@nomiclabs/hardhat-etherscan");
 
 require("dotenv").config();
 
-// const { ethers, web3, Web3 } = require("");
 
 // LOAD ENV VARS
-const privatekey = process.env.PRIVATE_KEY;
+const privatekey = String(process.env.PRIVATE_KEY);
 const mnemonic = process.env.MNEMONIC;
 const infura_ropsten_url = process.env.ROPSTEN_ENDPOINT;
 const infura_rinkeby_url = process.env.RINKEBY_ENDPOINT;
-const bsc_testnet_url = process.env.BSCTEST_ENDPOINT;
-const bsc_url = process.env.BSC_ENDPOINT;
 const infura_eth_main_url = process.env.MAINNET_ENDPOINT;
 const ethscan_api_key = process.env.ETHSCAN_API_KEY;
 const bscscan_api_key = process.env.BSCSCAN_API_KEY;
 
+
+// Deployer accounts
+const accounts = [privatekey]
+
+
 // Deploy NFT Contract...
-// npx hardhat deploy-all --network ethMain
+
 task("deploy-all", "Deploy All Contracts")
+	.setAction(async (args, hre) => {
+		const [deployer] = await ethers.getSigners();
+		console.log(`Deployer account: ${deployer.address}`);
+
+		const contracts = [
+			"VaultFactory",
+
+			"BaseVault",
+			"CharityVault",
+			"DegenVault",
+			"DaoVault",
+
+			"AaveStrategy",
+			// "BalancerStrategy",
+			// "ElementFinanceStrategy",
+			// "TrueFiStrategy",
+			"YearnStrategy",
+		]
+
+		for(const contractName of contracts){
+			const ContractFactory = await ethers.getContractFactory(contractName);
+			const contract = await ContractFactory.deploy();
+
+			console.log(`${contract.address} ${contractName}" deployed to ${hre.network.name} (chainId: ${hre.network.config.chainId}).`);
+		}
+	})
+
+
+task("deploy-example", "Deploy Example Vault")
 	// .addParam("yearnAddress", "0x00...")
 	// .addParam("aaveAddress", "0x00...")
 	// .addParam("elementAddress", "0x00...")
