@@ -388,8 +388,9 @@
 							</label>
 
 							<label class="card column">
-								<h3>{$_('Payout Type')}</h3>
-								<div>
+								<div class="row equal">
+									<h3>{$_('Payout Type')}</h3>
+
 									<Select
 										bind:value={vaultConfig.config.payoutType}
 										values={Object.keys(PayoutType)}
@@ -397,6 +398,7 @@
 										getLabel={payoutType => payoutTypeInfo[payoutType].label}
 									/>
 								</div>
+
 								{#if vaultConfig.config.payoutType}
 									<p>{$_(payoutTypeInfo[vaultConfig.config.payoutType].description)}</p>
 								{/if}
