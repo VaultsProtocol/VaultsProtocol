@@ -399,14 +399,18 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		background-color: var(--background-color-white);
+		background-color: rgba(255, 255, 255, 0.95);
 		width: 1.25em;
 		height: 1.25em;
 		border-radius: 50%;
+		overflow: hidden;
 		transform: scale(3) translateZ(1px);
 		z-index: 1;
-		border: 0.1px solid var(--background-color-4);
-		filter: drop-shadow(0 0 1px var(--vault-network-color, var(--background-color-3)));
+		box-shadow:
+			0 0 0 0.75px rgba(200, 200, 200, 0.7) inset,
+			0 0 0 0.75px var(--vault-network-color) inset,
+			0 0 0.5px var(--vault-network-color, var(--background-color-3));
+		/* filter: drop-shadow(0 0 1px var(--vault-network-color, var(--background-color-3))); */
 		align-self: start;
 	}
 	h2 {
