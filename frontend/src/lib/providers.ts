@@ -27,7 +27,7 @@ import alchemyIcon from '../assets/dapps/alchemy.svg'
 export const rpcProviders: RpcProviderConfig[] = [
 	{
 		type: RpcProvider.Default,
-		name: 'Default',
+		name: 'Default RPC Provider',
 		get: ({ network }) => new providers.JsonRpcProvider(network.providers?.[0], network.chainId)
 	},
 	// {
