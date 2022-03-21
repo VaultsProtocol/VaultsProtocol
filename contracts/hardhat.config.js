@@ -148,16 +148,13 @@ task("deploy-example", "Deploy Example Vault")
 		);
 	});
 
+
 module.exports = {
 	paths: {
 		sources: "./src",
 		tests: "./test-hardhat",
 		cache: "./_hardhat-cache",
 		artifacts: "./_hardhat-artifacts"
-	},
-
-	mocha: {
-		timeout: 60000,
 	},
 
 	solidity: {
@@ -181,147 +178,135 @@ module.exports = {
 		],
 	},
 
+	mocha: {
+		timeout: 60000,
+	},
+
 	etherscan: {
 		apiKey: ethscan_api_key,
 		// apiKey: bscscan_api_key,
 	},
 
 	networks: {
-		bscTestnet: {
-			url: bsc_testnet_url,
-			chainId: 97,
-			gasPrice: 20000000000,
+		'ethereum': {
+			url: infura_eth_main_url,
+			chainId: 1,
+			gasPrice: 100e9,
 			gas: 2100000,
-			accounts: { mnemonic: mnemonic },
+			accounts,
 		},
-		bsc: {
-			url: bsc_url,
-			chainId: 56,
-			gasPrice: 20000000000,
-			gas: 2100000,
-			accounts: [`${privatekey}`],
-		},
-		ropsten: {
+		'ethereum-ropsten': {
 			url: infura_ropsten_url,
 			chainId: 3,
 			gasPrice: 20000000000,
 			gas: 2100000,
-			accounts: [`${privatekey}`],
+			accounts,
 		},
-		rinkeby: {
+		'ethereum-rinkeby': {
 			url: infura_rinkeby_url,
 			chainId: 4,
 			gasPrice: 10e9,
 			gas: 2100000,
-			accounts: [`${privatekey}`],
+			accounts,
 		},
-		goerli: {
+		'ethereum-goerli': {
 			url: "https://rpc.goerli.mudit.blog/",
 			chainId: 5,
 			gasPrice: 10e9,
 			gas: 2100000,
-			accounts: [`${privatekey}`],
+			accounts,
 		},
-		polygon: {
+		'polygon': {
 			url: "https://rpc-mainnet.matic.network",
 			chainId: 137,
 			gasPrice: 10e9,
 			gas: 2100000,
-			accounts: [`${privatekey}`],
+			accounts,
 		},
-		polygonMumbai: {
+		'polygon-mumbai': {
 			url: "https://rpc-mumbai.matic.today",
 			chainId: 80001,
 			gasPrice: 10e9,
 			gas: 2100000,
-			accounts: [`${privatekey}`],
+			accounts,
 		},
-		celo: {
-			url: "https://explorer.celo.org/api/eth-rpc",
-			chainId: 42220,
-			gasPrice: 10e9,
-			gas: 2100000,
-			accounts: [`${privatekey}`],
-		},
-		celoAlfajores: {
-			url: "https://alfajores-forno.celo-testnet.org",
-			chainId: 44787,
-			gasPrice: 10e9,
-			gas: 2100000,
-			accounts: [`${privatekey}`],
-
-		},
-		metis: {
-			url: "https://dragonfire.metis.io/?owner=488",
-			chainId: 1088,
-			gasPrice: 10e9,
-			gas: 2100000,
-			accounts: [`${privatekey}`],
-		},
-		metisStardust: {
-			url: "https://stardust.metis.io/?owner=588",
-			chainId: 588,
-			gasPrice: 10e9,
-			gas: 2100000,
-			accounts: [`${privatekey}`],
-		},
-		near: {
-			url: "https://rpc.mainnet.aurora.dev:8545",
-			chainId: 1313161554,
-			gasPrice: 10e9,
-			gas: 2100000,
-			accounts: [`${privatekey}`],
-		},
-		nearTestnet: {
-			url: "https://testnet.aurora.dev/",
-			chainId: 1313161555,
-			gasPrice: 10e9,
-			gas: 2100000,
-			accounts: [`${privatekey}`],
-		},
-		harmonyTestnet: {
+		'harmony-shard0': {
 			url: "https://api.s0.b.hmny.io",
 			chainId: 1666700000,
 			gasPrice: 20e9,
 			gas: 4200000,
-			accounts: [`${privatekey}`],
+			accounts,
 		},
-		arbitrumRinkeby: {
-			url: "https://rinkeby.arbitrum.io/rpc",
-			chainId: 421611,
-			gasPrice: 10e9,
-			gas: 2100000,
-			accounts: [`${privatekey}`],
-		},
-		arbitrum: {
+		'arbitrum': {
 			url: "https://arb1.arbitrum.io/rpc",
 			chainId: 42161,
 			gasPrice: 10e9,
 			gas: 2100000,
-			accounts: [`${privatekey}`],
+			accounts,
 		},
-		nahmii: {
+		'arbitrum-rinkeby': {
+			url: "https://rinkeby.arbitrum.io/rpc",
+			chainId: 421611,
+			gasPrice: 10e9,
+			gas: 2100000,
+			accounts,
+		},
+		'celo': {
+			url: "https://explorer.celo.org/api/eth-rpc",
+			chainId: 42220,
+			gasPrice: 10e9,
+			gas: 2100000,
+			accounts,
+		},
+		'celo-alfajores': {
+			url: "https://alfajores-forno.celo-testnet.org",
+			chainId: 44787,
+			gasPrice: 10e9,
+			gas: 2100000,
+			accounts,
+
+		},
+		'metis': {
+			url: "https://dragonfire.metis.io/?owner=488",
+			chainId: 1088,
+			gasPrice: 10e9,
+			gas: 2100000,
+			accounts,
+		},
+		'metis-stardust': {
+			url: "https://stardust.metis.io/?owner=588",
+			chainId: 588,
+			gasPrice: 10e9,
+			gas: 2100000,
+			accounts,
+		},
+		'aurora': {
+			url: "https://rpc.mainnet.aurora.dev:8545",
+			chainId: 1313161554,
+			gasPrice: 10e9,
+			gas: 2100000,
+			accounts,
+		},
+		'aurora-testnet': {
+			url: "https://testnet.aurora.dev/",
+			chainId: 1313161555,
+			gasPrice: 10e9,
+			gas: 2100000,
+			accounts,
+		},
+		'nahmii': {
 			url: "https://l2.nahmii.io",
 			chainId: 5551,
 			gasPrice: 10e9,
 			gas: 2100000,
-			accounts: [`${privatekey}`],
+			accounts,
 		},
-		nahmiiTestnet: {
+		'nahmii-testnet': {
 			url: "https://l2.testnet.nahmii.io",
 			chainId: 5553,
 			gasPrice: 10e9,
 			gas: 2100000,
-			accounts: [`${privatekey}`],
+			accounts,
 		}
-		// BEFORE USING THIS, CHECK GAS PRICES
-
-		// ethMain: {
-		//   url: infura_eth_main_url,
-		//   chainId: 1,
-		//   gasPrice: 100e9,
-		//   gas: 2100000,
-		//   accounts: [`${privatekey}`],
-		// },
 	},
-};
+}
