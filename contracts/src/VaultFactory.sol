@@ -1,25 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0;
 
-import "./interfaces/IStrategy.sol";
-
-interface Vault {
-	function baseInit(
-		string memory _name,
-		string memory _symbol,
-		address _token,
-		address strategy
-	) external;
-}
-
-interface Strat {
-	function init(
-		address _yVault,
-		address _token,
-		address _vault
-	) external;
-}
-
 contract VaultFactory {
 	modifier onlyAdmin() {
 		require(msg.sender == admin);
@@ -52,21 +33,11 @@ contract VaultFactory {
 		admin = msg.sender;
 	}
 
-	function createVault(
-		uint256 vKey,
-		bytes32 id,
-		// uint256 sImplKey,
-		string memory name,
-		string memory symbol,
-		address token
-	) public returns (address vault) {
-		vault = create(vImpl[vKey]);
+	function createVault(uint256 vKey, bytes32 id) public returns (address vault) {
+		// check to see if key has already been used
+		require(vaults[id] == address(0));
 
-		// address strat = create(sImpl[sImplKey]);
-
-		Vault(vault).baseInit(name, symbol, token, address(0));
-
-		// Strat(strat).init(underlying[sImplKey][token], token, vault);
+		vault = deployProy(vImpl[vKey]);
 
 		// push identifier to arry
 		keys.push(id);
@@ -74,6 +45,8 @@ contract VaultFactory {
 		// store address of new vault in mapping
 		vaults[id] = vault;
 	}
+
+	// function deployStrategy() {}
 
 	function setVImpl(uint256 _index, address _impl) external onlyAdmin {
 		vImpl[_index] = _impl;
@@ -95,7 +68,7 @@ contract VaultFactory {
 		underlying[_index][_token] = _underlying;
 	}
 
-	function create(address _impl) internal returns (address instance) {
+	function deployProy(address _impl) internal returns (address instance) {
 		assembly {
 			// load free memory pointer
 			let ptr := mload(0x40)

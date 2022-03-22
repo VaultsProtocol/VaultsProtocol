@@ -1,10 +1,9 @@
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+// safemath is implicit in >0.8
+// a users nonce cannot realistically overflow
 
 contract BasicMetaTransaction {
-	using SafeMath for uint256;
-
 	event MetaTransactionExecuted(address userAddress, address payable relayerAddress, bytes functionSignature);
 	mapping(address => uint256) private nonces;
 
@@ -38,7 +37,10 @@ contract BasicMetaTransaction {
 			verify(userAddress, nonces[userAddress], getChainID(), functionSignature, sigR, sigS, sigV),
 			"Signer and signature do not match"
 		);
-		nonces[userAddress] = nonces[userAddress].add(1);
+
+		unchecked {
+			nonces[userAddress]++;
+		}
 
 		// Append userAddress at the end to extract it from calling context
 		(bool success, bytes memory returnData) = address(this).call(abi.encodePacked(functionSignature, userAddress));
