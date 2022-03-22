@@ -527,8 +527,10 @@
 		border-radius: 50%;
 		width: 40px;
 		height: 40px;
-		border: 2px solid var(--background-color-charity);
+		/* border: 2px solid var(--background-color-charity); */
+		border: 2px solid var(--vault-type-color);
 		padding: 0;
+		transition: 0.3s;
 	}
 	.icon img {
 		margin: auto;
