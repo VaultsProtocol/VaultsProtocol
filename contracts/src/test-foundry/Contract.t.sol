@@ -4,7 +4,7 @@ pragma solidity >=0.8.0;
 import "../../foundry-lib/ds-test/src/test.sol";
 import "../BaseVault.sol";
 import "../examples/CharityVault.sol";
-import "../strategies/ExampleYearnStrat.sol";
+import "../strategies/YearnStrategy.sol";
 import "../tokens/MockERC20.sol";
 import "../VaultFactory.sol";
 import {console} from "./Console.sol";
