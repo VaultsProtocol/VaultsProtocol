@@ -15,7 +15,10 @@ _hardhat-cache/
 _hardhat-artifacts/
 
 # Foundry
-out/
+out
+# (custom Foundry paths)
+_foundry-cache/
+_foundry-artifacts/
 
 # Typechain
 typechain
