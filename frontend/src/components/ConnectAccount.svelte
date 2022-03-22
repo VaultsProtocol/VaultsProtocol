@@ -120,43 +120,45 @@
 					tabindex="-1"
 					transition:scale={{opacity: 0}}
 				>
-					<picture class="avatar">
-						{#if $account.ensAvatarUri}
-							<img src={$account.ensAvatarUri} />
-						{:else}
-							<img class="wallet-icon" src={walletsByType[$connectedWalletType].icon} />
-						{/if}
-					</picture>
+					{#if $account}
+						<picture class="avatar">
+							{#if $account.ensAvatarUri}
+								<img src={$account.ensAvatarUri} />
+							{:else}
+								<img class="wallet-icon" src={walletsByType[$connectedWalletType].icon} />
+							{/if}
+						</picture>
 
-					<span class="column">
-						<!-- {#if $account.ensName}
-							<span class="ens">{$account.ensName}</span>
-						{:else}
-							<span>{formatAddress($account.address)}</span>
-						{/if}
-						<span>{walletsByType[$connectedWalletType].name}</span> -->
+						<span class="column">
+							<!-- {#if $account.ensName}
+								<span class="ens">{$account.ensName}</span>
+							{:else}
+								<span>{formatAddress($account.address)}</span>
+							{/if}
+							<span>{walletsByType[$connectedWalletType].name}</span> -->
 
-						{#if $account.ensName}
-							<span class="ens">{$account.ensName}</span>
-						{/if}
-						{#if $account.address}
-							<span>{formatAddress($account.address)}</span>
-						{:else}
-							<span class="locked">{$_('[Locked]')}</span>
-						{/if}
-						{#if !$account.ensName}
-							<span title="{$account.walletConnection.walletType} via {$account.walletConnection.connectionType}">
-								{$account.walletConnection.walletType}
-								<!-- {walletsByType[$connectedWalletType].name} -->
-							</span>
-						{/if}
-					</span>
+							{#if $account.ensName}
+								<span class="ens">{$account.ensName}</span>
+							{/if}
+							{#if $account.address}
+								<span>{formatAddress($account.address)}</span>
+							{:else}
+								<span class="locked">{$_('[Locked]')}</span>
+							{/if}
+							{#if !$account.ensName}
+								<span title="{$account.walletConnection.walletType} via {$account.walletConnection.connectionType}">
+									{$account.walletConnection.walletType}
+									<!-- {walletsByType[$connectedWalletType].name} -->
+								</span>
+							{/if}
+						</span>
+					{/if}
 				</button>
 
 				<!-- <div class="menu card column" slot="tooltip"> -->
 				<div class="menu card column" slot="tooltip" transition:scale={{ start: 0.8, opacity: 0, duration: 150 }}>
-					{#if $account.address}
-						<button class="transparent" on:click={() => navigator.clipboard.writeText($account.address)}>{$_('Copy address')}</button>
+					{#if $account?.address}
+						<button class="transparent" on:click={() => navigator.clipboard.writeText($account?.address)}>{$_('Copy address')}</button>
 					{/if}
 					<button class="transparent" on:click={() => modalIsOpen = !modalIsOpen}>{$_('Switch wallet')}</button>
 					<button class="transparent destructive" on:click={() => onDisconnectWallet()}>{$_('Disconnect')}</button>
