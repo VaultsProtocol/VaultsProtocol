@@ -330,7 +330,7 @@
 		transition: 1s;
 		/* transform-origin: left; */
 
-		animation: FlipIn 1.25s ease-out;
+		animation: FlipIn 1.25s 0.5s ease-in-out backwards;
 	}
 	@keyframes FlipIn {
 		from {
