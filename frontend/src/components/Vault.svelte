@@ -84,10 +84,10 @@
 	import cardFaceGift from '../assets/card-faces/gift.svg'
 	import cardFaceVote from '../assets/card-faces/voting-box.svg'
 	import cardFaceShark from '../assets/card-faces/shark.svg'
-	import cardFaceFrogShadow from '../assets/card-faces/shadow-svg-1.svg'
-	import cardFaceGiftShadow from '../assets/card-faces/shadow-svg-2.svg'
-	import cardFaceVoteShadow from '../assets/card-faces/shadow-svg-3.svg'
-	import cardFaceSharkShadow from '../assets/card-faces/shadow-svg-4.svg'
+	import cardFaceFrogShadow from '../assets/card-faces/frog-shadow.svg'
+	import cardFaceGiftShadow from '../assets/card-faces/gift-shadow.svg'
+	import cardFaceVoteShadow from '../assets/card-faces/vote-shadow.svg'
+	import cardFaceSharkShadow from '../assets/card-faces/shark-shadow.svg'
 
 
 	// Styles/animations
@@ -175,15 +175,15 @@
 											isDeployed // isShowingIndividualPosition
 												? {
 													[VaultType.Standard]: cardFaceShark,
-													[VaultType.Degen]: cardFaceFrog,
-													[VaultType.DAO]: cardFaceVote,
 													[VaultType.Charity]: cardFaceGift,
+													[VaultType.DAO]: cardFaceVote,
+													[VaultType.Degen]: cardFaceFrog,
 												}[vaultConfig.type]
 												: {
 													[VaultType.Standard]: cardFaceSharkShadow,
-													[VaultType.Degen]: cardFaceFrogShadow,
-													[VaultType.DAO]: cardFaceVoteShadow,
 													[VaultType.Charity]: cardFaceGiftShadow,
+													[VaultType.DAO]: cardFaceVoteShadow,
+													[VaultType.Degen]: cardFaceFrogShadow,
 												}[vaultConfig.type]
 										}
 										transition:scale
