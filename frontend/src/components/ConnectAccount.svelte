@@ -143,7 +143,7 @@
 							{#if $account.address}
 								<span>{formatAddress($account.address)}</span>
 							{:else}
-								<span class="locked">{$_('[Locked]')}</span>
+								<span>{$_('[Disconnected]')}</span>
 							{/if}
 							{#if !$account.ensName}
 								<span title="{$account.walletConnection.walletType} via {$account.walletConnection.connectionType}">
