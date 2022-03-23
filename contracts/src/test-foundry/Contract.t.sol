@@ -4,7 +4,7 @@ pragma solidity >=0.8.0;
 import "../../foundry-lib/ds-test/src/test.sol";
 import "../BaseVault.sol";
 import "../examples/CharityVault.sol";
-import "../strategies/ExampleYearnStrat.sol";
+import "../strategies/YearnStrategy.sol";
 import "../tokens/MockERC20.sol";
 import "../VaultFactory.sol";
 import {console} from "./Console.sol";
@@ -90,13 +90,9 @@ contract ContractTest is DSTest {
 		// set vault addr
 		factory.setVImpl(1, address(vault));
 
-		address clone = factory.createVault(
-			1,
-			keccak256(abi.encodePacked("test", "test")),
-			"test",
-			"test",
-			address(erc20)
-		);
+		address clone = factory.createVault(1, keccak256(abi.encodePacked("test", "test")));
+
+		BaseVault(clone).baseInit("test", "test", address(erc20), address(0));
 
 		// Person 1
 		erc20.approve(clone, 10e18);
@@ -171,9 +167,7 @@ interface CheatCodes {
 	function record() external;
 
 	// Gets all accessed reads and write slot from a recording session, for a given address
-	function accesses(address)
-		external
-		returns (bytes32[] memory reads, bytes32[] memory writes);
+	function accesses(address) external returns (bytes32[] memory reads, bytes32[] memory writes);
 
 	// Prepare an expected log with (bool checkTopic1, bool checkTopic2, bool checkTopic3, bool checkData).
 	// Call this function, then emit an event, then call a function. Internally after the call, we check if

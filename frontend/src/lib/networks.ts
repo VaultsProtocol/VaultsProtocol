@@ -668,6 +668,7 @@ export const availableNetworks = [
 	"ethereum-rinkeby",
 	"ethereum-goerli",
 	"polygon-mumbai",
+	"arbitrum-rinkeby",
 	"avalanche-fuji",
 	"arbitrum-rinkeby",
 	"celo-alfajores",

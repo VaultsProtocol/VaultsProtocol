@@ -549,6 +549,7 @@
 			0 0 0 2px rgba(200, 200, 200, 0.4),
 			0 0 0 2px var(--vault-type-color);
 		padding: 0;
+		transition: 0.3s;
 	}
 	.icon img {
 		margin: auto;
