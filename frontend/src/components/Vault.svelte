@@ -527,7 +527,12 @@
 		border-radius: 50%;
 		width: 40px;
 		height: 40px;
-		border: 2px solid var(--background-color-charity);
+		/* border: 2px solid var(--background-color-charity); */
+		border: none;
+		background-color: rgba(255, 255, 255, 0.5);
+		box-shadow:
+			0 0 0 2px rgba(200, 200, 200, 0.4),
+			0 0 0 2px var(--vault-type-color);
 		padding: 0;
 	}
 	.icon img {
