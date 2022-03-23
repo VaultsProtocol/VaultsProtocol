@@ -72,6 +72,7 @@
 	const setMax = () => {
 		if(max)
 			amount = max
+		onBlur()
 	}
 
 
