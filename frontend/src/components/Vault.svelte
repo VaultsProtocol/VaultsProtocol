@@ -546,8 +546,8 @@
 	}
 	.icon {
 		border-radius: 50%;
-		width: 40px;
-		height: 40px;
+		width: 34px;
+		height: 34px;
 		/* border: 2px solid var(--background-color-charity); */
 		border: none;
 		background-color: rgba(255, 255, 255, 0.5);
