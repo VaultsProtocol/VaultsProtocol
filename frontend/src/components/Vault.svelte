@@ -278,7 +278,7 @@
 
 					{#if vaultConfig.about.description}
 						<Container>
-							<p class=" card description align-start" transition:scale>{vaultConfig.about.description}</p>
+							<p class="description align-start" transition:scale>{vaultConfig.about.description}</p>
 						</Container>
 					{/if}
 
@@ -445,8 +445,16 @@
 	}
 
 	.description {
-		font-size: 0.9em;
+		/* font-size: 0.85em; */
+		font-size: 0.75em;
+		font-weight: 300;
+		letter-spacing: 0.03em;
+		opacity: 0.7;
+
+		padding: 0 0.5em;
 		word-break: break-word;
+
+		font-size: 0.7em;
 	}
 
 	.vault-type-info {
