@@ -218,7 +218,7 @@
 						
 						<div class="stack">
 							{#key vaultConfig.type}
-								<div class="vault-type card row centered" transition:scale={{ start: 0.33 }}>
+								<div class="vault-type row centered" transition:scale={{ start: 0.33 }}>
 									{$_(vaultTypeInfo[vaultConfig.type]?.label) ?? $_('???')}
 								</div>
 							{/key}
@@ -469,10 +469,12 @@
 
 	.vault-type-info .vault-type {
 		padding: 0.5em;
-		border-radius: 3px;
+		border-radius: 4px;
 		border: 0;
 		background: radial-gradient(50% 50% at 50% 50%, #D2C26E 0%, #DEB60D 100%);
 		font-weight: 800;
+		tab-size: 6;
+		white-space: pre;
 	}
 
 	.metadata {
