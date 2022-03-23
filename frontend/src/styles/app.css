@@ -66,7 +66,7 @@
 	--accent-color: var(--background-color-degen);
 	--overlay-backdrop-filter: blur(2px);
 
-	--grid-gap: 1em;
+	--grid-gap: 1rem;
 	--section-padding: min(16vw, 1.5rem);
 	--card-padding: 1.5rem;
 	--card-radius: calc(0.85 * var(--card-padding));
@@ -125,6 +125,10 @@ pre {
 
 a {
 	transition: 0.3s;
+	text-decoration: none;
+}
+p a:hover {
+	text-decoration: revert;
 }
 a:hover, a:focus {
 	color: var(--color-text-light);
@@ -136,6 +140,8 @@ a:hover, a:focus {
 
 	white-space: pre;
 	tab-size: 6;
+
+	text-decoration: none;
 }
 button, .button, input[type='number'], input[type='text'], textarea {
 	display: inline-grid;
@@ -245,6 +251,7 @@ input[type='number'], input[type='text'] {
 } */
 
 input:invalid {
+/* input:not(:placeholder-shown):invalid { */
 	border: red solid 2px;
 }
 
