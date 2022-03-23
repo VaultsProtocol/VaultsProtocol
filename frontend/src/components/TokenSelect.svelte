@@ -6,6 +6,7 @@
 
 	export let token: ERC20Token = erc20TokensBySymbol['DAI']
 
+	export let autoFallback = false
 	export let required = false
 
 
@@ -20,6 +21,7 @@
 <Select
 	bind:value={token}
 	values={availableTokens ?? []}
+	{autoFallback}
 	{required}
 
 	let:value

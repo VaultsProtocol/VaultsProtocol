@@ -36,10 +36,10 @@
 
 
 	// Methods/hooks/lifecycle
-	$: if(autoFallback && values && !values?.includes(value))
+	$: if(autoFallback && values && !values.includes(value))
 		value = values[0]
-	$: if(required && values && !values?.includes(value))
-		value = values[0]
+	// $: if(required && values && !values.includes(value))
+	// 	value = values[0]
 		// value = undefined
 
 

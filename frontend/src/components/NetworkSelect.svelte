@@ -101,7 +101,7 @@
 	getLabel={rpcProvider => rpcProvider.name}
 	getIcon={rpcProvider => rpcProvider.icon ?? networkIcons[network?.chainId]}
 	placeholderLabel="Choose RPC Network..."
-	required
+	autoFallback
 />
 
 <Select

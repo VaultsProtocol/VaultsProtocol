@@ -42,6 +42,7 @@
 	export let max: BigNumber
 	export let stepDecimals = token?.decimals // 3
 
+	export let autoFallback = false
 	export let required = false
 
 
@@ -98,7 +99,7 @@
 		{/if}
 	</div>
 
-	<TokenSelect {availableTokens} {required} bind:token />
+	<TokenSelect {availableTokens} {autoFallback} {required} bind:token />
 </div>
 
 
