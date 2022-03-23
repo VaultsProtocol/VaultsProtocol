@@ -20,41 +20,44 @@
 
 	import { getVaultStatus, getVaultPosition } from '$lib/vaultsProtocol'
 
-	// import { getRandomVaultConfig } from '../../lib/vaults'
+	import { getRandomVaultConfig } from '../../lib/vaultConfig'
 
-	// const getPlaceholderVault = () => {
-	// 	const vaultConfig = getRandomVaultConfig()
+	const getPlaceholderVault = () => {
+		const vaultConfig = getRandomVaultConfig()
 
-	// 	const { decimals } = vaultConfig.tokens[0] ?? {}
+		const { decimals } = vaultConfig.tokens[0] ?? {}
 
-	// 	return {
-	// 		vaultConfig,
+		return {
+			vaultConfig,
 
-	// 		vaultStatus: {
-	// 			contractAddress: '0x0000000000000000000000000000000000000000',
-	// 			tokenId: 0,
-	// 			totalBalance: parseUnits((Math.random() * 12345678 | 0).toString(), decimals),
-	// 			endTimestamp: Date.now() + 120000
-	// 		},
+			vaultStatus: {
+				contractAddress: '0x0000000000000000000000000000000000000000',
+				tokenId: 0,
+				totalBalance: parseUnits((Math.random() * 12345678 | 0).toString(), decimals),
+				endTimestamp: Date.now() + 120000
+			},
 
-	// 		vaultPosition: {
-	// 			balance: parseUnits('1234', decimals),
-	// 			yieldEarned: parseUnits('1000', decimals)
-	// 		}
-	// 	}
-	// }
+			vaultPosition: {
+				balance: parseUnits('1234', decimals),
+				yieldEarned: parseUnits('1000', decimals)
+			}
+		}
+	}
 
-	// const vaults = [
-	// 	getPlaceholderVault(),
-	// 	getPlaceholderVault(),
-	// 	getPlaceholderVault(),
-	// 	getPlaceholderVault(),
-	// 	getPlaceholderVault(),
-	// 	getPlaceholderVault(),
-	// 	getPlaceholderVault(),
-	// 	getPlaceholderVault(),
-	// 	getPlaceholderVault(),
-	// ]
+	const placeholderVaults = [
+		getPlaceholderVault(),
+		getPlaceholderVault(),
+		getPlaceholderVault(),
+		getPlaceholderVault(),
+		getPlaceholderVault(),
+		getPlaceholderVault(),
+		getPlaceholderVault(),
+		getPlaceholderVault(),
+		getPlaceholderVault(),
+		getPlaceholderVault(),
+		getPlaceholderVault(),
+		getPlaceholderVault(),
+	]
 
 
 	// Internal state
@@ -142,6 +145,22 @@
 				{/await}
 			</div>
 		{/each}
+
+		{#each placeholderVaults as { vaultConfig, vaultStatus, vaultPosition }}
+			<div class="manage-vault row">
+				<Vault
+					{vaultConfig}
+					{vaultStatus}
+					{vaultPosition}
+				/>
+
+				<VaultPositionManager
+					{vaultConfig}
+					{vaultStatus}
+					{vaultPosition}
+				/>
+			</div>
+		{/each}
 	</section>
 
 	<TablelandVaults
@@ -153,6 +172,9 @@
 <style>
 	.manage-vault {
 		justify-content: center;
+		align-items: start;
 		margin: auto;
+		max-height: 600px;
+		overflow: hidden;
 	}
 </style>
