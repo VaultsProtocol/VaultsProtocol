@@ -36,10 +36,10 @@
 
 
 	// Methods/hooks/lifecycle
-	$: if(autoFallback && values && !values.includes(value))
+	$: if(autoFallback && values && !values?.includes(value))
 		value = values[0]
-	// $: if(required && values && !values.includes(value))
-	// 	value = values[0]
+	$: if(required && values && !values?.includes(value))
+		value = values[0]
 		// value = undefined
 
 
@@ -77,7 +77,8 @@
 	</button>
 
 	<div class="menu card column" slot="tooltip" role="menu" aria-labelledby={id} transition:scale={{ start: 0.8, opacity: 0, duration: 150 }}>
-		{#each values as optionValue (optionValue)}
+		<!-- {#each values as optionValue (optionValue)} -->
+		{#each values as optionValue}
 			<button
 				type="button"
 				class="transparent"
