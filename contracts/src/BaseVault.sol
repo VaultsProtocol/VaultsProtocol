@@ -9,7 +9,7 @@ import "./BasicMetaTransaction.sol";
 ///======================================================================================================================================
 // Vaults are designed to be human readeable and as minimal as possible
 //
-// 1e4 = basis points calculation && 1e10 = floating point scalar
+// 1e4 = basis points calculation && SCALAR = floating point scalar
 ///======================================================================================================================================
 
 contract BaseVault is ERC721, BasicMetaTransaction {
@@ -34,10 +34,12 @@ contract BaseVault is ERC721, BasicMetaTransaction {
 	/// Accounting State
 	///======================================================================================================================================
 
+	uint256 internal constant SCALAR = 1e10;
+
 	// tokenID => Deposits
 	mapping(uint256 => Deposits) public deposits;
 
-	//sum of yield/totalDeposits scaled by 1e10
+	//sum of yield/totalDeposits scaled by SCALAR
 	uint256 public yieldPerDeposit;
 
 	uint256 public totalDeposits;
@@ -114,12 +116,7 @@ contract BaseVault is ERC721, BasicMetaTransaction {
 		_burn(id);
 	}
 
-	function withdrawableById(uint256 id)
-		public
-		view
-		virtual
-		returns (uint256 claimId)
-	{
+	function withdrawableById(uint256 id) public view virtual returns (uint256 claimId) {
 		return deposits[id].amount + yieldPerId(id);
 	}
 
@@ -188,7 +185,7 @@ contract BaseVault is ERC721, BasicMetaTransaction {
 		} else {
 			// user yield still remains therefore principal not affected
 			// just add nonclaimable to current tracker
-			deposits[id].tracker += amount * 1e10;
+			deposits[id].tracker += amount * SCALAR;
 		}
 
 		uint256 short = amount > balanceCheck ? amount - balanceCheck : 0;
@@ -233,8 +230,7 @@ contract BaseVault is ERC721, BasicMetaTransaction {
 	// gets yield from strategy contract
 	// called before deposits and withdraws
 	function distributeYield() public virtual {
-		uint256 unclaimedYield = vaultToken.balanceOf(address(this)) -
-			lastKnownContractBalance;
+		uint256 unclaimedYield = vaultToken.balanceOf(address(this)) - lastKnownContractBalance;
 		lastKnownContractBalance += unclaimedYield;
 
 		uint256 strategyYield = address(strat) != address(0)
@@ -242,26 +238,19 @@ contract BaseVault is ERC721, BasicMetaTransaction {
 			: 0;
 		lastKnownStrategyTotal += strategyYield;
 
-		yieldPerDeposit +=
-			((unclaimedYield + strategyYield) * 1e10) /
-			totalDeposits;
+		yieldPerDeposit += ((unclaimedYield + strategyYield) * SCALAR) / totalDeposits;
 	}
 
 	function yieldPerId(uint256 id) public view returns (uint256) {
-		uint256 pre = (deposits[id].amount * yieldPerDeposit) / 1e10;
-		return pre - (deposits[id].tracker / 1e10);
+		uint256 pre = (deposits[id].amount * yieldPerDeposit) / SCALAR;
+		return pre - (deposits[id].tracker / SCALAR);
 	}
 
 	///======================================================================================================================================
 	/// Token metadata
 	///======================================================================================================================================
 
-	function tokenURI(uint256 id)
-		public
-		view
-		virtual
-		returns (MetaData memory)
-	{
+	function tokenURI(uint256 id) public view virtual returns (MetaData memory) {
 		return MetaData(name, address(this), withdrawableById(id), id, 0);
 	}
 }

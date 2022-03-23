@@ -17,18 +17,22 @@ contract AaveStrategy {
 
 	address vault;
 
-	address immutable deployer;
-
 	// #########################
 	// ##                     ##
 	// ##     Constructor     ##
 	// ##                     ##
 	// #########################
 
-	constructor(address aaveStrategy, address _token) {
-		pool = IPool(aaveStrategy);
+	constructor(
+		address _pool,
+		address _token,
+		address _vault,
+		address _aToken
+	) {
+		pool = IPool(_pool);
 		token = ERC20(_token);
-		deployer = msg.sender;
+		vault = _vault;
+		aToken = ERC20(_aToken);
 	}
 
 	// #########################
@@ -37,8 +41,15 @@ contract AaveStrategy {
 	// ##                     ##
 	// #########################
 
+	// note anyone can call this function
 	function deposit(uint256 amount) external {
+		// transfer tokens from the vault
+		token.transferFrom(msg.sender, address(this), amount);
+
+		// approve aave to spend the tokenbs
 		token.approve(address(pool), amount);
+
+		// (asset, amount, onBehalfOf, refferalCode)
 		pool.supply(address(token), amount, address(this), 0);
 	}
 
@@ -48,19 +59,7 @@ contract AaveStrategy {
 	}
 
 	function withdrawableVaultToken() external view returns (uint256) {
+		// returns amount of underlying tokens we can withdraw
 		return aToken.balanceOf(address(this));
-	}
-
-	function initVault(address _vault) external {
-		require(msg.sender == deployer && vault == address(0));
-
-		vault = _vault;
-	}
-
-	// change this so the deloyer does it
-	function setAToken(address _aToken) public virtual {
-		require(address(aToken) == address(0));
-
-		aToken = ERC20(_aToken);
 	}
 }

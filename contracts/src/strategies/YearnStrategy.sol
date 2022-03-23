@@ -38,9 +38,9 @@ contract YearnStrategy {
 
 		token = ERC20(_token);
 
-		yvault = IYearnVault(_yVault);
-		token = ERC20(_token);
-		deployer = msg.sender;
+		vault = _vault;
+
+		isInit = 1;
 	}
 
 	// #########################
