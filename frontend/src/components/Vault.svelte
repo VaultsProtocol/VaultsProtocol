@@ -252,7 +252,7 @@
 							<div class="card row" in:scale={{ delay: i * 100 }} out:scale animate:flip>
 								<div class="row">
 									<!-- <img src={icon} width="20" height="20" /> -->
-									<span>{$_(icon)}</span>
+									<span class="metadata-icon">{$_(icon)}</span>
 									<span class="label">{$_(label)}</span>
 								</div>
 
@@ -488,12 +488,20 @@
 		padding: 0.66em;
 		border: none;
 		background-color: rgba(0, 0, 0, 0.05);
+		box-shadow:
+			0 0 0 1.5px rgba(230, 230, 230, 0.9) inset,
+			0 0 0 1.5px var(--vault-type-color) inset;
 	}
 	.metadata > * > .row {
 		--grid-gap: 0.5rem;
 	}
+	.metadata-icon {
+		font-size: 1.2em;
+		margin: -0.075rem;
+	}
 	.metadata .label {
-		font-weight: 500;
+		font-weight: 600;
+		opacity: 0.9;
 	}
 	.metadata .value {
 		display: block;
@@ -503,6 +511,7 @@
 		opacity: 0.8;
 		text-align: right;
 		transform-origin: right;
+		font-size: 0.93em;
 	}
 
 	/* .metadata > * { transition: zoom 0.3s; } */
