@@ -211,7 +211,12 @@
 					<label class="card row">
 						<h3>{$_('Vault Asset')}</h3>
 
-						<TokenSelect availableTokens={vaultAssetsByNetwork[networksByChainID[vaultConfig.chainId]?.slug] ?? []} bind:token={vaultConfig.tokens[0]} />
+						<TokenSelect
+							availableTokens={vaultAssetsByNetwork[networksByChainID[vaultConfig.chainId]?.slug] ?? []}
+							bind:token={vaultConfig.tokens[0]}
+							autoFallback
+							required
+						/>
 						<!-- {#each vaultConfig.config.tokens as token, i}}
 							<TokenAmountSelect
 								bind:token={vaultConfig.config.initialLiquidity.tokens[i]}
