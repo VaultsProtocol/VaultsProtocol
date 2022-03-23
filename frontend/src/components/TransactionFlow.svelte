@@ -76,9 +76,9 @@
 			errorMessage = e.message
 			currentStep = Steps.TransactionFailed
 		}
-	// })()
+	})()
 
-	// $: if(tx)(async () => {
+	$: if(tx)(async () => {
 		console.log('tx', tx)
 
 		currentStep = Steps.TransactionPending
