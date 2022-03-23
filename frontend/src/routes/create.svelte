@@ -408,8 +408,9 @@
 								<div>
 									<Select
 										bind:value={vaultConfig.config.payoutType}
-										values={Object.keys(PayoutType)}
-										labels={Object.fromEntries(Object.entries(payoutTypeInfo).map(([key, {label}]) => [key, label]))}
+										values={Object.values(PayoutType)}
+										getLabel={payoutType => payoutTypeInfo[payoutType].label}
+										getIcon={payoutType => payoutTypeInfo[payoutType].icon}
 									/>
 								</div>
 								{#if vaultConfig.config.payoutType}
