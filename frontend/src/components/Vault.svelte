@@ -246,36 +246,40 @@
 						</Container>
 					{/if}
 
-					<div class="metadata column" style="--l: {metadata.length}">
-						{#each metadata as { icon, label, displayType, value }, i (label)}
-							<div class="card row" in:scale={{ delay: i * 100 }} out:scale animate:flip>
-								<div class="row">
-									<!-- <img src={icon} width="20" height="20" /> -->
-									<span class="metadata-icon">{$_(icon)}</span>
-									<span class="label">{$_(label)}</span>
-								</div>
+					<div>
+						<div class="metadata column" style="--l: {metadata.length}">
+							<!-- {#key vaultConfig.type} -->
+							{#each metadata as { icon, label, displayType, value }, i (label)}
+								<div class="card row" in:scale={{ delay: i * 100 }} out:scale animate:flip>
+									<div class="row">
+										<!-- <img src={icon} width="20" height="20" /> -->
+										<span class="metadata-icon">{$_(icon)}</span>
+										<span class="label">{$_(label)}</span>
+									</div>
 
-								<div class="stack align-end">
-									{#key value}
-										<span class="value" transition:scale={{ start: 0.3 }}>
-											{#if displayType === MetadataType.TokenBalance}
-												<TokenBalance {value} erc20Token={vaultConfig.tokens[0]} />
-											{:else if displayType === MetadataType.Date}
-												<span>{value} seconds</span>
-												<!-- <Countdown toTimestamp={value} /> -->
-											{:else if displayType === MetadataType.Percent}
-												<span>{value}%</span>
-											{:else if displayType === MetadataType.Address}
-												<Address network={networksByChainID[vaultConfig.chainId]} address={value} linked={false} />
-											{:else if displayType === MetadataType.String}
-												<!-- <span>{$_(value)}</span> -->
-												{value ?? ''}
-											{/if}
-										</span>
-									{/key}
+									<div class="stack align-end">
+										{#key value}
+											<span class="value" transition:scale={{ start: 0.3 }}>
+												{#if displayType === MetadataType.TokenBalance}
+													<TokenBalance {value} erc20Token={vaultConfig.tokens[0]} />
+												{:else if displayType === MetadataType.Date}
+													<span>{value} seconds</span>
+													<!-- <Countdown toTimestamp={value} /> -->
+												{:else if displayType === MetadataType.Percent}
+													<span>{value}%</span>
+												{:else if displayType === MetadataType.Address}
+													<Address network={networksByChainID[vaultConfig.chainId]} address={value} linked={false} />
+												{:else if displayType === MetadataType.String}
+													<!-- <span>{$_(value)}</span> -->
+													{value ?? ''}
+												{/if}
+											</span>
+										{/key}
+									</div>
 								</div>
-							</div>
-						{/each}
+							{/each}
+							<!-- {/key} -->
+						</div>
 					</div>
 
 					{#if vaultConfig.about.website || vaultConfig.about.twitter || vaultConfig.about.discord}
@@ -324,7 +328,7 @@
 
 		font-size: 16px;
 		/* position: absolute; */
-		--grid-gap: 1em;
+		--grid-gap: 1rem;
 
 		transition: 1s;
 		/* transform-origin: left; */
@@ -483,7 +487,7 @@
 
 		overflow-y: auto;
 		max-height: 200px;
-		font-size: clamp(0.85em, 3em / var(--l), 1em);
+		font-size: clamp(0.75em, 0.2em + 3em / var(--l), 0.9em);
 	}
 	.metadata > * {
 		/* padding: 0.85em; */
