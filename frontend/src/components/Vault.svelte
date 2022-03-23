@@ -453,6 +453,10 @@
 		word-break: break-word;
 
 		font-size: 0.7em;
+
+		line-height: 1.4;
+		max-height: calc(4 * 1.4em);
+		overflow-y: auto;
 	}
 
 	.vault-type-info {
