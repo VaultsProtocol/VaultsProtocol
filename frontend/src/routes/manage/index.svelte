@@ -173,8 +173,9 @@
 	.manage-vault {
 		justify-content: center;
 		align-items: start;
-		margin: auto;
 		max-height: 600px;
 		overflow: hidden;
+		padding: 1em;
+		gap: 2em;
 	}
 </style>

@@ -10,6 +10,19 @@
 		Remove = 'Remove'
 	}
 
+	enum Action {
+		DepositAndMint = 'Deposit and Mint',
+		Deposit = 'Deposit',
+		WithdrawAndBurn = 'Withdraw and Burn',
+		Withdraw = 'Withdraw',
+	}
+	const actionPrepositions = {
+		[Action.Deposit]: 'to',
+		[Action.DepositAndMint]: 'to',
+		[Action.Withdraw]: 'from',
+		[Action.WithdrawAndBurn]: 'from',
+	}
+
 
 	// Stores
 	import { account } from '../stores/account'
@@ -34,14 +47,14 @@
 	$: action =
 		params.managePositionMode === ManagePositionMode.Add ?
 			vaultPosition.balance.eq(0) ?
-				'Deposit and Mint'
+				Action.DepositAndMint
 			:
-				'Deposit'
+				Action.Deposit
 		:
 			vaultPosition.balance.sub(params.balanceDelta).eq(0) ?
-				'Withdraw and Burn'
+				Action.WithdrawAndBurn
 			:
-				'Withdraw'
+				Action.Withdraw
 
 
 	// Methods/hooks/lifecycle
@@ -136,20 +149,23 @@
 
 		<!-- <svelte:fragment slot="confirming" let:actions={{ back }}> -->
 		<svelte:fragment slot="confirming-message" let:network>
-			{action}
+			<p>
+				{action}
 
-			<TokenBalance
-				erc20Token={vaultConfig.tokens[0]}
-				balance={params.balanceDelta}
-			/>
+				<TokenBalance
+					erc20Token={vaultConfig.tokens[0]}
+					balance={params.balanceDelta}
+				/>
 
-			{$_('to/from {vaultType} vault "{vaultName}" on {networkName}}!', {
-				values: {
-					vaultType: vaultTypeInfo[vaultConfig.type].label,
-					vaultName: vaultConfig.about.name,
-					networkName: network.name
-				}
-			})}
+				{$_(actionPrepositions[action])} "{vaultConfig.about.name}"
+				<!-- {$_('to/from {vaultType} vault "{vaultName}" on {networkName}!', {
+					values: {
+						vaultType: vaultTypeInfo[vaultConfig.type].label,
+						vaultName: vaultConfig.about.name,
+						networkName: network.name
+					}
+				})} -->
+			</p>
 		</svelte:fragment>
 
 		<svelte:fragment slot="pending-message" let:network>
@@ -161,13 +177,15 @@
 					balance={params.balanceDelta}
 				/>
 
-				{$_('to/from {vaultType} vault "{vaultName}" on {networkName}}!', {
+				{$_(actionPrepositions[action])} "{vaultConfig.about.name}"
+
+				<!-- {$_('to/from {vaultType} vault "{vaultName}" on {networkName}}!', {
 					values: {
 						vaultType: vaultTypeInfo[vaultConfig.type].label,
 						vaultName: vaultConfig.about.name,
 						networkName: network.name
 					}
-				})}
+				})} -->
 			</div>
 		</svelte:fragment>
 
@@ -180,13 +198,15 @@
 					balance={params.balanceDelta}
 				/>
 
-				{$_('to/from {vaultType} vault "{vaultName}" on {networkName}}!', {
+				{$_(actionPrepositions[action])} "{vaultConfig.about.name}"
+
+				<!-- {$_('to/from {vaultType} vault "{vaultName}" on {networkName}}!', {
 					values: {
 						vaultType: vaultTypeInfo[vaultConfig.type].label,
 						vaultName: vaultConfig.about.name,
 						networkName: network.name
 					}
-				})}
+				})} -->
 			</div>
 		</svelte:fragment>
 	</TransactionFlow>
