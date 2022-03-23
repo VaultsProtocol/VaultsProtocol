@@ -27,6 +27,8 @@
 	// Stores
 	import { account } from '../stores/account'
 
+	const walletBalance = BigNumber.from(0)
+
 
 	// External state
 	type T = $$Generic<VaultType>
@@ -113,7 +115,29 @@
 				</div>
 
 				<div class="balance-row row">
-					<strong>Your Balance</strong>
+					<strong>Wallet Balance</strong>
+
+					<div class="row">
+						<output>
+							<TokenBalance
+								erc20Token={vaultConfig.tokens[0]}
+								balance={walletBalance}
+							/>
+						</output>
+						➔
+						<output>
+							<TokenBalance
+								erc20Token={vaultConfig.tokens[0]}
+								balance={
+									walletBalance.sub(params.balanceDelta)
+								}
+							/>
+						</output>
+					</div>
+				</div>
+
+				<div class="balance-row row">
+					<strong>Vault Balance</strong>
 
 					<div class="row">
 						<output>
