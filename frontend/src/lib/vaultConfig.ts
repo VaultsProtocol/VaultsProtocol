@@ -4,7 +4,13 @@ import { type ERC20Token, erc20TokensBySymbol } from './tokens'
 
 
 import aaveIcon from '../assets/dapps/aave.svg'
+import balancerIcon from '../assets/dapps/balancer.svg'
+import elementfiIcon from '../assets/dapps/elementfi.svg'
+import superfluidIcon from '../assets/dapps/superfluid.svg'
+import truefiIcon from '../assets/dapps/truefi.svg'
 import yearnIcon from '../assets/dapps/yearn.svg'
+
+
 import { random } from './random'
 
 
@@ -24,7 +30,7 @@ export const vaultTypeInfo = {
 	},
 	[VaultType.Charity]: {
 		label: '🎁\tNo-Loss Charity',
-		description: 'The Standard Vault, except a portion of all the earned yield is set aside for a designated recipient to be claimed at any time.',
+		description: 'An extension of the Standard Vault. A portion of all the earned yield is set aside for a designated recipient to be claimed at any time.',
 		color: 'var(--background-color-charity)'
 	},
 	// [VaultType.Superfluid]: {
@@ -33,13 +39,13 @@ export const vaultTypeInfo = {
 	// },
 	[VaultType.DAO]: {
 		label: '🗳\tDAO',
-		description: 'The Standard Vault, except the vault parameters can be changed upon the approval of multiple designated signers or by a delegated token-weighted vote amongst the vault’s position holders.',
+		description: 'An extension of the Standard Vault. The vault parameters can be changed upon the approval of multiple designated signers or by a delegated token-weighted vote amongst the vault’s position holders.',
 		// description: 'Democratized capital control via delegatable weighted voting or multi-sig',
 		color: 'var(--background-color-DAO)'
 	},
 	[VaultType.Degen]: {
 		label: '🐸\tDegen Game',
-		description: 'The ultimate ponzi war! When someone makes a contribution, a portion is distributed to all past contributors, and a timer is reset to a pre-defined time interval. When the timer runs out, the vault stops accepting contributions, and the last person to contribute instantly wins the Jackpot allocation.',
+		description: 'The ultimate ponzi war! When someone makes a contribution, a Dividend is distributed to all past contributors, and a timer is reset to a predefined time interval. When the timer runs out, the vault stops accepting contributions, and the last person to contribute wins the Jackpot allocation instantly.',
 		color: 'var(--background-color-degen)'
 	},
 }
@@ -47,17 +53,35 @@ export const vaultTypeInfo = {
 export enum YieldStrategy {
 	None = 'None',
 	Aave = 'Aave',
+	Balancer = 'Balancer',
+	ElementFi = 'ElementFi',
+	TrueFi = 'TrueFi',
 	Yearn = 'Yearn',
 }
 export const yieldStrategyInfo = {
 	[YieldStrategy.None]: {
 		label: '🚫\tNone',
-		description: 'The DAO treasury.'
+		description: 'Tokens in the vault don\'t earn any yield.'
 	},
 	[YieldStrategy.Aave]: {
 		icon: aaveIcon,
 		label: 'Aave',
-		description: 'The DAO treasury will be lent to borrowers on Aave. Interest will be paid out to holders.'
+		description: 'Tokens in the vault are lent to borrowers on Aave. Interest will be paid out to holders.'
+	},
+	[YieldStrategy.Balancer]: {
+		icon: balancerIcon,
+		label: 'Balancer',
+		description: 'Tokens in the vault are deposited into a corresponding "boosted" weighted linear pool on Balancer. Yield and trading fees will be paid out to holders.'
+	},
+	[YieldStrategy.ElementFi]: {
+		icon: elementfiIcon,
+		label: 'ElementFi',
+		description: 'Tokens in the vault are locked in a fixed-rate yield generating position on ElementFi. Interest from Yield Tokens will be paid out to holders when the term ends.'
+	},
+	[YieldStrategy.TrueFi]: {
+		icon: truefiIcon,
+		label: 'TrueFi',
+		description: 'The DAO treasury will be lent to borrowers on the TrueFi Lending Marketplace. Yield will be paid out to holders.'
 	},
 	[YieldStrategy.Yearn]: {
 		icon: yearnIcon,
@@ -89,11 +113,11 @@ export enum GovernanceType {
 export const governanceTypeInfo = {
 	[GovernanceType.MultiSignature]: {
 		label: '✍️\tMulti-Signature',
-		description: 'Multiple signatures from a pre-approved list of addresses are required to approve changes to the vault parameters and manage DAO funds'
+		description: 'Multiple signatures from a pre-approved list of addresses are required to manage DAO funds and approve changes to the vault parameters.'
 	},
 	[GovernanceType.TokenVoting]: {
 		label: '🗳\tCommunity Voting',
-		description: 'Stakeholders cast votes weighted proportionally to their vault contribution to approve or deny changes to the vault parameters and manage DAO funds.'
+		description: 'Stakeholders cast or delegate votes weighted proportionally to their vault contribution to manage DAO funds and approve or deny changes to the vault parameters.'
 	},
 }
 
@@ -105,11 +129,12 @@ export enum PayoutType {
 export const payoutTypeInfo = {
 	[PayoutType.Once]: {
 		label: '💸\tOnce',
-		description: 'The recipient\'s payout accrues over time; anyone can trigger the claim transaction.'
+		description: 'The recipient is paid their accrued yield instantly whenever anyone triggers the claim transaction.'
 	},
 	[PayoutType.Superfluid]: {
-		label: '🌊\tSuperfluid',
-		description: 'The yield is streamed to the recipient in real time in the form of Superfluid super tokens. The recipient can redeem the ERC-20 tokens by unwrapping the super tokens.'
+		icon: superfluidIcon,
+		label: 'Superfluid',
+		description: 'The yield is streamed to the recipient in real time in the form of Superfluid Super Tokens. The recipient can redeem the ERC-20 tokens by unwrapping the Super Tokens.'
 	},
 }
 
@@ -223,27 +248,27 @@ export const getRandomVaultConfig = () => {
 			jackpot: 20,
 			dividend: 30,
 			treasury: 50,
-			deadline: Math.random() * 10000 | 0,
+			deadline: (Math.random() * 1000 | 0) * 60,
 			initialLiquidity: {
 				contractAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
 				amount: BigNumber.from(0)
 			},
 
 			// VaultType.DAO
-			governanceType: GovernanceType.MultiSignature,
+			governanceType: random(Object.values(GovernanceType)),
 			signers: [],
 			minimumSignatures: 2,
 			quorum: 50,
 
 			// VaultType.Charity
-			payoutType: PayoutType.Once,
-			recipientAddress: '',
+			payoutType: random(Object.values(PayoutType)),
+			recipientAddress: `0x${Math.floor(Math.random() * 2**31 | 0).toString(16).padStart(8, '0').repeat(5)}`, // random(['0x12345eeeeeeeeeeeeeeeeeeeeeeeeeeeeee67890', '0xabcdefeeeeeeeeeeeeeeeeeeeeeeeeeeeeabcdef']),
 			recipientYieldPercent: 0,
 
 			// payoutType === PayoutType.Superfluid,
 			payoutRate: 10
 		},
-		yieldStrategy: YieldStrategy.None,
+		yieldStrategy: random(Object.values(YieldStrategy)),
 		// governanceStrategy: GovernanceStrategy.None,
 	} as VaultConfig<any>
 }
