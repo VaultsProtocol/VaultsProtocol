@@ -38,8 +38,8 @@
 			},
 
 			vaultPosition: {
-				balance: parseUnits('1234', decimals),
-				yieldEarned: parseUnits('1000', decimals)
+				balance: parseUnits((Math.random() * 1234 | 0).toString(), decimals),
+				yieldEarned: parseUnits((Math.random() * 12 | 0).toString(), decimals),
 			}
 		}
 	}
