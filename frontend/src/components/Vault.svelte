@@ -32,37 +32,36 @@
 	$: network = networksByChainID[vaultConfig.chainId]
 
 	let metadata
-	$: metadata =
-		/* isShowingIndividualPosition ?
-			[
-				{ icon: '', label: 'Balance', displayType: MetadataType.TokenBalance, value: vaultPosition.withdrawableBalance },
-				{ icon: '', label: 'Earned', displayType: MetadataType.TokenBalance, value: vaultPosition.yieldEarned },
-			]
-		: */ vaultConfig.type === VaultType.Degen ?
-			[
+	$: metadata = isShowingIndividualPosition
+		? [
+			{ icon: '', label: 'Balance', displayType: MetadataType.TokenBalance, value: vaultPosition.withdrawableBalance },
+			{ icon: '', label: 'Earned', displayType: MetadataType.TokenBalance, value: vaultPosition.yieldEarned },
+		]
+		: [
+			vaultConfig.yieldStrategy !== YieldStrategy.None && [
+				{ icon: '🏦', label: 'Yield Strategy', displayType: MetadataType.String, value: yieldStrategyInfo[vaultConfig.yieldStrategy].label },
+			],
+			vaultConfig.type === VaultType.Degen && [
 				{ icon: '💸', label: 'Dividend', displayType: MetadataType.Percent, value: vaultConfig.config.dividend },
 				{ icon: '🎰', label: 'Jackpot', displayType: MetadataType.Percent, value: vaultConfig.config.jackpot },
-				{ icon: '💸', label: 'Treasury', displayType: MetadataType.Percent, value: vaultConfig.config.treasury },
-				{ icon: '🛑', label: 'Deadline', displayType: MetadataType.Date, value: vaultConfig.config.deadline },
-			]
-		: vaultConfig.type === VaultType.DAO && vaultConfig.config.governanceType === GovernanceType.MultiSignature ?
-			[
+				{ icon: '🏦', label: 'Treasury', displayType: MetadataType.Percent, value: vaultConfig.config.treasury },
+				{ icon: '⏱', label: 'Deadline', displayType: MetadataType.Date, value: vaultConfig.config.deadline },
+			],
+			vaultConfig.type === VaultType.DAO && vaultConfig.config.governanceType === GovernanceType.MultiSignature && [
 				{ icon: '🗳', label: 'Governance Type', displayType: MetadataType.String, value: vaultConfig.config.governanceType },
 				{ icon: '📝', label: 'Minimum Signatures', displayType: MetadataType.String, value: vaultConfig.config.minimumSignatures },
 				{ icon: '✍️', label: 'Signers', displayType: MetadataType.String, value: vaultConfig.config.signers.filter(Boolean).length },
-			]
-		: vaultConfig.type === VaultType.DAO && vaultConfig.config.governanceType === GovernanceType.TokenVoting ?
-			[
+			],
+			vaultConfig.type === VaultType.DAO && vaultConfig.config.governanceType === GovernanceType.TokenVoting && [
 				{ icon: '🗳', label: 'Governance Type', displayType: MetadataType.String, value: vaultConfig.config.governanceType },
 				{ icon: '👋', label: 'Quorum', displayType: MetadataType.Percent, value: vaultConfig.config.quorum },
-			]
-		: vaultConfig.type === VaultType.Charity ?
-			[
+			],
+			vaultConfig.type === VaultType.Charity && [
 				{ icon: '🤲', label: 'Recipient', displayType: MetadataType.Address, value: vaultConfig.config.recipientAddress },
 				{ icon: '🍰', label: 'Yield to Recipient', displayType: MetadataType.Percent, value: vaultConfig.config.recipientYieldPercent },
 				{ icon: '💰', label: 'Payout Type', displayType: MetadataType.String, value: vaultConfig.config.payoutType },
 			]
-		: []
+		].filter(Boolean).flat()
 
 
 	// Components
