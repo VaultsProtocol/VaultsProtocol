@@ -240,7 +240,7 @@
 						{/if} -->
 					</div>
 
-					<div>
+					<Container isOpen={metadata.length}>
 						<div class="metadata column" style="--l: {metadata.length}">
 							<!-- {#key vaultConfig.type} -->
 							{#each metadata as { icon, label, displayType, value }, i (label)}
@@ -274,16 +274,14 @@
 							{/each}
 							<!-- {/key} -->
 						</div>
-					</div>
+					</Container>
 
-					{#if vaultConfig.about.description}
-						<Container>
-							<p class="description align-start" transition:scale>{vaultConfig.about.description}</p>
-						</Container>
-					{/if}
+					<Container isOpen={vaultConfig.about.description}>
+						<p class="description align-start" transition:scale>{vaultConfig.about.description}</p>
+					</Container>
 
-					{#if vaultConfig.about.website || vaultConfig.about.twitter || vaultConfig.about.discord}
-						<div class="row centered icons-row" transition:scale>
+					<Container class="column" isOpen={vaultConfig.about.website || vaultConfig.about.twitter || vaultConfig.about.discord}>
+						<div class="row centered icons-row">
 							
 							{#each
 								[
@@ -294,13 +292,13 @@
 								as
 								{ label, link, icon } (label)
 							}
-								<a class="icon button round" href={link.includes('://') ? link : 'https://' + link} target="_blank" rel="nofollow" transition:scale animate:flip>
+								<a class="icon button round" href={link.includes('://') ? link : 'https://' + link} target="_blank" rel="nofollow" in:scale animate:flip>
 									<!-- {$_(label)} -->
 									<img src={icon} alt={label} width="22" />
 								</a>
 							{/each}
 						</div>
-					{/if}
+					</Container>
 				</Container>
 			</div>
 		</article>
@@ -558,6 +556,9 @@
 			0 0 0 2px var(--vault-type-color);
 		padding: 0;
 		transition: 0.3s;
+
+		/* Transition out */
+		left: 50%;
 	}
 	.icon img {
 		margin: auto;
