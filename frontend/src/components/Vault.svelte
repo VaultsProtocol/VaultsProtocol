@@ -374,6 +374,7 @@
 			);
 		overflow-y: auto;
 		max-height: calc(100vh - var(--header-height) - 4rem);
+		padding: 1.5rem;
 		/* transform: translateZ(1px); */
 	}
 	.vault > .card.front::before {
