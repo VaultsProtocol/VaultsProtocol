@@ -82,11 +82,11 @@
 	import cardFaceFrog from '../assets/card-faces/frog.svg'
 	import cardFaceGift from '../assets/card-faces/gift.svg'
 	import cardFaceVote from '../assets/card-faces/voting-box.svg'
-	import cardFaceShark from '../assets/card-faces/shark.svg'
+	import cardFaceVault from '../assets/card-faces/vault.svg'
 	import cardFaceFrogShadow from '../assets/card-faces/frog-shadow.svg'
 	import cardFaceGiftShadow from '../assets/card-faces/gift-shadow.svg'
 	import cardFaceVoteShadow from '../assets/card-faces/vote-shadow.svg'
-	import cardFaceSharkShadow from '../assets/card-faces/shark-shadow.svg'
+	import cardFaceVaultShadow from '../assets/card-faces/vault-shadow.svg'
 
 
 	// Styles/animations
@@ -173,13 +173,13 @@
 										src={
 											isDeployed // isShowingIndividualPosition
 												? {
-													[VaultType.Standard]: cardFaceShark,
+													[VaultType.Standard]: cardFaceVault,
 													[VaultType.Charity]: cardFaceGift,
 													[VaultType.DAO]: cardFaceVote,
 													[VaultType.Degen]: cardFaceFrog,
 												}[vaultConfig.type]
 												: {
-													[VaultType.Standard]: cardFaceSharkShadow,
+													[VaultType.Standard]: cardFaceVaultShadow,
 													[VaultType.Charity]: cardFaceGiftShadow,
 													[VaultType.DAO]: cardFaceVoteShadow,
 													[VaultType.Degen]: cardFaceFrogShadow,
@@ -345,6 +345,7 @@
 	.vault > .card {
 		backface-visibility: hidden;
 		transition: 1s;
+		min-height: 450px;
 	}
 	.vault > .card.back {
 		background: black var(--card-back-image) center / cover no-repeat;
@@ -440,7 +441,7 @@
 	}
 
 	.description {
-		font-size: 0.8em;
+		font-size: 0.9em;
 		word-break: break-word;
 	}
 
