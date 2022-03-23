@@ -235,8 +235,13 @@
 								icons={Object.fromEntries(Object.entries(yieldStrategyInfo).map(([key, {icon}]) => [key, icon]))}
 							/>
 						</div>
-						<div class="row">
-							<p class="row">{$_(yieldStrategyInfo[vaultConfig.yieldStrategy].description)}</p>
+
+						<div class="stack">
+							{#key vaultConfig.yieldStrategy}
+								<p transition:scale={{ start: 0.9 }}>
+									{$_(yieldStrategyInfo[vaultConfig.yieldStrategy]?.description)}
+								</p>
+							{/key}
 						</div>
 					</label>
 				</div>
@@ -256,13 +261,13 @@
 						getColor={vaultType => vaultTypeInfo[vaultType]?.color}
 					/>
 
-					<div class="stack">
-						{#key vaultTypeInfo[vaultConfig.type]}
+					<Container class="stack align-top">
+						{#key vaultConfig.type}
 							<p class="card" transition:scale={{ start: 0.9 }}>
 								{$_(vaultTypeInfo[vaultConfig.type]?.description ?? 'Choose a vault behavior.')}
 							</p>
 						{/key}
-					</div>
+					</Container>
 				</div>
 
 				<Container class="stack align-top">
@@ -330,41 +335,47 @@
 										values={Object.values(GovernanceType)}
 										labels={Object.fromEntries(Object.entries(governanceTypeInfo).map(([key, {label}]) => [key, label]))}
 									/>
-									<p>{$_(governanceTypeInfo[vaultConfig.config.governanceType]?.description)}</p>
-								</div>
+									<div class="stack">
+										{#key vaultConfig.config.governanceType}
+											<p transition:scale={{ start: 0.9 }}>
+												{$_(governanceTypeInfo[vaultConfig.config.governanceType]?.description)}
+											</p>
+										{/key}
+									</div>
 
-								<div class="stack">
-									{#if vaultConfig.config.governanceType === GovernanceType.MultiSignature}
-										<div class="grid">
+									<div class="stack">
+										{#if vaultConfig.config.governanceType === GovernanceType.MultiSignature}
+											<div class="grid">
+												<label class="card column" transition:scale>
+													<h3>{$_('Minimum Signatures')}</h3>
+													<input
+														type="number"
+														required
+														min={1}
+														bind:value={vaultConfig.config.minimumSignatures}
+													/>
+													<p>{$_('The number of signers needed to approve changes to the vault.')}</p>
+												</label>
+
+												<label class="card column" transition:scale>
+													<h3>{$_('Signers')}</h3>
+													<p>{$_('The addresses of the signers participating in the multi-signature vault.')}</p>
+													<MultipleAddressInput
+														bind:values={vaultConfig.config.signers}
+													/>
+												</label>
+											</div>
+										{:else if vaultConfig.config.governanceType === GovernanceType.TokenVoting}
 											<label class="card column" transition:scale>
-												<h3>{$_('Minimum Signatures')}</h3>
-												<input
-													type="number"
+												<h3>{$_('Quorum')}</h3>
+												<PercentInput
 													required
-													min={1}
-													bind:value={vaultConfig.config.minimumSignatures}
+													bind:value={vaultConfig.config.quorum}
 												/>
-												<p>{$_('The number of signers needed to approve changes to the vault.')}</p>
+												<p>{$_('The minimum amount of voting power participating in the vote for a proposal to be decided.')}</p>
 											</label>
-
-											<label class="card column" transition:scale>
-												<h3>{$_('Signers')}</h3>
-												<p>{$_('The addresses of the signers participating in the multi-signature vault.')}</p>
-												<MultipleAddressInput
-													bind:values={vaultConfig.config.signers}
-												/>
-											</label>
-										</div>
-									{:else if vaultConfig.config.governanceType === GovernanceType.TokenVoting}
-										<label class="card column" transition:scale>
-											<h3>{$_('Quorum')}</h3>
-											<PercentInput
-												required
-												bind:value={vaultConfig.config.quorum}
-											/>
-											<p>{$_('The minimum amount of voting power participating in the vote for a proposal to be decided.')}</p>
-										</label>
-									{/if}
+										{/if}
+									</div>
 								</div>
 							</div>
 
