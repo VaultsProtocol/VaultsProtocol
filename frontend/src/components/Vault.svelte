@@ -34,9 +34,14 @@
 	let metadata
 	$: metadata = isShowingIndividualPosition
 		? [
-			{ icon: '', label: 'Balance', displayType: MetadataType.TokenBalance, value: vaultPosition.withdrawableBalance },
-			{ icon: '', label: 'Earned', displayType: MetadataType.TokenBalance, value: vaultPosition.yieldEarned },
-		]
+			vaultConfig.yieldStrategy !== YieldStrategy.None && [
+				{ icon: '🏦', label: 'Yield Strategy', displayType: MetadataType.String, value: yieldStrategyInfo[vaultConfig.yieldStrategy].label },
+			],
+			{ icon: '💰', label: 'Balance', displayType: MetadataType.TokenBalance, value: vaultPosition.balance },
+			vaultConfig.yieldStrategy !== YieldStrategy.None && [
+				{ icon: '💸', label: 'Yield Earned', displayType: MetadataType.TokenBalance, value: vaultPosition.yieldEarned },
+			],
+		].filter(Boolean).flat()
 		: [
 			vaultConfig.yieldStrategy !== YieldStrategy.None && [
 				{ icon: '🏦', label: 'Yield Strategy', displayType: MetadataType.String, value: yieldStrategyInfo[vaultConfig.yieldStrategy].label },
@@ -148,13 +153,13 @@
 									erc20Token={vaultConfig.tokens[0]}
 								/>
 							{:else}
-								{#if isShowingIndividualPosition}
+								<!-- {#if isShowingIndividualPosition}
 									<TokenBalance
 										balance={vaultPosition.balance}
 										erc20Token={vaultConfig.tokens[0]}
 									/>
 									/
-								{/if}
+								{/if} -->
 								<TokenBalance
 									balance={vaultStatus.totalBalance}
 									erc20Token={vaultConfig.tokens[0]}
@@ -255,7 +260,7 @@
 										{#key value}
 											<span class="value" transition:scale={{ start: 0.3 }}>
 												{#if displayType === MetadataType.TokenBalance}
-													<TokenBalance {value} erc20Token={vaultConfig.tokens[0]} />
+													<TokenBalance balance={value} erc20Token={vaultConfig.tokens[0]} />
 												{:else if displayType === MetadataType.Date}
 													<span>{value} seconds</span>
 													<!-- <Countdown toTimestamp={value} /> -->
