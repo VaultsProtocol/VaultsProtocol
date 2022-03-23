@@ -174,8 +174,9 @@
 		bind:isOpen={modalIsOpen}
 		closeButton
 		width="30rem"
-		title={$_('Sign in with Web3')}
+		title={$_('Connect Wallet')}
 	>
+	<!-- title={$_('Sign in with Web3')} -->
 		<!-- <div class="card"> -->
 			<div class="wallets">
 				{#each wallets as {type, name, icon}}
