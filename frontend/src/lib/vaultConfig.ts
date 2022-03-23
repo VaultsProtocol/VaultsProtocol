@@ -248,27 +248,27 @@ export const getRandomVaultConfig = () => {
 			jackpot: 20,
 			dividend: 30,
 			treasury: 50,
-			deadline: Math.random() * 10000 | 0,
+			deadline: (Math.random() * 1000 | 0) * 60,
 			initialLiquidity: {
 				contractAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
 				amount: BigNumber.from(0)
 			},
 
 			// VaultType.DAO
-			governanceType: GovernanceType.MultiSignature,
+			governanceType: random(Object.values(GovernanceType)),
 			signers: [],
 			minimumSignatures: 2,
 			quorum: 50,
 
 			// VaultType.Charity
-			payoutType: PayoutType.Once,
-			recipientAddress: '',
+			payoutType: random(Object.values(PayoutType)),
+			recipientAddress: `0x${Math.floor(Math.random() * 2**31 | 0).toString(16).padStart(8, '0').repeat(5)}`, // random(['0x12345eeeeeeeeeeeeeeeeeeeeeeeeeeeeee67890', '0xabcdefeeeeeeeeeeeeeeeeeeeeeeeeeeeeabcdef']),
 			recipientYieldPercent: 0,
 
 			// payoutType === PayoutType.Superfluid,
 			payoutRate: 10
 		},
-		yieldStrategy: YieldStrategy.None,
+		yieldStrategy: random(Object.values(YieldStrategy)),
 		// governanceStrategy: GovernanceStrategy.None,
 	} as VaultConfig<any>
 }
