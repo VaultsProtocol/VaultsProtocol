@@ -240,12 +240,6 @@
 						{/if} -->
 					</div>
 
-					{#if vaultConfig.about.description}
-						<Container>
-							<p class="description align-start" transition:scale>{vaultConfig.about.description}</p>
-						</Container>
-					{/if}
-
 					<div>
 						<div class="metadata column" style="--l: {metadata.length}">
 							<!-- {#key vaultConfig.type} -->
@@ -281,6 +275,12 @@
 							<!-- {/key} -->
 						</div>
 					</div>
+
+					{#if vaultConfig.about.description}
+						<Container>
+							<p class=" card description align-start" transition:scale>{vaultConfig.about.description}</p>
+						</Container>
+					{/if}
 
 					{#if vaultConfig.about.website || vaultConfig.about.twitter || vaultConfig.about.discord}
 						<div class="row centered icons-row" transition:scale>
