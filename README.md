@@ -6,7 +6,7 @@
 
 ### Try it:
 
-- [Website]: [https://vaults-protocol.netlify.app](https://vaults-protocol.netlify.app/)
+- Website: [https://vaults-protocol.netlify.app](https://vaults-protocol.netlify.app)
 - IPFS: [https://vaults.on.fleek.co](https://vaults.on.fleek.co)
 - Skynet: [find the latest sia:// link here under “Deploy to Skynet”](https://github.com/VaultsProtocol/VaultsProtocol/actions/workflows/deploy-to-skynet.yml)
 
